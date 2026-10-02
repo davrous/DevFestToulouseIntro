@@ -29,3 +29,14 @@ kbd { font: 8px Consolas, monospace; color: #6f9390; margin-left: 6px; }
 #intensity { width: 130px; }
 #diagnostics dd { overflow-wrap: anywhere; }
 .audio-debug-buttons { margin-top: 10px; }
+.input-meter { display: flex; align-items: center; gap: 10px; margin: 12px 0 8px; font: 9px Consolas, monospace; color: #a1cabc; }
+.input-meter meter { flex: 1; min-width: 50px; height: 12px; }
+.input-meter meter::-webkit-meter-bar { background: #162d30; border: 1px solid #35574d; }
+.input-meter meter::-webkit-meter-optimum-value { background: #83e8bb; }
+.input-meter meter::-moz-meter-bar { background: #83e8bb; }
+.input-meter output { min-width: 56px; text-align: right; }
+.input-gain { display: flex; align-items: center; gap: 12px; font: 10px Consolas, monospace; color: #9abbb1; }
+.input-gain input { flex: 1; width: 100px; min-width: 60px; accent-color: #99efcd; }
+.input-gain output { min-width: 44px; text-align: right; }
+.input-hint { color: #9fc4b6; font: 9px/1.6 Consolas, monospace; }
+#lobby { overflow-y: auto; scrollbar-width: thin; scrollbar-color: #547a6f transparent; }

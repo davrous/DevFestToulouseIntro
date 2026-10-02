@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { ShowController } from "./ShowController";
 import { Timeline } from "./Timeline";
 import { parseMessage } from "./protocol";
-import { frequencyBand } from "./AudioAnalyzer";
+import { AudioAnalyzer, frequencyBand, rmsLevel, silentFeatures } from "./AudioAnalyzer";
 import { cameraPose } from "../camera/CameraPath";
 
 describe("Strudel protocol", () => {
@@ -97,5 +97,32 @@ describe("independent music-reactive layer", () => {
       expect(frequencyBand(spectrum, rate, 2048, 40, 180)).toBe(1);
       expect(frequencyBand(spectrum, rate, 2048, 4000, 14000)).toBe(0);
     }
+  });
+
+  it("keeps monitoring input when visual reactivity is disabled", () => {
+    const controller = new ShowController(new Timeline(), vi.fn());
+    const sample = vi.spyOn(controller.audio, "sample").mockReturnValue({ ...silentFeatures(), energy: .8 });
+    controller.enabled = false;
+    expect(controller.sample(500).energy).toBe(0);
+    expect(sample).toHaveBeenCalledWith(500);
+  });
+
+  it("detects quiet float waveforms below byte-analyser precision", () => {
+    expect(rmsLevel(new Float32Array([.0001, -.0001, .0001, -.0001]))).toBeCloseTo(.0001, 8);
+    expect(rmsLevel(new Float32Array(2048))).toBe(0);
+    expect(() => rmsLevel(new Float32Array())).toThrow();
+  });
+
+  it("validates input preamp gain without needing microphone permission", () => {
+    const audio = new AudioAnalyzer(vi.fn());
+    expect(audio.gainDb).toBe(12);
+    expect(audio.inputLevel).toBe(0);
+    expect(audio.connected).toBe(false);
+    audio.gainDb = -12;
+    expect(audio.gainDb).toBe(-12);
+    audio.gainDb = 30;
+    expect(audio.gainDb).toBe(30);
+    expect(() => { audio.gainDb = 31; }).toThrow();
+    expect(() => { audio.gainDb = NaN; }).toThrow();
   });
 });

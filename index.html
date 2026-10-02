@@ -40,6 +40,10 @@
             <button id="audio-connect">CONNECT INPUT</button><button id="audio-disconnect">DISCONNECT</button>
           </div>
           <p id="audio-setup-status" role="status">OFF / no audio permission requested</p>
+          <div class="input-meter"><span>LIVE INPUT</span><meter data-input-meter min="0" max="1" value="0" aria-label="Microphone input level"></meter><output data-input-db>-- dBFS</output></div>
+          <label class="input-gain">Input gain <input data-audio-gain type="range" min="-12" max="30" step="1" value="12" aria-label="Audio input gain" /><output data-gain-label>+12 dB</output></label>
+          <p data-input-hint>Connect an input, then speak to test the signal.</p>
+          <p>Talking brightens the corridor; claps add sharper pulses. The camera never follows audio.</p>
           <p>Inputs are analyzed locally, never recorded or sent anywhere. No monitoring is routed to speakers.</p>
         </details>
       </section>
@@ -77,6 +81,9 @@
       <label>Reactive intensity <input id="intensity" type="range" min="0" max="2" step=".05" value="1" /></label>
       <label>Live input <select id="audio-source-debug"><option value="microphone">Microphone / line</option><option value="system">System / tab</option></select></label>
       <div class="phase-buttons audio-debug-buttons"><button id="debug-audio-connect">CONNECT AUDIO</button><button id="debug-audio-disconnect">DISCONNECT AUDIO</button></div>
+      <div class="input-meter"><span>INPUT</span><meter data-input-meter min="0" max="1" value="0" aria-label="Live audio input level"></meter><output data-input-db>-- dBFS</output></div>
+      <label class="input-gain">Input gain <input data-audio-gain type="range" min="-12" max="30" step="1" value="12" aria-label="Live audio input gain" /><output data-gain-label>+12 dB</output></label>
+      <p class="input-hint" data-input-hint>Connect an input, then speak to test the signal.</p>
       <p class="debug-subheading">REHEARSAL / SEND CUES DURING PLAYBACK</p>
       <div class="phase-buttons">
         <button data-trigger="kick">KICK</button><button data-trigger="snare">SNARE</button>

@@ -3,6 +3,7 @@ import { DevFestScene } from "../scene/DevFestScene";
 import { Timeline } from "./Timeline";
 import { DebugPanel } from "../debug/DebugPanel";
 import { ShowController } from "./ShowController";
+import { silentFeatures } from "./AudioAnalyzer";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -21,6 +22,7 @@ export class App {
   private idleTimer = 0;
   private lastDiagnostics = 0;
   private noticeTimer = 0;
+  private readonly visualAudio = silentFeatures();
   private readonly lobby = element("lobby");
   private readonly pauseOverlay = element("pause-overlay");
   private readonly notice = element("notice");
@@ -62,9 +64,9 @@ export class App {
 
   async initialize(): Promise<void> {
     element("loading-fill").style.width = "45%";
-    element("load-status").textContent = "Compiling geometry, materials, and cinematic pipeline...";
+    element("load-status").textContent = "Loading local event artwork and compiling the cinematic pipeline...";
     await this.world.prepare();
-    this.world.update(this.inLobby ? 0 : this.timeline.time);
+    this.world.update(this.inLobby ? 0 : this.timeline.time, this.visualAudio, this.showController.section);
     this.world.scene.render();
     element("loading-fill").style.width = "85%";
     await this.world.scene.whenReadyAsync();
@@ -72,8 +74,9 @@ export class App {
       if (!this.ready) return;
       const now = performance.now();
       const time = this.inLobby ? 0 : this.timeline.tick(now);
-      const audio = this.timeline.playing || this.inLobby ? this.showController.sample(now) : this.showController.features;
-      this.world.update(time, audio, this.showController.section);
+      const audio = this.showController.sample(now);
+      if (this.timeline.playing || this.inLobby || !this.showController.enabled) Object.assign(this.visualAudio, audio);
+      this.world.update(time, this.visualAudio, this.showController.section);
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {
@@ -101,6 +104,7 @@ export class App {
     document.body.classList.remove("lobby-visible");
     this.timeline.seek(time);
     this.showController.resetTransient();
+    Object.assign(this.visualAudio, silentFeatures());
     this.timeline.play();
     element("render-canvas").focus();
     this.resetCursor();
@@ -141,7 +145,8 @@ export class App {
     if (this.inLobby) this.start(time);
     else this.timeline.seek(time);
     this.showController.resetTransient();
-    this.world.update(this.timeline.time, this.showController.features, this.showController.section);
+    Object.assign(this.visualAudio, silentFeatures());
+    this.world.update(this.timeline.time, this.visualAudio, this.showController.section);
   }
 
   returnToLobby(): void {

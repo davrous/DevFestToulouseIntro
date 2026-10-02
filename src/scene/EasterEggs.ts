@@ -44,7 +44,7 @@ export class EasterEggs {
   private readonly blocks: Mesh[];
   private readonly satellite: TransformNode;
   private readonly orbit: Mesh;
-  private readonly container: TransformNode;
+  readonly container: TransformNode;
   private readonly brick: PBRMaterial;
 
   constructor(scene: Scene) {

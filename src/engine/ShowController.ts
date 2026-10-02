@@ -59,9 +59,9 @@ export class ShowController {
   }
 
   sample(now = this.clock()): AudioFeatures {
+    const audio = this.audio.sample(now);
     Object.assign(this.features, silentFeatures());
     if (!this.enabled) return this.features;
-    const audio = this.audio.sample(now);
     const decay = Math.exp(-Math.max(0, now - this.levelsAt - 250) / 500);
     for (const key of CHANNELS) this.features[key] = Math.max(audio[key], (this.levels[key] ?? 0) * decay);
     for (const [event, pulse] of this.pulses) {

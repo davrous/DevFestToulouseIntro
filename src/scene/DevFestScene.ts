@@ -25,6 +25,7 @@ import { createAtmosphere } from "./Atmosphere";
 import { SpeakerPortal } from "./SpeakerPortal";
 import { EasterEggs } from "./EasterEggs";
 import { MusicReactive } from "../effects/MusicReactive";
+import { EventBranding } from "./EventBranding";
 
 const SILENCE = silentFeatures();
 const PALETTE = ["#68d7be", "#76ffe0", "#b19dff", "#ffa999", "#ffd28d", "#77ffe3"].map(Color3.FromHexString);
@@ -37,6 +38,7 @@ export class DevFestScene {
   readonly portals: SpeakerPortal[];
   private readonly easterEggs: EasterEggs;
   private readonly music: MusicReactive;
+  private readonly branding: EventBranding;
   private readonly tint = new Color3();
   private readonly labyrinth;
   private readonly interior;
@@ -94,6 +96,7 @@ export class DevFestScene {
     this.caption = createFinalCaption(scene);
     this.portals = SPEAKERS.map((speaker, index) => new SpeakerPortal(scene, speaker, index));
     this.easterEggs = new EasterEggs(scene);
+    this.branding = new EventBranding(scene, this.easterEggs.container);
     this.music = new MusicReactive(scene);
     this.glow = new GlowLayer("Architectural light bloom", scene, { mainTextureRatio: .5, blurKernelSize: 32 });
     this.glow.addExcludedMesh(this.music.particles);
@@ -128,6 +131,7 @@ export class DevFestScene {
   }
 
   async prepare(): Promise<void> {
+    await this.branding.ready;
     await this.scene.whenReadyAsync();
     await Promise.all(this.scene.meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
       useInstances: mesh instanceof Mesh && mesh.hasThinInstances,
@@ -156,19 +160,21 @@ export class DevFestScene {
     for (let i = 1; i < PHASES.length; i++) if (paletteTime >= PHASES[i].time) index = i;
     Color3.LerpToRef(PALETTE[Math.max(0, index - 1)], PALETTE[index], smoothstep((paletteTime - PHASES[index].time) / 6), this.tint);
     const pulse = calm * (audio.kick * .32 + audio.snare * .2 + audio.drop * .3);
-    this.glow.intensity = .2 + reveal * .35 + pulse * .15;
-    this.pipeline.bloomWeight = .2 + calm * (audio.violaEnergy * .08 + audio.drop * .1);
+    const voice = calm * audio.energy;
+    this.glow.intensity = .2 + reveal * .35 + pulse * .15 + voice * .25;
+    this.pipeline.bloomWeight = .2 + calm * (audio.violaEnergy * .08 + audio.drop * .1) + voice * .05;
     this.camera.minZ = .15 + reveal * 8;
     this.scene.fogDensity = (.009 + audio.violaEnergy * calm * .001) * (1 - reveal) + .00008 * reveal;
     this.scene.fogColor.set(.022 + this.tint.r * .008, .033 + this.tint.g * .022, .04 + this.tint.b * .03);
     this.fill.intensity = .35 + wake * .3 + reveal * .55;
     this.sun.intensity = .5 + wake * .5 + reveal * 1.2;
-    this.headlight.intensity = (100 + wake * 90 + pulse * 95) * (1 - reveal);
-    this.labyrinth.cyan.emissiveColor.copyFrom(this.tint).scaleInPlace(.8 + wake * .55 + reveal * 1.5 + pulse);
+    this.headlight.intensity = (100 + wake * 90 + pulse * 95 + voice * 100) * (1 - reveal);
+    this.labyrinth.cyan.emissiveColor.copyFrom(this.tint).scaleInPlace(.8 + wake * .55 + reveal * 1.5 + pulse + voice * 1.8);
     this.labyrinth.amber.emissiveColor.set(1.25 + reveal * 1.75, .52 + reveal * .25, .26);
     this.labyrinth.roof.emissiveColor.set(.008 + reveal * .067, .018 + reveal * .15, .023 + reveal * .17);
     this.atmosphere.dust.position.y = Math.sin(time * .13) * .5;
     this.caption.visibility = smoothstep((time - 175) / 3);
+    this.branding.update(time);
     updateInterior(this.interior, time);
     this.interior.core.scaling.setAll(1 + audio.bass * calm * .025);
     this.portals.forEach((portal) => portal.update(time, audio));

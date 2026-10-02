@@ -77,26 +77,27 @@ export function updateInterior(interior: Interior, time: number): void {
 }
 
 export function createFinalCaption(scene: Scene): Mesh {
-  const texture = new DynamicTexture("Final caption typography", { width: 2048, height: 256 }, scene, true);
+  const texture = new DynamicTexture("Final caption / AI4Fun", { width: 2048, height: 256 }, scene, true);
   texture.hasAlpha = true;
   const ctx = texture.getContext();
   ctx.clearRect(0, 0, 2048, 256);
   ctx.fillStyle = "#badbd5";
-  ctx.font = "80px Consolas, monospace";
-  const title = "C L O S I N G   K E Y N O T E";
-  ctx.fillText(title, (2048 - ctx.measureText(title).width) / 2, 110);
+  ctx.font = '600 160px "Segoe UI", Arial, sans-serif';
+  const title = "AI4Fun";
+  ctx.fillText(title, (2048 - ctx.measureText(title).width) / 2, 155);
   ctx.fillStyle = "#6a948f";
   ctx.font = "24px Consolas, monospace";
   const subtitle = "T O U L O U S E   /   2 0 2 6";
-  ctx.fillText(subtitle, (2048 - ctx.measureText(subtitle).width) / 2, 178);
+  ctx.fillText(subtitle, (2048 - ctx.measureText(subtitle).width) / 2, 220);
   texture.update();
   const material = emissive(scene, "Final caption light", "#d4eee7", .75);
   material.diffuseTexture = texture;
   material.emissiveTexture = texture;
   material.useAlphaFromDiffuseTexture = true;
-  const caption = MeshBuilder.CreatePlane("Closing keynote / world-space caption", { width: 700, height: 87.5 }, scene);
+  const caption = MeshBuilder.CreatePlane("AI4Fun / world-space caption", { width: 700, height: 87.5 }, scene);
   caption.material = material;
   caption.position = new Vector3(0, 1, -289);
   caption.rotation.x = Math.PI / 2;
+  caption.metadata = { caption: title };
   return caption;
 }

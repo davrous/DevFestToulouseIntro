@@ -25,18 +25,28 @@ export function frequencyBand(data: Uint8Array, sampleRate: number, fftSize: num
   return sum / (end - start);
 }
 
+export function rmsLevel(samples: Float32Array): number {
+  if (samples.length === 0) throw new RangeError("RMS analysis requires waveform samples.");
+  let square = 0;
+  for (const value of samples) square += value * value;
+  return Math.sqrt(square / samples.length);
+}
+
 export class AudioAnalyzer {
   status = "OFF / no audio permission requested";
   readonly features = silentFeatures();
   private context?: AudioContext;
   private analyser?: AnalyserNode;
+  private preamp?: GainNode;
+  private inputGainDb = 12;
+  private levelDb = -Infinity;
   private source?: MediaStreamAudioSourceNode;
   private stream?: MediaStream;
   private ownsTracks = false;
   private request = 0;
   private cleanupTracks: Array<() => void> = [];
   private frequency = new Uint8Array(1024);
-  private waveform = new Uint8Array(2048);
+  private waveform = new Float32Array(2048);
   private previousBass = 0;
   private previousMid = 0;
   private lastBeat = -Infinity;
@@ -44,12 +54,26 @@ export class AudioAnalyzer {
 
   constructor(private readonly notify: (message: string) => void) {}
 
+  get gainDb(): number { return this.inputGainDb; }
+  set gainDb(value: number) {
+    if (!Number.isFinite(value) || value < -12 || value > 30) throw new RangeError("Input gain must be between -12 and +30 dB.");
+    this.inputGainDb = value;
+    if (this.preamp && this.context) this.preamp.gain.setTargetAtTime(10 ** (value / 20), this.context.currentTime, .02);
+  }
+  get inputDb(): number { return this.levelDb; }
+  get inputLevel(): number { return clamp((this.levelDb + 60) / 60); }
+  get connected(): boolean { return this.stream?.getAudioTracks().some((track) => track.readyState === "live") ?? false; }
+  get deviceName(): string { return this.stream?.getAudioTracks()[0]?.label || "No active input"; }
+
   async activate(): Promise<void> {
     if (!this.context || this.context.state === "closed") {
       this.context = new AudioContext({ latencyHint: "interactive" });
       this.analyser = this.context.createAnalyser();
       this.analyser.fftSize = 2048;
       this.analyser.smoothingTimeConstant = .7;
+      this.preamp = this.context.createGain();
+      this.preamp.gain.value = 10 ** (this.inputGainDb / 20);
+      this.preamp.connect(this.analyser);
       this.context.addEventListener("statechange", () => {
         if (this.stream && this.context?.state === "suspended") {
           this.status = "SUSPENDED / reconnect audio to resume analysis";
@@ -114,6 +138,8 @@ export class AudioAnalyzer {
     this.stream = undefined;
     this.ownsTracks = false;
     Object.assign(this.features, silentFeatures());
+    this.levelDb = -Infinity;
+    this.lastSample = 0;
     this.previousBass = 0;
     this.previousMid = 0;
   }
@@ -124,18 +150,22 @@ export class AudioAnalyzer {
     const track = this.stream?.getAudioTracks()[0];
     if (!analyser || !context || context.state !== "running" || !track || track.muted || track.readyState !== "live") {
       Object.assign(this.features, silentFeatures());
+      this.levelDb = -Infinity;
       return this.features;
     }
     if (now - this.lastSample < 1000 / 60) return this.features;
+    const delta = Math.min(.1, Math.max(0, (now - this.lastSample) / 1000));
     this.lastSample = now;
     analyser.getByteFrequencyData(this.frequency);
-    analyser.getByteTimeDomainData(this.waveform);
+    analyser.getFloatTimeDomainData(this.waveform);
     const bass = frequencyBand(this.frequency, context.sampleRate, analyser.fftSize, 40, 180);
     const mid = frequencyBand(this.frequency, context.sampleRate, analyser.fftSize, 180, 2200);
     const treble = frequencyBand(this.frequency, context.sampleRate, analyser.fftSize, 4000, 14000);
-    let square = 0;
-    for (const value of this.waveform) square += ((value - 128) / 128) ** 2;
-    const energy = clamp(Math.sqrt(square / this.waveform.length) * 4);
+    const rms = rmsLevel(this.waveform);
+    this.levelDb = rms > 0 ? 20 * Math.log10(rms) : -Infinity;
+    const targetEnergy = clamp(rms * 4);
+    const smoothing = 1 - Math.exp(-delta / (targetEnergy > this.features.energy ? .04 : .18));
+    const energy = this.features.energy + (targetEnergy - this.features.energy) * smoothing;
     const transient = Math.max(0, bass - this.previousBass - .045);
     const kick = now - this.lastBeat > 180 ? clamp(transient * 7) : 0;
     if (kick > .15) this.lastBeat = now;
@@ -154,9 +184,9 @@ export class AudioAnalyzer {
   }
 
   private attachStream(stream: MediaStream, ownsTracks: boolean): void {
-    if (!this.context || !this.analyser) throw new Error("Activate the audio context before attaching a stream.");
+    if (!this.context || !this.preamp) throw new Error("Activate the audio context before attaching a stream.");
     const source = this.context.createMediaStreamSource(new MediaStream(stream.getAudioTracks()));
-    source.connect(this.analyser);
+    source.connect(this.preamp);
     this.releaseStream();
     this.stream = stream;
     this.ownsTracks = ownsTracks;

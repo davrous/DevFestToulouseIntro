@@ -39,7 +39,7 @@ Open http://127.0.0.1:4173 and keep the local server running. After installation
 | 2:17–2:37 | Stack Overflow sculpture, falling blocks and orbital hardware |
 | 2:35–2:43 | Chaos subsides; camera prepares the escape |
 | 2:43–2:53 | Backward/upward pullback exposes the complete title |
-| 2:55–3:00 | World-space closing caption; camera settles at 2:57; quiet final hold |
+| 2:55–3:00 | World-space **AI4Fun** signature and subtle anniversary marks; camera settles at 2:57; quiet final hold |
 
 ### Configure speakers
 
@@ -70,7 +70,7 @@ Replace `DEMO_TITLE_1` through `DEMO_TITLE_4` before the event. `gateTime` deter
 | F | Toggle fullscreen |
 | Escape | Return to lobby when not fullscreen |
 
-Flight control also provides post-processing, render resolution, reactive intensity, live-input connection, rehearsal triggers and WebSocket controls. Rehearsal triggers affect visuals **during playback**; pause freezes the choreography and reactive frame. Playback-speed changes affect the whole master timeline, not just the camera, so speaker/camera synchronization cannot drift.
+Flight control also provides post-processing, render resolution, reactive intensity, live-input connection, rehearsal triggers and WebSocket controls. Rehearsal triggers affect visuals **during playback**; pause freezes the choreography and reactive frame, but input meters continue monitoring live audio. Playback-speed changes affect the whole master timeline, not just the camera, so speaker/camera synchronization cannot drift.
 
 **Balanced** caps the render buffer at 2560×1440. **Native / 4K** uses full device resolution. Normal playback hides HTML controls and the cursor. The final image holds indefinitely.
 
@@ -83,9 +83,13 @@ Open **Live audio setup** in the lobby, or use the audio controls in flight cont
 1. Choose **Microphone / line input** or **System / browser tab audio**.
 2. Click **CONNECT INPUT** / **CONNECT AUDIO**.
 3. Grant the browser permission. For system/tab capture, select a source and enable **Share audio**. Sources without an audio track are rejected with a visible error.
-4. Check the meters with D. Start the show when ready.
+4. Speak and check the **LIVE INPUT** meter in the lobby or flight control. It should rise immediately. The selected input's device name appears in the signal hint.
+5. Adjust **Input gain** as needed. It defaults to +12 dB for quiet microphones; reduce it for strong system/line input. A typical speaking level around -35 to -15 dBFS is a useful starting point. A warning appears for very quiet or excessively hot input.
+6. Start/resume the show. Continuous voice/instrument volume now visibly brightens the corridor and bloom; claps/drum attacks add sharper pulses. The lobby also responds, so input can be checked without starting the camera.
 
-The Web Audio analyser exposes `kick`, `bass`, `mid`, `treble`, `energy`, `beat`, `violaEnergy`, `snare` and `drop`. It drives light pulses, ornament breathing, particle motion/brightness, flowing ribbons, fog and restrained bloom. It never controls camera position, speaker timestamps, route selection or reveal timing.
+If the meter moves but visuals do not, check **Audio reactivity** and **Reactive intensity** in D. Paused images stay frozen even though meters move. Reactivity intentionally fades out after 2:35 and is absent from the final hold. If the meter does not move, check the reported device, browser/Windows input selection, OS microphone permissions, mute controls and input gain.
+
+The Web Audio analyser uses floating-point waveform measurements and a local input preamp, and exposes `kick`, `bass`, `mid`, `treble`, `energy`, `beat`, `violaEnergy`, `snare` and `drop`. Smoothed `energy` drives continuous corridor brightness; the other bands drive light pulses, ornament breathing, particle motion/brightness, flowing ribbons, fog and restrained bloom. It never controls camera position, speaker timestamps, route selection or reveal timing.
 
 `violaEnergy` from mixed audio is a **smoothed mid-band proxy, not instrument separation**. For accurate viola control, use a dedicated input or send explicit `violaEnergy` levels through the event API.
 
@@ -172,10 +176,21 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, typography, theme and animated ornaments.
 - [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
 - [MusicReactive](src/effects/MusicReactive.ts): seeded GPU-animated particles and shader-based MIDI ribbons.
+- [EventBranding](src/scene/EventBranding.ts): original event artwork used as a server insignia, neural-district stencil, cargo seal, and two small final signatures. The final marks fade in with **AI4Fun** after 2:55 and do not affect the camera or title geometry.
 - [ShowController](src/engine/ShowController.ts), [protocol](src/engine/protocol.ts), [AudioAnalyzer](src/engine/AudioAnalyzer.ts): independently validated music inputs.
 - [App](src/engine/App.ts), [Timeline](src/engine/Timeline.ts), [DevFestScene](src/scene/DevFestScene.ts): preload, stage lifecycle, deterministic clock and rendering.
 
 `window.devfest` remains available for inspection: `start(155)`, `seek(173)`, `timeline.pause()`, `timeline.play()`, `returnToLobby()`. A full show uses normal playback speed 1.
+
+### Supplied event artwork
+
+Three original transparent PNGs from the supplied `Mascotte-20261002T171109Z-1-001.zip` are stored in [src/assets/event](src/assets/event):
+
+- `mascot-flag-green.png`: `Mascotte/PNG/VERT/1-Drapeau-VERT@2x.png`
+- `mascot-planet-violet.png`: `Mascotte/PNG/VIOLET/2-Planete-VIOLET@2x.png`
+- `anniversary-cube-orange.png`: `Mascotte/PNG/ORANGE/5-Typo-cube-ORANGE@2x.png`
+
+The illustrations retain their original colors and proportions; subdued material opacity integrates them into the architecture. Vite bundles the images locally. All three must finish loading before START is enabled; an asset-loading failure is surfaced rather than silently omitting the branding.
 
 ## Verify and rehearse
 
@@ -190,11 +205,12 @@ Browser validation additionally covers physical text readability, synthetic Web 
 
 ### Validation results — 2026-10-02
 
-- 34 unit tests pass; the production build passes TypeScript checking.
+- 37 unit tests pass; the production build passes TypeScript checking.
 - All four complete speaker-name panels remain in frame for at least four seconds at 16:9; key speaker/joke shots were also inspected in the browser.
 - A native 3840×2160 accelerated full-timeline stress run on the RTX 5090, with every reactive channel at maximum, rendered 3,632 frames. The largest sampled frame interval was 13.5 ms; all six phases and four speakers appeared, then the show held its final canvas-only frame.
 - That cold-load/run made no external asset requests and logged no console errors.
 - Synthetic 110 Hz input produced strong bass/energy readings; disconnect left a caller-owned stream alive and did not stop the show.
+- A quiet, steady 1 kHz signal increased average rendered luminance by approximately 17% without relying on kick/snare attacks. While paused, the live meter followed input changes but the camera and rendered image remained unchanged. Input monitoring also worked with visual reactivity disabled.
 - Simulated permission denial and a display share without audio both showed actionable errors while playback continued.
 - A simulated graphics reset at the fourth introduction rebuilt the scene, preserved the timestamp and connected event controller, and produced no invalid texture operations.
 - The localhost relay delivered events from a separate Node process and rejected non-local browser origins.

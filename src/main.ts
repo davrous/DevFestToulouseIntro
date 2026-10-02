@@ -18,5 +18,5 @@ async function boot(): Promise<void> {
 void boot().catch((error: unknown) => {
   console.error("DevFest initialization failed", error);
   const status = document.getElementById("load-status");
-  if (status) status.textContent = `Unable to initialize: ${error instanceof Error ? error.message : String(error)}. Check WebGL support and reload.`;
+  if (status) status.textContent = `Unable to initialize: ${error instanceof Error ? error.message : String(error)}. Verify the local assets and graphics support, then reload.`;
 });
