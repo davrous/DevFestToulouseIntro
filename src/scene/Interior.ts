@@ -8,6 +8,11 @@ import { BoxBatch } from "./Instances";
 import { emissive } from "./Labyrinth";
 import { createWorldText } from "./WorldText";
 
+export const CORE_LAYOUT = {
+  column: 4, row: 2.88, offsetX: 2, height: 24.5,
+  ringDiameters: [9, 12, 15], ringThickness: .09,
+} as const;
+
 function signage(scene: Scene, label: string, subtitle: string, x: number, y: number, z: number, yaw: number): Mesh {
   const plane = createWorldText(scene, {
     name: label, width: 17, height: 4.25, background: "#0c1c25", border: "#648f96",
@@ -39,16 +44,16 @@ export function createInterior(scene: Scene): Interior {
   });
   const top = cellPosition(1.75, 0);
   for (let i = 0; i < 7; i++) {
-    housings.add(top.x - 20 + i * 8, 28, top.z, 1.4, 4, 8);
-    bars.add(top.x - 20 + i * 8, 25.9, top.z, 1.4, .18, 8);
+    housings.add(top.x - 20 + i * 8, 31, top.z, 1.4, 2, 8);
+    bars.add(top.x - 20 + i * 8, 29.9, top.z, 1.4, .18, 8);
   }
-  const east = cellPosition(4, 3.2);
+  const east = cellPosition(CORE_LAYOUT.column, CORE_LAYOUT.row);
   const core = MeshBuilder.CreatePolyhedron("Suspended computational core", { type: 1, size: 3 }, scene);
-  core.position.set(east.x + 7, 22, east.z);
+  core.position.set(east.x + CORE_LAYOUT.offsetX, CORE_LAYOUT.height, east.z);
   core.material = light;
   const rings: Mesh[] = [];
-  for (let i = 0; i < 3; i++) {
-    const ring = MeshBuilder.CreateTorus(`Core orbit ${i}`, { diameter: 9 + i * 3, thickness: .09, tessellation: 64 }, scene);
+  for (let i = 0; i < CORE_LAYOUT.ringDiameters.length; i++) {
+    const ring = MeshBuilder.CreateTorus(`Core orbit ${i}`, { diameter: CORE_LAYOUT.ringDiameters[i], thickness: CORE_LAYOUT.ringThickness, tessellation: 64 }, scene);
     ring.position.copyFrom(core.position);
     ring.rotation.set(.5 + i * .65, 0, i * .8);
     ring.material = i === 1 ? warm : light;

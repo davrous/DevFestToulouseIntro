@@ -53,6 +53,15 @@ export function interiorPosition(time: number): Vector3 {
   );
 }
 
+export function routeAnchor(time: number, lateralOffset = 0): { position: Vector3; yaw: number } {
+  const position = interiorPosition(time);
+  const direction = interiorPosition(time + .8).subtract(interiorPosition(time - .8));
+  const yaw = Math.atan2(direction.x, direction.z);
+  position.x += Math.cos(yaw) * lateralOffset;
+  position.z -= Math.sin(yaw) * lateralOffset;
+  return { position, yaw };
+}
+
 export interface CameraPose { position: Vector3; target: Vector3; fov: number; reveal: number }
 
 function focusCamera(position: Vector3, target: Vector3, focus: Vector3, weight: number): void {
@@ -70,7 +79,7 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
   if (time < 163) {
     const speaker = SPEAKERS.find((speaker) => time >= speaker.startTime - 2 && time < speaker.gateTime - 2);
     if (speaker) {
-      const focus = interiorPosition(speaker.gateTime);
+      const focus = routeAnchor(speaker.gateTime, speaker.lateralOffset).position;
       focus.y = Math.min(25, focus.y + 6.5) - 1.5;
       const weight = cueEnvelope(time, speaker.startTime - 2, speaker.gateTime - 2, 3);
       focusCamera(local, localTarget, focus, weight * .92);

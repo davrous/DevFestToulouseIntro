@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cameraPose, interiorPosition } from "./CameraPath";
+import { cameraPose, interiorPosition, routeAnchor } from "./CameraPath";
 import { CELL, HEIGHT, TITLE_WIDTH, createTitleCells, seededRandom, SEED } from "../content/title";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { SPEAKERS } from "../content/speakers";
@@ -107,9 +107,7 @@ describe("title labyrinth choreography", () => {
 
   it("frames every complete speaker-name panel for at least four seconds at projector aspect", () => {
     for (const speaker of SPEAKERS) {
-      const anchor = interiorPosition(speaker.gateTime);
-      const direction = interiorPosition(speaker.gateTime + .8).subtract(interiorPosition(speaker.gateTime - .8));
-      const yaw = Math.atan2(direction.x, direction.z);
+      const { position: anchor, yaw } = routeAnchor(speaker.gateTime, speaker.lateralOffset);
       const world = Matrix.RotationY(yaw).multiply(Matrix.Translation(anchor.x, 0, anchor.z));
       let readable = 0;
       let best = 0;
@@ -117,7 +115,8 @@ describe("title labyrinth choreography", () => {
         const pose = cameraPose(time);
         const transform = world.multiply(Matrix.LookAtLH(pose.position, pose.target, Vector3.Up()))
           .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
-        const corners = [-11.5, 11.5].flatMap((x) => [-2.2, 2.2].map((dy) =>
+        const halfWidth = ((speaker.gateWidth ?? 24) - 1) / 2;
+        const corners = [-halfWidth, halfWidth].flatMap((x) => [-2.2, 2.2].map((dy) =>
           Vector3.TransformCoordinates(new Vector3(x, Math.min(25, anchor.y + 6.5) + dy, -.12), transform)));
         const inside = corners.every((p) => Math.abs(p.x) < .98 && Math.abs(p.y) < .98 && p.z > 0 && p.z < 1);
         const height = Math.max(...corners.map((p) => p.y)) - Math.min(...corners.map((p) => p.y));

@@ -5,6 +5,7 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import type { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import type { SpeakerPortal } from "./SpeakerPortal";
 import { cellPosition } from "../content/title";
 import { smoothstep } from "../engine/Timeline";
 import flagUrl from "../assets/event/mascot-flag-green.png";
@@ -44,29 +45,31 @@ export class EventBranding {
   readonly ready: Promise<void>;
   private readonly finalMarks: Mesh[] = [];
 
-  constructor(scene: Scene, shippingContainer: TransformNode) {
+  constructor(scene: Scene, shippingContainer: TransformNode, davidPortal: SpeakerPortal) {
     this.ready = Promise.all([
       loadArtwork(scene, flagUrl, "Event mascot / green flag"),
       loadArtwork(scene, planetUrl, "Event mascot / violet planet"),
       loadArtwork(scene, anniversaryUrl, "Event anniversary / orange cube"),
     ]).then(([flag, planet, anniversary]) => {
       const bank = cellPosition(.85, 3.5);
-      const backplate = MeshBuilder.CreatePlane("Event mascot / server service plate", { width: 7, height: 9 }, scene);
+      const backplate = MeshBuilder.CreatePlane("Event mascot / server service plate", { width: 5.2, height: 7 }, scene);
       const plateMaterial = new StandardMaterial("Service plate / dark enamel", scene);
       plateMaterial.disableLighting = true;
       plateMaterial.emissiveColor = new Color3(.035, .065, .075);
       backplate.material = plateMaterial;
-      backplate.position.set(bank.x - 3.52, 12, bank.z);
-      backplate.rotation.y = Math.PI / 2;
+      backplate.position.set(bank.x, 12, bank.z - 4.06);
       backplate.isPickable = false;
-      const serviceMark = decal(scene, "Event mascot / server insignia", flag, 7, .85);
-      serviceMark.position.set(bank.x - 3.56, 12, bank.z);
-      serviceMark.rotation.y = Math.PI / 2;
+      const serviceMark = decal(scene, "Event mascot / server insignia", flag, 5, .85);
+      serviceMark.position.set(bank.x, 12, bank.z - 4.1);
 
-      const neuralWall = cellPosition(1.65, 0);
-      const planetMark = decal(scene, "Event mascot / neural district stencil", planet, 8.5, .78);
-      planetMark.position.set(neuralWall.x, 13.5, neuralWall.z - 11.6);
-      planetMark.rotation.y = Math.PI;
+      const crestPlate = MeshBuilder.CreatePlane("Event mascot / David crest plate", { width: 5.8, height: 5.4 }, scene);
+      crestPlate.material = plateMaterial;
+      crestPlate.parent = davidPortal.root;
+      crestPlate.position.set(0, 26.95, -.56);
+      crestPlate.isPickable = false;
+      const planetMark = decal(scene, "Event mascot / David portal crest", planet, 5.2, .85);
+      planetMark.parent = davidPortal.root;
+      planetMark.position.set(0, 26.95, -.6);
 
       const cargoMark = decal(scene, "Event anniversary / cargo seal", anniversary, 4.3, .82);
       cargoMark.parent = shippingContainer;

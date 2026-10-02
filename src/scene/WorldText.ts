@@ -4,8 +4,7 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { interiorPosition } from "../camera/CameraPath";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+export { routeAnchor } from "../camera/CameraPath";
 
 interface TextLine { text: string; color?: string; size?: number }
 interface TextOptions {
@@ -58,10 +57,4 @@ export function createWorldText(scene: Scene, options: TextOptions): Mesh {
   mesh.material = material;
   mesh.isPickable = false;
   return mesh;
-}
-
-export function routeAnchor(time: number): { position: Vector3; yaw: number } {
-  const position = interiorPosition(time);
-  const direction = interiorPosition(time + .8).subtract(interiorPosition(time - .8));
-  return { position, yaw: Math.atan2(direction.x, direction.z) };
 }

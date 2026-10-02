@@ -29,12 +29,13 @@ export class SpeakerPortal {
     this.color = Color3.FromHexString(accent);
     this.light = emissive(scene, `Speaker ${index + 1} ions`, accent, 1.3);
     this.root = new TransformNode(`SpeakerPortal / ${config.name}`, scene);
-    this.anchor = routeAnchor(config.gateTime);
+    this.anchor = routeAnchor(config.gateTime, config.lateralOffset);
     this.root.position.set(this.anchor.position.x, 0, this.anchor.position.z);
     this.root.rotation.y = this.anchor.yaw;
     const nameHeight = Math.min(25, this.anchor.position.y + 6.5);
+    const gateWidth = config.gateWidth ?? 24;
     this.nameMesh = createWorldText(scene, {
-      name: `Speaker / ${config.name}`, width: 23, height: 4.4,
+      name: `Speaker / ${config.name}`, width: gateWidth - 1, height: 4.4,
       lines: [{ text: config.name.toUpperCase(), color: "#e4fff5", size: 240 }],
       background: "#07151e", border: accent,
     });
@@ -68,10 +69,10 @@ export class SpeakerPortal {
       }
     }
     const frameBatch = new BoxBatch(`FX/Speaker gate ${index + 1}`, this.light);
-    frameBatch.add(-12, 15, 0, .32, 30, .5);
-    frameBatch.add(12, 15, 0, .32, 30, .5);
-    frameBatch.add(0, 30, 0, 24, .32, .5);
-    frameBatch.add(0, .25, 0, 24, .16, .5);
+    frameBatch.add(-gateWidth / 2, 15, 0, .32, 30, .5);
+    frameBatch.add(gateWidth / 2, 15, 0, .32, 30, .5);
+    frameBatch.add(0, 30, 0, gateWidth, .32, .5);
+    frameBatch.add(0, .25, 0, gateWidth, .16, .5);
     this.frame = frameBatch.build(scene);
     this.frame.unfreezeWorldMatrix();
     this.frame.parent = this.root;
@@ -112,7 +113,7 @@ export class SpeakerPortal {
       Matrix.ComposeToRef(
         new Vector3(.9, 1.5 + audio.energy * .3, .9),
         Quaternion.RotationYawPitchRoll(spin, spin * .3, 0),
-        new Vector3(side * 10.7, y, z),
+        new Vector3(side * ((this.config.gateWidth ?? 24) / 2 - 1.3), y, z),
         this.transform,
       );
       this.transform.copyToArray(this.modules, i * 16);

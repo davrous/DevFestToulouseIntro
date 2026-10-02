@@ -21,7 +21,7 @@ import type { Section } from "../engine/protocol";
 import { SPEAKERS } from "../content/speakers";
 import { createLabyrinth } from "./Labyrinth";
 import { createInterior, updateInterior, createFinalCaption } from "./Interior";
-import { createAtmosphere } from "./Atmosphere";
+import { createAtmosphere, DUST, showFogDensity } from "./Atmosphere";
 import { SpeakerPortal } from "./SpeakerPortal";
 import { EasterEggs } from "./EasterEggs";
 import { MusicReactive } from "../effects/MusicReactive";
@@ -96,7 +96,7 @@ export class DevFestScene {
     this.caption = createFinalCaption(scene);
     this.portals = SPEAKERS.map((speaker, index) => new SpeakerPortal(scene, speaker, index));
     this.easterEggs = new EasterEggs(scene);
-    this.branding = new EventBranding(scene, this.easterEggs.container);
+    this.branding = new EventBranding(scene, this.easterEggs.container, this.portals[1]);
     this.music = new MusicReactive(scene);
     this.glow = new GlowLayer("Architectural light bloom", scene, { mainTextureRatio: .5, blurKernelSize: 32 });
     this.glow.addExcludedMesh(this.music.particles);
@@ -110,8 +110,8 @@ export class DevFestScene {
       }
     };
     this.pipeline = new DefaultRenderingPipeline("Cinema", true, scene, [this.camera]);
-    this.pipeline.samples = 1;
-    this.pipeline.fxaaEnabled = true;
+    this.pipeline.samples = Math.max(1, Math.min(4, engine.getCaps().maxMSAASamples));
+    this.pipeline.fxaaEnabled = this.pipeline.samples === 1;
     this.pipeline.bloomEnabled = true;
     this.pipeline.bloomThreshold = .8;
     this.pipeline.bloomWeight = .2;
@@ -140,7 +140,7 @@ export class DevFestScene {
 
   setPostProcessing(enabled: boolean): void {
     this.pipeline.bloomEnabled = enabled;
-    this.pipeline.fxaaEnabled = enabled;
+    this.pipeline.fxaaEnabled = enabled && this.pipeline.samples === 1;
     this.pipeline.imageProcessingEnabled = enabled;
     this.glow.isEnabled = enabled;
   }
@@ -164,7 +164,7 @@ export class DevFestScene {
     this.glow.intensity = .2 + reveal * .35 + pulse * .15 + voice * .25;
     this.pipeline.bloomWeight = .2 + calm * (audio.violaEnergy * .08 + audio.drop * .1) + voice * .05;
     this.camera.minZ = .15 + reveal * 8;
-    this.scene.fogDensity = (.009 + audio.violaEnergy * calm * .001) * (1 - reveal) + .00008 * reveal;
+    this.scene.fogDensity = showFogDensity(time, audio.violaEnergy);
     this.scene.fogColor.set(.022 + this.tint.r * .008, .033 + this.tint.g * .022, .04 + this.tint.b * .03);
     this.fill.intensity = .35 + wake * .3 + reveal * .55;
     this.sun.intensity = .5 + wake * .5 + reveal * 1.2;
@@ -172,7 +172,7 @@ export class DevFestScene {
     this.labyrinth.cyan.emissiveColor.copyFrom(this.tint).scaleInPlace(.8 + wake * .55 + reveal * 1.5 + pulse + voice * 1.8);
     this.labyrinth.amber.emissiveColor.set(1.25 + reveal * 1.75, .52 + reveal * .25, .26);
     this.labyrinth.roof.emissiveColor.set(.008 + reveal * .067, .018 + reveal * .15, .023 + reveal * .17);
-    this.atmosphere.dust.position.y = Math.sin(time * .13) * .5;
+    this.atmosphere.dust.position.y = Math.sin(time * .13) * DUST.drift;
     this.caption.visibility = smoothstep((time - 175) / 3);
     this.branding.update(time);
     updateInterior(this.interior, time);

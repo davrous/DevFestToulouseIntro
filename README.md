@@ -58,6 +58,8 @@ Edit [src/content/speakers.ts](src/content/speakers.ts). Each portal accepts:
 
 Replace `DEMO_TITLE_1` through `DEMO_TITLE_4` before the event. `gateTime` determines the fixed position along the camera route where the camera crosses the portal; keep it inside the introduction interval. Theme options: `signal`, `neural`, `playground`, `overclock`. Names and titles are textures on physical world-space meshes, not HTML overlays. Rehearse after changing timing or unusually long titles.
 
+Optional `lateralOffset` and `gateWidth` position the entire gate across the corridor. Mitsuru's gate is shifted two world units to the camera's right and narrowed slightly to clear the brick wall; its camera gaze follows the same placement.
+
 ## Operator controls
 
 | Key | Action |
@@ -176,7 +178,7 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, typography, theme and animated ornaments.
 - [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
 - [MusicReactive](src/effects/MusicReactive.ts): seeded GPU-animated particles and shader-based MIDI ribbons.
-- [EventBranding](src/scene/EventBranding.ts): original event artwork used as a server insignia, neural-district stencil, cargo seal, and two small final signatures. The final marks fade in with **AI4Fun** after 2:55 and do not affect the camera or title geometry.
+- [EventBranding](src/scene/EventBranding.ts): original event artwork used on the first server's camera-facing end panel (separate from its strip lights), as a crest above David's name, as a cargo seal, and as two small final signatures. David's crest follows his gate visibility. The final marks fade in with **AI4Fun** after 2:55 and do not affect the camera or title geometry.
 - [ShowController](src/engine/ShowController.ts), [protocol](src/engine/protocol.ts), [AudioAnalyzer](src/engine/AudioAnalyzer.ts): independently validated music inputs.
 - [App](src/engine/App.ts), [Timeline](src/engine/Timeline.ts), [DevFestScene](src/scene/DevFestScene.ts): preload, stage lifecycle, deterministic clock and rendering.
 
@@ -190,7 +192,7 @@ Three original transparent PNGs from the supplied `Mascotte-20261002T171109Z-1-0
 - `mascot-planet-violet.png`: `Mascotte/PNG/VIOLET/2-Planete-VIOLET@2x.png`
 - `anniversary-cube-orange.png`: `Mascotte/PNG/ORANGE/5-Typo-cube-ORANGE@2x.png`
 
-The illustrations retain their original colors and proportions; subdued material opacity integrates them into the architecture. Vite bundles the images locally. All three must finish loading before START is enabled; an asset-loading failure is surfaced rather than silently omitting the branding.
+The illustrations retain their original colors and proportions; subdued material opacity integrates them into the architecture. The interior marks have opaque mounting plates so background lights do not show through them. Vite bundles the images locally. All three must finish loading before START is enabled; an asset-loading failure is surfaced rather than silently omitting the branding.
 
 ## Verify and rehearse
 
@@ -201,14 +203,17 @@ npm run build
 
 Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, wall/roof clearance, camera turns below 45 degrees/second, at least four seconds of complete speaker-panel framing, and full-title projection by 2:53 at several aspect ratios.
 
+Scene-clearance tests additionally keep drifting dust below the camera, the orbiting core clear of walls/roof/camera, and Mitsuru's panel inside the corridor. Interior fog now dissipates during the escape, before the pullback reaches large distances; the solid letters remain visible rather than disappearing behind their glow. The pipeline uses up to 4x MSAA when supported, with FXAA as the fallback.
+
 Browser validation additionally covers physical text readability, synthetic Web Audio input, input disconnection, real events from a separate Node process through the relay, offline asset loading, fullscreen and graphics-context recovery. Vite's large Babylon bundle warning is non-blocking; stage shaders and materials are preloaded instead of fetched during the performance.
 
 ### Validation results — 2026-10-02
 
-- 37 unit tests pass; the production build passes TypeScript checking.
+- 41 unit tests pass; the production build passes TypeScript checking.
 - All four complete speaker-name panels remain in frame for at least four seconds at 16:9; key speaker/joke shots were also inspected in the browser.
 - A native 3840×2160 accelerated full-timeline stress run on the RTX 5090, with every reactive channel at maximum, rendered 3,632 frames. The largest sampled frame interval was 13.5 ms; all six phases and four speakers appeared, then the show held its final canvas-only frame.
 - That cold-load/run made no external asset requests and logged no console errors.
+- After the shot-clearance and reveal-fog corrections, a native 4K accelerated full-timeline run with 4x MSAA rendered 3,603 frames with no sampled frame interval above 16.7 ms. All four speakers appeared, the final camera pose was unchanged, and the browser reported no errors.
 - Synthetic 110 Hz input produced strong bass/energy readings; disconnect left a caller-owned stream alive and did not stop the show.
 - A quiet, steady 1 kHz signal increased average rendered luminance by approximately 17% without relying on kick/snare attacks. While paused, the live meter followed input changes but the camera and rendered image remained unchanged. Input monitoring also worked with visual reactivity disabled.
 - Simulated permission denial and a display share without audio both showed actionable errors while playback continued.

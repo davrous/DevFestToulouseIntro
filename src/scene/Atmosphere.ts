@@ -5,6 +5,15 @@ import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { SEED, seededRandom, cellPosition } from "../content/title";
 import { BoxBatch } from "./Instances";
 import { emissive } from "./Labyrinth";
+import { smoothstep } from "../engine/Timeline";
+
+export const DUST = { minY: 2, maxY: 5, drift: .5, thickness: .055 } as const;
+
+export function showFogDensity(time: number, violaEnergy = 0): number {
+  const clearing = smoothstep((time - 160) / 7);
+  const calm = 1 - smoothstep((time - 155) / 22);
+  return (.009 + violaEnergy * calm * .001) * (1 - clearing) + .00008 * clearing;
+}
 
 export interface Atmosphere { stars: Mesh; dust: Mesh; backdrop: Mesh; grid: Mesh }
 
@@ -36,9 +45,10 @@ export function createAtmosphere(scene: Scene): Atmosphere {
   const dustBatch = new BoxBatch("Suspended interior dust", emissive(scene, "Dust photons", "#b1ffe9", .65));
   for (let i = 0; i < 300; i++) {
     const p = cellPosition(random() * 4, random() * 6);
-    dustBatch.add(p.x, 3 + random() * 25, p.z, .055, .055, .14 + random() * .35);
+    dustBatch.add(p.x, DUST.minY + random() * (DUST.maxY - DUST.minY), p.z, DUST.thickness, DUST.thickness, .14 + random() * .35);
   }
   const dust = dustBatch.build(scene);
+  dust.unfreezeWorldMatrix();
   const backdrop = MeshBuilder.CreateGround("Infinite dark stage", { width: 18000, height: 18000 }, scene);
   backdrop.position.y = -16;
   const background = emissive(scene, "Blue hour horizon", "#071017", .5);
