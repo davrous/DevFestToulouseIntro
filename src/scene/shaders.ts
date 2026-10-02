@@ -1,0 +1,15 @@
+// Register stage shaders before pipeline configuration can trigger synchronous compilation.
+import "@babylonjs/core/Shaders/postprocess.vertex";
+import "@babylonjs/core/Shaders/pass.fragment";
+import "@babylonjs/core/Shaders/bloomMerge.fragment";
+import "@babylonjs/core/Shaders/extractHighlights.fragment";
+import "@babylonjs/core/Shaders/kernelBlur.vertex";
+import "@babylonjs/core/Shaders/kernelBlur.fragment";
+import "@babylonjs/core/Shaders/fxaa.vertex";
+import "@babylonjs/core/Shaders/fxaa.fragment";
+import "@babylonjs/core/Shaders/imageProcessing.fragment";
+import "@babylonjs/core/Shaders/rgbdDecode.fragment";
+import "@babylonjs/core/Shaders/glowMapGeneration.vertex";
+import "@babylonjs/core/Shaders/glowMapGeneration.fragment";
+import "@babylonjs/core/Shaders/glowMapMerge.vertex";
+import "@babylonjs/core/Shaders/glowMapMerge.fragment";
