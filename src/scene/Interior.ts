@@ -1,36 +1,18 @@
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
-import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { cellPosition } from "../content/title";
 import { BoxBatch } from "./Instances";
 import { emissive } from "./Labyrinth";
+import { createWorldText } from "./WorldText";
 
 function signage(scene: Scene, label: string, subtitle: string, x: number, y: number, z: number, yaw: number): Mesh {
-  const texture = new DynamicTexture(label, { width: 1024, height: 256 }, scene, false);
-  const ctx = texture.getContext();
-  ctx.fillStyle = "#0c1c25";
-  ctx.fillRect(0, 0, 1024, 256);
-  ctx.fillStyle = "#9fedda";
-  ctx.fillRect(45, 44, 6, 165);
-  ctx.font = "bold 66px Consolas, monospace";
-  const fontSize = Math.min(66, 66 * 885 / ctx.measureText(label).width);
-  ctx.font = `bold ${fontSize}px Consolas, monospace`;
-  ctx.fillText(label, 90, 116);
-  ctx.font = "24px Consolas, monospace";
-  ctx.fillStyle = "#648f96";
-  ctx.fillText(subtitle, 94, 177);
-  texture.update();
-  const material = new StandardMaterial(`${label} display`, scene);
-  material.diffuseTexture = texture;
-  material.emissiveTexture = texture;
-  material.emissiveColor = new Color3(.65, .8, .75);
-  material.specularColor = Color3.Black();
-  const plane = MeshBuilder.CreatePlane(label, { width: 17, height: 4.25 }, scene);
-  plane.material = material;
+  const plane = createWorldText(scene, {
+    name: label, width: 17, height: 4.25, background: "#0c1c25", border: "#648f96",
+    lines: [{ text: label, color: "#9fedda" }, { text: subtitle, color: "#648f96" }],
+  });
   plane.position.set(x, y, z);
   plane.rotation.y = yaw;
   plane.isPickable = false;
@@ -57,8 +39,8 @@ export function createInterior(scene: Scene): Interior {
   });
   const top = cellPosition(1.75, 0);
   for (let i = 0; i < 7; i++) {
-    housings.add(top.x - 20 + i * 8, 25, top.z, 1.4, 9, 8);
-    bars.add(top.x - 20 + i * 8, 20.4, top.z, 1.4, .18, 8);
+    housings.add(top.x - 20 + i * 8, 28, top.z, 1.4, 4, 8);
+    bars.add(top.x - 20 + i * 8, 25.9, top.z, 1.4, .18, 8);
   }
   const east = cellPosition(4, 3.2);
   const core = MeshBuilder.CreatePolyhedron("Suspended computational core", { type: 1, size: 3 }, scene);

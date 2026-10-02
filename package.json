@@ -1,16 +1,18 @@
 {
   "name": "devfest-toulouse-opening",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
-    "test": "vitest run"
+    "test": "vitest run",
+    "bridge": "node scripts/bridge.mjs"
   },
   "dependencies": {
-    "@babylonjs/core": "^9.28.0"
+    "@babylonjs/core": "^9.28.0",
+    "ws": "^8.18.3"
   },
   "devDependencies": {
     "typescript": "~5.9.3",

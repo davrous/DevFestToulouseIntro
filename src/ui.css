@@ -18,3 +18,14 @@ kbd { font: 8px Consolas, monospace; color: #6f9390; margin-left: 6px; }
 .debug-help { border-top: 1px solid #35514a; padding-top: 17px; color: #8ca49e; font-size: 9px; line-height: 1.9; margin-top: 22px; }
 .prototype-note { color: #607f79; font-size: 9px; line-height: 1.7; }
 #notice { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); max-width: min(650px, 90vw); padding: 13px 20px; border: 1px solid #dfa48366; background: #241c18ed; color: #ffd4b5; font: 12px/1.6 Consolas, monospace; z-index: 10; }
+.audio-setup { margin-top: 19px; max-width: 520px; color: #91aaa6; font: 10px/1.7 Consolas, monospace; }
+.audio-setup summary { cursor: pointer; color: #a9d7c8; }
+.audio-setup summary span { margin-left: 12px; color: #6e8c88; font-size: 8px; }
+.audio-inputs { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+.audio-inputs button, .audio-inputs select { background: #10272b; color: #afcec3; border: 1px solid #37544e; padding: 8px; font: 9px Consolas, monospace; }
+.audio-setup p { margin: 8px 0; font-size: 9px; }
+.debug-subheading { color: #719c90; margin: 22px 0 10px; font-size: 9px; letter-spacing: 1px; }
+#bridge-url { width: 100%; background: #102629; color: #b7d5cd; border: 1px solid #35514a; padding: 8px; font: 10px Consolas, monospace; margin-bottom: 8px; }
+#intensity { width: 130px; }
+#diagnostics dd { overflow-wrap: anywhere; }
+.audio-debug-buttons { margin-top: 10px; }

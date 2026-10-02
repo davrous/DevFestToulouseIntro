@@ -1,4 +1,7 @@
 import type { App } from "../engine/App";
+import { activeSpeaker } from "../content/speakers";
+import { activeCues } from "../content/cues";
+import { TRIGGERS } from "../engine/protocol";
 
 function get<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id);
@@ -25,12 +28,33 @@ export class DebugPanel {
     });
     get<HTMLInputElement>("bloom").addEventListener("change", (event) => {
       const enabled = (event.target as HTMLInputElement).checked;
-      app.world.pipeline.bloomEnabled = enabled;
-      app.world.glow.isEnabled = enabled;
+      app.world.setPostProcessing(enabled);
     });
     get<HTMLSelectElement>("resolution").addEventListener("change", (event) => {
       app.setResolution((event.target as HTMLSelectElement).value === "native");
     });
+    get<HTMLInputElement>("reactivity").addEventListener("change", (event) => {
+      app.showController.enabled = (event.target as HTMLInputElement).checked;
+      if (!app.showController.enabled) app.showController.resetTransient();
+    });
+    get<HTMLInputElement>("intensity").addEventListener("input", (event) => {
+      app.showController.intensity = Number((event.target as HTMLInputElement).value);
+    });
+    this.root.querySelectorAll<HTMLButtonElement>("[data-trigger]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const trigger = TRIGGERS.find((trigger) => trigger === button.dataset.trigger);
+        if (!trigger) throw new Error("Unknown rehearsal trigger.");
+        app.showController.trigger(trigger);
+      });
+    });
+    get("bridge-connect").addEventListener("click", () => {
+      try { app.showController.connect(get<HTMLInputElement>("bridge-url").value); }
+      catch (error) {
+        console.warn("Invalid bridge connection", error);
+        app.showNotice(error instanceof Error ? error.message : String(error));
+      }
+    });
+    get("bridge-disconnect").addEventListener("click", () => app.showController.disconnect());
   }
 
   setVisible(visible: boolean): void {
@@ -40,8 +64,9 @@ export class DebugPanel {
   }
 
   update(): void {
+    get("audio-setup-status").textContent = this.app.showController.audio.status;
     if (!this.visible) return;
-    const { timeline, engine, world } = this.app;
+    const { timeline, engine, world, showController } = this.app;
     const minutes = Math.floor(timeline.time / 60).toString().padStart(2, "0");
     const seconds = (timeline.time % 60).toFixed(1).padStart(4, "0");
     this.time.textContent = `${minutes}:${seconds}`;
@@ -56,7 +81,15 @@ export class DebugPanel {
       ROTATION: `${r.x.toFixed(2)}, ${r.y.toFixed(2)}, ${r.z.toFixed(2)}`,
       GEOMETRY: `${world.cellCount} modules / thin instanced`,
       EVENT: event,
-      AUDIO: "OFF / deterministic prototype",
+      SPEAKER: activeSpeaker(timeline.time)?.name ?? "--",
+      CUES: activeCues(timeline.time).join(" / ") || "--",
+      AUDIO: showController.audio.status,
+      ENERGY: `${showController.features.energy.toFixed(2)} / bass ${showController.features.bass.toFixed(2)}`,
+      BANDS: `mid ${showController.features.mid.toFixed(2)} / high ${showController.features.treble.toFixed(2)}`,
+      VIOLA: `${showController.features.violaEnergy.toFixed(2)} / sustained mid-band proxy`,
+      BEAT: `${showController.features.kick.toFixed(2)} kick / ${showController.features.snare.toFixed(2)} snare`,
+      STRUDEL: showController.bridgeStatus,
+      SIGNALS: showController.recentEvents.join(" / ") || "--",
       STATUS: timeline.playing ? "PLAYING" : "PAUSED",
     };
     this.diagnostics.replaceChildren(...Object.entries(rows).flatMap(([key, value]) => {

@@ -2,6 +2,7 @@ import { Engine } from "@babylonjs/core/Engines/engine";
 import { DevFestScene } from "../scene/DevFestScene";
 import { Timeline } from "./Timeline";
 import { DebugPanel } from "../debug/DebugPanel";
+import { ShowController } from "./ShowController";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -14,10 +15,12 @@ export class App {
   engine: Engine;
   world: DevFestScene;
   readonly debug: DebugPanel;
+  readonly showController: ShowController;
   ready = false;
   inLobby = true;
   private idleTimer = 0;
   private lastDiagnostics = 0;
+  private noticeTimer = 0;
   private readonly lobby = element("lobby");
   private readonly pauseOverlay = element("pause-overlay");
   private readonly notice = element("notice");
@@ -27,6 +30,7 @@ export class App {
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.engine = this.createEngine();
     this.setResolution(false);
+    this.showController = new ShowController(this.timeline, (message) => this.showNotice(message));
     this.world = new DevFestScene(this.engine);
     this.debug = new DebugPanel(this);
     document.body.classList.add("lobby-visible");
@@ -39,7 +43,7 @@ export class App {
       this.previewButton.disabled = true;
       this.world.scene.dispose();
       this.engine.dispose();
-      this.showNotice("Graphics context lost. The show is paused while the renderer recovers.");
+      this.showNotice("Graphics context lost. The show is paused while the renderer recovers.", true);
     });
     canvas.addEventListener("webglcontextrestored", () => {
       void this.restoreRenderer();
@@ -68,7 +72,8 @@ export class App {
       if (!this.ready) return;
       const now = performance.now();
       const time = this.inLobby ? 0 : this.timeline.tick(now);
-      this.world.update(time);
+      const audio = this.timeline.playing || this.inLobby ? this.showController.sample(now) : this.showController.features;
+      this.world.update(time, audio, this.showController.section);
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {
@@ -82,24 +87,33 @@ export class App {
     element("play-label").textContent = "PLAY SEQUENCE";
     element("loading-fill").style.width = "100%";
     element("loading-track").hidden = true;
-    element("load-status").textContent = "SYSTEM READY / All assets local / Silent Phase A prototype";
+    element("load-status").textContent = "SYSTEM READY / All assets local / Live audio optional";
   }
 
   start(time = 0): void {
-    if (!this.ready) return;
+    if (!this.ready) {
+      this.showNotice("The renderer is loading or recovering. Wait for SYSTEM READY before starting.");
+      return;
+    }
     this.inLobby = false;
     this.lobby.hidden = true;
     this.notice.hidden = true;
     document.body.classList.remove("lobby-visible");
     this.timeline.seek(time);
+    this.showController.resetTransient();
     this.timeline.play();
     element("render-canvas").focus();
     this.resetCursor();
   }
 
   async startFromGesture(time = 0): Promise<void> {
+    const activation = this.showController.audio.activate().catch((error: unknown) => {
+      console.warn("Audio activation failed", error);
+      this.showNotice("Audio could not be activated. The visual show continues without audio analysis.");
+    });
     this.start(time);
     if (element<HTMLInputElement>("fullscreen").checked && !document.fullscreenElement) await this.toggleFullscreen();
+    await activation;
   }
 
   togglePlayback(): void {
@@ -120,9 +134,14 @@ export class App {
   }
 
   seek(time: number): void {
+    if (!this.ready) {
+      this.showNotice("Wait for the renderer to be ready before seeking.");
+      return;
+    }
     if (this.inLobby) this.start(time);
     else this.timeline.seek(time);
-    this.world.update(this.timeline.time);
+    this.showController.resetTransient();
+    this.world.update(this.timeline.time, this.showController.features, this.showController.section);
   }
 
   returnToLobby(): void {
@@ -151,9 +170,11 @@ export class App {
     }
   }
 
-  showNotice(message: string): void {
+  showNotice(message: string, persistent = false): void {
+    window.clearTimeout(this.noticeTimer);
     this.notice.textContent = message;
     this.notice.hidden = false;
+    if (!persistent) this.noticeTimer = window.setTimeout(() => { this.notice.hidden = true; }, 8000);
   }
 
   private async restoreRenderer(): Promise<void> {
@@ -162,13 +183,12 @@ export class App {
       this.setResolution(element<HTMLSelectElement>("resolution").value === "native");
       this.world = new DevFestScene(this.engine);
       const bloom = element<HTMLInputElement>("bloom").checked;
-      this.world.pipeline.bloomEnabled = bloom;
-      this.world.glow.isEnabled = bloom;
+      this.world.setPostProcessing(bloom);
       await this.initialize();
       this.showNotice("Renderer restored. Press SPACE to resume from the paused frame.");
     } catch (error) {
       console.error("Graphics recovery failed", error);
-      this.showNotice("Graphics recovery failed. Reload the page, then use the phase shortcuts to recover the show.");
+      this.showNotice("Graphics recovery failed. Reload the page, then use the phase shortcuts to recover the show.", true);
     }
   }
 
@@ -196,6 +216,13 @@ export class App {
     this.previewButton.addEventListener("click", () => void this.startFromGesture(155));
     element("resume").addEventListener("click", () => this.togglePlayback());
     element("return").addEventListener("click", () => this.returnToLobby());
+    element("audio-connect").addEventListener("click", () => void this.connectAudio());
+    element("audio-disconnect").addEventListener("click", () => this.showController.audio.disconnect());
+    element("debug-audio-connect").addEventListener("click", () => void this.connectAudio("audio-source-debug"));
+    element("debug-audio-disconnect").addEventListener("click", () => this.showController.audio.disconnect());
+    window.addEventListener("devfest:event", (event) => {
+      if (event instanceof CustomEvent) this.showController.receive(event.detail);
+    });
     window.addEventListener("pointermove", () => this.resetCursor());
     window.addEventListener("keydown", (event) => {
       if (event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
@@ -213,5 +240,26 @@ export class App {
         this.seek(starts[Number(event.code.slice(-1)) - 1]);
       }
     });
+  }
+
+  private async connectAudio(sourceId = "audio-source"): Promise<void> {
+    const button = element<HTMLButtonElement>("audio-connect");
+    const debugButton = element<HTMLButtonElement>("debug-audio-connect");
+    const input = element<HTMLSelectElement>(sourceId).value;
+    if (input !== "microphone" && input !== "system") throw new Error("Unknown audio input selection.");
+    button.disabled = true;
+    debugButton.disabled = true;
+    try {
+      await this.showController.audio.connect(input);
+      element("audio-setup-status").textContent = this.showController.audio.status;
+    } catch (error) {
+      console.warn("Audio input connection failed", error);
+      const message = error instanceof Error ? error.message : String(error);
+      this.showNotice(`Audio input unavailable: ${message}. The show still works standalone.`);
+      element("audio-setup-status").textContent = "INPUT UNAVAILABLE / standalone visuals remain ready";
+    } finally {
+      button.disabled = false;
+      debugButton.disabled = false;
+    }
   }
 }

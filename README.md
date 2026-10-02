@@ -1,6 +1,6 @@
 # Into the unexpected
 
-DevFest Toulouse 2026 closing-keynote opening. **Phase A: the title-labyrinth / camera proof of concept.** A silent, deterministic, three-minute Babylon.js sequence; not a pre-rendered film.
+A three-minute real-time opening for the DevFest Toulouse 2026 closing keynote. Babylon.js + TypeScript + Vite. The camera travels inside the actual extruded title architecture, encounters four speakers and Toulouse/developer scenes, then reveals **DEVFEST / TOULOUSE**. No scene swap, film, runtime CDN, or audio-driven camera.
 
 ## Run locally
 
@@ -11,75 +11,200 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. Wait for **SYSTEM READY**, then **PLAY SEQUENCE**. Fullscreen is requested only from a user gesture; it is optional. **Preview the reveal** starts at 2:35.
+Open http://127.0.0.1:5173. Wait for **SYSTEM READY**, then **PLAY SEQUENCE**. **Preview the reveal** starts at 2:35. Fullscreen is optional and requested only from a user gesture.
 
-For a stage build:
+For the optimized stage build:
 
 ```powershell
 npm run build
 npm run preview
 ```
 
-Open http://127.0.0.1:4173. Keep the local server running. Dependencies are needed during installation/build, but **no Internet is needed at runtime**. Do not open the HTML using `file://`.
+Open http://127.0.0.1:4173 and keep the local server running. After installation/build, no Internet is needed. Do not open the HTML using `file://`.
+
+**This page does not play music.** The viola and Strudel performance remain external. Visuals work without either audio input or the optional event bridge. No microphone permission is requested automatically.
+
+## The show
+
+| Time | Scene |
+| --- | --- |
+| 0:00–0:30 | Slow boot, a glowing Canal du MIDI data bus and floating shipping container |
+| 0:30 | Anne-Flore Bernard / cyan signal gateway |
+| 0:44–0:58 | The local compiler corrects PAIN_AU_CHOCOLAT to CHOCOLATINE |
+| 1:00 | David Rousset / violet neural gateway, agent/code panels |
+| 1:17–1:30 | Dangerous PRODUCTION door; the camera turns away and takes NO |
+| 1:30 | Eric Mittelette / playful warm gateway |
+| 1:45–2:00 | `npm install cassoulet`, package warnings and Toulouse pink-brick architecture |
+| 2:00 | Mitsuru Furuta / golden overclock gateway |
+| 2:17–2:37 | Stack Overflow sculpture, falling blocks and orbital hardware |
+| 2:35–2:43 | Chaos subsides; camera prepares the escape |
+| 2:43–2:53 | Backward/upward pullback exposes the complete title |
+| 2:55–3:00 | World-space closing caption; camera settles at 2:57; quiet final hold |
+
+### Configure speakers
+
+Edit [src/content/speakers.ts](src/content/speakers.ts). Each portal accepts:
+
+```typescript
+{
+  name: "Anne-Flore Bernard",
+  demoTitle: "DEMO_TITLE_1",
+  startTime: 30,
+  endTime: 55,
+  gateTime: 43,
+  visualTheme: "signal"
+}
+```
+
+Replace `DEMO_TITLE_1` through `DEMO_TITLE_4` before the event. `gateTime` determines the fixed position along the camera route where the camera crosses the portal; keep it inside the introduction interval. Theme options: `signal`, `neural`, `playground`, `overclock`. Names and titles are textures on physical world-space meshes, not HTML overlays. Rehearse after changing timing or unusually long titles.
 
 ## Operator controls
 
 | Key | Action |
 | --- | --- |
-| Space | Start / pause / resume (replays after the final hold) |
+| Space | Start / pause / resume; replay after the final hold |
 | R | Restart |
-| 1–5 | Boot / compile / build / run / overclock |
+| 1–5 | Jump to boot / compile / build / run / overclock |
 | 6 | Reveal preparation at 2:35 |
-| D | Flight-control diagnostics, seek, playback speed, bloom and resolution |
+| D | Flight control: scrub, phases, FPS, camera, speaker, active cues, audio, bridge |
 | F | Toggle fullscreen |
 | Escape | Return to lobby when not fullscreen |
 
-Browser controls retain their normal keyboard behavior when focused. Playback hides all HTML UI and the cursor after inactivity. The final frame holds indefinitely. Hidden tabs pause the show instead of silently missing the finale. If the graphics context is lost, the show pauses and rebuilds the renderer when the context returns, preserving the timestamp and quality settings; press Space after the recovery message. Audio cannot interrupt this prototype: it has no audio dependency.
+Flight control also provides post-processing, render resolution, reactive intensity, live-input connection, rehearsal triggers and WebSocket controls. Rehearsal triggers affect visuals **during playback**; pause freezes the choreography and reactive frame. Playback-speed changes affect the whole master timeline, not just the camera, so speaker/camera synchronization cannot drift.
 
-**Balanced** defaults to a maximum 2560×1440 render buffer. Use **Native / 4K** in flight control for full device resolution. Resolution and speed can be changed without restarting. Benchmark the production build on the actual stage PC/projector before selecting native 4K; 60 FPS on that hardware is a target, not a measured guarantee.
+**Balanced** caps the render buffer at 2560×1440. **Native / 4K** uses full device resolution. Normal playback hides HTML controls and the cursor. The final image holds indefinitely.
 
-## Central visual construction
+Hidden tabs pause rather than silently skip the finale. Keep the show visible on the projector; run Strudel in a separate window instead of switching the show tab. A lost graphics context pauses the timeline and rebuilds GPU resources when the context returns. The timestamp, audio controller and settings survive; press Space after recovery.
 
-- [Title geometry](src/content/title.ts) defines centered seven- and eight-letter rows as a custom 5×7 architectural alphabet. Every lit cell is a real enclosed, extruded room, not a flat title texture.
-- [Labyrinth](src/scene/Labyrinth.ts) builds floors, roofs, boundary walls, internal panels and light traces from those exact cells. Static geometry uses thin-instance batches rather than hundreds of separate meshes.
-- [Camera path](src/camera/CameraPath.ts) stays **inside the first D** for the entire interior journey. The camera follows a time-keyed Catmull–Rom path; changes in height, local scenery and turns disguise the plan. This first prototype deliberately proves one letter's interior before extending the journey to speaker districts.
-- At **2:30–2:43**, the camera settles and turns back into the room. At **2:43**, it retreats through a real opening in the southern wall. The ascent and lateral move gradually expose the entire connected visual composition.
-- At approximately **2:53**, both words become readable. At **2:57**, the camera reaches a fixed final composition and stays there.
-- No scene swap, replacement title, random free flight or camera driven by audio. The view at the end is the same geometry traversed at the start.
-- All geometry, textures and lighting are generated locally. The seed is `DEVFEST_TOULOUSE_2026`. Fonts on world-space panels use the operating system's monospace font, with no font downloads.
+## Live audio analysis
 
-## Architecture / extension points
+Open **Live audio setup** in the lobby, or use the audio controls in flight control:
 
-- [App](src/engine/App.ts): preload, render loop, stage lifecycle and operator controls.
-- [Timeline](src/engine/Timeline.ts): deterministic master clock, seek, pause, speed and phase boundaries.
-- [DevFestScene](src/scene/DevFestScene.ts): scene lighting, fog, bloom and time-based updates.
-- [Interior](src/scene/Interior.ts): spatial signs, data banks and a suspended computational core.
-- [Diagnostics](src/debug/DebugPanel.ts): runtime status and controls.
+1. Choose **Microphone / line input** or **System / browser tab audio**.
+2. Click **CONNECT INPUT** / **CONNECT AUDIO**.
+3. Grant the browser permission. For system/tab capture, select a source and enable **Share audio**. Sources without an audio track are rejected with a visible error.
+4. Check the meters with D. Start the show when ready.
 
-`window.devfest` exposes the prototype for local inspection: `start(155)`, `seek(173)`, `timeline.pause()`, `timeline.play()`, `returnToLobby()`. This is a development interface, **not yet the planned Strudel event API**.
+The Web Audio analyser exposes `kick`, `bass`, `mid`, `treble`, `energy`, `beat`, `violaEnergy`, `snare` and `drop`. It drives light pulses, ornament breathing, particle motion/brightness, flowing ribbons, fog and restrained bloom. It never controls camera position, speaker timestamps, route selection or reveal timing.
 
-### Next milestones, intentionally not claimed as complete
+`violaEnergy` from mixed audio is a **smoothed mid-band proxy, not instrument separation**. For accurate viola control, use a dedicated input or send explicit `violaEnergy` levels through the event API.
 
-**B:** reusable speaker portals and four configurable demo titles. **C:** Toulouse/developer Easter eggs, richer particles and atmospheric transitions. **D:** Web Audio analysis and Strudel events. **E:** final choreography, live-performance rehearsal, hardware profiling and stage reliability.
+Audio is processed locally, never recorded or uploaded, and never connected to the page's speaker output. Disconnect releases captured microphone/display tracks. Permission denial, muted/lost input or a disconnected bridge does not stop the timeline.
 
-The phase names and timestamps already exist as scaffolding, but there are no speaker introductions or audio-reactive behavior in Phase A.
+For an embedded audio source, connect a caller-owned stream:
 
-## Verification
+```javascript
+await showController.audio.connectStream(mediaStream);
+showController.audio.disconnect();
+```
+
+The controller does not stop tracks it did not acquire. The caller owns their cleanup. AudioContext activation and capture must originate from user interaction.
+
+## Strudel integration
+
+### Same page
+
+The public event interface is `window.showController`:
+
+```javascript
+showController.trigger("kick");
+showController.trigger("snare", 0.8);
+showController.trigger("hat", 0.4);
+showController.trigger("drop");
+showController.trigger("viola", 0.7);
+showController.setEnergy(0.65);
+showController.setLevels({ bass: 0.7, treble: 0.3, violaEnergy: 0.8 });
+showController.setSection("OVERCLOCK");
+
+showController.setEnergy(null);  // Return to analysed energy.
+showController.setSection(null); // Return to timeline-derived colors.
+```
+
+`setSection` changes the **visual palette only**. It cannot jump the camera or reveal the title early. Values must be finite numbers in `[0, 1]`; invalid calls throw. Transient events decay, streamed levels decay when updates stop, and manual `setEnergy` holds until changed/reset. Reactive intensity is configurable from 0 to 2, with final channel values capped at 1.
+
+An alternative same-page transport:
+
+```javascript
+window.dispatchEvent(new CustomEvent("devfest:event", {
+  detail: { type: "trigger", event: "kick", velocity: 0.9 }
+}));
+```
+
+Call these functions from the actual note-playback/scheduler callbacks in your Strudel setup, **not when a pattern is merely constructed**. This repository supplies the integration layer, not a Strudel editor, music composition or audio-routing configuration.
+
+### Another local window/process
+
+Run the optional relay in a second terminal:
+
+```powershell
+npm run bridge
+```
+
+It listens at `ws://127.0.0.1:8787`. Click **CONNECT BRIDGE** in flight control, or:
+
+```javascript
+showController.connect("ws://127.0.0.1:8787");
+```
+
+From a different local browser window:
+
+```javascript
+const visuals = new WebSocket("ws://127.0.0.1:8787");
+visuals.addEventListener("open", () => {
+  visuals.send(JSON.stringify({ type: "trigger", event: "kick", velocity: 1 }));
+  visuals.send(JSON.stringify({ type: "energy", value: 0.65 }));
+  visuals.send(JSON.stringify({ type: "levels", values: { violaEnergy: 0.8 } }));
+  visuals.send(JSON.stringify({ type: "section", section: "BUILD" }));
+});
+```
+
+For Node/local applications, connect using any WebSocket client and send the same JSON. The relay broadcasts to other connected clients; the browser validates event types and values and visibly reports rejected events.
+
+The relay binds only to `127.0.0.1`, rejects non-local browser origins, accepts text messages up to 4096 bytes, and limits each client to 240 events/second. Run Strudel locally for bridge access; a public `strudel.cc` page is intentionally not an allowed origin. Set `$env:STRUDEL_PORT = "8788"` before `npm run bridge` to change the port.
+
+The bridge is not started or contacted automatically. When explicitly connected, the browser retries a lost connection; **DISCONNECT** stops retries. `showController.disconnect()` leaves the standalone show running.
+
+## Architecture
+
+- [Title geometry](src/content/title.ts): centered architectural alphabet, 251 enclosed modules, seed `DEVFEST_TOULOUSE_2026`.
+- [Labyrinth](src/scene/Labyrinth.ts): thin-instanced floors, roofs, boundary walls, panels and light traces.
+- [Camera](src/camera/CameraPath.ts): deterministic Catmull–Rom route inside the first D, measured gaze transitions for introductions/jokes, then the same geometry's full-title reveal.
+- [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, typography, theme and animated ornaments.
+- [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
+- [MusicReactive](src/effects/MusicReactive.ts): seeded GPU-animated particles and shader-based MIDI ribbons.
+- [ShowController](src/engine/ShowController.ts), [protocol](src/engine/protocol.ts), [AudioAnalyzer](src/engine/AudioAnalyzer.ts): independently validated music inputs.
+- [App](src/engine/App.ts), [Timeline](src/engine/Timeline.ts), [DevFestScene](src/scene/DevFestScene.ts): preload, stage lifecycle, deterministic clock and rendering.
+
+`window.devfest` remains available for inspection: `start(155)`, `seek(173)`, `timeline.pause()`, `timeline.play()`, `returnToLobby()`. A full show uses normal playback speed 1.
+
+## Verify and rehearse
 
 ```powershell
 npm test
 npm run build
 ```
 
-The 12 tests cover clock behavior, seek determinism, seeded geometry, the sampled camera path inside actual letter volumes, exit clearance, reveal continuity, interior turns below 45 degrees/second, and the projection of every letter's bounding corners inside the frame by 2:53 at multiple aspect ratios.
+Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, wall/roof clearance, camera turns below 45 degrees/second, at least four seconds of complete speaker-panel framing, and full-title projection by 2:53 at several aspect ratios.
 
-### Prototype validation — 2026-10-02
+Browser validation additionally covers physical text readability, synthetic Web Audio input, input disconnection, real events from a separate Node process through the relay, offline asset loading, fullscreen and graphics-context recovery. Vite's large Babylon bundle warning is non-blocking; stage shaders and materials are preloaded instead of fetched during the performance.
 
-- Production build type-checked and served locally; interior, escape and final composition inspected in Chromium.
-- Play, pause/resume, restart, phase jump, diagnostics, bloom control and return-to-lobby exercised in the browser.
-- Cold load with non-local HTTP requests blocked: no external requests or failed asset requests.
-- Native 3840×2160 accelerated full-timeline run on an NVIDIA RTX 5090: all six phases, 3,639 rendered frames, no sampled frame interval above 16.7 ms, and a clean final hold. This is a smoke test, not a substitute for a full-speed stage rehearsal.
-- Simulated WebGL context loss: clean renderer reconstruction, timestamp preserved at 1:30, manual resume successful, no invalid texture operations.
-- Locked dependencies audited without advisories at validation time.
+### Validation results — 2026-10-02
 
-Vite reports a non-blocking large-chunk warning for the Babylon engine bundle. This locally served show intentionally loads the renderer and shaders before playback rather than fetching them during choreography.
+- 34 unit tests pass; the production build passes TypeScript checking.
+- All four complete speaker-name panels remain in frame for at least four seconds at 16:9; key speaker/joke shots were also inspected in the browser.
+- A native 3840×2160 accelerated full-timeline stress run on the RTX 5090, with every reactive channel at maximum, rendered 3,632 frames. The largest sampled frame interval was 13.5 ms; all six phases and four speakers appeared, then the show held its final canvas-only frame.
+- That cold-load/run made no external asset requests and logged no console errors.
+- Synthetic 110 Hz input produced strong bass/energy readings; disconnect left a caller-owned stream alive and did not stop the show.
+- Simulated permission denial and a display share without audio both showed actionable errors while playback continued.
+- A simulated graphics reset at the fourth introduction rebuilt the scene, preserved the timestamp and connected event controller, and produced no invalid texture operations.
+- The localhost relay delivered events from a separate Node process and rejected non-local browser origins.
+
+### Before going on stage
+
+- Replace demo titles and rehearse all spoken introductions against their actual gate windows.
+- Run the production build, leave the local server running, and test with the Internet disconnected.
+- Choose the real audio interface/browser-share source and confirm meters without feedback.
+- Rehearse Strudel events against actual audio latency; direct events are more reliable than onset detection on a mixed feed.
+- Profile **Native / 4K** on the final projector/GPU setup. The automated accelerated run is not a substitute for a three-minute, full-speed rehearsal with live musicians.
+- Keep D closed, speed at 1, fullscreen enabled, and the show window visible. Use 6 to rehearse the escape and reveal.
+- Pause/restart/phase shortcuts remain available if the live performance needs recovery.

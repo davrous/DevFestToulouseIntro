@@ -1,8 +1,9 @@
 import "./style.css";
 import { App } from "./engine/App";
+import type { ShowController } from "./engine/ShowController";
 
 declare global {
-  interface Window { devfest: App }
+  interface Window { devfest: App; showController: ShowController }
 }
 
 async function boot(): Promise<void> {
@@ -10,6 +11,7 @@ async function boot(): Promise<void> {
   if (!canvas) throw new Error("The render canvas is missing.");
   const app = new App(canvas);
   window.devfest = app;
+  window.showController = app.showController;
   await app.initialize();
 }
 

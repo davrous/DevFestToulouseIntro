@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { cameraPose, interiorPosition } from "./CameraPath";
 import { CELL, HEIGHT, TITLE_WIDTH, createTitleCells, seededRandom, SEED } from "../content/title";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { SPEAKERS } from "../content/speakers";
 
 describe("title labyrinth choreography", () => {
   it("builds the seven- and eight-letter words using reproducible modules", () => {
@@ -101,6 +102,29 @@ describe("title labyrinth choreography", () => {
       const nextForward = next.target.subtract(next.position).normalize();
       const angle = Math.acos(Math.min(1, Math.max(-1, Vector3.Dot(forward, nextForward))));
       expect(angle / .05 * 180 / Math.PI, `angular velocity at ${time.toFixed(2)}s`).toBeLessThan(45);
+    }
+  });
+
+  it("frames every complete speaker-name panel for at least four seconds at projector aspect", () => {
+    for (const speaker of SPEAKERS) {
+      const anchor = interiorPosition(speaker.gateTime);
+      const direction = interiorPosition(speaker.gateTime + .8).subtract(interiorPosition(speaker.gateTime - .8));
+      const yaw = Math.atan2(direction.x, direction.z);
+      const world = Matrix.RotationY(yaw).multiply(Matrix.Translation(anchor.x, 0, anchor.z));
+      let readable = 0;
+      let best = 0;
+      for (let time = speaker.startTime + 1; time < speaker.gateTime - 1; time += .25) {
+        const pose = cameraPose(time);
+        const transform = world.multiply(Matrix.LookAtLH(pose.position, pose.target, Vector3.Up()))
+          .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
+        const corners = [-11.5, 11.5].flatMap((x) => [-2.2, 2.2].map((dy) =>
+          Vector3.TransformCoordinates(new Vector3(x, Math.min(25, anchor.y + 6.5) + dy, -.12), transform)));
+        const inside = corners.every((p) => Math.abs(p.x) < .98 && Math.abs(p.y) < .98 && p.z > 0 && p.z < 1);
+        const height = Math.max(...corners.map((p) => p.y)) - Math.min(...corners.map((p) => p.y));
+        readable = inside && height > .07 ? readable + .25 : 0;
+        best = Math.max(best, readable);
+      }
+      expect(best, speaker.name).toBeGreaterThanOrEqual(4);
     }
   });
 });

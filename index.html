@@ -19,7 +19,7 @@
           </svg>
           <span>DevFest<span class="brand-location">TOULOUSE / 2026</span></span>
         </a>
-        <div class="edition"><span class="status-dot"></span> REAL-TIME EXPERIMENT <span class="edition-divider">/</span> 001</div>
+        <div class="edition"><span class="status-dot"></span> LIVE OPENING SEQUENCE <span class="edition-divider">/</span> 2026</div>
       </header>
 
       <section class="intro">
@@ -33,6 +33,15 @@
         <div class="loading-track" id="loading-track"><div id="loading-fill"></div></div>
         <p id="load-status" role="status">Initializing local renderer...</p>
         <label class="fullscreen-option"><input id="fullscreen" type="checkbox" checked /> Enter fullscreen on play <span>SPACE to start</span></label>
+        <details class="audio-setup">
+          <summary>Live audio setup <span>OPTIONAL / NO SOUND IS PLAYED BY THIS PAGE</span></summary>
+          <div class="audio-inputs">
+            <select id="audio-source" aria-label="Audio input source"><option value="microphone">Microphone / line input</option><option value="system">System / browser tab audio</option></select>
+            <button id="audio-connect">CONNECT INPUT</button><button id="audio-disconnect">DISCONNECT</button>
+          </div>
+          <p id="audio-setup-status" role="status">OFF / no audio permission requested</p>
+          <p>Inputs are analyzed locally, never recorded or sent anywhere. No monitoring is routed to speakers.</p>
+        </details>
       </section>
 
       <aside class="scene-coordinate" aria-hidden="true"><span>CAM_01</span><div></div><span>INSIDE THE SYSTEM</span></aside>
@@ -62,10 +71,23 @@
       </div>
       <dl id="diagnostics"></dl>
       <label>Playback speed <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select></label>
-      <label>Bloom <input id="bloom" type="checkbox" checked /></label>
+      <label>Post-processing <input id="bloom" type="checkbox" checked /></label>
       <label>Resolution <select id="resolution"><option value="native">Native / 4K</option><option value="balanced" selected>Balanced / up to 1440p</option></select></label>
+      <label>Audio reactivity <input id="reactivity" type="checkbox" checked /></label>
+      <label>Reactive intensity <input id="intensity" type="range" min="0" max="2" step=".05" value="1" /></label>
+      <label>Live input <select id="audio-source-debug"><option value="microphone">Microphone / line</option><option value="system">System / tab</option></select></label>
+      <div class="phase-buttons audio-debug-buttons"><button id="debug-audio-connect">CONNECT AUDIO</button><button id="debug-audio-disconnect">DISCONNECT AUDIO</button></div>
+      <p class="debug-subheading">REHEARSAL / SEND CUES DURING PLAYBACK</p>
+      <div class="phase-buttons">
+        <button data-trigger="kick">KICK</button><button data-trigger="snare">SNARE</button>
+        <button data-trigger="hat">HI-HAT</button><button data-trigger="drop">DROP</button>
+        <button data-trigger="viola">VIOLA</button><button data-trigger="beat">BEAT</button>
+      </div>
+      <p class="debug-subheading">OPTIONAL LOCAL STRUDEL BRIDGE</p>
+      <input id="bridge-url" aria-label="Local Strudel WebSocket URL" value="ws://127.0.0.1:8787" />
+      <div class="phase-buttons"><button id="bridge-connect">CONNECT BRIDGE</button><button id="bridge-disconnect">DISCONNECT</button></div>
       <p class="debug-help">SPACE play / pause · R restart · F fullscreen<br />1–6 jump · D diagnostics · ESC lobby</p>
-      <p class="prototype-note">PHASE A · Geometry & camera study<br />Silent prototype. Speakers and audio are not yet enabled.</p>
+      <p class="prototype-note">180 seconds · four speakers · one perspective shift.<br />Camera and introductions always follow the master timeline.</p>
     </aside>
     <div id="notice" role="status" hidden></div>
     <script type="module" src="./src/main.ts"></script>
