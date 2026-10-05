@@ -1,6 +1,6 @@
 # Into the unexpected
 
-A three-minute real-time opening for the DevFest Toulouse 2026 closing keynote. Babylon.js + TypeScript + Vite. The camera travels inside the actual extruded title architecture, encounters four speakers and Toulouse/developer scenes, then reveals **DEVFEST / TOULOUSE**. No scene swap, film, runtime CDN, or audio-driven camera.
+A three-minute real-time opening for the DevFest Toulouse 2026 closing keynote. Babylon.js + TypeScript + Vite. The camera travels inside the D of the actual extruded title architecture, encounters four speakers and Toulouse/developer scenes, then reveals **DEVFEST / TOULOUSE**. No scene swap, film, runtime CDN, or audio-driven camera.
 
 ## Run locally
 
@@ -41,6 +41,10 @@ Open http://127.0.0.1:4173 and keep the local server running. After installation
 | 2:43–2:53 | Backward/upward pullback exposes the complete title |
 | 2:55–3:00 | World-space **AI4Fun** signature and subtle anniversary marks; camera settles at 2:57; quiet final hold |
 
+During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. Seven staggered Havok-simulated balls (including a stitched Toulouse rugby ball) bounce off physical collision platforms aligned to the rising bars and the floor. Their twenty-second flights follow the camera around turns; the sound bands raise both the visible bars and their collision surfaces, and bass, viola and attacks add stronger, reproducibly varied impulses. In silence, restrained timed impulses keep them moving. The balls reset to a safe position on a timeline seek rather than replaying unrecorded live audio. Three end-wall groups reuse the existing recessed rectangles as a three-column spectrum: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). A fourth three-column display appears on the wall facing the camera immediately before the exit. Their idle bars are visible from the entrance to each corridor and respond more strongly to audio. Kicks and snares add brief pulses.
+
+For each speaker, the beams rise from two floor-mounted projectors, initially pointing toward the camera before sweeping to either side of the card, while **two real dynamic spotlights** illuminate its physical backing and surrounding structure. The frame brightens as the name, title and associated artwork fade in; an extra pair of beams and the spotlights then sweep outward from the name's center like a theatrical marquee. The visible beams use lightweight emissive geometry rather than expensive volumetric scattering. OVERCLOCK intensifies the effect and drops briefly expand the computational core. These effects fade out by 2:35, leaving the title reveal and final hold clear.
+
 ### Configure speakers
 
 Edit [src/content/speakers.ts](src/content/speakers.ts). Each portal accepts:
@@ -48,7 +52,7 @@ Edit [src/content/speakers.ts](src/content/speakers.ts). Each portal accepts:
 ```typescript
 {
   name: "Anne-Flore Bernard",
-  demoTitle: "DEMO_TITLE_1",
+  demoTitle: "Musical Agentic Blender",
   startTime: 30,
   endTime: 55,
   gateTime: 43,
@@ -56,7 +60,7 @@ Edit [src/content/speakers.ts](src/content/speakers.ts). Each portal accepts:
 }
 ```
 
-Replace `DEMO_TITLE_1` through `DEMO_TITLE_4` before the event. `gateTime` determines the fixed position along the camera route where the camera crosses the portal; keep it inside the introduction interval. Theme options: `signal`, `neural`, `playground`, `overclock`. Names and titles are textures on physical world-space meshes, not HTML overlays. Rehearse after changing timing or unusually long titles.
+Adjust the example's speaker names and demo titles to match the event program. `gateTime` determines the fixed position along the camera route where the camera crosses the portal; keep it inside the introduction interval. Theme options: `signal`, `neural`, `playground`, `overclock`. Names and titles are textures on physical world-space meshes, not HTML overlays. Rehearse after changing timing or unusually long titles.
 
 Optional `lateralOffset` and `gateWidth` position the entire gate across the corridor. Mitsuru's gate is shifted two world units to the camera's right and narrowed slightly to clear the brick wall; its camera gaze follows the same placement.
 
@@ -87,11 +91,11 @@ Open **Live audio setup** in the lobby, or use the audio controls in flight cont
 3. Grant the browser permission. For system/tab capture, select a source and enable **Share audio**. Sources without an audio track are rejected with a visible error.
 4. Speak and check the **LIVE INPUT** meter in the lobby or flight control. It should rise immediately. The selected input's device name appears in the signal hint.
 5. Adjust **Input gain** as needed. It defaults to +12 dB for quiet microphones; reduce it for strong system/line input. A typical speaking level around -35 to -15 dBFS is a useful starting point. A warning appears for very quiet or excessively hot input.
-6. Start/resume the show. Continuous voice/instrument volume now visibly brightens the corridor and bloom; claps/drum attacks add sharper pulses. The lobby also responds, so input can be checked without starting the camera.
+6. Start/resume the show. Continuous voice/instrument volume visibly brightens the corridor, floor-mounted spotlights and bloom; bass/mid/treble reshape the floor and wall spectra and claps/drum attacks add sharper pulses. The lobby also responds, so input can be checked without starting the camera.
 
 If the meter moves but visuals do not, check **Audio reactivity** and **Reactive intensity** in D. Paused images stay frozen even though meters move. Reactivity intentionally fades out after 2:35 and is absent from the final hold. If the meter does not move, check the reported device, browser/Windows input selection, OS microphone permissions, mute controls and input gain.
 
-The Web Audio analyser uses floating-point waveform measurements and a local input preamp, and exposes `kick`, `bass`, `mid`, `treble`, `energy`, `beat`, `violaEnergy`, `snare` and `drop`. Smoothed `energy` drives continuous corridor brightness; the other bands drive light pulses, ornament breathing, particle motion/brightness, flowing ribbons, fog and restrained bloom. It never controls camera position, speaker timestamps, route selection or reveal timing.
+The Web Audio analyser uses floating-point waveform measurements and a local input preamp, and exposes `kick`, `bass`, `mid`, `treble`, `energy`, `beat`, `violaEnergy`, `snare` and `drop`. Smoothed `energy` drives continuous corridor and laser brightness; the other bands drive light pulses, the floor spectrum, ornament breathing, particle motion/brightness, flowing ribbons, fog and restrained bloom. The time-based lighting choreography still works with audio reactivity disabled or no input connected. Audio never controls camera position, speaker timestamps, route selection or reveal timing.
 
 `violaEnergy` from mixed audio is a **smoothed mid-band proxy, not instrument separation**. For accurate viola control, use a dedicated input or send explicit `violaEnergy` levels through the event API.
 
@@ -175,9 +179,12 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [Title geometry](src/content/title.ts): centered architectural alphabet, 251 enclosed modules, seed `DEVFEST_TOULOUSE_2026`.
 - [Labyrinth](src/scene/Labyrinth.ts): thin-instanced floors, roofs, boundary walls, panels and light traces.
 - [Camera](src/camera/CameraPath.ts): deterministic Catmull–Rom route inside the first D, measured gaze transitions for introductions/jokes, then the same geometry's full-title reveal.
-- [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, typography, theme and animated ornaments.
+- [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, staged typography reveal, theme and animated ornaments.
 - [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
 - [MusicReactive](src/effects/MusicReactive.ts): seeded GPU-animated particles and shader-based MIDI ribbons.
+- [ShowLighting](src/effects/ShowLighting.ts): ground-mounted portal laser beams and dynamic spotlights, scanning lights and GPU floor circuit traces with thin-instanced spectrum bars.
+- [BouncingBalls](src/effects/BouncingBalls.ts): Havok-simulated camera-leading bounces on audio-driven collision platforms, including a striped and stitched rugby ball; physics pauses with the show and resets on seeks.
+- [WallMeters](src/effects/WallMeters.ts): three-band LED columns on three end walls and the pre-exit wall, driven by bass, viola/body and high-frequency signals.
 - [EventBranding](src/scene/EventBranding.ts): original event artwork used on the first server's camera-facing end panel (separate from its strip lights), as a crest above David's name, as a cargo seal, and as two small final signatures. David's crest follows his gate visibility. The final marks fade in with **AI4Fun** after 2:55 and do not affect the camera or title geometry.
 - [ShowController](src/engine/ShowController.ts), [protocol](src/engine/protocol.ts), [AudioAnalyzer](src/engine/AudioAnalyzer.ts): independently validated music inputs.
 - [App](src/engine/App.ts), [Timeline](src/engine/Timeline.ts), [DevFestScene](src/scene/DevFestScene.ts): preload, stage lifecycle, deterministic clock and rendering.

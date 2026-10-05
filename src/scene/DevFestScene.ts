@@ -19,13 +19,21 @@ import { PHASES, smoothstep } from "../engine/Timeline";
 import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import type { Section } from "../engine/protocol";
 import { SPEAKERS } from "../content/speakers";
+import { cueEnvelope } from "../content/cues";
 import { createLabyrinth } from "./Labyrinth";
 import { createInterior, updateInterior, createFinalCaption } from "./Interior";
 import { createAtmosphere, DUST, showFogDensity } from "./Atmosphere";
 import { SpeakerPortal } from "./SpeakerPortal";
 import { EasterEggs } from "./EasterEggs";
 import { MusicReactive } from "../effects/MusicReactive";
+import { FloorEqualizer } from "../effects/ShowLighting";
+import { BouncingBalls } from "../effects/BouncingBalls";
+import { WallMeters } from "../effects/WallMeters";
 import { EventBranding } from "./EventBranding";
+import HavokPhysics from "@babylonjs/havok";
+import havokWasm from "@babylonjs/havok/lib/esm/HavokPhysics.wasm?url";
+import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
+import "@babylonjs/core/Physics/joinedPhysicsEngineComponent";
 
 const SILENCE = silentFeatures();
 const PALETTE = ["#68d7be", "#76ffe0", "#b19dff", "#ffa999", "#ffd28d", "#77ffe3"].map(Color3.FromHexString);
@@ -38,6 +46,9 @@ export class DevFestScene {
   readonly portals: SpeakerPortal[];
   private readonly easterEggs: EasterEggs;
   private readonly music: MusicReactive;
+  private readonly floorEqualizer: FloorEqualizer;
+  private readonly bouncingBalls: BouncingBalls;
+  private readonly wallMeters: WallMeters;
   private readonly branding: EventBranding;
   private readonly tint = new Color3();
   private readonly labyrinth;
@@ -47,6 +58,8 @@ export class DevFestScene {
   private readonly fill: HemisphericLight;
   private readonly sun: DirectionalLight;
   private readonly headlight: PointLight;
+  private physicsPlugin?: HavokPlugin;
+  private physicsSpeed = 1;
 
   constructor(private readonly engine: Engine) {
     const scene = this.scene = new Scene(engine);
@@ -98,11 +111,15 @@ export class DevFestScene {
     this.easterEggs = new EasterEggs(scene);
     this.branding = new EventBranding(scene, this.easterEggs.container, this.portals[1]);
     this.music = new MusicReactive(scene);
+    this.floorEqualizer = new FloorEqualizer(scene);
+    this.bouncingBalls = new BouncingBalls(scene);
+    this.wallMeters = new WallMeters(scene);
     this.glow = new GlowLayer("Architectural light bloom", scene, { mainTextureRatio: .5, blurKernelSize: 32 });
     this.glow.addExcludedMesh(this.music.particles);
     // Keep non-emissive geometry in the glow depth pass: hidden lights must not bleed through walls.
     this.glow.customEmissiveColorSelector = (mesh, _subMesh, material, result) => {
-      if (material instanceof StandardMaterial && /FX\/|light traces|running lights|data banks|computational core|Core orbit|Depth gates/.test(mesh.name)) {
+      if (material instanceof StandardMaterial && !mesh.name.startsWith("FX/Laser halo")
+        && /FX\/|light traces|running lights|data banks|computational core|Core orbit|Depth gates/.test(mesh.name)) {
         const color = material.emissiveColor;
         result.set(color.r, color.g, color.b, 1);
       } else {
@@ -131,11 +148,24 @@ export class DevFestScene {
   }
 
   async prepare(): Promise<void> {
+    const havok = await HavokPhysics({ locateFile: () => havokWasm });
+    const plugin = new HavokPlugin(true, havok);
+    if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
+      throw new Error("Havok physics could not be initialized.");
+    }
+    this.physicsPlugin = plugin;
+    plugin.setVelocityLimits(32, 12);
+    this.scene.physicsEnabled = false;
+    this.bouncingBalls.initialize(this.scene, plugin);
     await this.branding.ready;
     await this.scene.whenReadyAsync();
-    await Promise.all(this.scene.meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
+    const compile = () => Promise.all(this.scene.meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
       useInstances: mesh instanceof Mesh && mesh.hasThinInstances,
     })));
+    await compile();
+    this.update(SPEAKERS[0].startTime + 3, SILENCE);
+    await compile();
+    this.update(0, SILENCE);
   }
 
   setPostProcessing(enabled: boolean): void {
@@ -145,7 +175,12 @@ export class DevFestScene {
     this.glow.isEnabled = enabled;
   }
 
-  update(time: number, audio: AudioFeatures = SILENCE, section: Section | null = null): void {
+  update(time: number, audio: AudioFeatures = SILENCE, section: Section | null = null, speed = 1): void {
+    if (this.physicsSpeed !== speed) {
+      this.scene.getPhysicsEngine()?.setGravity(new Vector3(0, -17 * speed * speed, 0));
+      this.physicsPlugin?.setVelocityLimits(32 * speed, 12 * speed);
+      this.physicsSpeed = speed;
+    }
     const aspect = this.engine.getRenderWidth() / this.engine.getRenderHeight();
     const pose = cameraPose(time, aspect);
     this.camera.position.copyFrom(pose.position);
@@ -176,10 +211,14 @@ export class DevFestScene {
     this.caption.visibility = smoothstep((time - 175) / 3);
     this.branding.update(time);
     updateInterior(this.interior, time);
-    this.interior.core.scaling.setAll(1 + audio.bass * calm * .025);
+    this.interior.core.scaling.setAll(1 + audio.bass * calm * .025
+      + audio.drop * cueEnvelope(time, 120, 155, 2) * .18);
     this.portals.forEach((portal) => portal.update(time, audio));
     this.easterEggs.update(time);
     this.music.update(time, audio);
+    this.floorEqualizer.update(time, audio);
+    this.bouncingBalls.update(time, audio, speed);
+    this.wallMeters.update(time, audio);
   }
 
   get cellCount(): number { return this.labyrinth.cellCount; }

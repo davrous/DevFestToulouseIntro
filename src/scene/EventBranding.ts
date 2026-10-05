@@ -8,6 +8,7 @@ import type { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { SpeakerPortal } from "./SpeakerPortal";
 import { cellPosition } from "../content/title";
 import { smoothstep } from "../engine/Timeline";
+import { speakerReveal } from "../effects/ShowLighting";
 import flagUrl from "../assets/event/mascot-flag-green.png";
 import planetUrl from "../assets/event/mascot-planet-violet.png";
 import anniversaryUrl from "../assets/event/anniversary-cube-orange.png";
@@ -44,8 +45,9 @@ function decal(scene: Scene, name: string, texture: Texture, size: number, opaci
 export class EventBranding {
   readonly ready: Promise<void>;
   private readonly finalMarks: Mesh[] = [];
+  private readonly crest: Mesh[] = [];
 
-  constructor(scene: Scene, shippingContainer: TransformNode, davidPortal: SpeakerPortal) {
+  constructor(scene: Scene, shippingContainer: TransformNode, private readonly davidPortal: SpeakerPortal) {
     this.ready = Promise.all([
       loadArtwork(scene, flagUrl, "Event mascot / green flag"),
       loadArtwork(scene, planetUrl, "Event mascot / violet planet"),
@@ -70,6 +72,7 @@ export class EventBranding {
       const planetMark = decal(scene, "Event mascot / David portal crest", planet, 5.2, .85);
       planetMark.parent = davidPortal.root;
       planetMark.position.set(0, 26.95, -.6);
+      this.crest.push(crestPlate, planetMark);
 
       const cargoMark = decal(scene, "Event anniversary / cargo seal", anniversary, 4.3, .82);
       cargoMark.parent = shippingContainer;
@@ -90,6 +93,7 @@ export class EventBranding {
   }
 
   update(time: number): void {
+    for (const mesh of this.crest) mesh.visibility = speakerReveal(time, this.davidPortal.config);
     const visibility = smoothstep((time - 175) / 3);
     this.finalMarks.forEach((mesh) => { mesh.visibility = visibility; });
   }

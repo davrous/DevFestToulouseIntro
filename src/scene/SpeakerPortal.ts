@@ -3,26 +3,33 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { THEME_COLORS, type SpeakerConfig } from "../content/speakers";
-import { cueEnvelope } from "../content/cues";
+import { smoothstep } from "../engine/Timeline";
 import { createWorldText, routeAnchor } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { BoxBatch } from "./Instances";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
+import { PortalLasers, laserReach, laserStrength, speakerReveal } from "../effects/ShowLighting";
 
 export class SpeakerPortal {
   readonly root: TransformNode;
   readonly nameMesh: Mesh;
   readonly titleMesh: Mesh;
   readonly frame: Mesh;
+  private readonly backplate: Mesh;
+  private readonly textMaterials: StandardMaterial[] = [];
   private readonly decoration: Mesh;
   private readonly modules = new Float32Array(12 * 16);
   private readonly transform = Matrix.Identity();
   private readonly color: Color3;
   private readonly light;
   private readonly anchor;
+  private readonly lasers: PortalLasers;
+  private readonly extraPanels: Mesh[] = [];
+  private readonly tag: Mesh;
 
   constructor(scene: Scene, readonly config: SpeakerConfig, index: number) {
     const accent = THEME_COLORS[config.visualTheme];
@@ -48,12 +55,31 @@ export class SpeakerPortal {
     });
     this.titleMesh.parent = this.root;
     this.titleMesh.position.set(0, nameHeight - 3.5, -.15);
-    const tag = createWorldText(scene, {
+    for (const panel of [this.nameMesh, this.titleMesh]) {
+      if (!(panel.material instanceof StandardMaterial)) throw new Error("Speaker typography requires a StandardMaterial.");
+      panel.material.disableLighting = false;
+      panel.material.maxSimultaneousLights = 5;
+      panel.material.emissiveColor.set(.28, .3, .32);
+      panel.material.diffuseColor.set(.8, .8, .8);
+      this.textMaterials.push(panel.material);
+    }
+    const plateMaterial = new PBRMaterial(`Speaker ${index + 1} illuminated backplate`, scene);
+    plateMaterial.albedoColor = this.color.scale(.4);
+    plateMaterial.emissiveColor = this.color.scale(.02);
+    plateMaterial.metallic = .28;
+    plateMaterial.roughness = .55;
+    this.backplate = MeshBuilder.CreatePlane(`Speaker ${index + 1} lit card border`,
+      { width: gateWidth + 1.2, height: 6.2 }, scene);
+    this.backplate.parent = this.root;
+    this.backplate.position.set(0, nameHeight, -.07);
+    this.backplate.material = plateMaterial;
+    this.backplate.isPickable = false;
+    this.tag = createWorldText(scene, {
       name: `Speaker index ${index + 1}`, width: 20, height: 1.15,
       lines: [{ text: `0${index + 1} / ${["COMPILE", "BUILD", "RUN", "OVERCLOCK"][index]} / LIVE`, color: accent }],
     });
-    tag.parent = this.root;
-    tag.position.set(0, nameHeight + 3.4, -.15);
+    this.tag.parent = this.root;
+    this.tag.position.set(0, nameHeight + 3.4, -.15);
     if (config.visualTheme === "neural") {
       for (const [side, lines] of [
         [-1, ["agent.observe()", "agent.plan()"]],
@@ -66,6 +92,7 @@ export class SpeakerPortal {
         });
         code.parent = this.root;
         code.position.set(side * 8.2, 6, 2.5);
+        this.extraPanels.push(code);
       }
     }
     const frameBatch = new BoxBatch(`FX/Speaker gate ${index + 1}`, this.light);
@@ -86,16 +113,27 @@ export class SpeakerPortal {
     this.decoration.parent = this.root;
     this.decoration.isPickable = false;
     this.decoration.thinInstanceSetBuffer("matrix", this.modules, 16, false);
+    this.lasers = new PortalLasers(scene, this.root, config);
     this.update(0, { kick: 0, bass: 0, mid: 0, treble: 0, energy: 0, beat: 0, violaEnergy: 0, snare: 0, drop: 0 });
   }
 
   update(time: number, audio: AudioFeatures): void {
-    const envelope = cueEnvelope(time, this.config.startTime, this.config.endTime, .8);
-    this.root.setEnabled(envelope > 0);
-    if (envelope === 0) return;
-    this.nameMesh.visibility = envelope;
-    this.titleMesh.visibility = envelope;
-    this.light.emissiveColor.copyFrom(this.color).scaleInPlace(1.2 + audio.kick * 1.1 + audio.snare * .7);
+    const laser = laserStrength(time, this.config, audio);
+    const reveal = speakerReveal(time, this.config);
+    this.root.setEnabled(laser > 0 || reveal > 0);
+    if (!this.root.isEnabled()) return;
+    this.nameMesh.visibility = reveal;
+    this.titleMesh.visibility = smoothstep((time - this.config.startTime - .65) / 1.7) * reveal;
+    this.tag.visibility = reveal;
+    this.backplate.visibility = Math.min(1, laser * 1.3) * laserReach(time, this.config);
+    for (const material of this.textMaterials) {
+      material.emissiveColor.set(.14 + laser * .45, .16 + laser * .48, .18 + laser * .5);
+    }
+    for (const panel of this.extraPanels) panel.visibility = reveal;
+    this.light.emissiveColor.copyFrom(this.color).scaleInPlace((.35 + reveal * .85) * (1 + audio.kick * .8 + audio.snare * .5));
+    this.lasers.update(time, audio);
+    this.frame.visibility = this.backplate.visibility;
+    this.decoration.visibility = reveal;
     this.frame.scaling.x = 1 + audio.bass * .006;
     const phase = time - this.config.startTime;
     const glitch = phase < .35 ? Math.sin(phase * 100) * .035 : 0;

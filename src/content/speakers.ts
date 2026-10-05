@@ -12,10 +12,10 @@ export interface SpeakerConfig {
 }
 
 export const SPEAKERS: readonly SpeakerConfig[] = [
-  { name: "Anne-Flore Bernard", demoTitle: "DEMO_TITLE_1", startTime: 30, endTime: 55, gateTime: 43, visualTheme: "signal" },
-  { name: "David Rousset", demoTitle: "DEMO_TITLE_2", startTime: 60, endTime: 78, gateTime: 73, visualTheme: "neural" },
-  { name: "Eric Mittelette", demoTitle: "DEMO_TITLE_3", startTime: 90, endTime: 108, gateTime: 106, visualTheme: "playground" },
-  { name: "Mitsuru Furuta", demoTitle: "DEMO_TITLE_4", startTime: 120, endTime: 139, gateTime: 130, visualTheme: "overclock", lateralOffset: 2, gateWidth: 22 },
+  { name: "Anne-Flore Bernard", demoTitle: "Musical Agentic Blender", startTime: 30, endTime: 55, gateTime: 43, visualTheme: "signal" },
+  { name: "David Rousset", demoTitle: "Musical Agentic Blender", startTime: 60, endTime: 78, gateTime: 73, visualTheme: "neural" },
+  { name: "Eric Mittelette", demoTitle: "IA Barrée", startTime: 90, endTime: 108, gateTime: 106, visualTheme: "playground" },
+  { name: "Mitsuru Furuta", demoTitle: "Blague Japonaise", startTime: 120, endTime: 139, gateTime: 130, visualTheme: "overclock", lateralOffset: 2, gateWidth: 22 },
 ];
 
 export const THEME_COLORS: Record<VisualTheme, string> = {

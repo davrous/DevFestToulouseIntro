@@ -76,7 +76,8 @@ export class App {
       const time = this.inLobby ? 0 : this.timeline.tick(now);
       const audio = this.showController.sample(now);
       if (this.timeline.playing || this.inLobby || !this.showController.enabled) Object.assign(this.visualAudio, audio);
-      this.world.update(time, this.visualAudio, this.showController.section);
+      this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed);
+      this.world.scene.physicsEnabled = !this.inLobby && this.timeline.playing && time < 155;
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {
@@ -146,7 +147,7 @@ export class App {
     else this.timeline.seek(time);
     this.showController.resetTransient();
     Object.assign(this.visualAudio, silentFeatures());
-    this.world.update(this.timeline.time, this.visualAudio, this.showController.section);
+    this.world.update(this.timeline.time, this.visualAudio, this.showController.section, this.timeline.speed);
   }
 
   returnToLobby(): void {

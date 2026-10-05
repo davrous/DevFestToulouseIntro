@@ -13,3 +13,7 @@ import "@babylonjs/core/Shaders/glowMapGeneration.vertex";
 import "@babylonjs/core/Shaders/glowMapGeneration.fragment";
 import "@babylonjs/core/Shaders/glowMapMerge.vertex";
 import "@babylonjs/core/Shaders/glowMapMerge.fragment";
+import "@babylonjs/core/Shaders/default.vertex";
+import "@babylonjs/core/Shaders/default.fragment";
+import "@babylonjs/core/Shaders/pbr.vertex";
+import "@babylonjs/core/Shaders/pbr.fragment";

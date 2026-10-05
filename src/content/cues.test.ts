@@ -6,8 +6,8 @@ describe("show content", () => {
   it("introduces the four speakers at the prescribed timestamps with editable titles", () => {
     expect(SPEAKERS.map((speaker) => speaker.name)).toEqual(["Anne-Flore Bernard", "David Rousset", "Eric Mittelette", "Mitsuru Furuta"]);
     expect(SPEAKERS.map((speaker) => speaker.startTime)).toEqual([30, 60, 90, 120]);
-    expect(SPEAKERS.map((speaker) => speaker.demoTitle)).toEqual(["DEMO_TITLE_1", "DEMO_TITLE_2", "DEMO_TITLE_3", "DEMO_TITLE_4"]);
     for (const speaker of SPEAKERS) {
+      expect(speaker.demoTitle.trim().length).toBeGreaterThan(0);
       expect(activeSpeaker(speaker.startTime)).toBe(speaker);
       expect(speaker.gateTime).toBeGreaterThan(speaker.startTime);
       expect(speaker.gateTime).toBeLessThan(speaker.endTime);
