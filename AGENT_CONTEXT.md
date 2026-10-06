@@ -1,0 +1,327 @@
+# Contexte de reprise — Intro DevFest Toulouse
+
+> Lire ce document avant d'explorer le code. Il décrit le spectacle existant et les décisions déjà validées, pas un nouveau backlog à implémenter.
+>
+> État documenté le **6 octobre 2026**, après les corrections de mise en scène cinéma. Base observée : branche `main`, commit `106954a` (`feat: add CinemaWorld and DigitalMoments scenes with interactive elements`). Les fichiers source restent la référence si des changements plus récents existent.
+
+Dépôt : [davrous/DevFestToulouseIntro](https://github.com/davrous/DevFestToulouseIntro).
+
+## 1. Comprendre le projet en deux minutes
+
+Il s'agit d'une **intro de trois minutes pour la keynote de clôture du DevFest Toulouse 2026**, destinée à être projetée sur un grand écran devant un public de développeurs.
+
+Ce n'est ni une vidéo précalculée, ni un jeu avec une caméra contrôlée par le spectateur. C'est un spectacle **3D temps réel Babylon.js / TypeScript**, avec un trajet de caméra et une mise en scène pilotés par une horloge de **180 secondes**.
+
+Le ressort principal est un **reveal spatial** : le public traverse des couloirs sans savoir qu'ils sont construits dans les lettres du titre. À la fin, la caméra sort, recule et monte pour révéler :
+
+```text
+DEVFEST
+TOULOUSE
+```
+
+Le trajet commence dans le **T de TOULOUSE**, sort en haut à droite, rejoint le **D de DEVFEST**, parcourt son circuit, puis emprunte son ouverture pour le zoom-out final.
+
+La narration actuelle :
+
+```text
+GAME / T
+  → LEVEL COMPLETE
+  → CLAPPERBOARD / CUT!
+  → CINEMA / première de David
+  → FILM MACHINERY / bobines et pop-corn
+  → CAMÉRA GÉANTE / entrée dans l'objectif
+  → PROJECTEUR / passerelle spatiale
+  → DIGITAL D / Eric
+  → progression cyan → or
+  → Mitsuru / climax
+  → sortie / DEVFEST TOULOUSE / AI4Fun
+```
+
+La musique est jouée **à l'extérieur de cette page**, notamment avec **Strudel et un alto**. L'application analyse éventuellement une entrée audio et/ou reçoit des événements musicaux. Elle ne joue pas la musique, ne l'enregistre pas et ne l'envoie pas à un serveur. Le spectacle fonctionne aussi sans audio.
+
+**Intention esthétique :** geek, ludique, cinématographique, avec quelques blagues toulousaines. Préférer des moments compréhensibles et bien cadrés à une accumulation de props, de particules ou de rectangles noirs.
+
+## 2. Ce qu'il faut absolument préserver
+
+- **180 s à vitesse 1.** Le titre est entièrement cadré vers **173 s**, puis reste stable jusqu'à 180 s et après l'arrêt de l'horloge.
+- Le **reveal final est très apprécié de l'utilisateur**. Ne pas le réinventer pour corriger un problème local.
+- La caméra reste **indépendante de l'audio** : son trajet, les speakers et la sortie ne doivent pas dériver avec le rythme ou le volume.
+- La passerelle physique **T–D reste visible pendant le reveal**, à **y = 0**. Elle est constituée uniquement d'un champ de force transparent au sol et de traces lumineuses. Pas de murs, de toit, de copie en hauteur ou d'élévation au moment du zoom-out.
+- Garder les **quatre speakers**, leurs noms et leurs titres de démo, sauf demande explicite. David ne doit pas réapparaître dans un ancien portail du D.
+- Les noms et les blagues doivent être dans le champ de la caméra, suffisamment grands et lisibles. L'état « mesh enabled » ne prouve pas qu'un spectateur peut lire.
+- Les objets physiques ne poussent pas la caméra : elle n'a pas de corps Havok. Les props permanents du T sont visibles pendant leur approche, pas révélés par un pop tardif.
+- Les assets nécessaires au spectacle sont **locaux et préchargés avant SYSTEM READY**. Aucun CDN, téléchargement Sketchfab ou service cloud n'est requis pendant la représentation.
+- Corriger la zone concernée sans jeter les scènes qui fonctionnent déjà. Sur une nouvelle machine, commencer par vérifier le worktree plutôt que supposer que tout correspond à cette photographie.
+
+## 3. Programme des speakers : source de vérité
+
+Configuration : [src/content/speakers.ts](src/content/speakers.ts).
+
+| Speaker | Titre conservé | Monde / thème | startTime | gateTime | endTime |
+| --- | --- | --- | ---: | ---: | ---: |
+| Anne-Flore Bernard | Musical Agentic Blender | game / signal | 17 | 29 | 39 |
+| David Rousset | Musical Agentic Blender | cinema / neural | 66 | 76 | 83 |
+| Eric Mittelette | IA Barrée | digital / neural | 99 | 107 | 116 |
+| Mitsuru Furuta | Blague Japonaise | digital / overclock | 128 | 136 | 146 |
+
+**Le doublon de titre entre Anne-Flore et David est conservé intentionnellement : ne pas le « corriger » en inventant un nouveau titre.**
+
+`gateTime` sert aussi d'**ancre spatiale sur la trajectoire**, pas seulement de timestamp. Changer ce nombre déplace le panneau et modifie son angle d'approche. `endTime` n'est pas une garantie que le panneau soit encore dans le champ : la caméra peut déjà l'avoir dépassé.
+
+David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son écran est effectivement activé de `startTime - 2` à `gateTime + 1`, soit **64–77 s**, tandis que sa configuration conserve `endTime = 83`. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
+
+Les constantes cinéma de [src/content/showBeats.ts](src/content/showBeats.ts) reprennent certains timings de David : conserver leur cohérence avec la configuration des speakers.
+
+## 4. Chronologie utile pour les prochaines itérations
+
+Les intervalles se recouvrent volontairement pour assurer les transitions. Pour les détails opérateur, voir [README.md](README.md).
+
+| Temps, en secondes | Ce que doit comprendre le public |
+| --- | --- |
+| 0–6 | DEVFEST ARCADE / PRESS ANY KEY, avec les bornes latérales, sans énorme borne centrale |
+| 5–14 | La requête `GET /pain-au-chocolat` devient une redirection vers `/chocolatine`, avant Anne-Flore |
+| 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche |
+| 30.5 et suivantes | Les pièces bonus tombent juste après le violon |
+| 33–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 |
+| 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture de la porte vers 42.6 |
+| 46.3–48.8 | LEVEL COMPLETE, court et centré |
+| 48.8–54.55 | Grand clap dégagé ; pose ouverte lisible ; fermeture de 53.65 à 54.55 |
+| 54.55–54.85 | Shutter noir au contact du clap, puis apparition du cinéma |
+| 54.85–66 | Cinéma symétrique : murs de sièges en gradins, supports, lumière chaude et CRT intégrés |
+| 59.4–59.7 | Les CRT affichent DEVFEST simultanément |
+| 66–77, à l'écran | Première de David : lumière avant le fondu du nom, écran physique supporté, zone plus calme |
+| 77–84.5 | Bobines frontales reliées par une pellicule animée ; seau visible, bascule à 77.7, déversement à 78.2 |
+| 84–90 | Caméra de cinéma géante face à nous ; objectif centré sur notre trajectoire |
+| 90–99 | Traversée optique, projecteur à 91.2, espace à 93, retour de l'architecture digitale vers 95 |
+| 99–116 | Eric, premier chapitre du D digital, avec flux de données convergents |
+| 114–132 | Six structures de données s'élèvent progressivement, pulse mobile et transition cyan → or |
+| 117–125 | `npm install cassoulet / package size: 4.8 GB`, **après Eric**, avant Mitsuru |
+| 128–146 | Mitsuru : nom orbital, énergie dorée plus intense, vumètre derrière |
+| 143–166 | TOULOUSE / ORBITAL LINK, placé en profondeur et conservé pendant le début du zoom-out |
+| 153–159 | Dernier vumètre, retournement et préparation de la sortie, sans longue attente |
+| 159–173 | Recul et montée : reveal du titre complet et de la connexion au sol |
+| 173–180 | Image finale stable, AI4Fun et petites signatures de l'événement |
+
+### Important : narration et géométrie ne sont pas la même chose
+
+Le chapitre cinéma **réutilise la passerelle et une partie de la trajectoire existante dans le D**. L'entrée « DIGITAL D » à 95 s est une **transition de thème et de visibilité**, pas la première entrée géométrique dans la lettre.
+
+Il n'existe pas un nouveau long couloir cinéma indépendant entre les deux lettres. La continuité de position est conservée ; les décors, lumières et racines de visibilité font changer l'univers. Ne pas « réparer » cette distinction en reconstruisant tout le parcours.
+
+## 5. Goûts de l'utilisateur et idées déjà abandonnées
+
+Ces décisions évitent de réintroduire des éléments retirés lors des nombreuses itérations :
+
+- Le T a été **désencombré** : six bornes latérales, moins de sprites et moins d'objets redondants. Ne pas remettre la grosse borne au centre. Conserver le texte d'ouverture.
+- Les sprites sont plaqués sur les **murs latéraux**, au-dessus des objets, pas à l'intérieur des bornes ou en tas.
+- Le personnage voxel a été remplacé par le **violon**, associé à Anne-Flore, centré sous sa fiche et près du sol.
+- Les anciens ballons rebondissants, y compris le ballon de rugby, et leurs plateformes ne font plus partie du show actuel. Havok sert maintenant aux pièces, au mur et au pop-corn.
+- La blague **Canal du Midi** et le texte **CONTAINER / NO CLOUD REQUIRED** ont été retirés. Les noms de certains anciens shaders/rubans peuvent encore évoquer MIDI : cela ne signifie pas qu'il faut remettre le panneau.
+- Ne pas rétablir **GAME OVER 404 / EXIT NOT FOUND / TEST PASSED** : le récit de sortie est désormais `git rebase --continue` qui déverrouille la porte.
+- Le cassoulet doit rester **entre Eric et Mitsuru**, et visible assez longtemps. Une ancienne demande le plaçait après David ; elle a été corrigée ensuite.
+- Le cinéma doit rester une **composition architecturale symétrique**, pas une distribution aléatoire de sièges flottants, de CRT inclinés et de pancartes.
+- Les props géants sont des héros intentionnels : clap, bobines, caméra. La chaise de réalisateur et les VHS sont des détails, pas des concurrents du speaker.
+- La caméra géante doit **pointer vers nous** et être traversée par son objectif. Pas une petite caméra posée sur le côté qui filme dans l'autre sens.
+- Éviter les signes plats génériques supplémentaires. Les textes existants sont justifiés par une fiche, un écran, un terminal, un clap ou une architecture.
+- Les faisceaux doivent préparer les révélations, pas masquer les noms. Les effets sonores réactifs accentuent certains moments sans rendre toute la scène erratique.
+
+## 6. Architecture : ouvrir seulement les fichiers pertinents
+
+Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichiers de contenu / caméra concernés, puis choisir la ligne appropriée :
+
+| Besoin | Fichiers principaux |
+| --- | --- |
+| Horloge, lecture, pause, reprise, préparation et rendu | [App.ts](src/engine/App.ts), [Timeline.ts](src/engine/Timeline.ts) |
+| Construction de la scène, coordination, visibilité des univers, lumière globale, bloom / fog | [DevFestScene.ts](src/scene/DevFestScene.ts) |
+| Position caméra, regard, FOV, ancrage des props, sortie et framing final | [CameraPath.ts](src/camera/CameraPath.ts) |
+| Glyphes du titre, grille, murs / sols / toits et vraie passerelle T–D | [title.ts](src/content/title.ts), [Labyrinth.ts](src/scene/Labyrinth.ts) |
+| Speakers, fenêtres d'effets, transitions et boutons de répétition | [speakers.ts](src/content/speakers.ts), [cues.ts](src/content/cues.ts), [showBeats.ts](src/content/showBeats.ts) |
+| Bornes, écran d'ouverture, LEVEL COMPLETE / NEXT LEVEL | [ArcadeCathedral.ts](src/scene/ArcadeCathedral.ts) |
+| Porte et éléments narratifs du T ; pixel art | [ArcadeT.ts](src/scene/ArcadeT.ts), [PixelWorld.ts](src/scene/PixelWorld.ts) |
+| Violon voxel et traînées de vitesse | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts) |
+| Pièces et mur de dette technique, Havok / seek / cleanup | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
+| Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
+| Chargement local, normalisation, instances, clone de caméra et animation du clap | [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
+| Seau / source, 36 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
+| Progression entre Eric et Mitsuru et flux de données distincts | [DigitalMoments.ts](src/scene/DigitalMoments.ts), [Interior.ts](src/scene/Interior.ts) |
+| Portails non cinéma, typographie et présentation orbitale de Mitsuru | [SpeakerPortal.ts](src/scene/SpeakerPortal.ts) |
+| Blagues, cassoulet, satellite et label ORBITAL LINK | [EasterEggs.ts](src/scene/EasterEggs.ts) |
+| Lasers au sol, vrais spotlights, spectres au sol et aux murs | [ShowLighting.ts](src/effects/ShowLighting.ts), [WallMeters.ts](src/effects/WallMeters.ts) |
+| Particules et rubans réactifs ; entrées audio / événementielles | [MusicReactive.ts](src/effects/MusicReactive.ts), [AudioAnalyzer.ts](src/engine/AudioAnalyzer.ts), [ShowController.ts](src/engine/ShowController.ts), [protocol.ts](src/engine/protocol.ts) |
+| Texte sur meshes, boîtes instanciées, habillage de l'événement / fond | [WorldText.ts](src/scene/WorldText.ts), [Instances.ts](src/scene/Instances.ts), [EventBranding.ts](src/scene/EventBranding.ts), [Atmosphere.ts](src/scene/Atmosphere.ts) |
+| Interface de répétition et diagnostics | [DebugPanel.ts](src/debug/DebugPanel.ts), [index.html](index.html) |
+
+### Repères spatiaux
+
+- Babylon utilise ici une grille dans le plan **X/Z**, avec **Y vertical**.
+- Une cellule mesure **28 unités** ; les lettres font **34 unités** de haut.
+- `cellPosition(col, row)` donne `x = (col - 20) * 28`, `z = (7.5 - row) * 28`.
+- Départ : T, `col = -1`, `row = 15`, `y = 8`. La caméra remonte le pied, tourne à droite près de `row = 9`, puis sort vers `col = 2`.
+- La connexion physique au sol utilise les cellules `(2,9)`, `(2,8)`, `(2,7)` et rejoint le bas du D près de `(2,6)`.
+- Le reveal commence à **159 s**. La pose finale de référence en 16:9 est **position `(0,1110,-755)`**, cible `(0,12,0)`. Le framing s'adapte aux autres rapports d'écran : ne pas imposer cette distance à toutes les fenêtres.
+- `routeAnchor(time, lateralOffset)` fournit position et orientation à partir du trajet. Les props sont généralement fixés à une ancre future pour être vus pendant l'approche.
+- Retimer la caméra déplace aussi ces ancres : un changement local peut donc affecter panneaux, sièges, faisceaux, colliders et durée de lecture.
+
+## 7. Pièges techniques déjà rencontrés et résolus
+
+### Caméra et lisibilité
+
+La route utilise Catmull–Rom, mais **44–58 s** emploie des tangentes Hermite limitées pour éviter l'overshoot / le demi-tour parasite près du ralentissement du clap. Un regard dirigé dans le foyer **59–71 s** évite un virage trop brutal.
+
+Les tests maintiennent les rotations sous **45°/s**, la clearance des murs et au moins **quatre secondes** de cadrage complet pour les noms et le clap. Ne pas déplacer Eric plus tard sans retravailler aussi le regard : ce cas a déjà cassé la fenêtre de lecture.
+
+Les textes sont des textures sur meshes **dans le monde 3D**, pas des overlays HTML. Les tests de projection ne détectent pas toutes les occlusions par d'autres meshes ; une vérification visuelle reste nécessaire.
+
+### Clap : ne pas rejouer toute l'animation
+
+Le GLB contient une séquence ouverture / fermeture / réouverture. Utiliser seulement **les frames source 50 → 60**, définies par `CLAPPER_CLOSE`, pendant **53.65–54.55 s**.
+
+Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouvert soit inclus dans ses bounds. Sa taille héroïque est 22. La typographie est positionnée sur le vrai corps via le landmark **`Object_4`** ; ne pas la laisser flotter hors du clap.
+
+`takeClapper` utilise le modèle animé original : instancier aveuglément sa hiérarchie ne garantit pas que l'AnimationGroup cible la bonne copie.
+
+### Bounds, échelle et orientation des modèles
+
+- Le modèle de caméra contient un grand sol nommé **`ground_0`**. La chaise contient un socle **`Cylinder.003`**. Ils sont retirés de la hiérarchie runtime **avant** de mesurer / normaliser ; sinon les objets utiles deviennent trop petits.
+- Les sièges et la chaise de réalisateur ont une hauteur normalisée de **4.2 unités**.
+- Les racines glTF peuvent avoir une **échelle Z négative** liée au changement de repère. La préserver : la remplacer arbitrairement par une échelle uniforme inverse certains modèles.
+- Les répétitions utilisent des instances partageant la géométrie. La caméra héroïque utilise des **clones partageant la géométrie** : modifier `visibility` sur un `InstancedMesh` ne fonctionne pas et produit des warnings à chaque frame.
+- La caméra géante est normalisée à 40 ; son objectif est aligné sur l'ancre **90 s** via **`lenses_low_40`**, pas via le centre global du modèle. Elle pointe vers nous avec le yaw de route + π.
+- Remplacer un GLB impose de revoir ses landmarks, ses axes, sa licence et ses bounds, pas seulement son nom de fichier.
+- Un `BoxBatch` fige sa matrice monde. Si on le parente ensuite à une racine transformée, utiliser le pattern existant d'`unfreezeWorldMatrix()`.
+
+### Faisceaux, transparence et ancienne architecture
+
+- David a un écran opaque supporté, une projection arrière et deux spotlights d'allée. Le nom apparaît après l'allumage de la lumière.
+- Une texture de texte avec alpha peut être triée comme transparente même si son fond semble opaque. Pour ces écrans, `MATERIAL_OPAQUE` empêche les cônes arrière de passer artificiellement devant le texte.
+- Le glow des meshes **`FX/Cinema /`** tient compte de **`material.alpha * mesh.visibility`**. Sans cela, un cône léger devient un masque blanc énorme.
+- De **48.8 à 95 s**, l'ancien intérieur digital, ses panneaux NODE, les vumètres, les particules / rubans musicaux concernés et le spectre au sol sont masqués ou calmés. Ne pas réactiver ce bruit pendant la première de David.
+- Les meshes du titre sont masqués de **89.85 à 95 s**, sous la transition optique / fog, pour laisser voir le passage spatial. L'architecture du D revient à 95 s. La passerelle T–D au sol reste gérée séparément.
+- Si un objet semble absent, vérifier aussi ses parents et les gates de [DevFestScene.ts](src/scene/DevFestScene.ts), pas uniquement son `setEnabled` local.
+- Préserver le comportement au rewind : les états doivent être recalculés dans les deux sens, pas uniquement activés une fois.
+
+### Havok et pop-corn
+
+Havok simule les pièces / le mur du T puis un seul déversement de **36 grains**, de **78.2 à 84.5 s**. L'application ne fait avancer la physique que pendant la lecture et les fenêtres concernées : T avant 44 s, puis la fenêtre exportée du pop-corn.
+
+Le seau est ancré à **79.5 s**, offset latéral **-5**, hauteur **11.5**, taille **4.8**. Le public doit voir le seau basculer avant de traverser les grains, pas découvrir une pluie tardive au plafond.
+
+**`CINEMA_FLOOR_TOP = 0.28`** est partagé entre scène et collider : le sol visuel est légèrement surélevé. Un collider resté à y = 0 enterre les grains dans le deck. Le test physique simule jusqu'au repos et vérifie cette cohérence.
+
+Les corps temporaires sont détruits en fin de fenêtre et recréés lors d'un seek / rewind. Un seek à l'intérieur de l'événement utilise une position analytique approximative : **ce n'est pas une reproduction exacte des collisions déjà simulées**. Valider le déversement en lecture réelle, pas seulement par saut de temps.
+
+## 8. Audio et vumètres : branche indépendante de la caméra
+
+Les vumètres comportent **trois colonnes** : graves / kick électro, médiums / corps de l'alto, aigus / hats et harmoniques. Cinq groupes existent, dont un dans le T, un derrière Mitsuru et un avant la sortie. Leur état idle doit être visible pendant l'approche, même sans son.
+
+`violaEnergy` issu du mix est une **approximation de bande médium**, pas une séparation d'instruments. Pour un pilotage précis, utiliser une entrée dédiée ou les événements explicites.
+
+API publique utile dans la console ou depuis le scheduler musical :
+
+```javascript
+showController.trigger("kick");
+showController.trigger("snare", 0.8);
+showController.trigger("drop");
+showController.setLevels({ bass: 0.7, violaEnergy: 0.8 });
+showController.setSection("OVERCLOCK");
+showController.setSection(null);
+```
+
+Les valeurs sont validées ; une section force une **palette**, pas une position de caméra. Le relay optionnel `npm run bridge` écoute par défaut sur **ws://127.0.0.1:8787**, uniquement en local. Il n'est pas démarré / contacté automatiquement. Une page publique Strudel n'est pas un origin autorisé pour ce relay. Voir le protocole et les permissions dans [README.md](README.md).
+
+## 9. Assets, licences et portabilité
+
+- Les assets Kenney sont dans [public/assets/kenney](public/assets/kenney), avec leurs licences CC0 et leurs dépendances de textures.
+- Douze GLBs cinéma / espace sont versionnés dans [public/assets/cinema](public/assets/cinema). **Onze sont préchargés et mis en scène** ; `movie_theatre_environment.glb` est conservé mais n'est plus chargé ni affiché.
+- Les textures des GLBs cinéma sélectionnés sont embarquées. Les originaux et attributions CC BY 4.0 figurent dans [CREDITS.md](CREDITS.md). Ne pas recopier d'autres modèles sans vérifier licence et coût géométrique.
+- Le projecteur **Cinema Movie Projector AP5**, environ 1.37 million de triangles et licence **CC BY-NC**, a été exclu. Le projecteur affiché est procédural.
+- Les GLBs distribués restent inchangés ; suppressions de socles, placements, animation et ajouts de rayons de bobines se font au runtime.
+- L'habillage fourni par l'événement est dans [src/assets/event](src/assets/event) : drapeau vert, signature anniversaire, et image violette conservée mais plus affichée au-dessus de David.
+- Une nouvelle machine n'a **pas besoin du dossier Downloads/SketchfabModels d'origine**, ni d'archives jointes au chat, ni des anciens IDs de pages navigateur.
+- Transférer le dépôt complet, **assets + lockfile + ce document**, pas seulement les fichiers TypeScript. Si le transfert passe par Git, vérifier que les changements à transmettre ont bien été commités / poussés.
+
+## 10. Installation et répétition sur une autre machine
+
+Stack de référence : Babylon.js 9.28, Havok 1.3, TypeScript 5.9, Vite 7, Vitest 4. Les versions exactes reproductibles sont celles de [package-lock.json](package-lock.json).
+
+Node.js **22.12+ ou 20.19+**, puis depuis la racine :
+
+```text
+npm ci
+npm run dev
+```
+
+Le dev server annonce normalement http://127.0.0.1:5173. Pour la version de scène :
+
+```text
+npm test
+npm run build
+npm run preview
+```
+
+Le preview annonce normalement http://127.0.0.1:4173. Vérifier la sortie du terminal si un port est occupé ; ne pas dépendre des ports utilisés sur l'ancienne machine. Attendre **SYSTEM READY** avant de démarrer. L'installation des dépendances nécessite leur accès initial ; ensuite la représentation utilise ses ressources locales. Ne pas lancer via `file://`.
+
+| Commande opérateur | Action |
+| --- | --- |
+| Espace | Lecture / pause / reprise |
+| R | Restart |
+| D | Flight control, scrub, vitesse, jumps narratifs, audio, diagnostics |
+| 1–5 | Phases principales |
+| 6 | Préparation du reveal à 155 s |
+| F | Plein écran |
+| Escape | Retour au lobby |
+
+Pour inspecter un beat sans attendre tout le show :
+
+```javascript
+window.devfest.seek(69.8);
+window.devfest.timeline.pause();
+
+// Vérifier la vitesse 1 dans D, puis lancer la répétition complète :
+window.devfest.start(0);
+```
+
+Les jumps nommés incluent CLAPPERBOARD, CINEMA, DAVID, FILM REELS, POPCORN, CAMERA LENS, PROJECTOR, SPACE WARP, D ENTRY, ERIC, D ESCALATION, MITSURU et FINAL REVEAL.
+
+**Attention aux captures trompeuses :** un onglet caché met le show en pause. Vérifier `document.hidden` et travailler dans une page réellement visible ; certaines captures d'un onglet caché semblaient figées malgré des changements de state.
+
+Balanced plafonne le buffer à **2560×1440** ; Native utilise la résolution réelle. Après un redimensionnement, attendre le resize puis vérifier le buffer du moteur avant d'affirmer qu'un test a été fait en 4K.
+
+## 11. Validation : ce qui est acquis et ce qui reste à refaire
+
+Référence validée le 6 octobre 2026 :
+
+- **70 tests / 13 fichiers**, TypeScript et build Vite réussis.
+- Deux répétitions de production complètes à vitesse 1 ; la dernière a duré environ **180.004 s réelles**, avec horloge arrêtée exactement à 180.
+- Aucun error / warning navigateur et aucune requête de ressource externe pendant ces répétitions.
+- Dernière caméra `(0,1110,-755)` en 16:9 ; passerelle T–D toujours activée à y = 0 ; image finale vérifiée visuellement.
+- Les 36 grains tombent et sont nettoyés ; le premier termine vers y = **0.578**, au-dessus du deck de 0.28, pas dedans.
+- Sièges et chaise mesurés à **4.2 unités de haut** ; clone de caméra supportant le fondu ; clap réellement ouvert puis fermé.
+
+Ce sont des résultats historiques, **pas une garantie pour la prochaine modification ou un autre GPU**. Aucun 60 FPS soutenu sur le vrai poste de projection n'a été certifié. Refaire un profil Native / 4K et une répétition avec les vrais musiciens sur cette machine.
+
+Tests les plus utiles pour une itération de mise en scène :
+
+- [CameraPath.test.ts](src/camera/CameraPath.test.ts) : trajet, clearance, portes, vitesse du D, rotations et reveal.
+- [StageReadability.test.ts](src/scene/StageReadability.test.ts) : cadrage complet des textes, clap, objectif, durée des blagues.
+- [SceneClearance.test.ts](src/scene/SceneClearance.test.ts) : murs, roof, core orbital, fog et framing.
+- [CinemaAssets.test.ts](src/scene/CinemaAssets.test.ts) : bounds sans socles, échelle et clones supportant `visibility`.
+- [CinemaWorld.test.ts](src/scene/CinemaWorld.test.ts) : cut, écrans, ordre des étapes et rewind.
+- [CinemaPopcorn.test.ts](src/scene/CinemaPopcorn.test.ts) : vrais corps Havok, repos sur le bon sol, nettoyage et replay.
+- [DigitalMoments.test.ts](src/scene/DigitalMoments.test.ts) : progression sans trou et cleanup avant le final.
+- [ShowLighting.test.ts](src/effects/ShowLighting.test.ts) : lasers et spectres.
+
+Les tests NullEngine mockent certains textes / DynamicTextures car ils n'ont pas l'environnement graphique du navigateur. **Des tests verts ne remplacent pas une inspection visuelle.**
+
+Avant de terminer une modification visible : tester les fenêtres concernées, revenir en arrière, vérifier l'audio absent / réactif, puis faire une lecture complète du build de production à vitesse 1. Examiner le clap non obstrué, la lisibilité des quatre speakers, les intersections, l'échelle des props, la cause et l'effet du pop-corn, l'entrée frontale dans l'objectif, la progression du D et le reveal.
+
+## 12. Point de départ recommandé pour le prochain agent
+
+1. Lire ce mémo et la nouvelle demande ; ne pas transformer les anciennes demandes abandonnées en tâches à refaire.
+2. Vérifier l'état Git et lancer la version présente pour voir le problème avant modification.
+3. Ouvrir [speakers.ts](src/content/speakers.ts), [showBeats.ts](src/content/showBeats.ts) et le module indiqué par la cartographie ci-dessus. Lire la caméra seulement si le changement touche le placement / regard / timing.
+4. Réutiliser les helpers d'ancrage, les instanciations et les gates de visibilité existants.
+5. Modifier une composition cohérente plutôt que saupoudrer des props ou décaler des timestamps isolés.
+6. Préserver le final, vérifier la perception réelle et mettre à jour ce document si une décision structurante change.
+
+**Objectif des prochaines itérations : améliorer ce spectacle déjà fonctionnel, pas redécouvrir son concept ni le reconstruire.**

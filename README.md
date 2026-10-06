@@ -2,6 +2,8 @@
 
 A three-minute real-time opening for the DevFest Toulouse 2026 closing keynote. Babylon.js + TypeScript + Vite. The camera starts in the T of the actual extruded title, travels through arcade, impossible cinema, camera lens and projector beam into the digital D, then reveals **DEVFEST / TOULOUSE**. No scene swap, prerecorded film, runtime CDN, or audio-driven camera.
 
+For future agents and cross-machine handoff, start with [AGENT_CONTEXT.md](AGENT_CONTEXT.md): show intent, preserved decisions, timing, focused code map, known pitfalls and validation history.
+
 ## Run locally
 
 Requires Node.js 22.12+ (or 20.19+).
