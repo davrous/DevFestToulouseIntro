@@ -102,7 +102,7 @@ export class DebugPanel {
     if (document.activeElement !== this.seek) this.seek.value = String(timeline.time);
     const p = world.camera.position;
     const r = world.camera.rotation;
-    const event = timeline.time < 150 ? "INTERIOR TRAVERSAL" : timeline.time < 163 ? "TURN / ESCAPE PREP" : timeline.time < 177 ? "DOLLY / TITLE REVEAL" : "FINAL HOLD";
+    const event = timeline.time < 153 ? "INTERIOR TRAVERSAL" : timeline.time < 159 ? "TURN / ESCAPE PREP" : timeline.time < 173 ? "DOLLY / TITLE REVEAL" : "FINAL HOLD";
     const rows = {
       RENDER: `${engine.getFps().toFixed(0)} FPS / ${engine.getRenderWidth()}×${engine.getRenderHeight()}`,
       CAMERA: `${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}`,

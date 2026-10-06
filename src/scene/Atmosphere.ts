@@ -10,8 +10,8 @@ import { smoothstep } from "../engine/Timeline";
 export const DUST = { minY: 2, maxY: 5, drift: .5, thickness: .055 } as const;
 
 export function showFogDensity(time: number, violaEnergy = 0): number {
-  const clearing = smoothstep((time - 160) / 7);
-  const calm = 1 - smoothstep((time - 155) / 22);
+  const clearing = smoothstep((time - 158) / 7);
+  const calm = 1 - smoothstep((time - 153) / 18);
   return (.009 + violaEnergy * calm * .001) * (1 - clearing) + .00008 * clearing;
 }
 

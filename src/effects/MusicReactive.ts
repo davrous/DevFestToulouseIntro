@@ -2,17 +2,24 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { VertexData } from "@babylonjs/core/Meshes/mesh.vertexData";
 import { ShaderMaterial } from "@babylonjs/core/Materials/shaderMaterial";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
+import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import { CELL, SEED, createTitleCells, seededRandom, cellPosition } from "../content/title";
 import { smoothstep } from "../engine/Timeline";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
+import { cueEnvelope } from "../content/cues";
+import "@babylonjs/core/Meshes/thinInstanceMesh";
 
 export class MusicReactive {
   readonly particles: Mesh;
   private readonly particlesMaterial: ShaderMaterial;
   private readonly canalMaterial: ShaderMaterial;
   private readonly canal: Mesh;
+  private readonly tCanal: Mesh;
+  private readonly notes: Mesh;
+  private readonly noteMatrices = new Float32Array(24 * 16);
 
   constructor(scene: Scene) {
     this.particles = new Mesh("FX/Deterministic data particles", scene);
@@ -95,21 +102,52 @@ export class MusicReactive {
     this.canalMaterial.setColor3("tint", new Color3(.2, 1, .83));
     this.canal.material = this.canalMaterial;
     this.canal.isPickable = false;
+    this.tCanal = MeshBuilder.CreateGround("Arcade / CANAL DU MIDI stream",
+      { width: 4.2, height: 116 }, scene);
+    const tAnchor = cellPosition(-1, 12.8);
+    this.tCanal.position.set(tAnchor.x, .25, tAnchor.z);
+    this.tCanal.material = this.canalMaterial;
+    this.tCanal.isPickable = false;
+    const notesMaterial = new StandardMaterial("Arcade / traveling MIDI notes", scene);
+    notesMaterial.disableLighting = true;
+    notesMaterial.diffuseColor = Color3.Black();
+    notesMaterial.emissiveColor = Color3.FromHexString("#9ffff1").scale(1.5);
+    this.notes = MeshBuilder.CreateBox("FX/Arcade MIDI note packets", { size: 1 }, scene);
+    this.notes.material = notesMaterial;
+    this.notes.isPickable = false;
+    this.notes.alwaysSelectAsActiveMesh = true;
+    this.notes.thinInstanceSetBuffer("matrix", this.noteMatrices, 16, false);
   }
 
   update(time: number, audio: AudioFeatures): void {
-    const calm = 1 - smoothstep((time - 155) / 23);
-    const reveal = smoothstep((time - 163) / 9);
-    const animationTime = Math.min(time, 177);
+    const calm = 1 - smoothstep((time - 153) / 18);
+    const reveal = smoothstep((time - 159) / 9);
+    const animationTime = Math.min(time, 173);
     this.particlesMaterial.setFloat("time", animationTime);
     this.particlesMaterial.setFloat("reveal", reveal);
     this.particlesMaterial.setFloat("energy", audio.energy * calm);
     this.particlesMaterial.setFloat("treble", audio.treble * calm);
     this.particlesMaterial.setFloat("viola", audio.violaEnergy * calm);
-    this.particlesMaterial.setFloat("visibility", (.3 + smoothstep(time / 70) * .7) * (1 - .7 * smoothstep((time - 175) / 3)));
+    this.particlesMaterial.setFloat("visibility", (.3 + smoothstep(time / 70) * .7) * (1 - .7 * smoothstep((time - 170) / 3)));
     this.canalMaterial.setFloat("time", animationTime);
     this.canalMaterial.setFloat("energy", audio.energy * calm);
     this.canalMaterial.setFloat("viola", audio.violaEnergy * calm);
-    this.canalMaterial.setFloat("opacity", smoothstep(time / 20) * (1 - reveal));
+    this.canalMaterial.setFloat("opacity",
+      Math.max(smoothstep(time / 20), cueEnvelope(time, 7, 25, 2)) * (1 - reveal));
+    const tVisible = cueEnvelope(time, 7, 25, 2) > 0;
+    this.tCanal.setEnabled(tVisible);
+    this.notes.setEnabled(tVisible);
+    if (!tVisible) return;
+    const transform = Matrix.Identity();
+    const center = Vector3.Zero();
+    const size = new Vector3();
+    for (let index = 0; index < 24; index++) {
+      const beat = (animationTime * (5 + audio.violaEnergy * 3) + index * 11) % 118;
+      center.set(cellPosition(-1, 12).x + (index % 3 - 1) * 1.2, .35, cellPosition(-1, 15).z + beat);
+      size.set(.25 + index % 2 * .35, .1, .7 + audio.kick * .5);
+      Matrix.ComposeToRef(size, Quaternion.Identity(), center, transform);
+      transform.copyToArray(this.noteMatrices, index * 16);
+    }
+    this.notes.thinInstanceBufferUpdated("matrix");
   }
 }

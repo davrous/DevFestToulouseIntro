@@ -77,7 +77,8 @@ export class App {
       const audio = this.showController.sample(now);
       if (this.timeline.playing || this.inLobby || !this.showController.enabled) Object.assign(this.visualAudio, audio);
       this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed);
-      this.world.scene.physicsEnabled = !this.inLobby && this.timeline.playing && time < 155;
+      this.world.scene.physicsEnabled = !!this.world.scene.getPhysicsEngine()
+        && !this.inLobby && this.timeline.playing && time < 44;
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {

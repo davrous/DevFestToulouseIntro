@@ -237,9 +237,9 @@ export class FloorEqualizer {
           float level = min(1.0, 0.25 + 0.2 * wave + band * 0.56
             + kick * (0.12 + 0.1 * wave) + snare * 0.1 + drop * 0.24);
           float lit = smoothstep(code.g - 0.085, code.g + 0.04, level);
-          vec3 tint = station < 59.0 ? vec3(0.28, 1.0, 0.79)
-            : station < 89.0 ? vec3(0.67, 0.56, 1.0)
-            : station < 119.0 ? vec3(1.0, 0.55, 0.44) : vec3(1.0, 0.8, 0.39);
+          vec3 tint = station < 64.0 ? vec3(0.28, 1.0, 0.79)
+            : station < 98.0 ? vec3(0.67, 0.56, 1.0)
+            : station < 122.0 ? vec3(1.0, 0.55, 0.44) : vec3(1.0, 0.8, 0.39);
           gl_FragColor = vec4(tint * (0.4 + lit * 1.5),
             proximity * visibility * boot * min(overclock, 1.25) * (0.04 + lit * 0.7));
         }`,
@@ -250,7 +250,7 @@ export class FloorEqualizer {
     const themes = [THEME_COLORS.signal, THEME_COLORS.neural, THEME_COLORS.playground, THEME_COLORS.overclock];
     for (let phase = 0; phase < themes.length; phase++) {
       const stations = this.stations.filter(({ time }) =>
-        (time < 60 ? 0 : time < 90 ? 1 : time < 120 ? 2 : 3) === phase);
+        (time < 64 ? 0 : time < 98 ? 1 : time < 122 ? 2 : 3) === phase);
       const material = new StandardMaterial(`FX/Floor spectrum ${phase}`, scene);
       material.disableLighting = true;
       material.diffuseColor = Color3.Black();

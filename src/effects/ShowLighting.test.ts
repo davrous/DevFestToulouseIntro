@@ -9,7 +9,6 @@ import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { CELL, cellPosition, createTitleCells } from "../content/title";
 import { silentFeatures } from "../engine/AudioAnalyzer";
 import { FLOOR_STATION_TIMES, PortalLasers, floorVisibility, laserAim, laserEndpoints, laserReach, laserStrength, speakerReveal, spotlightSweep, spectrumBarHeight } from "./ShowLighting";
-import { BALL_LIFETIME, BALL_PHASES, RUGBY_BALL_INDEX, BouncingBalls, ballAge, ballImpulse, platformHeight } from "./BouncingBalls";
 import { WALL_METER_BANKS, wallMeterLevels, wallMeterVisibility } from "./WallMeters";
 
 describe("stage lighting choreography", () => {
@@ -55,19 +54,16 @@ describe("stage lighting choreography", () => {
     const strength = laserStrength(68, first, silence);
     const endpoints = laserEndpoints(68, first, -1, 1);
     const bar = spectrumBarHeight(68, 69, 2, silence);
-    const rugby = ballAge(68, BALL_PHASES[RUGBY_BALL_INDEX]);
     laserStrength(175, first, { ...silence, drop: 1 });
     laserEndpoints(140, SPEAKERS[3], 1, 0);
     spectrumBarHeight(153, 150, 2, { ...silence, treble: 1 });
-    ballAge(145, BALL_PHASES[RUGBY_BALL_INDEX]);
     expect(laserStrength(68, first, silence)).toBe(strength);
     expect(laserEndpoints(68, first, -1, 1)).toEqual(endpoints);
     expect(spectrumBarHeight(68, 69, 2, silence)).toBe(bar);
-    expect(ballAge(68, BALL_PHASES[RUGBY_BALL_INDEX])).toEqual(rugby);
   });
 
   it("keeps beams outside the speaker text panels and inside the corridor", () => {
-    const corridor = createTitleCells().filter((cell) => cell.line === 0 && cell.letter === 0);
+    const corridor = createTitleCells().filter((cell) => cell.letter === 0);
     const occupied = new Set(corridor.map((cell) => `${cell.col},${cell.row}`));
     for (const speaker of SPEAKERS) {
       const { position, yaw } = routeAnchor(speaker.gateTime, speaker.lateralOffset);
@@ -118,7 +114,8 @@ describe("stage lighting choreography", () => {
   });
 
   it("places the floor spectrum within the letter corridor, below the camera route", () => {
-    const corridor = createTitleCells().filter((cell) => cell.line === 0 && cell.letter === 0);
+    const corridor = createTitleCells().filter((cell) => cell.letter === 0);
+    const bridge = [7, 8, 9].map((row) => cellPosition(2, row));
     for (const station of FLOOR_STATION_TIMES) {
       const { position, yaw } = routeAnchor(station);
       for (const lane of [-1, 0, 1]) {
@@ -127,7 +124,7 @@ describe("stage lighting choreography", () => {
             const x = (lane * 6.5) + dx;
             const actualX = position.x + Math.cos(yaw) * x + Math.sin(yaw) * dz;
             const actualZ = position.z - Math.sin(yaw) * x + Math.cos(yaw) * dz;
-            expect(corridor.some((cell) => Math.abs(actualX - cell.x) < CELL / 2
+            expect([...corridor, ...bridge].some((cell) => Math.abs(actualX - cell.x) < CELL / 2
               && Math.abs(actualZ - cell.z) < CELL / 2), `${station}s / lane ${lane}`).toBe(true);
           }
         }
@@ -148,24 +145,6 @@ describe("stage lighting choreography", () => {
     }
   });
 
-  it("keeps the audio-driven collision platforms aligned with visible bars and balls alive longer", () => {
-    expect(BALL_LIFETIME).toBeGreaterThan(12);
-    expect(ballAge(3, BALL_PHASES[0])).toBe(13);
-    expect(ballAge(12, BALL_PHASES[0])).toBe(0);
-    expect(ballAge(29, BALL_PHASES[0])).toBe(17);
-    expect(platformHeight(15, 15, 0, { ...silence, bass: 1, kick: 1 }))
-      .toBeGreaterThan(platformHeight(15, 15, 0, silence) + 1);
-    expect(platformHeight(15, 15, 1, { ...silence, bass: 1 }))
-      .toBe(platformHeight(15, 15, 1, silence));
-    expect(platformHeight(15, 15, 1, { ...silence, violaEnergy: 1 }))
-      .toBeGreaterThan(platformHeight(15, 15, 1, silence));
-    expect(ballImpulse(15, 2, -1, { ...silence, kick: 1, bass: 1 }).y)
-      .toBeGreaterThan(ballImpulse(15, 2, -1, silence).y + 7);
-    expect(ballImpulse(15, 2, -1, silence)).toEqual(ballImpulse(15, 2, -1, silence));
-    expect(ballImpulse(15, 2, -1, { ...silence, bass: 1 }).x)
-      .not.toBe(ballImpulse(15, 2, -1, silence).x);
-  });
-
   it("lights three rectangles at each corridor end and over the exit", () => {
     const occupied = new Set(createTitleCells().map((cell) => `${cell.col},${cell.row}`));
     for (const bank of WALL_METER_BANKS) {
@@ -177,12 +156,14 @@ describe("stage lighting choreography", () => {
       expect(wallMeterVisibility(bank.end, bank)).toBe(0);
     }
     expect(wallMeterVisibility(0, WALL_METER_BANKS[0])).toBe(1);
-    expect(wallMeterVisibility(56, WALL_METER_BANKS[1])).toBe(1);
-    expect(wallMeterVisibility(91, WALL_METER_BANKS[2])).toBe(1);
-    expect(WALL_METER_BANKS).toHaveLength(4);
+    expect(wallMeterVisibility(82, WALL_METER_BANKS[1])).toBe(1);
+    expect(wallMeterVisibility(105, WALL_METER_BANKS[2])).toBe(1);
+    expect(WALL_METER_BANKS).toHaveLength(5);
     expect(wallMeterVisibility(140, WALL_METER_BANKS[3])).toBe(1);
-    expect(WALL_METER_BANKS[3].face).toBe("north");
-    expect(wallMeterVisibility(163, WALL_METER_BANKS[3])).toBe(0);
+    expect(WALL_METER_BANKS[3].face).toBe("south");
+    expect(wallMeterVisibility(150, WALL_METER_BANKS[4])).toBe(1);
+    expect(WALL_METER_BANKS[4].face).toBe("north");
+    expect(wallMeterVisibility(159, WALL_METER_BANKS[4])).toBe(0);
     expect(wallMeterLevels({ ...silence, bass: .8, mid: .6, treble: .9 })).toEqual([.8, .6, .9]);
     expect(wallMeterLevels({ ...silence, violaEnergy: .7 })).toEqual([0, .7, .42]);
   });
@@ -212,19 +193,4 @@ describe("stage lighting choreography", () => {
     engine.dispose();
   });
 
-  it("models one stitched rugby ball among seven camera-following balls", () => {
-    const engine = new NullEngine();
-    const scene = new Scene(engine);
-    new BouncingBalls(scene);
-    const rugby = scene.getTransformNodeByName("FX/Toulouse rugby ball");
-    const body = scene.getMeshByName(`FX/Ball body ${RUGBY_BALL_INDEX}`);
-    if (!rugby || !body) throw new Error("The rugby ball must have a root and a body.");
-    expect(body.scaling.z).toBeGreaterThan(body.scaling.x);
-    expect(scene.meshes.filter((mesh) => mesh.name.startsWith("FX/Rugby stripe"))).toHaveLength(2);
-    expect(scene.meshes.filter((mesh) => mesh.name.startsWith("FX/Rugby lace"))).toHaveLength(3);
-    expect(scene.meshes.filter((mesh) => mesh.name.startsWith("FX/Ball body"))).toHaveLength(7);
-    expect(rugby.isEnabled()).toBe(false);
-    scene.dispose();
-    engine.dispose();
-  });
 });

@@ -26,6 +26,20 @@ describe("deterministic show clock", () => {
     expect(timeline.time).toBe(11);
   });
 
+  it("ends normal-speed playback at 180 seconds, not after the final hold", () => {
+    const timeline = new Timeline();
+    timeline.play();
+    timeline.tick(0);
+    timeline.tick(173000);
+    expect(timeline.time).toBe(173);
+    expect(timeline.playing).toBe(true);
+    timeline.tick(180000);
+    expect(timeline.time).toBe(180);
+    expect(timeline.playing).toBe(false);
+    timeline.tick(210000);
+    expect(timeline.time).toBe(180);
+  });
+
   it("seeks backward, resolves phases, changes speed, and holds the final frame", () => {
     const timeline = new Timeline();
     timeline.seek(155);

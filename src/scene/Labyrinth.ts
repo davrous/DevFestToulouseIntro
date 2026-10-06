@@ -4,7 +4,8 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTexture";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { CELL, HEIGHT, SEED, createTitleCells, seededRandom } from "../content/title";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { CELL, HEIGHT, SEED, cellPosition, createTitleCells, seededRandom, type TitleCell } from "../content/title";
 import { BoxBatch } from "./Instances";
 
 function metal(scene: Scene, name: string, hex: string, metallic: number, roughness: number): PBRMaterial {
@@ -27,10 +28,51 @@ export function emissive(scene: Scene, name: string, color: string, strength = 1
 
 export interface Labyrinth {
   meshes: Mesh[];
+  bridge: TransformNode;
   cyan: StandardMaterial;
   amber: StandardMaterial;
   roof: PBRMaterial;
   cellCount: number;
+}
+
+export function isArcadeExit(cell: TitleCell, dc: number, dr: number): boolean {
+  return cell.line === 1 && cell.letter === 0 && cell.col === 1 && cell.row === 9 && dc === 1 && dr === 0;
+}
+
+export const BRIDGE_CELLS = [9, 8, 7].map((row) => ({ col: 2, row })) as readonly { col: number; row: number }[];
+
+export function bridgeVisible(time: number): boolean {
+  return time >= 0 && time <= 180;
+}
+
+function createBridge(scene: Scene): TransformNode {
+  const root = new TransformNode("Arcade / force-field bridge", scene);
+  const light = emissive(scene, "Bridge / visible connector", "#72ffe0", 2.3);
+  const lights = new BoxBatch("FX/Bridge / circuit traces", light);
+  const field = new StandardMaterial("Bridge / transparent floor field", scene);
+  field.disableLighting = true;
+  field.diffuseColor = Color3.FromHexString("#18313a");
+  field.emissiveColor = Color3.FromHexString("#174b52");
+  field.alpha = .4;
+  field.backFaceCulling = false;
+  const decks = new BoxBatch("Bridge / transparent force field", field);
+  for (const { col, row } of BRIDGE_CELLS) {
+    const { x, z } = cellPosition(col, row);
+    decks.add(x - (row === 9 ? 1.5 : 0), -.1, z + (row === 7 ? 1.5 : 0),
+      CELL + (row === 9 ? 3 : 0), .16, CELL + (row === 7 ? 3 : 0));
+    for (const offset of [-CELL / 2 + 1, CELL / 2 - 1]) {
+      lights.add(x + offset, .08, z, 1.4, .12, CELL);
+    }
+    lights.add(x, .08, z, CELL, .12, 1.4);
+    if (row === 9) lights.add(x - CELL / 2, .08, z, 3, .12, CELL);
+    if (row === 7) lights.add(x, .08, z + CELL / 2, CELL, .12, 3);
+  }
+  for (const batch of [decks, lights]) {
+    const mesh = batch.build(scene);
+    mesh.unfreezeWorldMatrix();
+    mesh.parent = root;
+  }
+  return root;
 }
 
 export function createLabyrinth(scene: Scene): Labyrinth {
@@ -96,11 +138,12 @@ export function createLabyrinth(scene: Scene): Labyrinth {
       const wz = z - dr * CELL / 2;
       const alongX = dr !== 0;
       const exit = internal && col === 2 && row === 6 && dr === 1;
+      const arcadeExit = isArcadeExit(cell, dc, dr);
       const wallWidth = alongX ? CELL : 1.5;
       const wallDepth = alongX ? 1.5 : CELL;
-      if (!exit) {
+      if (!exit && !arcadeExit) {
         bodies.add(wx, HEIGHT / 2, wz, wallWidth, HEIGHT, wallDepth);
-      } else {
+      } else if (exit) {
         bodies.add(wx, 29, wz, CELL, 10, 1.5);
         bodies.add(wx - 12, 12, wz, 4, 24, 1.5);
         bodies.add(wx + 12, 12, wz, 4, 24, 1.5);
@@ -109,7 +152,7 @@ export function createLabyrinth(scene: Scene): Labyrinth {
         neon.add(wx + 10, 12, wz - 1, .5, 24, .5);
       }
       neon.add(wx, HEIGHT + 1.85, wz, alongX ? CELL : 1.2, .6, alongX ? 1.2 : CELL);
-      if (!exit) {
+      if (!exit && !arcadeExit) {
         neon.add(wx - dc, 3, wz + dr, alongX ? CELL : .25, .25, alongX ? .25 : CELL);
         neon.add(wx - dc, HEIGHT - 4, wz + dr, alongX ? CELL : .35, .32, alongX ? .35 : CELL);
       }
@@ -140,5 +183,6 @@ export function createLabyrinth(scene: Scene): Labyrinth {
     }
   }
   const meshes = [bodies, decks, roofs, ribs, panels, cyanLines, amberLines, lamps].map((batch) => batch.build(scene));
-  return { meshes, cyan, amber, roof, cellCount: cells.length };
+  const bridge = createBridge(scene);
+  return { meshes, bridge, cyan, amber, roof, cellCount: cells.length };
 }

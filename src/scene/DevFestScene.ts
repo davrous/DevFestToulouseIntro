@@ -20,14 +20,18 @@ import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import type { Section } from "../engine/protocol";
 import { SPEAKERS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
-import { createLabyrinth } from "./Labyrinth";
+import { bridgeVisible, createLabyrinth } from "./Labyrinth";
 import { createInterior, updateInterior, createFinalCaption } from "./Interior";
 import { createAtmosphere, DUST, showFogDensity } from "./Atmosphere";
 import { SpeakerPortal } from "./SpeakerPortal";
 import { EasterEggs } from "./EasterEggs";
+import { ArcadeT } from "./ArcadeT";
+import { ArcadePhysics } from "./ArcadePhysics";
+import { PixelWorld } from "./PixelWorld";
+import { ArcadeCathedral } from "./ArcadeCathedral";
+import { DemosceneTransition } from "./DemosceneTransition";
 import { MusicReactive } from "../effects/MusicReactive";
 import { FloorEqualizer } from "../effects/ShowLighting";
-import { BouncingBalls } from "../effects/BouncingBalls";
 import { WallMeters } from "../effects/WallMeters";
 import { EventBranding } from "./EventBranding";
 import HavokPhysics from "@babylonjs/havok";
@@ -45,9 +49,13 @@ export class DevFestScene {
   readonly glow: GlowLayer;
   readonly portals: SpeakerPortal[];
   private readonly easterEggs: EasterEggs;
+  private readonly arcade: ArcadeT;
+  private readonly arcadePhysics: ArcadePhysics;
+  private readonly pixelWorld: PixelWorld;
+  private readonly cathedral: ArcadeCathedral;
+  private readonly demoscene: DemosceneTransition;
   private readonly music: MusicReactive;
   private readonly floorEqualizer: FloorEqualizer;
-  private readonly bouncingBalls: BouncingBalls;
   private readonly wallMeters: WallMeters;
   private readonly branding: EventBranding;
   private readonly tint = new Color3();
@@ -109,10 +117,14 @@ export class DevFestScene {
     this.caption = createFinalCaption(scene);
     this.portals = SPEAKERS.map((speaker, index) => new SpeakerPortal(scene, speaker, index));
     this.easterEggs = new EasterEggs(scene);
-    this.branding = new EventBranding(scene, this.easterEggs.container, this.portals[1]);
+    this.arcade = new ArcadeT(scene);
+    this.arcadePhysics = new ArcadePhysics(scene);
+    this.pixelWorld = new PixelWorld(scene);
+    this.cathedral = new ArcadeCathedral(scene);
+    this.demoscene = new DemosceneTransition(scene);
+    this.branding = new EventBranding(scene, this.portals[1]);
     this.music = new MusicReactive(scene);
     this.floorEqualizer = new FloorEqualizer(scene);
-    this.bouncingBalls = new BouncingBalls(scene);
     this.wallMeters = new WallMeters(scene);
     this.glow = new GlowLayer("Architectural light bloom", scene, { mainTextureRatio: .5, blurKernelSize: 32 });
     this.glow.addExcludedMesh(this.music.particles);
@@ -148,6 +160,7 @@ export class DevFestScene {
   }
 
   async prepare(): Promise<void> {
+    await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare()]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
     const plugin = new HavokPlugin(true, havok);
     if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
@@ -156,7 +169,7 @@ export class DevFestScene {
     this.physicsPlugin = plugin;
     plugin.setVelocityLimits(32, 12);
     this.scene.physicsEnabled = false;
-    this.bouncingBalls.initialize(this.scene, plugin);
+    this.arcadePhysics.initialize(plugin);
     await this.branding.ready;
     await this.scene.whenReadyAsync();
     const compile = () => Promise.all(this.scene.meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
@@ -188,8 +201,8 @@ export class DevFestScene {
     this.camera.fov = pose.fov;
     this.headlight.position.copyFrom(pose.position);
     const wake = smoothstep(time / 35);
-    const reveal = smoothstep((time - 163) / 10);
-    const calm = 1 - smoothstep((time - 155) / 22);
+    const reveal = smoothstep((time - 159) / 10);
+    const calm = 1 - smoothstep((time - 153) / 18);
     const paletteTime = time < 155 && section ? PHASES.find((phase) => phase.name === section)!.time + 6 : time;
     let index = 0;
     for (let i = 1; i < PHASES.length; i++) if (paletteTime >= PHASES[i].time) index = i;
@@ -199,7 +212,7 @@ export class DevFestScene {
     this.glow.intensity = .2 + reveal * .35 + pulse * .15 + voice * .25;
     this.pipeline.bloomWeight = .2 + calm * (audio.violaEnergy * .08 + audio.drop * .1) + voice * .05;
     this.camera.minZ = .15 + reveal * 8;
-    this.scene.fogDensity = showFogDensity(time, audio.violaEnergy);
+    this.scene.fogDensity = showFogDensity(time, audio.violaEnergy) + cueEnvelope(time, 46, 62, 2) * .012;
     this.scene.fogColor.set(.022 + this.tint.r * .008, .033 + this.tint.g * .022, .04 + this.tint.b * .03);
     this.fill.intensity = .35 + wake * .3 + reveal * .55;
     this.sun.intensity = .5 + wake * .5 + reveal * 1.2;
@@ -207,17 +220,22 @@ export class DevFestScene {
     this.labyrinth.cyan.emissiveColor.copyFrom(this.tint).scaleInPlace(.8 + wake * .55 + reveal * 1.5 + pulse + voice * 1.8);
     this.labyrinth.amber.emissiveColor.set(1.25 + reveal * 1.75, .52 + reveal * .25, .26);
     this.labyrinth.roof.emissiveColor.set(.008 + reveal * .067, .018 + reveal * .15, .023 + reveal * .17);
+    this.labyrinth.bridge.setEnabled(bridgeVisible(time));
     this.atmosphere.dust.position.y = Math.sin(time * .13) * DUST.drift;
-    this.caption.visibility = smoothstep((time - 175) / 3);
+    this.caption.visibility = smoothstep((time - 170) / 3);
     this.branding.update(time);
     updateInterior(this.interior, time);
     this.interior.core.scaling.setAll(1 + audio.bass * calm * .025
       + audio.drop * cueEnvelope(time, 120, 155, 2) * .18);
     this.portals.forEach((portal) => portal.update(time, audio));
     this.easterEggs.update(time);
+    this.arcade.update(time, audio);
+    this.pixelWorld.update(time, audio);
+    this.cathedral.update(time, audio);
+    this.demoscene.update(time, audio);
+    this.arcadePhysics.update(time, audio);
     this.music.update(time, audio);
     this.floorEqualizer.update(time, audio);
-    this.bouncingBalls.update(time, audio, speed);
     this.wallMeters.update(time, audio);
   }
 

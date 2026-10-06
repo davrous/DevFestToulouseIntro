@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { SPEAKERS, activeSpeaker } from "./speakers";
-import { activeCues, chocolatineStage, cueEnvelope, fridayChoice } from "./cues";
+import { activeCues, chocolatineStage, cueEnvelope } from "./cues";
+import { arcadeDoorOpen } from "../scene/ArcadeT";
 
 describe("show content", () => {
-  it("introduces the four speakers at the prescribed timestamps with editable titles", () => {
+  it("introduces one speaker in the T and three in the D with editable titles", () => {
     expect(SPEAKERS.map((speaker) => speaker.name)).toEqual(["Anne-Flore Bernard", "David Rousset", "Eric Mittelette", "Mitsuru Furuta"]);
-    expect(SPEAKERS.map((speaker) => speaker.startTime)).toEqual([30, 60, 90, 120]);
+    expect(SPEAKERS.map((speaker) => speaker.startTime)).toEqual([17, 80, 96, 128]);
+    expect(SPEAKERS.map((speaker) => speaker.gateTime)).toEqual([29, 88, 107, 136]);
     for (const speaker of SPEAKERS) {
       expect(speaker.demoTitle.trim().length).toBeGreaterThan(0);
       expect(activeSpeaker(speaker.startTime)).toBe(speaker);
@@ -15,19 +17,29 @@ describe("show content", () => {
   });
 
   it("keeps speaker portals and jokes out of the final reveal", () => {
-    for (let time = 163; time <= 180; time++) {
+    for (let time = 166; time <= 180; time++) {
       expect(activeSpeaker(time)).toBeUndefined();
       expect(activeCues(time)).toEqual([]);
     }
+    expect(activeCues(163)).toContain("TOULOUSE / ORBITAL LINK");
   });
 
   it("replays joke states exactly when seeking backward", () => {
-    expect(chocolatineStage(52)).toBe(2);
-    expect(chocolatineStage(47)).toBe(0);
-    expect(chocolatineStage(49)).toBe(1);
-    expect(fridayChoice(85)).toBe("NO");
-    expect(fridayChoice(79)).toBe("PENDING");
-    expect(fridayChoice(100)).toBe("NO");
+    expect(chocolatineStage(8)).toBe(0);
+    expect(chocolatineStage(11)).toBe(1);
+    expect(activeCues(11)).toContain("HTTP 301 / CHOCOLATINE");
+    expect(activeCues(16)).not.toContain("HTTP 301 / CHOCOLATINE");
+    expect(activeCues(20)).not.toContain("CANAL DU MIDI");
+    expect(activeCues(31)).not.toContain("npm install cassoulet");
+    expect(activeCues(93)).not.toContain("npm install cassoulet");
+    expect(activeCues(119)).toContain("npm install cassoulet");
+    expect(activeCues(124)).toContain("npm install cassoulet");
+    expect(activeCues(125)).not.toContain("npm install cassoulet");
+    expect(arcadeDoorOpen(41.2)).toBe(0);
+    expect(arcadeDoorOpen(43)).toBeGreaterThan(0);
+    expect(arcadeDoorOpen(40)).toBe(0);
+    expect(arcadeDoorOpen(44)).toBeGreaterThan(0);
+    expect(arcadeDoorOpen(47)).toBe(1);
   });
 
   it("fades cues without leaving visible objects before or after their windows", () => {

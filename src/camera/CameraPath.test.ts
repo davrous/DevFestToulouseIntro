@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { cameraPose, interiorPosition, routeAnchor } from "./CameraPath";
-import { CELL, HEIGHT, TITLE_WIDTH, createTitleCells, seededRandom, SEED } from "../content/title";
+import { CELL, HEIGHT, TITLE_WIDTH, cellPosition, createTitleCells, seededRandom, SEED } from "../content/title";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { SPEAKERS } from "../content/speakers";
+import { BRIDGE_CELLS, bridgeVisible, isArcadeExit } from "../scene/Labyrinth";
+import { arcadeDoorOpen } from "../scene/ArcadeT";
 
 describe("title labyrinth choreography", () => {
   it("builds the seven- and eight-letter words using reproducible modules", () => {
@@ -14,8 +16,9 @@ describe("title labyrinth choreography", () => {
     expect(Array.from({ length: 40 }, first)).toEqual(Array.from({ length: 40 }, second));
   });
 
-  it("keeps every interior frame inside a real letter volume with floor and roof clearance", () => {
-    const cells = createTitleCells().filter((cell) => cell.line === 0 && cell.letter === 0);
+  it("keeps every frame in the T, D or roofed connecting passage with wall clearance", () => {
+    const cells = createTitleCells().filter((cell) => cell.letter === 0)
+      .concat([7, 8, 9].map((row) => ({ col: 2, row, line: 1, letter: 0, ...cellPosition(2, row) })));
     const occupied = new Set(cells.map((cell) => `${cell.col},${cell.row}`));
     for (let t = 0; t <= 163; t += 1 / 30) {
       const p = interiorPosition(t);
@@ -36,18 +39,48 @@ describe("title labyrinth choreography", () => {
     }
   });
 
+  it("runs the original D circuit at more than 1.5 times its former average speed", () => {
+    let distance = 0;
+    let previous = interiorPosition(70);
+    for (let time = 70 + 1 / 30; time <= 155; time += 1 / 30) {
+      const current = interiorPosition(Math.min(time, 155));
+      distance += Vector3.Distance(previous, current);
+      previous = current;
+    }
+    expect(distance / 85).toBeGreaterThan(1.5 * 453.5 / 155);
+    const originalStart = cellPosition(.12, 5.05);
+    expect(interiorPosition(70).x).toBeCloseTo(originalStart.x);
+    expect(interiorPosition(70).z).toBeCloseTo(originalStart.z);
+  });
+
+  it("opens the T exit before crossing and keeps the bridge through the final reveal", () => {
+    const tExit = createTitleCells().find((cell) => cell.line === 1 && cell.letter === 0 && cell.col === 1 && cell.row === 9);
+    expect(tExit).toBeDefined();
+    expect(isArcadeExit(tExit!, 1, 0)).toBe(true);
+    expect(BRIDGE_CELLS).toEqual([{ col: 2, row: 9 }, { col: 2, row: 8 }, { col: 2, row: 7 }]);
+    const doorway = cellPosition(1.5, 9).x;
+    for (let t = 44; t < 50; t += .05) {
+      if (interiorPosition(t).x >= doorway) expect(arcadeDoorOpen(t)).toBeGreaterThan(.75);
+    }
+    expect(bridgeVisible(60)).toBe(true);
+    expect(bridgeVisible(144)).toBe(true);
+    expect(bridgeVisible(145)).toBe(true);
+    expect(bridgeVisible(163)).toBe(true);
+    expect(bridgeVisible(180)).toBe(true);
+  });
+
   it("does not reveal the structure before the escape and has no camera cuts", () => {
     for (let t = 0; t <= 180; t += .1) {
       const p = cameraPose(t);
       const next = cameraPose(t + .01);
       expect(p.position.subtract(next.position).length()).toBeLessThan(3);
       expect(p.target.subtract(p.position).length()).toBeGreaterThan(.1);
-      if (t < 163) expect(p.reveal).toBe(0);
+      if (t < 159) expect(p.reveal).toBe(0);
     }
   });
 
   it("clears the exit aperture before ascending through the roof", () => {
-    for (let t = 163; t < 166; t += .01) {
+    for (let t = 159; t < 162; t += .01) {
       const p = cameraPose(t).position;
       if (p.y > 23) expect(p.z).toBeLessThan(27);
     }
@@ -60,7 +93,7 @@ describe("title labyrinth choreography", () => {
       const visibleWidth = 2 * Math.tan(pose.fov / 2) * distance * aspect;
       expect(visibleWidth).toBeGreaterThan(TITLE_WIDTH * 1.08);
     }
-    expect(cameraPose(177)).toEqual(cameraPose(180));
+    expect(cameraPose(173)).toEqual(cameraPose(180));
   });
 
   it("seeking yields exactly the same pose every time", () => {
@@ -95,14 +128,17 @@ describe("title labyrinth choreography", () => {
   });
 
   it("keeps camera turns below 45 degrees per second inside the maze", () => {
-    for (let time = 0; time < 163; time += .05) {
+    let worst = { time: 0, speed: 0 };
+    for (let time = 0; time < 159; time += .05) {
       const pose = cameraPose(time);
       const next = cameraPose(time + .05);
       const forward = pose.target.subtract(pose.position).normalize();
       const nextForward = next.target.subtract(next.position).normalize();
       const angle = Math.acos(Math.min(1, Math.max(-1, Vector3.Dot(forward, nextForward))));
-      expect(angle / .05 * 180 / Math.PI, `angular velocity at ${time.toFixed(2)}s`).toBeLessThan(45);
+      const speed = angle / .05 * 180 / Math.PI;
+      if (speed > worst.speed) worst = { time, speed };
     }
+    expect(worst.speed, `angular velocity at ${worst.time.toFixed(2)}s`).toBeLessThan(45);
   });
 
   it("frames every complete speaker-name panel for at least four seconds at projector aspect", () => {

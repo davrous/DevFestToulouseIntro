@@ -7,10 +7,11 @@ import { cueEnvelope } from "../content/cues";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
 
 export const WALL_METER_BANKS = [
-  { col: 0, row: 0, face: "north", start: -2, end: 57 },
-  { col: 3, row: 0, face: "east", start: 53, end: 88 },
-  { col: 4, row: 5, face: "south", start: 88, end: 132 },
-  { col: 2, row: 6, face: "north", start: 136, end: 162 },
+  { col: -1, row: 9, face: "north", start: -2, end: 38 },
+  { col: 0, row: 0, face: "north", start: 61, end: 112 },
+  { col: 3, row: 0, face: "east", start: 91, end: 133 },
+  { col: 4, row: 5, face: "south", start: 126, end: 151 },
+  { col: 2, row: 6, face: "north", start: 143, end: 159 },
 ] as const;
 
 export function wallMeterLevels(audio: AudioFeatures): [number, number, number] {

@@ -1,12 +1,11 @@
 import { smoothstep } from "../engine/Timeline";
 
 export const EASTER_EGGS = [
-  { id: "canal", start: 10, end: 29, label: "CANAL DU MIDI" },
-  { id: "chocolatine", start: 44, end: 58, label: "CHOCOLATINE / ReferenceError" },
-  { id: "friday", start: 77, end: 90, label: "DEPLOY ON FRIDAY / NO" },
-  { id: "npm", start: 105, end: 120, label: "npm install cassoulet" },
-  { id: "stack", start: 137, end: 154, label: "STACK OVERFLOW" },
-  { id: "orbit", start: 137, end: 157, label: "TOULOUSE / ORBITAL LINK" },
+  { id: "arcade", start: 0, end: 48, label: "LEVEL T / 8-BIT BUILD" },
+  { id: "chocolatine", start: 5, end: 14, label: "HTTP 301 / CHOCOLATINE" },
+  { id: "npm", start: 115, end: 125, label: "npm install cassoulet" },
+  { id: "legacy", start: 33, end: 41, label: "LEGACY CODE / BUILD FAILED" },
+  { id: "orbit", start: 143, end: 166, label: "TOULOUSE / ORBITAL LINK" },
 ] as const;
 
 export function cueEnvelope(time: number, start: number, end: number, fade = 1): number {
@@ -18,9 +17,5 @@ export function activeCues(time: number): string[] {
 }
 
 export function chocolatineStage(time: number): number {
-  return time < 48 ? 0 : time < 51 ? 1 : 2;
-}
-
-export function fridayChoice(time: number): "PENDING" | "NO" {
-  return time < 84 ? "PENDING" : "NO";
+  return time < 9.5 ? 0 : 1;
 }
