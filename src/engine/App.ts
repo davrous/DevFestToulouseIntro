@@ -24,6 +24,7 @@ export class App {
   private lastDiagnostics = 0;
   private noticeTimer = 0;
   private readonly visualAudio = silentFeatures();
+  private visualRevealAccent = 0;
   private readonly lobby = element("lobby");
   private readonly pauseOverlay = element("pause-overlay");
   private readonly notice = element("notice");
@@ -38,6 +39,7 @@ export class App {
     this.debug = new DebugPanel(this);
     document.body.classList.add("lobby-visible");
     this.bindControls();
+    window.addEventListener("pagehide", () => this.showController.strudelEvents.disconnect());
     canvas.addEventListener("webglcontextlost", (event) => {
       event.preventDefault();
       this.timeline.pause();
@@ -76,8 +78,11 @@ export class App {
       const now = performance.now();
       const time = this.inLobby ? 0 : this.timeline.tick(now);
       const audio = this.showController.sample(now);
-      if (this.timeline.playing || this.inLobby || !this.showController.enabled) Object.assign(this.visualAudio, audio);
-      this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed);
+      if (this.timeline.playing || this.inLobby || !this.showController.enabled) {
+        Object.assign(this.visualAudio, audio);
+        this.visualRevealAccent = this.showController.revealAccent;
+      }
+      this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent);
       this.world.scene.physicsEnabled = !!this.world.scene.getPhysicsEngine()
         && !this.inLobby && this.timeline.playing
         && (time < 44 || (time >= POPCORN_START && time < POPCORN_END));
@@ -89,6 +94,7 @@ export class App {
       }
     });
     this.ready = true;
+    this.showController.strudelEvents.connect();
     this.playButton.disabled = false;
     this.previewButton.disabled = false;
     element("play-label").textContent = "PLAY SEQUENCE";
@@ -109,6 +115,7 @@ export class App {
     this.timeline.seek(time);
     this.showController.resetTransient();
     Object.assign(this.visualAudio, silentFeatures());
+    this.visualRevealAccent = 0;
     this.timeline.play();
     element("render-canvas").focus();
     this.resetCursor();
@@ -150,6 +157,7 @@ export class App {
     else this.timeline.seek(time);
     this.showController.resetTransient();
     Object.assign(this.visualAudio, silentFeatures());
+    this.visualRevealAccent = 0;
     this.world.update(this.timeline.time, this.visualAudio, this.showController.section, this.timeline.speed);
   }
 
@@ -236,13 +244,17 @@ export class App {
     window.addEventListener("keydown", (event) => {
       if (event.repeat || event.ctrlKey || event.metaKey || event.altKey) return;
       const target = event.target;
-      if (target instanceof HTMLElement && /INPUT|SELECT|BUTTON/.test(target.tagName)) {
+      if (target instanceof HTMLElement && (/INPUT|SELECT|BUTTON|TEXTAREA/.test(target.tagName) || target.isContentEditable)) {
         if (event.code !== "Escape") return;
       }
       if (event.code === "Space") { event.preventDefault(); this.togglePlayback(); }
       else if (event.code === "KeyD") this.debug.setVisible(!this.debug.visible);
       else if (event.code === "KeyF") void this.toggleFullscreen();
       else if (event.code === "KeyR") this.start(0);
+      else if (this.debug.visible && ["KeyK", "KeyS", "KeyH", "KeyI"].includes(event.code)) {
+        const name = event.code === "KeyK" ? "kick" : event.code === "KeyS" ? "snare" : event.code === "KeyH" ? "hat" : "impact";
+        this.showController.triggerEvent(name);
+      }
       else if (event.code === "Escape" && !document.fullscreenElement) this.returnToLobby();
       else if (/^Digit[1-6]$/.test(event.code)) {
         const starts = [0, 30, 60, 90, 120, 155];

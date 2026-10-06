@@ -1,0 +1,15 @@
+:root { color-scheme: dark; --background: #10151b; font: 13px Consolas, monospace; color: #c6d7d2; background: var(--background); }
+body { margin: 0; height: 100vh; display: flex; flex-direction: column; }
+header, footer { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; padding: 12px 18px; background: #081114; }
+header strong { margin-right: auto; }
+a { color: #8cc7b5; }
+button { background: #16302f; color: #d1e5dd; border: 1px solid #36584b; padding: 9px 12px; cursor: pointer; font: inherit; }
+button:disabled { opacity: .5; cursor: wait; }
+#sync-status { color: #9ba8a5; font-size: 11px; }
+#sync-status[data-connected="true"] { color: #83efb8; }
+#editor { flex: 1; min-height: 0; overflow: auto; }
+.cm-editor { height: 100%; font-size: 16px; }
+.cm-scroller { overflow: auto; }
+footer { font-size: 11px; }
+#performance-status { flex: 1; }
+[data-error="true"] { color: #ffc09d; }

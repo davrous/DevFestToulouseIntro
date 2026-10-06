@@ -86,13 +86,18 @@
       <div class="input-meter"><span>INPUT</span><meter data-input-meter min="0" max="1" value="0" aria-label="Live audio input level"></meter><output data-input-db>-- dBFS</output></div>
       <label class="input-gain">Input gain <input data-audio-gain type="range" min="-12" max="30" step="1" value="12" aria-label="Live audio input gain" /><output data-gain-label>+12 dB</output></label>
       <p class="input-hint" data-input-hint>Connect an input, then speak to test the signal.</p>
-      <p class="debug-subheading">REHEARSAL / SEND CUES DURING PLAYBACK</p>
+      <p class="debug-subheading">LOCAL STRUDEL / PRECISE EVENT SYNC</p>
+      <a href="./strudel/" target="_blank" rel="noopener">OPEN LOCAL STRUDEL PERFORMANCE TAB</a>
+      <div class="phase-buttons audio-debug-buttons"><button id="events-connect">CONNECT EVENTS</button><button id="events-disconnect">DISCONNECT EVENTS</button></div>
+      <p class="debug-subheading">MUSIC EVENT BUS / K, S, H, I DURING REHEARSAL</p>
+      <div id="av-event-buttons" class="phase-buttons"></div>
+      <pre id="av-event-monitor" aria-label="Recent musical events" aria-live="off"></pre>
+      <p class="debug-subheading">LEGACY REHEARSAL TRIGGERS</p>
       <div class="phase-buttons">
-        <button data-trigger="kick">KICK</button><button data-trigger="snare">SNARE</button>
-        <button data-trigger="hat">HI-HAT</button><button data-trigger="drop">DROP</button>
+        <button data-trigger="drop">DROP</button>
         <button data-trigger="viola">VIOLA</button><button data-trigger="beat">BEAT</button>
       </div>
-      <p class="debug-subheading">OPTIONAL LOCAL STRUDEL BRIDGE</p>
+      <p class="debug-subheading">OPTIONAL LEGACY WEBSOCKET BRIDGE</p>
       <input id="bridge-url" aria-label="Local Strudel WebSocket URL" value="ws://127.0.0.1:8787" />
       <div class="phase-buttons"><button id="bridge-connect">CONNECT BRIDGE</button><button id="bridge-disconnect">DISCONNECT</button></div>
       <p class="debug-help">SPACE play / pause · R restart · F fullscreen<br />1–6 jump · D diagnostics · ESC lobby</p>

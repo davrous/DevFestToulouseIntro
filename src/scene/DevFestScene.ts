@@ -201,7 +201,7 @@ export class DevFestScene {
     this.glow.isEnabled = enabled;
   }
 
-  update(time: number, audio: AudioFeatures = SILENCE, section: Section | null = null, speed = 1): void {
+  update(time: number, audio: AudioFeatures = SILENCE, section: Section | null = null, speed = 1, revealAccent = 0): void {
     if (this.physicsSpeed !== speed) {
       this.scene.getPhysicsEngine()?.setGravity(new Vector3(0, -17 * speed * speed, 0));
       this.physicsPlugin?.setVelocityLimits(32 * speed, 12 * speed);
@@ -223,7 +223,8 @@ export class DevFestScene {
     Color3.LerpToRef(PALETTE[Math.max(0, index - 1)], PALETTE[index], smoothstep((paletteTime - PHASES[index].time) / 6), this.tint);
     const pulse = calm * (audio.kick * .32 + audio.snare * .2 + audio.drop * .3);
     const voice = calm * audio.energy;
-    this.glow.intensity = .2 + reveal * .35 + pulse * .15 + voice * .25;
+    this.glow.intensity = .2 + reveal * .35 + pulse * .15 + voice * .25
+      + revealAccent * .08 * smoothstep((time - 170) / 3);
     this.pipeline.bloomWeight = .2 + calm * (audio.violaEnergy * .08 + audio.drop * .1) + voice * .05;
     this.camera.minZ = .15 + reveal * 8;
     this.scene.fogDensity = showFogDensity(time, audio.violaEnergy)

@@ -1,0 +1,24 @@
+// Engineering rehearsal, not the keynote composition.
+// Like the supplied keynote: 150 BPM, four beats/cycle.
+// CPM = BPM / 4 = 37.5; CPS = BPM / 240 = 0.625.
+setcpm(150 / 4)
+
+const KICK = s("bd*4").gain(.65)
+const SNARE = s("~ sd ~ sd").gain(.45)
+const HATS = s("hh*8").gain(.12)
+
+$: audioAndVisual(KICK, "kick")
+$: SNARE.visual("snare")
+$: audioAndVisual(HATS, "hat")
+
+// Silent event outputs. Times assume independent starts are aligned.
+$: visual("impact").slow(8)
+$: cueAt("cinema-cut", 54.55 * .625)
+$: cueAt("popcorn", 78.2 * .625)
+$: cueAt("lens", 90 * .625)
+$: cueAt("projector", 91.2 * .625)
+$: cueAt("warp", 93 * .625)
+$: cueAt("speaker-eric", 99 * .625)
+$: cueAt("speaker-mitsuru", 128 * .625)
+$: cueAt("climax", 147 * .625)
+$: cueAt("reveal", 173 * .625)

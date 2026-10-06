@@ -57,7 +57,7 @@ export class CinemaWorld {
   private readonly shutter: Mesh;
   private readonly slate: Mesh;
   private readonly reelNodes: TransformNode[] = [];
-  private readonly televisions: { screen: Mesh; material: StandardMaterial }[] = [];
+  private readonly televisions: { screen: Mesh; material: StandardMaterial; tint: Color3 }[] = [];
   private readonly spotBeams: Mesh[] = [];
   private readonly optical: Mesh[] = [];
   private readonly cameraRim: Mesh;
@@ -195,7 +195,7 @@ export class CinemaWorld {
       screen.isPickable = false;
       const material = screenMaterials[i % screenMaterials.length];
       screen.material = material;
-      this.televisions.push({ screen, material });
+      this.televisions.push({ screen, material, tint: material.emissiveColor.clone() });
     }
     this.syncMaterial = syncMaterial;
 
@@ -539,8 +539,9 @@ export class CinemaWorld {
     this.reelNodes.forEach((reel, index) => {
       reel.rotation.y = (index ? -1 : 1) * time * (.55 + audio.bass * .05);
     });
-    this.televisions.forEach(({ screen, material }) => {
+    this.televisions.forEach(({ screen, material, tint }) => {
       screen.material = time >= CINEMA.crtSync && time < CINEMA.crtSyncEnd ? this.syncMaterial : material;
+      material.emissiveColor.copyFrom(tint).scaleInPlace(1 + audio.snare * .18);
     });
     this.spotlightMaterial.alpha = .035 + audio.kick * .015;
     this.lensRoot.setEnabled(time >= CINEMA.camera && time < 99);

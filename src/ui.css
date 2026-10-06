@@ -39,4 +39,6 @@ kbd { font: 8px Consolas, monospace; color: #6f9390; margin-left: 6px; }
 .input-gain input { flex: 1; width: 100px; min-width: 60px; accent-color: #99efcd; }
 .input-gain output { min-width: 44px; text-align: right; }
 .input-hint { color: #9fc4b6; font: 9px/1.6 Consolas, monospace; }
+#debug > a { color: #99efcd; font-size: 10px; }
+#av-event-monitor { max-height: 180px; overflow: auto; background: #091c20; padding: 10px; white-space: pre; font: 9px/1.7 Consolas, monospace; color: #b3c9c4; }
 #lobby { overflow-y: auto; scrollbar-width: thin; scrollbar-color: #547a6f transparent; }

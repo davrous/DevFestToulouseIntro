@@ -3,6 +3,7 @@ import { activeSpeaker } from "../content/speakers";
 import { activeCues } from "../content/cues";
 import { TRIGGERS } from "../engine/protocol";
 import { REHEARSAL_STOPS } from "../content/showBeats";
+import { epochNow, MUSICAL_EVENTS, SHOW_CUES } from "../engine/avProtocol";
 import { SceneInstrumentation } from "@babylonjs/core/Instrumentation/sceneInstrumentation";
 import type { Scene } from "@babylonjs/core/scene";
 
@@ -72,6 +73,16 @@ export class DebugPanel {
         if (!trigger) throw new Error("Unknown rehearsal trigger.");
         app.showController.trigger(trigger);
       });
+      const eventButtons = get("av-event-buttons");
+      for (const name of [...MUSICAL_EVENTS, ...SHOW_CUES]) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = name.toUpperCase();
+        button.addEventListener("click", () => app.showController.triggerEvent(name));
+        eventButtons.append(button);
+      }
+      get("events-connect").addEventListener("click", () => app.showController.strudelEvents.connect());
+      get("events-disconnect").addEventListener("click", () => app.showController.strudelEvents.disconnect());
     });
     get("bridge-connect").addEventListener("click", () => {
       try { app.showController.connect(get<HTMLInputElement>("bridge-url").value); }
@@ -124,6 +135,12 @@ export class DebugPanel {
     const r = world.camera.rotation;
     const event = timeline.time >= 173 ? "FINAL HOLD"
       : [...REHEARSAL_STOPS].reverse().find((stop) => timeline.time >= stop.time)?.label ?? "GAME";
+    const bus = showController.musicEvents;
+    const lastEvent = bus.records[0];
+    const lastCue = bus.lastCue;
+    const timing = showController.strudelEvents.timing;
+    get("av-event-monitor").textContent = bus.records.map((record) =>
+      `${new Date(record.event.scheduledTime).toISOString().slice(11, 23)} ${record.event.event} v${record.event.velocity.toFixed(2)} ${record.outcome}`).join("\n");
     const rows = {
       RENDER: `${engine.getFps().toFixed(0)} FPS / ${engine.getRenderWidth()}×${engine.getRenderHeight()}`,
       CAMERA: `${p.x.toFixed(1)}, ${p.y.toFixed(1)}, ${p.z.toFixed(1)}`,
@@ -135,6 +152,13 @@ export class DebugPanel {
       SPEAKER: activeSpeaker(timeline.time)?.name ?? "--",
       CUES: activeCues(timeline.time).join(" / ") || "--",
       AUDIO: showController.audio.status,
+      AUDIO_CAPTURE: showController.audio.connected ? "CONNECTED" : "DISCONNECTED",
+      STRUDEL_EVENTS: showController.strudelEvents.getStatus(),
+      LAST_EVENT: lastEvent ? `${lastEvent.event.event} / ${((epochNow() - lastEvent.receivedAt) / 1000).toFixed(1)}s ago` : "--",
+      EVENT_RATE: `${bus.eventsPerSecond} events/sec`,
+      EVENT_LATENCY: lastEvent ? `${lastEvent.latency.toFixed(1)}ms transport / ${lastEvent.lateness.toFixed(1)}ms late` : "--",
+      LAST_CUE: lastCue ? `${lastCue.event.event} / ${lastCue.outcome}` : "--",
+      STRUDEL_CLOCK: timing.cycle !== undefined ? `${timing.cycle.toFixed(3)} cycles / ${timing.cps?.toFixed(3) ?? "--"} cps` : "--",
       INPUT: `${decibels} / ${audio.deviceName}`,
       ENERGY: `${showController.features.energy.toFixed(2)} / bass ${showController.features.bass.toFixed(2)}`,
       BANDS: `mid ${showController.features.mid.toFixed(2)} / high ${showController.features.treble.toFixed(2)}`,

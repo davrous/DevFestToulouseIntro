@@ -229,6 +229,17 @@ showController.setSection(null);
 
 Les valeurs sont validées ; une section force une **palette**, pas une position de caméra. Le relay optionnel `npm run bridge` écoute par défaut sur **ws://127.0.0.1:8787**, uniquement en local. Il n'est pas démarré / contacté automatiquement. Une page publique Strudel n'est pas un origin autorisé pour ce relay. Voir le protocole et les permissions dans [README.md](README.md).
 
+Une seconde branche optionnelle fournit maintenant les **haps exacts** du Strudel
+local : [STRUDEL_SYNC.md](STRUDEL_SYNC.md). La page `/strudel/` utilise le vrai
+CodeMirror Strudel, des versions npm pinnees et des samples de test locaux.
+BroadcastChannel, heartbeat/ack et [MusicEventBus.ts](src/engine/MusicEventBus.ts)
+sont independants de la capture FFT existante. Les cues sont gardes par les
+fenetres de [avProtocol.ts](src/engine/avProtocol.ts), sans retimer la camera ni
+recreer les corps physiques. Diagnostics et tests manuels K/S/H/I restent dans D.
+Le demo conserve les 150 BPM de l'extrait fourni ; ce n'est pas la composition
+de keynote, dont les banques Roland, soundfonts et Hydra doivent etre stages
+localement pour une utilisation complete hors ligne.
+
 ## 9. Assets, licences et portabilité
 
 - Les assets Kenney sont dans [public/assets/kenney](public/assets/kenney), avec leurs licences CC0 et leurs dépendances de textures.

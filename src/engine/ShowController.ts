@@ -1,10 +1,16 @@
 import { AudioAnalyzer, silentFeatures, type AudioFeatures } from "./AudioAnalyzer";
 import { CHANNELS, parseMessage, unitValue, type Section, type ShowMessage, type Trigger } from "./protocol";
 import { Timeline } from "./Timeline";
+import { CUE_WINDOWS, isShowCue, type AVEvent, type AVEventName, type ShowCue } from "./avProtocol";
+import { MusicEventBus, type EventOutcome } from "./MusicEventBus";
+import { StrudelEventTransport } from "./StrudelEventTransport";
 
 export class ShowController {
   readonly audio: AudioAnalyzer;
   readonly features = silentFeatures();
+  readonly musicEvents: MusicEventBus;
+  readonly strudelEvents: StrudelEventTransport;
+  revealAccent = 0;
   enabled = true;
   private reactiveIntensity = 1;
   section: Section | null = null;
@@ -18,6 +24,8 @@ export class ShowController {
   private retry = 0;
   private connection?: string;
   private retryTimer = 0;
+  private readonly accentedCues = new Set<ShowCue>();
+  private revealPulse?: { value: number; time: number };
 
   constructor(
     readonly timeline: Timeline,
@@ -25,12 +33,17 @@ export class ShowController {
     private readonly clock: () => number = () => performance.now(),
   ) {
     this.audio = new AudioAnalyzer(notify);
+    this.musicEvents = new MusicEventBus(() => performance.timeOrigin + this.clock());
+    this.musicEvents.subscribe((event) => this.applyMusicEvent(event));
+    this.strudelEvents = new StrudelEventTransport("babylon", (event) => this.musicEvents.receive(event),
+      notify, (sender) => this.musicEvents.cancelSource(sender));
   }
 
   get intensity(): number { return this.reactiveIntensity; }
   set intensity(value: number) { this.reactiveIntensity = unitValue(value / 2, "half intensity") * 2; }
 
   trigger(event: Trigger, velocity = 1): void { this.dispatch({ type: "trigger", event, velocity }); }
+  triggerEvent(event: AVEventName, velocity = 1): void { this.musicEvents.manual(event, velocity); }
   setEnergy(value: number | null): void { this.dispatch({ type: "energy", value }); }
   setSection(section: Section | null): void { this.dispatch({ type: "section", section }); }
   setLevels(values: Partial<AudioFeatures>): void { this.dispatch({ type: "levels", values }); }
@@ -59,8 +72,11 @@ export class ShowController {
   }
 
   sample(now = this.clock()): AudioFeatures {
+    this.musicEvents.flush(performance.timeOrigin + now);
     const audio = this.audio.sample(now);
     Object.assign(this.features, silentFeatures());
+    this.revealAccent = this.enabled && this.revealPulse
+      ? this.revealPulse.value * Math.exp(-Math.max(0, now - this.revealPulse.time) / 300) : 0;
     if (!this.enabled) return this.features;
     const decay = Math.exp(-Math.max(0, now - this.levelsAt - 250) / 500);
     for (const key of CHANNELS) this.features[key] = Math.max(audio[key], (this.levels[key] ?? 0) * decay);
@@ -81,6 +97,10 @@ export class ShowController {
     this.levels = {};
     this.levelsAt = -Infinity;
     this.recentEvents = [];
+    this.musicEvents.cancelSource();
+    this.accentedCues.clear();
+    this.revealPulse = undefined;
+    this.revealAccent = 0;
     Object.assign(this.features, silentFeatures());
   }
 
@@ -124,6 +144,25 @@ export class ShowController {
       this.bridgeStatus = "DISCONNECTED / retrying";
       this.retryTimer = window.setTimeout(() => this.openSocket(), Math.min(15000, 1500 * 2 ** this.retry++));
     };
+  }
+
+  private applyMusicEvent(event: AVEvent): EventOutcome {
+    if (isShowCue(event.event)) {
+      if (!this.timeline.playing) return "paused";
+      const window = CUE_WINDOWS[event.event];
+      if (Math.abs(this.timeline.time - window.time) > window.tolerance) return "outside-window";
+      if (this.accentedCues.has(event.event)) return "already-accented";
+      this.accentedCues.add(event.event);
+      if (event.event === "reveal") this.revealPulse = { value: event.velocity, time: this.clock() };
+      else this.trigger("drop", event.velocity * .65);
+    } else {
+      // A queued accent uses its intended onset, not its arrival, for decay.
+      const onset = this.clock() - Math.max(0, performance.timeOrigin + this.clock() - event.scheduledTime);
+      this.pulses.set(event.event === "impact" ? "drop" : event.event, { value: event.velocity, time: onset });
+    }
+    this.recentEvents.unshift(event.event);
+    this.recentEvents.length = Math.min(5, this.recentEvents.length);
+    return "applied";
   }
 }
 

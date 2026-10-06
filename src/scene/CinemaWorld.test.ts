@@ -7,6 +7,7 @@ import { silentFeatures } from "../engine/AudioAnalyzer";
 import { CINEMA, REHEARSAL_STOPS } from "../content/showBeats";
 import { SPEAKERS } from "../content/speakers";
 import { CinemaWorld } from "./CinemaWorld";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 
 vi.mock("./WorldText", async () => {
   const { Mesh } = await import("@babylonjs/core/Meshes/mesh");
@@ -14,7 +15,9 @@ vi.mock("./WorldText", async () => {
   return {
     createWorldText: (scene: Scene, options: { name: string }) => {
       const mesh = new Mesh(options.name, scene);
-      mesh.material = new StandardMaterial(`${options.name} test texture`, scene);
+      const material = new StandardMaterial(`${options.name} test texture`, scene);
+      material.emissiveColor.set(.9, .95, 1);
+      mesh.material = material;
       return mesh;
     },
   };
@@ -30,6 +33,26 @@ vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
 }));
 
 describe("cinematic show choreography", () => {
+  it("preserves CRT color and applies a non-accumulating 18-percent snare accent", () => {
+    const engine = new NullEngine();
+    const scene = new Scene(engine);
+    new FreeCamera("Cinematic camera", Vector3.Zero(), scene);
+    const cinema = new CinemaWorld(scene);
+    const crt = scene.getMeshByName("Cinema / CRT display 0");
+    if (!(crt?.material instanceof StandardMaterial)) throw new Error("CRT must have a text material.");
+    const material = crt.material;
+    const base = material.emissiveColor.clone();
+    expect(base.asArray()).toEqual([.9, .95, 1]);
+    cinema.update(60, { ...silentFeatures(), snare: 1 });
+    expect(material.emissiveColor.asArray()).toEqual(base.scale(1.18).asArray());
+    cinema.update(60, { ...silentFeatures(), snare: 1 });
+    expect(material.emissiveColor.asArray()).toEqual(base.scale(1.18).asArray());
+    cinema.update(60, silentFeatures());
+    expect(material.emissiveColor.asArray()).toEqual(base.asArray());
+    scene.dispose();
+    engine.dispose();
+  });
+
   it("keeps the existing four-speaker program while moving David's introduction to cinema", () => {
     expect(SPEAKERS.map((speaker) => speaker.world)).toEqual(["game", "cinema", "digital", "digital"]);
     expect(SPEAKERS[1].gateTime).toBe(CINEMA.davidGate);

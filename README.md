@@ -26,6 +26,11 @@ Open http://127.0.0.1:4173 and keep the local server running. After installation
 
 **This page does not play music.** The viola and Strudel performance remain external. Visuals work without either audio input or the optional event bridge. No microphone permission is requested automatically.
 
+The optional **local Strudel performance tab** at `/strudel/` adds precise
+scheduler events over same-origin BroadcastChannel alongside the unchanged FFT
+capture. See [STRUDEL_SYNC.md](STRUDEL_SYNC.md) for launch, helpers, cue windows,
+offline instruments and rehearsal diagnostics. The Babylon page still plays no audio.
+
 ## The show
 
 | Time | Scene |

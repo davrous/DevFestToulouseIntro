@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-eval' blob: data:; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; worker-src 'self' blob: data:; media-src 'self' blob:;" />
+    <link rel="icon" href="data:," />
+    <title>DevFest / Strudel performance</title>
+  </head>
+  <body>
+    <header>
+      <strong>STRUDEL / DEVFEST</strong>
+      <span id="sync-status" role="status">BABYLON SYNC / DISCONNECTED</span>
+      <a href="../" target="_blank" rel="noopener">Open show</a>
+      <button id="evaluate" disabled>Evaluate / Ctrl+Enter</button>
+      <button id="stop">Stop / Ctrl+.</button>
+    </header>
+    <main id="editor" aria-label="Strudel live coding editor"></main>
+    <footer>
+      <span id="performance-status" role="status">Loading local Strudel...</span>
+      <button id="load-demo">Load engineering demo</button>
+      <a id="sync-guide" target="_blank" rel="noopener">Sync guide</a>
+    </footer>
+    <script type="module" src="../src/strudel/main.ts"></script>
+  </body>
+</html>
