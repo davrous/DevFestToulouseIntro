@@ -8,7 +8,7 @@ import { SPEAKERS } from "../content/speakers";
 import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { CELL, cellPosition, createTitleCells } from "../content/title";
 import { silentFeatures } from "../engine/AudioAnalyzer";
-import { FLOOR_STATION_TIMES, PortalLasers, floorVisibility, laserAim, laserEndpoints, laserReach, laserStrength, speakerReveal, spotlightSweep, spectrumBarHeight } from "./ShowLighting";
+import { FLOOR_STATION_TIMES, PortalLasers, floorVisibility, laserAim, laserEndpoints, laserLead, laserReach, laserStrength, speakerReveal, spotlightSweep, spectrumBarHeight } from "./ShowLighting";
 import { WALL_METER_BANKS, wallMeterLevels, wallMeterVisibility } from "./WallMeters";
 
 describe("stage lighting choreography", () => {
@@ -16,15 +16,18 @@ describe("stage lighting choreography", () => {
 
   it("runs without audio, reacts to transients and ends before the title reveal", () => {
     for (const speaker of SPEAKERS) {
-      expect(laserStrength(speaker.startTime - 3, speaker, silence)).toBe(0);
-      expect(laserStrength(speaker.startTime - 2.5, speaker, silence)).toBeGreaterThan(0);
-      expect(laserReach(speaker.startTime - 3, speaker)).toBe(0);
-      expect(laserReach(speaker.startTime - 2.7, speaker)).toBeGreaterThan(0);
-      expect(laserReach(speaker.startTime - 2.7, speaker)).toBeLessThan(1);
-      expect(laserReach(speaker.startTime - 2.3, speaker)).toBe(1);
-      expect(laserAim(speaker.startTime - 2, speaker)).toBe(0);
-      expect(laserAim(speaker.startTime - 1, speaker)).toBeGreaterThan(0);
-      expect(laserAim(speaker.startTime - .25, speaker)).toBe(1);
+      const lead = laserLead(speaker);
+      expect(laserStrength(speaker.startTime - lead, speaker, silence)).toBe(0);
+      expect(laserStrength(speaker.startTime - lead + .5, speaker, silence)).toBeGreaterThan(0);
+      expect(laserReach(speaker.startTime - lead, speaker)).toBe(0);
+      expect(laserReach(speaker.startTime - lead + .3, speaker)).toBeGreaterThan(0);
+      expect(laserReach(speaker.startTime - lead + .3, speaker)).toBeLessThan(1);
+      expect(laserReach(speaker.startTime - lead + .7, speaker)).toBe(1);
+      const aimStart = speaker.startTime - (lead === 1 ? 1 : 2);
+      const sweepDuration = lead === 1 ? .75 : 1.75;
+      expect(laserAim(aimStart, speaker)).toBe(0);
+      expect(laserAim(aimStart + sweepDuration / 2, speaker)).toBeGreaterThan(0);
+      expect(laserAim(aimStart + sweepDuration, speaker)).toBe(1);
       expect(spotlightSweep(speaker.startTime + .25, speaker)).toBe(0);
       expect(spotlightSweep(speaker.startTime + 1.5, speaker)).toBeCloseTo(.5);
       expect(spotlightSweep(speaker.startTime + 2.75, speaker)).toBe(1);

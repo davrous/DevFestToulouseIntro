@@ -26,6 +26,7 @@ export class ArcadeCathedral {
   private readonly screenMaterial: StandardMaterial;
   private readonly screens: ReturnType<typeof MeshBuilder.CreatePlane>[] = [];
   private readonly light: PointLight;
+  private readonly complete;
   private readonly next;
 
   constructor(private readonly scene: Scene) {
@@ -78,7 +79,7 @@ export class ArcadeCathedral {
     this.light.diffuse = Color3.FromHexString("#7dffe3");
     this.light.range = 30;
     this.light.intensity = 0;
-    const bridge = routeAnchor(52);
+    const bridge = routeAnchor(61);
     this.next = createWorldText(scene, {
       name: "Arcade / NEXT LEVEL", width: 16, height: 3.5,
       background: "#0b1d28", border: "#7de6ff",
@@ -86,6 +87,14 @@ export class ArcadeCathedral {
     });
     this.next.position.set(bridge.position.x, 21, bridge.position.z + 9);
     this.next.rotation.y = bridge.yaw;
+    const exit = routeAnchor(58);
+    this.complete = createWorldText(scene, {
+      name: "Arcade / level complete", width: 18, height: 4,
+      background: "#101926", border: "#aaff98",
+      lines: [{ text: "LEVEL COMPLETE", color: "#c5ffa4" }],
+    });
+    this.complete.position.set(exit.position.x, 14, exit.position.z);
+    this.complete.rotation.y = exit.yaw;
     this.update(0, silentFeatures());
   }
 
@@ -151,6 +160,7 @@ export class ArcadeCathedral {
     this.scanlineMaterial.setFloat("flash", audio.snare + audio.kick * .5 + (1 - cross) * .45);
     this.scanlineMaterial.setFloat("interference", 1 - cross + audio.treble * .5);
     this.light.intensity = (350 + audio.kick * 500 + audio.snare * 360) * portal * cross;
-    this.next.visibility = cueEnvelope(time, 48.5, 53.5, .65);
+    this.complete.visibility = cueEnvelope(time, 46.3, 48.8, .35);
+    this.next.visibility = cueEnvelope(time, 55.1, 59.5, .45);
   }
 }

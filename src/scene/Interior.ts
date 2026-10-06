@@ -3,6 +3,7 @@ import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTextur
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { cellPosition } from "../content/title";
 import { BoxBatch } from "./Instances";
 import { emissive } from "./Labyrinth";
@@ -25,11 +26,14 @@ function signage(scene: Scene, label: string, subtitle: string, x: number, y: nu
 }
 
 export interface Interior {
+  root: TransformNode;
   core: Mesh;
   rings: Mesh[];
 }
 
 export function createInterior(scene: Scene): Interior {
+  const firstMesh = scene.meshes.length;
+  const root = new TransformNode("Digital D / architectural interior", scene);
   const light = emissive(scene, "Reactor ions", "#9affea", 1.55);
   const warm = emissive(scene, "Amber navigation", "#ffb78a", 1.2);
   const bars = new BoxBatch("Interior floating data banks", light);
@@ -71,7 +75,11 @@ export function createInterior(scene: Scene): Interior {
   bars.build(scene);
   housings.build(scene);
   gateway.build(scene);
-  return { core, rings };
+  for (const mesh of scene.meshes.slice(firstMesh)) {
+    mesh.unfreezeWorldMatrix();
+    mesh.parent = root;
+  }
+  return { root, core, rings };
 }
 
 export function updateInterior(interior: Interior, time: number): void {

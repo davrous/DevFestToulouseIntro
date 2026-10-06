@@ -1,0 +1,22 @@
+# 3D artwork credits
+
+The cinema models in `public/assets/cinema/` are local copies of the credited originals. Each is licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). The show changes scale, placement, repetition and animation at runtime; the GLB files are not modified. At runtime the cinema camera's presentation ground and the director chair's presentation socle are omitted before scale normalization, and procedural spokes supplement the film reels. The movie theatre environment is retained locally but no longer staged or preloaded.
+
+| Local file | Original model | Creator | Source |
+| --- | --- | --- | --- |
+| `cinema_seat.glb` | Cinema Seat | Connor Wassall | [Sketchfab](https://sketchfab.com/3d-models/cinema-seat-6c44adbc299c4f8ab45e9913d58cfcba) |
+| `black_film_slate_or_clapperboard.glb` | Black Film Slate or Clapperboard | Bendar Multimedia | [Sketchfab](https://sketchfab.com/3d-models/black-film-slate-or-clapperboard-f971698c983d4256a269424e88b17872) |
+| `spotlight.glb` | Spotlight | R3indeer | [Sketchfab](https://sketchfab.com/3d-models/spotlight-bf2894cc5af04be6a57cc2ff66e0bbee) |
+| `film_reel.glb` | Film Reel | fisherfx.pro | [Sketchfab](https://sketchfab.com/3d-models/film-reel-ed2f560e03394c61acac3f097db6e8a6) |
+| `cinema_camera.glb` | Cinema Camera | re1monsen | [Sketchfab](https://sketchfab.com/3d-models/cinema-camera-e1fec87c8ae0487f964d20de2559aa62) |
+| `retro_crt_tv.glb` | Retro CRT TV | meipal | [Sketchfab](https://sketchfab.com/3d-models/retro-crt-tv-6bc462b233ce4c78904dfcadf5123e29) |
+| `popcorn_bucket.glb` | Popcorn Bucket | beastybevan | [Sketchfab](https://sketchfab.com/3d-models/popcorn-bucket-115700b607424d7d92b133cb44ec6166) |
+| `low_poly_astronaut.glb` | Low Poly Astronaut | Colin.Greenall | [Sketchfab](https://sketchfab.com/3d-models/low-poly-astronaut-a0858f7876e1432b94c4c0571ee4e17a) |
+| `low_poly_satellite.glb` | Low Poly Satellite | piyal67 | [Sketchfab](https://sketchfab.com/3d-models/low-poly-satellite-c4fdace1e6204978b65ad894903bafa5) |
+| `movie_theatre_environment.glb` | Movie Theatre Environment | mikeyobright | [Sketchfab](https://sketchfab.com/3d-models/movie-theatre-environment-d8f337bc3efb4bf2aaae271962563700) |
+| `vhs_tape.glb` | VHS Tape | Beepo | [Sketchfab](https://sketchfab.com/3d-models/vhs-tape-b420546b370b4be4800d720cadbaeb11) |
+| `directors_chair.glb` | Director's Chair | creativejenna | [Sketchfab](https://sketchfab.com/3d-models/directors-chair-d664c3ed7e1d48f5a0c0ad7f6581477b) |
+
+The high-poly *Cinema Movie Projector AP5* source was **not used or redistributed**. The in-show projector is original procedural geometry instead.
+
+The existing [Kenney Mini Arcade](public/assets/kenney/LICENSE-mini-arcade.txt) cabinets are CC0 artwork by Kenney, with additional contributors Fleur Keijsers and Guus Vermeulen. [Kenney Pixel Platformer](public/assets/kenney/LICENSE-pixel-platformer.txt) sprites and [Input Prompts Pixel](public/assets/kenney/LICENSE-input-prompts-pixel.txt) icons are also CC0.

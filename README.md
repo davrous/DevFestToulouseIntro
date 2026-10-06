@@ -1,6 +1,6 @@
 # Into the unexpected
 
-A three-minute real-time opening for the DevFest Toulouse 2026 closing keynote. Babylon.js + TypeScript + Vite. The camera starts in the T of the actual extruded title, crosses an open force-field floor into the D, meets four speakers, then reveals **DEVFEST / TOULOUSE**. No scene swap, film, runtime CDN, or audio-driven camera.
+A three-minute real-time opening for the DevFest Toulouse 2026 closing keynote. Babylon.js + TypeScript + Vite. The camera starts in the T of the actual extruded title, travels through arcade, impossible cinema, camera lens and projector beam into the digital D, then reveals **DEVFEST / TOULOUSE**. No scene swap, prerecorded film, runtime CDN, or audio-driven camera.
 
 ## Run locally
 
@@ -33,19 +33,23 @@ Open http://127.0.0.1:4173 and keep the local server running. After installation
 | 0:17–0:31 | Anne-Flore's cyan gateway, with a voxel violin and bow centered directly below her card |
 | 0:30–0:41 | Bonus tokens fall just beyond the violin; the FINAL BOSS announces LEGACY CODE before its translucent Havok wall appears and collapses at 0:38 |
 | 0:41–0:49 | `$ git rebase --continue` announces EXIT UNLOCKED, then the T door opens |
-| 0:47–1:05 | Speed lines, fog and NEXT LEVEL accompany the wall-free transparent force-field floor into the D |
-| 1:20 | David Rousset / violet neural gateway, agent/code panels |
-| 1:36 | Eric Mittelette / playful warm gateway, just before the corridor meter |
-| 1:55–2:05 | `npm install cassoulet / package size: 4.8 GB` stays readable after Eric and disappears before Mitsuru's entrance |
-| 2:08 | Mitsuru Furuta / golden overclock gateway; three-band meter on the end wall behind him |
+| 0:46–0:55 | A brief centered LEVEL COMPLETE gives way to an unobstructed giant clapperboard; the approach slows locally, the clap closes over 0.9 seconds, then the black shutter cuts GAME to CINEMA at 0:54.55 |
+| 0:55–1:06 | A symmetrical cinema cathedral: mirrored, regularly spaced seat tiers with architectural supports, warm foyer beams, and eight aligned CRTs with screens mounted on their cases; all briefly flash DEVFEST together at 0:59.4 |
+| 1:06–1:23 | David Rousset is introduced **once**, as a movie premiere projected onto a world-space cinema screen with his configured demo title |
+| 1:17–1:24 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; a low, visible striped bucket tips at 1:17.7 and spills 36 Havok kernels across the approaching camera at 1:18.2 |
+| 1:24–1:39 | A giant frontal cinema camera appears on-axis; we approach and enter its lens at 1:30. Only then do short, coaxial optical rings lead into the projector beam, transparent floor and space warp; the digital architecture returns through haze at 1:35 |
+| 1:35–1:56 | The digital D emerges gradually from the warp; several seconds later, Eric Mittelette's neural gateway appears at 1:39 with converging data streams and code panels |
+| 1:57–2:05 | `npm install cassoulet / package size: 4.8 GB` stays readable after Eric and disappears before Mitsuru's entrance |
+| 1:54–2:12 | A traveling architectural pulse progressively raises six symmetrical data gates, shifting cyan to gold; it continues behind the cassoulet gag and hands off to Mitsuru without an empty corridor |
+| 2:08–2:35 | Mitsuru Furuta / floating orbital name instead of another rectangular card; denser golden data streams and a three-band meter behind him build the D climax |
 | 2:23–2:46 | Toulouse orbital hardware sits deeper in the D; its two-line `TOULOUSE / ORBITAL LINK` label remains present into the final zoom-out |
 | 2:33–2:39 | Brief turn by the last meter, then escape |
 | 2:39–2:53 | Faster backward/upward pullback exposes the complete title and the force-field floor connecting the T and D at corridor level; no raised or overhead copy is rendered |
 | 2:50–3:00 | World-space **AI4Fun** signature and subtle anniversary marks; title settled by 2:53, seven-second final hold |
 
-During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok instead simulates 26 arcade tokens and 48 labeled legacy-code blocks. A deterministic timeline releases them, while music accents their motion; their bodies are disposed after the camera passes and recreated on a backward seek. Physics debris cannot block the camera. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio. Kicks and snares add brief pulses.
+During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok instead simulates 26 arcade tokens and 48 labeled legacy-code blocks; the cinema adds one short 36-kernel popcorn cascade with seat ledge collisions. Physics debris cannot block the camera, and temporary bodies are cleaned up and recreated on a backward seek. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
 
-For each speaker, the beams rise from two floor-mounted projectors, initially pointing toward the camera before sweeping to either side of the card, while **two real dynamic spotlights** illuminate its physical backing and surrounding structure. The frame brightens as the name, title and associated artwork fade in; an extra pair of beams and the spotlights then sweep outward from the name's center like a theatrical marquee. The visible beams use lightweight emissive geometry rather than expensive volumetric scattering. OVERCLOCK intensifies the effect and drops briefly expand the computational core. These effects fade out by 2:35, leaving the title reveal and final hold clear.
+For Anne-Flore and Eric, beams rise from floor projectors and **dynamic spotlights** illuminate the physical cards. David uses a supported theatre screen with a rear projection cone and two dedicated aisle spotlights: light precedes the name fade, and opaque typography keeps the beam behind the text. The surrounding composition stays calmer during his reading window. Mitsuru's name floats inside two animated overclock orbits rather than repeating Eric's card. Cinema haze bloom respects beam opacity instead of washing out names or models. Music never alters the deterministic camera route. OVERCLOCK intensifies the final digital section; these effects fade before the title reveal.
 
 ### Configure speakers
 
@@ -58,11 +62,12 @@ Edit [src/content/speakers.ts](src/content/speakers.ts). Each portal accepts:
   startTime: 17,
   endTime: 39,
   gateTime: 29,
-  visualTheme: "signal"
+  visualTheme: "signal",
+  world: "game"
 }
 ```
 
-Adjust the example's speaker names and demo titles to match the event program. `gateTime` determines the fixed position along the camera route where the camera crosses the portal; keep it inside the introduction interval. Theme options: `signal`, `neural`, `playground`, `overclock`. Names and titles are textures on physical world-space meshes, not HTML overlays. Rehearse after changing timing or unusually long titles.
+Adjust the example's speaker names and demo titles to match the event program. `world` selects `game`, `cinema` (movie premiere), or `digital`; keep exactly one cinema speaker. `gateTime` determines the fixed position along the camera route where the portal or cinema screen is crossed; keep it inside the introduction interval. Theme options: `signal`, `neural`, `playground`, `overclock`. The existing demo titles have not been changed. Names and titles are textures on physical world-space meshes, not HTML overlays. Rehearse after changing timing or unusually long titles.
 
 Optional `lateralOffset` and `gateWidth` position the entire gate across the corridor. Mitsuru's gate is shifted 1.1 world units to the camera's right and narrowed slightly to clear the brick wall; its camera gaze follows the same placement.
 
@@ -79,6 +84,8 @@ Optional `lateralOffset` and `gateWidth` position the entire gate across the cor
 | Escape | Return to lobby when not fullscreen |
 
 Flight control also provides post-processing, render resolution, reactive intensity, live-input connection, rehearsal triggers and WebSocket controls. Rehearsal triggers affect visuals **during playback**; pause freezes the choreography and reactive frame, but input meters continue monitoring live audio. Playback-speed changes affect the whole master timeline, not just the camera, so speaker/camera synchronization cannot drift.
+
+The **STORY / REHEARSAL JUMPS** in flight control also include POPCORN and D ESCALATION alongside the chapter, speaker and reveal jumps. Live diagnostics include active meshes, triangles, draw calls, and visible physics bodies alongside FPS.
 
 **Balanced** caps the render buffer at 2560×1440. **Native / 4K** uses full device resolution. Normal playback hides HTML controls and the cursor. At speed 1, the clock stops at exactly 3:00; only the already-finished final image remains on screen indefinitely.
 
@@ -180,8 +187,11 @@ The bridge is not started or contacted automatically. When explicitly connected,
 
 - [Title geometry](src/content/title.ts): centered architectural alphabet, 251 enclosed modules, seed `DEVFEST_TOULOUSE_2026`.
 - [Labyrinth](src/scene/Labyrinth.ts): thin-instanced floors, roofs, boundary walls, panels and light traces.
-- [Camera](src/camera/CameraPath.ts): deterministic T-to-D Catmull–Rom route, measured gaze transitions and a final full-title reveal unchanged by the arcade effects.
+- [Camera](src/camera/CameraPath.ts): deterministic T-to-D Catmull–Rom route, lens/warp gaze accents and the original final full-title reveal.
 - [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, staged typography reveal, theme and animated ornaments.
+- [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local preloaded Sketchfab models, giant animated slate and shutter cut, climbing-instanced seats, CRT synchronization, David's premiere, linked film reels, giant lens, procedural projector and short space crossing.
+- [CinemaPopcorn](src/scene/CinemaPopcorn.ts): 36 short-lived Havok kernels with static floor/seat ledge colliders and seek-safe cleanup.
+- [DigitalMoments](src/scene/DigitalMoments.ts): two different thin-instanced data-stream passages for Eric and Mitsuru, intensified by the music without moving the camera.
 - [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
 - [PixelWorld](src/scene/PixelWorld.ts), [ArcadeCathedral](src/scene/ArcadeCathedral.ts), [ArcadeT](src/scene/ArcadeT.ts): local Kenney pixel parallax, grounded cabinets visible along the corridor, opening screen portal, arcade HUD and the door.
 - [DemosceneTransition](src/scene/DemosceneTransition.ts): thin-instanced 2D-to-voxel transformation and speed lines over the bridge.
@@ -189,7 +199,7 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [MusicReactive](src/effects/MusicReactive.ts): seeded GPU-animated particles and shader-based MIDI ribbons.
 - [ShowLighting](src/effects/ShowLighting.ts): ground-mounted portal laser beams and dynamic spotlights, scanning lights and GPU floor circuit traces with thin-instanced spectrum bars.
 - [WallMeters](src/effects/WallMeters.ts): three-band LED columns in five groups, including behind Mitsuru and before the exit, driven by bass, viola/body and high-frequency signals.
-- [EventBranding](src/scene/EventBranding.ts): original event artwork on the first server's end panel, above David's name and as two small final signatures. David's crest follows his gate visibility. The final marks fade in with **AI4Fun** after 2:50 and do not affect the camera or title geometry.
+- [EventBranding](src/scene/EventBranding.ts): original event artwork on the first server's end panel and as two small final signatures. The final marks fade in with **AI4Fun** after 2:50 and do not affect the camera or title geometry.
 - [ShowController](src/engine/ShowController.ts), [protocol](src/engine/protocol.ts), [AudioAnalyzer](src/engine/AudioAnalyzer.ts): independently validated music inputs.
 - [App](src/engine/App.ts), [Timeline](src/engine/Timeline.ts), [DevFestScene](src/scene/DevFestScene.ts): preload, stage lifecycle, deterministic clock and rendering.
 
@@ -203,11 +213,15 @@ Three original transparent PNGs from the supplied `Mascotte-20261002T171109Z-1-0
 - `mascot-planet-violet.png`: `Mascotte/PNG/VIOLET/2-Planete-VIOLET@2x.png`
 - `anniversary-cube-orange.png`: `Mascotte/PNG/ORANGE/5-Typo-cube-ORANGE@2x.png`
 
-The illustrations retain their original colors and proportions; subdued material opacity integrates them into the architecture. The interior marks have opaque mounting plates so background lights do not show through them. Vite bundles the images locally. All three must finish loading before START is enabled; an asset-loading failure is surfaced rather than silently omitting the branding.
+The green flag and anniversary cube are used in the show; the violet planet image is retained locally but no longer mounted above David's cinema screen. The illustrations retain their original colors and proportions; subdued material opacity integrates them into the architecture. Vite bundles the used images locally. Both must finish loading before START is enabled; an asset-loading failure is surfaced rather than silently omitting the branding.
 
 ### Local Kenney arcade artwork
 
 Only selected models and pixel sprites from the supplied Kenney archives are in [public/assets/kenney](public/assets/kenney). The cabinet GLB references its adjacent `Textures/colormap.png`; pixel sheets and four input-key icons use nearest-neighbor sampling and alpha testing. These resources are preloaded before SYSTEM READY. If a decorative Kenney asset cannot load, the error is logged and that decoration is skipped; the camera show continues. No CDN or network connection is used at runtime. Original CC0 license texts are retained in the asset folder, including the Mini Arcade contributor notice for Kenney, Fleur Keijsers and Guus Vermeulen.
+
+### Local cinema and space artwork
+
+Only selected, licensed GLBs from the supplied SketchfabModels directory are in [public/assets/cinema](public/assets/cinema). Eleven staged models preload before SYSTEM READY; the former floating theatre fragment is retained locally but no longer loaded or displayed. Camera ground and director-chair presentation socle are removed from the runtime hierarchy before bounds normalization; seats and director chair use the same physical height. Repeated seats/televisions/spotlights share geometry instances. The single hero camera uses geometry-sharing clones so its entry fade works without Babylon's unsupported instance-visibility warnings. A missing optional model logs an error; the procedural stage and timeline continue. The 1.37-million-triangle, noncommercial-licensed movie projector was deliberately excluded; its in-show substitute is lightweight geometry. See [CREDITS.md](CREDITS.md) for attribution. There are no runtime requests to Sketchfab.
 
 ## Verify and rehearse
 
@@ -216,24 +230,19 @@ npm test
 npm run build
 ```
 
-Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, wall/roof clearance, camera turns below 45 degrees/second, projector framing for each joke and at least four seconds of complete speaker-panel framing, and full-title projection by 2:53 at several aspect ratios.
+Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, the clapper shutter, CRT flash, physical asset normalization, supported camera fading, popcorn-body cleanup, continuous D escalation, wall/roof clearance, camera turns below 45 degrees/second, at least four seconds of complete clap and speaker framing, and full-title projection by 2:53 at several aspect ratios.
 
 Scene-clearance tests additionally keep drifting dust below the camera, the orbiting core clear of walls/roof/camera, and Mitsuru's panel inside the corridor. Interior fog now dissipates during the escape, before the pullback reaches large distances; the solid letters remain visible rather than disappearing behind their glow. The pipeline uses up to 4x MSAA when supported, with FXAA as the fallback.
 
 Browser validation additionally covers physical text readability, synthetic Web Audio input, input disconnection, real events from a separate Node process through the relay, offline asset loading, fullscreen and graphics-context recovery. Vite's large Babylon bundle warning is non-blocking; stage shaders and materials are preloaded instead of fetched during the performance.
 
-### Validation results — 2026-10-02
+### Validation results — 2026-10-06
 
-- 41 unit tests pass; the production build passes TypeScript checking.
-- All four complete speaker-name panels remain in frame for at least four seconds at 16:9; key speaker/joke shots were also inspected in the browser.
-- A native 3840×2160 accelerated full-timeline stress run on the RTX 5090, with every reactive channel at maximum, rendered 3,632 frames. The largest sampled frame interval was 13.5 ms; all six phases and four speakers appeared, then the show held its final canvas-only frame.
-- That cold-load/run made no external asset requests and logged no console errors.
-- After the shot-clearance and reveal-fog corrections, a native 4K accelerated full-timeline run with 4x MSAA rendered 3,603 frames with no sampled frame interval above 16.7 ms. All four speakers appeared, the final camera pose was unchanged, and the browser reported no errors.
-- Synthetic 110 Hz input produced strong bass/energy readings; disconnect left a caller-owned stream alive and did not stop the show.
-- A quiet, steady 1 kHz signal increased average rendered luminance by approximately 17% without relying on kick/snare attacks. While paused, the live meter followed input changes but the camera and rendered image remained unchanged. Input monitoring also worked with visual reactivity disabled.
-- Simulated permission denial and a display share without audio both showed actionable errors while playback continued.
-- A simulated graphics reset at the fourth introduction rebuilt the scene, preserved the timestamp and connected event controller, and produced no invalid texture operations.
-- The localhost relay delivered events from a separate Node process and rejected non-local browser origins.
+- **70 tests across 13 files** and the TypeScript/Vite production build pass after the staging corrections. The clap's actual closing stroke uses source frames 50–60, not the full animation that reopens afterward.
+- All eleven staged GLBs preload locally. The production page made no external resource requests and logged no errors or warnings during a full **180-second playback at speed 1** (about 180.01 seconds of wall time). The original final camera pose and floor-level T–D connection remain intact.
+- Visual checks at 16:9 covered the unobstructed clap, mirrored supported seat tiers, integrated CRTs, correctly scaled director chair, David's spotlight premiere, linked reels, visible bucket before the Havok spill, frontal camera/lens, projector-space passage, D escalation and final reveal. Measured seat and director-chair heights are both 4.2 world units. The popcorn collider matches the visible raised deck rather than letting kernels sink into it.
+- Targeted forward/backward seeks restore stage visibility, the shutter and temporary bodies. Cinema haze no longer blooms as an opaque mask over text, and the hero camera fade no longer produces instance-visibility warnings.
+- Native 3840×2160 rendering and the live mesh/triangle/draw-call monitor are available for rehearsal. These checks do **not** establish sustained 60 FPS on the actual projector workstation; profile and rehearse there with the real audio feed.
 
 ### Before going on stage
 

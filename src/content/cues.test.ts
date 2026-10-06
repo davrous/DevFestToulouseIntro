@@ -4,10 +4,11 @@ import { activeCues, chocolatineStage, cueEnvelope } from "./cues";
 import { arcadeDoorOpen } from "../scene/ArcadeT";
 
 describe("show content", () => {
-  it("introduces one speaker in the T and three in the D with editable titles", () => {
+  it("introduces speakers in the game, cinema and two digital chapters with editable titles", () => {
     expect(SPEAKERS.map((speaker) => speaker.name)).toEqual(["Anne-Flore Bernard", "David Rousset", "Eric Mittelette", "Mitsuru Furuta"]);
-    expect(SPEAKERS.map((speaker) => speaker.startTime)).toEqual([17, 80, 96, 128]);
-    expect(SPEAKERS.map((speaker) => speaker.gateTime)).toEqual([29, 88, 107, 136]);
+    expect(SPEAKERS.map((speaker) => speaker.world)).toEqual(["game", "cinema", "digital", "digital"]);
+    expect(SPEAKERS.map((speaker) => speaker.startTime)).toEqual([17, 66, 99, 128]);
+    expect(SPEAKERS.map((speaker) => speaker.gateTime)).toEqual([29, 76, 107, 136]);
     for (const speaker of SPEAKERS) {
       expect(speaker.demoTitle.trim().length).toBeGreaterThan(0);
       expect(activeSpeaker(speaker.startTime)).toBe(speaker);

@@ -15,8 +15,12 @@ import { smoothstep } from "../engine/Timeline";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
 import "@babylonjs/core/Meshes/thinInstanceMesh";
 
+export function laserLead(speaker: SpeakerConfig): number {
+  return speaker.world === "digital" && speaker.visualTheme === "neural" ? 1 : 3;
+}
+
 export function laserStrength(time: number, speaker: SpeakerConfig, audio: AudioFeatures): number {
-  const envelope = cueEnvelope(time, speaker.startTime - 3, speaker.endTime, .55);
+  const envelope = cueEnvelope(time, speaker.startTime - laserLead(speaker), speaker.endTime, .55);
   const reveal = 1 - smoothstep((time - 153) / 2);
   const beat = .5 + .5 * Math.sin(time * 5.2);
   return envelope * reveal * Math.min(1, (.38 + beat * .18 + audio.energy * .28
@@ -29,11 +33,14 @@ export function speakerReveal(time: number, speaker: SpeakerConfig): number {
 }
 
 export function laserReach(time: number, speaker: SpeakerConfig): number {
-  return smoothstep((time - speaker.startTime + 3) / .6);
+  return smoothstep((time - speaker.startTime + laserLead(speaker)) / .6);
 }
 
 export function laserAim(time: number, speaker: SpeakerConfig): number {
-  return smoothstep((time - speaker.startTime + 2) / 1.75);
+  const lead = laserLead(speaker);
+  return lead === 1
+    ? smoothstep((time - speaker.startTime + 1) / .75)
+    : smoothstep((time - speaker.startTime + 2) / 1.75);
 }
 
 export function spotlightSweep(time: number, speaker: SpeakerConfig): number {

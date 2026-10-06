@@ -9,6 +9,7 @@ import { SPEAKERS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
 import { smootherstep } from "../engine/Timeline";
 import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
+import { CINEMA } from "../content/showBeats";
 
 const VIOLIN = [
   "......oo.........",
@@ -105,7 +106,8 @@ export class DemosceneTransition {
       }
       this.voxels.forEach((mesh) => mesh.thinInstanceBufferUpdated("matrix"));
     }
-    const warp = cueEnvelope(time, 45, 63, 2);
+    const warp = Math.max(cueEnvelope(time, 45, CINEMA.clapperStart, .7),
+      cueEnvelope(time, CINEMA.projector, 99, 1.2));
     this.streaks.setEnabled(warp > 0);
     if (warp === 0) return;
     for (let index = 0; index < 96; index++) {

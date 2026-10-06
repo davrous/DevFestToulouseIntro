@@ -3,6 +3,7 @@ import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { cellPosition } from "../content/title";
 import { CASSOULET_SIGN, ORBIT_LINK, T_SIGN_ANCHORS } from "./EasterEggs";
+import { CINEMA } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 
@@ -24,6 +25,39 @@ function longestReadableInterval(start: number, end: number, world: Matrix, widt
 }
 
 describe("readable arcade jokes at projector aspect", () => {
+  it("frames the full hero clap for at least four seconds without rushing into its plane", () => {
+    const anchor = routeAnchor(CINEMA.clapperAnchor);
+    const world = Matrix.RotationY(anchor.yaw)
+      .multiply(Matrix.Translation(anchor.position.x, anchor.position.y, anchor.position.z));
+    expect(CINEMA.clap - CINEMA.clapperStart).toBeGreaterThanOrEqual(5);
+    expect(longestReadableInterval(CINEMA.clapperStart, CINEMA.clapperClose, world, 22, 23))
+      .toBeGreaterThanOrEqual(4);
+    for (let time = CINEMA.clapperStart; time < CINEMA.clap; time += .1) {
+      expect(Vector3.Distance(cameraPose(time).position, anchor.position)).toBeGreaterThan(15);
+    }
+  });
+
+  it("gives the frontal camera lens a readable approach before the optical transition", () => {
+    const anchor = routeAnchor(CINEMA.lens);
+    const world = Matrix.RotationY(anchor.yaw)
+      .multiply(Matrix.Translation(anchor.position.x, anchor.position.y, anchor.position.z));
+    expect(longestReadableInterval(CINEMA.camera, CINEMA.lens, world, 13.6, 13.6))
+      .toBeGreaterThanOrEqual(2);
+  });
+  it("keeps David's cinema screen readable before the projector transition", () => {
+    const anchor = routeAnchor(CINEMA.davidGate);
+    const world = Matrix.RotationY(anchor.yaw)
+      .multiply(Matrix.Translation(anchor.position.x, 17, anchor.position.z));
+    expect(longestReadableInterval(CINEMA.davidStart, CINEMA.davidGate, world, 21, 9))
+      .toBeGreaterThanOrEqual(4);
+  });
+
+  it("shows LEVEL COMPLETE before the clapperboard cut", () => {
+    const anchor = routeAnchor(58);
+    const world = Matrix.RotationY(anchor.yaw)
+      .multiply(Matrix.Translation(anchor.position.x, 14, anchor.position.z));
+    expect(longestReadableInterval(46.3, 48.8, world, 18, 4)).toBeGreaterThanOrEqual(1.25);
+  });
   it("halves the original cabinet and sprite clutter", () => {
     expect(CABINET_COUNT).toBeLessThanOrEqual(6);
     expect(RUNNER_COUNT).toBeLessThanOrEqual(12);

@@ -31,7 +31,7 @@ describe("arcade violin and warp transition", () => {
     expect(voxels.every((mesh) => mesh.isEnabled())).toBe(true);
     transition.update(54, silentFeatures());
     expect(voxels.every((mesh) => !mesh.isEnabled())).toBe(true);
-    expect(streaks.isEnabled()).toBe(true);
+    expect(streaks.isEnabled()).toBe(false);
     transition.update(70, silentFeatures());
     expect(streaks.isEnabled()).toBe(false);
     transition.update(26, silentFeatures());

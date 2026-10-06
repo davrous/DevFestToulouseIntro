@@ -30,6 +30,7 @@ export class SpeakerPortal {
   private readonly lasers: PortalLasers;
   private readonly extraPanels: Mesh[] = [];
   private readonly tag: Mesh;
+  private readonly overclockRings: Mesh[] = [];
 
   constructor(scene: Scene, readonly config: SpeakerConfig, index: number) {
     const accent = THEME_COLORS[config.visualTheme];
@@ -44,7 +45,8 @@ export class SpeakerPortal {
     this.nameMesh = createWorldText(scene, {
       name: `Speaker / ${config.name}`, width: gateWidth - 1, height: 4.4,
       lines: [{ text: config.name.toUpperCase(), color: "#e4fff5", size: 240 }],
-      background: "#07151e", border: accent,
+      background: config.visualTheme === "overclock" ? undefined : "#07151e",
+      border: config.visualTheme === "overclock" ? undefined : accent,
     });
     this.nameMesh.parent = this.root;
     this.nameMesh.position.set(0, nameHeight, -.12);
@@ -103,6 +105,19 @@ export class SpeakerPortal {
     this.frame = frameBatch.build(scene);
     this.frame.unfreezeWorldMatrix();
     this.frame.parent = this.root;
+    if (config.visualTheme === "overclock") {
+      for (const [index, diameter] of [17, 11].entries()) {
+        const ring = MeshBuilder.CreateTorus(`FX/Speaker overclock orbit ${index}`,
+          { diameter, thickness: .17, tessellation: 64 }, scene);
+        ring.parent = this.root;
+        ring.position.set(0, nameHeight, .9 + index * .35);
+        ring.rotation.x = Math.PI / 2;
+        ring.material = emissive(scene, `Speaker overclock orbital light ${index}`,
+          index ? "#a6ffe0" : accent, index ? .8 : 1.05);
+        ring.isPickable = false;
+        this.overclockRings.push(ring);
+      }
+    }
     const metal = new PBRMaterial(`Speaker ${index + 1} satellites`, scene);
     metal.albedoColor = this.color.scale(.35);
     metal.emissiveColor = this.color.scale(.15);
@@ -125,14 +140,15 @@ export class SpeakerPortal {
     this.nameMesh.visibility = reveal;
     this.titleMesh.visibility = smoothstep((time - this.config.startTime - .65) / 1.7) * reveal;
     this.tag.visibility = reveal;
-    this.backplate.visibility = Math.min(1, laser * 1.3) * laserReach(time, this.config);
+    this.backplate.visibility = Math.min(1, laser * 1.3) * laserReach(time, this.config)
+      * (this.config.visualTheme === "overclock" ? .16 : 1);
     for (const material of this.textMaterials) {
       material.emissiveColor.set(.14 + laser * .45, .16 + laser * .48, .18 + laser * .5);
     }
     for (const panel of this.extraPanels) panel.visibility = reveal;
     this.light.emissiveColor.copyFrom(this.color).scaleInPlace((.35 + reveal * .85) * (1 + audio.kick * .8 + audio.snare * .5));
     this.lasers.update(time, audio);
-    this.frame.visibility = this.backplate.visibility;
+    this.frame.visibility = this.config.visualTheme === "overclock" ? 0 : this.backplate.visibility;
     this.decoration.visibility = reveal;
     this.frame.scaling.x = 1 + audio.bass * .006;
     const phase = time - this.config.startTime;
@@ -157,6 +173,11 @@ export class SpeakerPortal {
       this.transform.copyToArray(this.modules, i * 16);
     }
     this.decoration.thinInstanceBufferUpdated("matrix");
+    this.overclockRings.forEach((ring, index) => {
+      ring.visibility = reveal;
+      ring.rotation.z = (index ? -1 : 1) * time * .22;
+      ring.scaling.setAll(1 + audio.bass * .018 + audio.drop * .07);
+    });
     this.decoration.thinInstanceRefreshBoundingInfo();
   }
 }

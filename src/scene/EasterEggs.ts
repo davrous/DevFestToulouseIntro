@@ -15,7 +15,7 @@ import { BoxBatch } from "./Instances";
 export const T_SIGN_ANCHORS = {
   chocolatine: { time: 15.5, height: 12.5, width: 20 },
 } as const;
-export const CASSOULET_SIGN = { time: 127, start: 115, end: 125, height: 14, width: 14, lateral: 0 } as const;
+export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, height: 14, width: 14, lateral: 0 } as const;
 export const ORBIT_LINK = { time: 153, depth: 12, start: 143, end: 166, height: 13, width: 14 } as const;
 
 function box(scene: Scene, root: TransformNode, name: string, position: Vector3, size: Vector3, material: PBRMaterial): Mesh {

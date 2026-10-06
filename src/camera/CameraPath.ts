@@ -3,6 +3,7 @@ import { CELL, cellPosition } from "../content/title";
 import { clamp, smootherstep, smoothstep } from "../engine/Timeline";
 import { SPEAKERS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
+import { CINEMA } from "../content/showBeats";
 
 interface Keyframe { time: number; col: number; row: number; y: number }
 
@@ -16,10 +17,11 @@ const keyframes: Keyframe[] = [
   { time: 39, col: 0, row: 9, y: 12 },
   { time: 44, col: 1, row: 9, y: 11 },
   { time: 49, col: 2, row: 9, y: 11 },
-  { time: 53, col: 2.1, row: 8, y: 12 },
-  { time: 57, col: 2.1, row: 7, y: 12 },
-  { time: 61, col: 1.95, row: 6, y: 12 },
-  { time: 65, col: .65, row: 6, y: 11 },
+  { time: 54.85, col: 2.01, row: 8.86, y: 11.5 },
+  { time: 58, col: 2.1, row: 8, y: 12 },
+  { time: 61, col: 2.1, row: 7, y: 12 },
+  { time: 65, col: 1.95, row: 6, y: 12 },
+  { time: 68, col: .65, row: 6, y: 11 },
   { time: 70, col: .12, row: 5.05, y: 8 },
   { time: 76, col: .04, row: 4.45, y: 9 },
   { time: 82, col: 0, row: 3.3, y: 11 },
@@ -49,13 +51,26 @@ export const TITLE_TARGET = new Vector3(0, 12, 0);
 const attentionCues = [
   { start: 4, end: 13, anchor: 16, height: 15 },
   { start: 41, end: 46, anchor: 47, height: 16 },
-  { start: 89, end: 94, col: .15, row: -.39, height: 19 },
+  { start: 44.8, end: CINEMA.clap, anchor: CINEMA.clapperAnchor, height: 12, fade: 3, weight: 1 },
+  { start: CINEMA.camera, end: CINEMA.lens - .4, anchor: CINEMA.lens, height: 12.5 },
 ];
 
 export function interiorPosition(time: number): Vector3 {
   let index = 0;
   while (index < keyframes.length - 2 && time > keyframes[index + 1].time) index++;
   const t = clamp((time - keyframes[index].time) / (keyframes[index + 1].time - keyframes[index].time));
+  if (time >= 44 && time < 58) {
+    const tangent = (at: number): Vector3 => {
+      const before = points[at].subtract(points[at - 1]).scale(1 / (keyframes[at].time - keyframes[at - 1].time));
+      const after = points[at + 1].subtract(points[at]).scale(1 / (keyframes[at + 1].time - keyframes[at].time));
+      const slope = (a: number, b: number) => a * b <= 0 ? 0 : 2 * a * b / (a + b);
+      return new Vector3(slope(before.x, after.x), slope(before.y, after.y), slope(before.z, after.z));
+    };
+    const duration = keyframes[index + 1].time - keyframes[index].time;
+    // Limit tangents around the slow clap approach; Catmull-Rom overshoots near a near-stop.
+    return Vector3.Hermite(points[index], tangent(index).scale(duration),
+      points[index + 1], tangent(index + 1).scale(duration), t);
+  }
   return Vector3.CatmullRom(
     points[Math.max(0, index - 1)], points[index], points[index + 1],
     points[Math.min(points.length - 1, index + 2)], t,
@@ -86,6 +101,11 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
   const backIntoRoom = EXIT.add(new Vector3(0, 3, CELL * 1.8));
   const localTarget = Vector3.Lerp(ahead, backIntoRoom, turn);
   if (time < 159) {
+    if (time >= 59 && time < 71) {
+      const angle = -Math.PI / 2 * smoothstep((time - 60) / 6) * (1 - smoothstep((time - 66) / 5));
+      const foyerHeading = local.add(new Vector3(Math.sin(angle), .03, Math.cos(angle)).scale(20));
+      focusCamera(local, localTarget, foyerHeading, cueEnvelope(time, 59, 71, 1.5));
+    }
     const speaker = SPEAKERS.find((speaker) => time >= speaker.startTime - 2 && time < speaker.gateTime - 2);
     if (speaker) {
       const focus = routeAnchor(speaker.gateTime, speaker.lateralOffset).position;
@@ -93,18 +113,17 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
       const weight = cueEnvelope(time, speaker.startTime - 2, speaker.gateTime - 2, 3);
       focusCamera(local, localTarget, focus, weight * .92);
     } else {
-      const cue = attentionCues.find((cue) => time >= cue.start && time < cue.end);
-      if (cue) {
-        const point = "anchor" in cue && cue.anchor !== undefined
-          ? interiorPosition(cue.anchor)
-          : new Vector3(cellPosition(cue.col!, cue.row!).x, 0, cellPosition(cue.col!, cue.row!).z);
+      for (const cue of attentionCues) {
+        if (time < cue.start || time >= cue.end) continue;
+        const point = interiorPosition(cue.anchor);
         point.y = cue.height;
-        const weight = cueEnvelope(time, cue.start, cue.end, Math.min(3, (cue.end - cue.start) / 2));
-        focusCamera(local, localTarget, point, weight * .85);
+        const weight = cueEnvelope(time, cue.start, cue.end, cue.fade ?? Math.min(3, (cue.end - cue.start) / 2));
+        focusCamera(local, localTarget, point, weight * (cue.weight ?? .85));
       }
     }
     const arcadePulse = .06 * cueEnvelope(time, 31, 34, .5);
-    const warp = .08 * cueEnvelope(time, 47, 61, 2);
+    const warp = .08 * Math.max(cueEnvelope(time, 46, CINEMA.clapperStart, .7),
+      cueEnvelope(time, CINEMA.projector, 99, 1.2));
     return { position: local, target: localTarget,
       fov: .99 + .055 * smoothstep((time - 90) / 50) + arcadePulse + warp, reveal: 0 };
   }

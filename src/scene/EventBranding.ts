@@ -4,12 +4,9 @@ import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
-import type { SpeakerPortal } from "./SpeakerPortal";
 import { cellPosition } from "../content/title";
 import { smoothstep } from "../engine/Timeline";
-import { speakerReveal } from "../effects/ShowLighting";
 import flagUrl from "../assets/event/mascot-flag-green.png";
-import planetUrl from "../assets/event/mascot-planet-violet.png";
 import anniversaryUrl from "../assets/event/anniversary-cube-orange.png";
 
 function loadArtwork(scene: Scene, url: string, name: string): Promise<Texture> {
@@ -44,14 +41,12 @@ function decal(scene: Scene, name: string, texture: Texture, size: number, opaci
 export class EventBranding {
   readonly ready: Promise<void>;
   private readonly finalMarks: Mesh[] = [];
-  private readonly crest: Mesh[] = [];
 
-  constructor(scene: Scene, private readonly davidPortal: SpeakerPortal) {
+  constructor(scene: Scene) {
     this.ready = Promise.all([
       loadArtwork(scene, flagUrl, "Event mascot / green flag"),
-      loadArtwork(scene, planetUrl, "Event mascot / violet planet"),
       loadArtwork(scene, anniversaryUrl, "Event anniversary / orange cube"),
-    ]).then(([flag, planet, anniversary]) => {
+    ]).then(([flag, anniversary]) => {
       const bank = cellPosition(.85, 3.5);
       const backplate = MeshBuilder.CreatePlane("Event mascot / server service plate", { width: 5.2, height: 7 }, scene);
       const plateMaterial = new StandardMaterial("Service plate / dark enamel", scene);
@@ -62,16 +57,6 @@ export class EventBranding {
       backplate.isPickable = false;
       const serviceMark = decal(scene, "Event mascot / server insignia", flag, 5, .85);
       serviceMark.position.set(bank.x, 12, bank.z - 4.1);
-
-      const crestPlate = MeshBuilder.CreatePlane("Event mascot / David crest plate", { width: 5.8, height: 5.4 }, scene);
-      crestPlate.material = plateMaterial;
-      crestPlate.parent = davidPortal.root;
-      crestPlate.position.set(0, 26.95, -.56);
-      crestPlate.isPickable = false;
-      const planetMark = decal(scene, "Event mascot / David portal crest", planet, 5.2, .85);
-      planetMark.parent = davidPortal.root;
-      planetMark.position.set(0, 26.95, -.6);
-      this.crest.push(crestPlate, planetMark);
 
       for (const [name, texture, x] of [
         ["Event mascot / final signature", flag, -180],
@@ -87,7 +72,6 @@ export class EventBranding {
   }
 
   update(time: number): void {
-    for (const mesh of this.crest) mesh.visibility = speakerReveal(time, this.davidPortal.config);
     const visibility = smoothstep((time - 170) / 3);
     this.finalMarks.forEach((mesh) => { mesh.visibility = visibility; });
   }

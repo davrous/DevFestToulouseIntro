@@ -4,6 +4,7 @@ import { Timeline } from "./Timeline";
 import { DebugPanel } from "../debug/DebugPanel";
 import { ShowController } from "./ShowController";
 import { silentFeatures } from "./AudioAnalyzer";
+import { POPCORN_END, POPCORN_START } from "../scene/CinemaPopcorn";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -78,7 +79,8 @@ export class App {
       if (this.timeline.playing || this.inLobby || !this.showController.enabled) Object.assign(this.visualAudio, audio);
       this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed);
       this.world.scene.physicsEnabled = !!this.world.scene.getPhysicsEngine()
-        && !this.inLobby && this.timeline.playing && time < 44;
+        && !this.inLobby && this.timeline.playing
+        && (time < 44 || (time >= POPCORN_START && time < POPCORN_END));
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {

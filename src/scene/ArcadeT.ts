@@ -8,6 +8,7 @@ import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { routeAnchor } from "../camera/CameraPath";
 import { cellPosition } from "../content/title";
 import { cueEnvelope } from "../content/cues";
+import { CINEMA } from "../content/showBeats";
 import { smoothstep } from "../engine/Timeline";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
 import { createWorldText } from "./WorldText";
@@ -98,7 +99,7 @@ export class ArcadeT {
   }
 
   update(time: number, audio: AudioFeatures): void {
-    this.root.setEnabled(time < 65);
+    this.root.setEnabled(time < CINEMA.start);
     if (!this.root.isEnabled()) return;
     const opening = cellPosition(1, 9);
     const open = arcadeDoorOpen(time);

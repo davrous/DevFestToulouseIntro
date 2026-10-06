@@ -119,7 +119,9 @@ export class MusicReactive {
     this.notes.thinInstanceSetBuffer("matrix", this.noteMatrices, 16, false);
   }
 
-  update(time: number, audio: AudioFeatures): void {
+  update(time: number, audio: AudioFeatures, cinema = false): void {
+    this.particles.setEnabled(!cinema);
+    this.canal.setEnabled(!cinema);
     const calm = 1 - smoothstep((time - 153) / 18);
     const reveal = smoothstep((time - 159) / 9);
     const animationTime = Math.min(time, 173);

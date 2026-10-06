@@ -31,9 +31,13 @@ import { PixelWorld } from "./PixelWorld";
 import { ArcadeCathedral } from "./ArcadeCathedral";
 import { DemosceneTransition } from "./DemosceneTransition";
 import { MusicReactive } from "../effects/MusicReactive";
+import { CINEMA } from "../content/showBeats";
 import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
 import { EventBranding } from "./EventBranding";
+import { CinemaWorld } from "./CinemaWorld";
+import { CinemaPopcorn } from "./CinemaPopcorn";
+import { DigitalMoments } from "./DigitalMoments";
 import HavokPhysics from "@babylonjs/havok";
 import havokWasm from "@babylonjs/havok/lib/esm/HavokPhysics.wasm?url";
 import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
@@ -58,6 +62,9 @@ export class DevFestScene {
   private readonly floorEqualizer: FloorEqualizer;
   private readonly wallMeters: WallMeters;
   private readonly branding: EventBranding;
+  private readonly cinema: CinemaWorld;
+  private readonly popcorn: CinemaPopcorn;
+  private readonly digitalMoments: DigitalMoments;
   private readonly tint = new Color3();
   private readonly labyrinth;
   private readonly interior;
@@ -115,14 +122,18 @@ export class DevFestScene {
     this.interior = createInterior(scene);
     this.atmosphere = createAtmosphere(scene);
     this.caption = createFinalCaption(scene);
-    this.portals = SPEAKERS.map((speaker, index) => new SpeakerPortal(scene, speaker, index));
+    this.portals = SPEAKERS.flatMap((speaker, index) =>
+      speaker.world === "cinema" ? [] : [new SpeakerPortal(scene, speaker, index)]);
     this.easterEggs = new EasterEggs(scene);
     this.arcade = new ArcadeT(scene);
     this.arcadePhysics = new ArcadePhysics(scene);
     this.pixelWorld = new PixelWorld(scene);
     this.cathedral = new ArcadeCathedral(scene);
     this.demoscene = new DemosceneTransition(scene);
-    this.branding = new EventBranding(scene, this.portals[1]);
+    this.cinema = new CinemaWorld(scene);
+    this.popcorn = new CinemaPopcorn(scene);
+    this.digitalMoments = new DigitalMoments(scene);
+    this.branding = new EventBranding(scene);
     this.music = new MusicReactive(scene);
     this.floorEqualizer = new FloorEqualizer(scene);
     this.wallMeters = new WallMeters(scene);
@@ -133,7 +144,8 @@ export class DevFestScene {
       if (material instanceof StandardMaterial && !mesh.name.startsWith("FX/Laser halo")
         && /FX\/|light traces|running lights|data banks|computational core|Core orbit|Depth gates/.test(mesh.name)) {
         const color = material.emissiveColor;
-        result.set(color.r, color.g, color.b, 1);
+        const opacity = mesh.name.startsWith("FX/Cinema /") ? material.alpha * mesh.visibility : 1;
+        result.set(color.r * opacity, color.g * opacity, color.b * opacity, 1);
       } else {
         result.set(0, 0, 0, 1);
       }
@@ -160,7 +172,7 @@ export class DevFestScene {
   }
 
   async prepare(): Promise<void> {
-    await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare()]);
+    await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare()]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
     const plugin = new HavokPlugin(true, havok);
     if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
@@ -170,6 +182,7 @@ export class DevFestScene {
     plugin.setVelocityLimits(32, 12);
     this.scene.physicsEnabled = false;
     this.arcadePhysics.initialize(plugin);
+    this.popcorn.initialize(plugin);
     await this.branding.ready;
     await this.scene.whenReadyAsync();
     const compile = () => Promise.all(this.scene.meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
@@ -203,6 +216,7 @@ export class DevFestScene {
     const wake = smoothstep(time / 35);
     const reveal = smoothstep((time - 159) / 10);
     const calm = 1 - smoothstep((time - 153) / 18);
+    const cinema = time >= CINEMA.clapperStart && time < CINEMA.digital;
     const paletteTime = time < 155 && section ? PHASES.find((phase) => phase.name === section)!.time + 6 : time;
     let index = 0;
     for (let i = 1; i < PHASES.length; i++) if (paletteTime >= PHASES[i].time) index = i;
@@ -212,19 +226,32 @@ export class DevFestScene {
     this.glow.intensity = .2 + reveal * .35 + pulse * .15 + voice * .25;
     this.pipeline.bloomWeight = .2 + calm * (audio.violaEnergy * .08 + audio.drop * .1) + voice * .05;
     this.camera.minZ = .15 + reveal * 8;
-    this.scene.fogDensity = showFogDensity(time, audio.violaEnergy) + cueEnvelope(time, 46, 62, 2) * .012;
+    this.scene.fogDensity = showFogDensity(time, audio.violaEnergy)
+      + cueEnvelope(time, 46, CINEMA.clapperStart, .7) * .012
+      + cueEnvelope(time, CINEMA.lens - .65, CINEMA.lens + .5, .25) * .08
+      + cueEnvelope(time, CINEMA.digital - .4, CINEMA.digital + .8, .3) * .06;
     this.scene.fogColor.set(.022 + this.tint.r * .008, .033 + this.tint.g * .022, .04 + this.tint.b * .03);
     this.fill.intensity = .35 + wake * .3 + reveal * .55;
     this.sun.intensity = .5 + wake * .5 + reveal * 1.2;
     this.headlight.intensity = (100 + wake * 90 + pulse * 95 + voice * 100) * (1 - reveal);
+    this.headlight.diffuse.copyFromFloats(cinema ? 1 : .47, cinema ? .8 : 1, cinema ? .58 : .86);
+    if (cinema) this.headlight.intensity *= .65;
     this.labyrinth.cyan.emissiveColor.copyFrom(this.tint).scaleInPlace(.8 + wake * .55 + reveal * 1.5 + pulse + voice * 1.8);
     this.labyrinth.amber.emissiveColor.set(1.25 + reveal * 1.75, .52 + reveal * .25, .26);
+    if (cinema) {
+      this.labyrinth.cyan.emissiveColor.scaleInPlace(.3);
+      this.labyrinth.amber.emissiveColor.scaleInPlace(.3);
+    }
     this.labyrinth.roof.emissiveColor.set(.008 + reveal * .067, .018 + reveal * .15, .023 + reveal * .17);
     this.labyrinth.bridge.setEnabled(bridgeVisible(time));
+    this.labyrinth.meshes.forEach((mesh) => {
+      mesh.setEnabled(time < CINEMA.lens - .15 || time >= CINEMA.digital);
+    });
     this.atmosphere.dust.position.y = Math.sin(time * .13) * DUST.drift;
     this.caption.visibility = smoothstep((time - 170) / 3);
     this.branding.update(time);
     updateInterior(this.interior, time);
+    this.interior.root.setEnabled(!cinema);
     this.interior.core.scaling.setAll(1 + audio.bass * calm * .025
       + audio.drop * cueEnvelope(time, 120, 155, 2) * .18);
     this.portals.forEach((portal) => portal.update(time, audio));
@@ -233,10 +260,17 @@ export class DevFestScene {
     this.pixelWorld.update(time, audio);
     this.cathedral.update(time, audio);
     this.demoscene.update(time, audio);
+    this.cinema.update(time, audio);
+    this.popcorn.update(time, audio);
+    this.digitalMoments.update(time, audio);
     this.arcadePhysics.update(time, audio);
-    this.music.update(time, audio);
+    this.music.update(time, audio, cinema);
     this.floorEqualizer.update(time, audio);
     this.wallMeters.update(time, audio);
+    if (cinema) {
+      this.floorEqualizer.mesh.setEnabled(false);
+      this.wallMeters.mesh.setEnabled(false);
+    }
   }
 
   get cellCount(): number { return this.labyrinth.cellCount; }

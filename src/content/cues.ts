@@ -3,7 +3,7 @@ import { smoothstep } from "../engine/Timeline";
 export const EASTER_EGGS = [
   { id: "arcade", start: 0, end: 48, label: "LEVEL T / 8-BIT BUILD" },
   { id: "chocolatine", start: 5, end: 14, label: "HTTP 301 / CHOCOLATINE" },
-  { id: "npm", start: 115, end: 125, label: "npm install cassoulet" },
+  { id: "npm", start: 117, end: 125, label: "npm install cassoulet" },
   { id: "legacy", start: 33, end: 41, label: "LEGACY CODE / BUILD FAILED" },
   { id: "orbit", start: 143, end: 166, label: "TOULOUSE / ORBITAL LINK" },
 ] as const;
