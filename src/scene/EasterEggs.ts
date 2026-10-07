@@ -11,12 +11,14 @@ import { smoothstep } from "../engine/Timeline";
 import { createWorldText, routeAnchor } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { BoxBatch } from "./Instances";
+import { DeployRocket } from "./DeployRocket";
+import { ORBIT_LINK } from "../content/showBeats";
+export { DEPLOY_ROCKET, ORBIT_LINK } from "../content/showBeats";
 
 export const T_SIGN_ANCHORS = {
   chocolatine: { time: 15.5, height: 12.5, width: 20 },
 } as const;
 export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, height: 14, width: 14, lateral: 0 } as const;
-export const ORBIT_LINK = { time: 153, depth: 12, start: 143, end: 166, height: 13, width: 14 } as const;
 
 function box(scene: Scene, root: TransformNode, name: string, position: Vector3, size: Vector3, material: PBRMaterial): Mesh {
   const mesh = MeshBuilder.CreateBox(name, { width: size.x, height: size.y, depth: size.z }, scene);
@@ -44,6 +46,9 @@ export class EasterEggs {
   private readonly satelliteYaw: number;
   private readonly orbit: Mesh;
   private readonly brick: PBRMaterial;
+  private readonly rocket: DeployRocket;
+
+  get rocketParticles(): Mesh { return this.rocket.particles; }
 
   constructor(scene: Scene) {
     const metal = new PBRMaterial("Easter eggs / titanium", scene);
@@ -100,6 +105,8 @@ export class EasterEggs {
     orbitText.parent = this.satellite;
     orbitText.position.y = 4;
 
+    this.rocket = new DeployRocket(scene, metal);
+
     this.brick = new PBRMaterial("Toulouse / future pink brick", scene);
     this.brick.albedoColor = Color3.FromHexString("#955a64");
     this.brick.metallic = .2;
@@ -121,6 +128,7 @@ export class EasterEggs {
     this.npm.setEnabled(cueEnvelope(time, CASSOULET_SIGN.start, CASSOULET_SIGN.end, .5) > 0);
     this.satellite.setEnabled(cueEnvelope(time, ORBIT_LINK.start, ORBIT_LINK.end, 1) > 0);
     this.satellite.rotation.y = this.satelliteYaw;
+    this.rocket.update(time);
     this.orbit.rotation.set(.35, time * .15, .25);
     const warm = smoothstep((time - 110) / 25);
     this.brick.emissiveColor.set(.09 * warm, .035 * warm, .045 * warm);

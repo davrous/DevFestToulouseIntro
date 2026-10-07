@@ -38,6 +38,7 @@ import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
 import { CinemaPopcorn } from "./CinemaPopcorn";
 import { DigitalMoments } from "./DigitalMoments";
+import { DigitalOverflow } from "./DigitalOverflow";
 import HavokPhysics from "@babylonjs/havok";
 import havokWasm from "@babylonjs/havok/lib/esm/HavokPhysics.wasm?url";
 import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
@@ -65,6 +66,7 @@ export class DevFestScene {
   private readonly cinema: CinemaWorld;
   private readonly popcorn: CinemaPopcorn;
   private readonly digitalMoments: DigitalMoments;
+  private readonly overflow: DigitalOverflow;
   private readonly tint = new Color3();
   private readonly labyrinth;
   private readonly interior;
@@ -133,18 +135,21 @@ export class DevFestScene {
     this.cinema = new CinemaWorld(scene);
     this.popcorn = new CinemaPopcorn(scene);
     this.digitalMoments = new DigitalMoments(scene);
+    this.overflow = new DigitalOverflow(scene);
     this.branding = new EventBranding(scene);
     this.music = new MusicReactive(scene);
     this.floorEqualizer = new FloorEqualizer(scene);
     this.wallMeters = new WallMeters(scene);
     this.glow = new GlowLayer("Architectural light bloom", scene, { mainTextureRatio: .5, blurKernelSize: 32 });
     this.glow.addExcludedMesh(this.music.particles);
+    this.glow.addExcludedMesh(this.easterEggs.rocketParticles);
     // Keep non-emissive geometry in the glow depth pass: hidden lights must not bleed through walls.
     this.glow.customEmissiveColorSelector = (mesh, _subMesh, material, result) => {
       if (material instanceof StandardMaterial && !mesh.name.startsWith("FX/Laser halo")
         && /FX\/|light traces|running lights|data banks|computational core|Core orbit|Depth gates/.test(mesh.name)) {
         const color = material.emissiveColor;
-        const opacity = mesh.name.startsWith("FX/Cinema /") ? material.alpha * mesh.visibility : 1;
+        const opacity = mesh.name.startsWith("FX/Cinema /") || mesh.name.startsWith("FX/Rocket /")
+          ? material.alpha * mesh.visibility : 1;
         result.set(color.r * opacity, color.g * opacity, color.b * opacity, 1);
       } else {
         result.set(0, 0, 0, 1);
@@ -183,6 +188,7 @@ export class DevFestScene {
     this.scene.physicsEnabled = false;
     this.arcadePhysics.initialize(plugin);
     this.popcorn.initialize(plugin);
+    this.overflow.initialize(plugin);
     await this.branding.ready;
     await this.scene.whenReadyAsync();
     const compile = () => Promise.all(this.scene.meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
@@ -264,6 +270,7 @@ export class DevFestScene {
     this.cinema.update(time, audio);
     this.popcorn.update(time, audio);
     this.digitalMoments.update(time, audio);
+    this.overflow.update(time, speed);
     this.arcadePhysics.update(time, audio);
     this.music.update(time, audio, cinema);
     this.floorEqualizer.update(time, audio);

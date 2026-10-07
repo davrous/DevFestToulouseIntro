@@ -50,4 +50,13 @@ describe("show content", () => {
     expect(cueEnvelope(55, 30, 55)).toBe(0);
     expect(cueEnvelope(180, 30, 55)).toBe(0);
   });
+
+  it("allows a slower look-away without changing the default symmetric fade", () => {
+    expect(cueEnvelope(30.5, 30, 40, 1, 4)).toBeCloseTo(.5);
+    expect(cueEnvelope(35, 30, 40, 1, 4)).toBe(1);
+    expect(cueEnvelope(38, 30, 40, 1, 4)).toBeCloseTo(.5);
+    expect(cueEnvelope(39, 30, 40, 1, 4)).toBeCloseTo(.15625);
+    expect(cueEnvelope(40, 30, 40, 1, 4)).toBe(0);
+    expect(cueEnvelope(39, 30, 40)).toBe(cueEnvelope(39, 30, 40, 1, 1));
+  });
 });

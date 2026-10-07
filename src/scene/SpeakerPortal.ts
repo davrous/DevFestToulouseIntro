@@ -28,7 +28,6 @@ export class SpeakerPortal {
   private readonly light;
   private readonly anchor;
   private readonly lasers: PortalLasers;
-  private readonly extraPanels: Mesh[] = [];
   private readonly tag: Mesh;
   private readonly overclockRings: Mesh[] = [];
 
@@ -82,21 +81,6 @@ export class SpeakerPortal {
     });
     this.tag.parent = this.root;
     this.tag.position.set(0, nameHeight + 3.4, -.15);
-    if (config.visualTheme === "neural") {
-      for (const [side, lines] of [
-        [-1, ["agent.observe()", "agent.plan()"]],
-        [1, ["await agent.act()", "world.compile()"]],
-      ] as const) {
-        const code = createWorldText(scene, {
-          name: `Neural code / ${side}`, width: 7, height: 2.8,
-          lines: lines.map((text) => ({ text, color: "#b7a0ff" })),
-          background: "#101424", border: "#51476e",
-        });
-        code.parent = this.root;
-        code.position.set(side * 8.2, 6, 2.5);
-        this.extraPanels.push(code);
-      }
-    }
     const frameBatch = new BoxBatch(`FX/Speaker gate ${index + 1}`, this.light);
     frameBatch.add(-gateWidth / 2, 15, 0, .32, 30, .5);
     frameBatch.add(gateWidth / 2, 15, 0, .32, 30, .5);
@@ -145,7 +129,6 @@ export class SpeakerPortal {
     for (const material of this.textMaterials) {
       material.emissiveColor.set(.14 + laser * .45, .16 + laser * .48, .18 + laser * .5);
     }
-    for (const panel of this.extraPanels) panel.visibility = reveal;
     this.light.emissiveColor.copyFrom(this.color).scaleInPlace((.35 + reveal * .85) * (1 + audio.kick * .8 + audio.snare * .5));
     this.lasers.update(time, audio);
     this.frame.visibility = this.config.visualTheme === "overclock" ? 0 : this.backplate.visibility;

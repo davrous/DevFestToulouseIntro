@@ -2,7 +2,7 @@
 
 > Lire ce document avant d'explorer le code. Il décrit le spectacle existant et les décisions déjà validées, pas un nouveau backlog à implémenter.
 >
-> État documenté le **6 octobre 2026**, après les corrections de mise en scène cinéma. Base observée : branche `main`, commit `106954a` (`feat: add CinemaWorld and DigitalMoments scenes with interactive elements`). Les fichiers source restent la référence si des changements plus récents existent.
+> État documenté le **7 octobre 2026**, après les raffinements arcade / cinéma / digital et l'ajout de Strudel local. Base Git observée : `392c52a` ; cette passe visuelle est dans le worktree tant qu'elle n'a pas été commitée. Les fichiers source restent la référence si des changements plus récents existent.
 
 Dépôt : [davrous/DevFestToulouseIntro](https://github.com/davrous/DevFestToulouseIntro).
 
@@ -32,8 +32,10 @@ GAME / T
   → CAMÉRA GÉANTE / entrée dans l'objectif
   → PROJECTEUR / passerelle spatiale
   → DIGITAL D / Eric
+  → BUFFER OVERFLOW / débordement physique dans le S
   → progression cyan → or
   → Mitsuru / climax
+  → DEPLOY TO ORBIT / fusée procédurale
   → sortie / DEVFEST TOULOUSE / AI4Fun
 ```
 
@@ -68,7 +70,7 @@ Configuration : [src/content/speakers.ts](src/content/speakers.ts).
 
 `gateTime` sert aussi d'**ancre spatiale sur la trajectoire**, pas seulement de timestamp. Changer ce nombre déplace le panneau et modifie son angle d'approche. `endTime` n'est pas une garantie que le panneau soit encore dans le champ : la caméra peut déjà l'avoir dépassé.
 
-David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son écran est effectivement activé de `startTime - 2` à `gateTime + 1`, soit **64–77 s**, tandis que sa configuration conserve `endTime = 83`. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
+David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son support physique est visible dès **52.45 s**, comme les autres props cinéma, jusqu'à la traversée optique à 90 s. Son nom garde son fondu à partir de **67 s** et l'enveloppe de présentation **66–83 s**. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
 
 Les constantes cinéma de [src/content/showBeats.ts](src/content/showBeats.ts) reprennent certains timings de David : conserver leur cohérence avec la configuration des speakers.
 
@@ -85,18 +87,20 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 33–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 |
 | 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture de la porte vers 42.6 |
 | 46.3–48.8 | LEVEL COMPLETE, court et centré |
-| 48.8–54.55 | Grand clap dégagé ; pose ouverte lisible ; fermeture de 53.65 à 54.55 |
-| 54.55–54.85 | Shutter noir au contact du clap, puis apparition du cinéma |
-| 54.85–66 | Cinéma symétrique : murs de sièges en gradins, supports, lumière chaude et CRT intégrés |
+| 48.8–52.2 | Clap original sans panneau DEVFEST / SCENE 02 ajouté ; fermeture de 51.55 à 52.2, approche sans quasi-arrêt |
+| 52.2–52.45 | Shutter noir au contact du clap, puis cinéma |
+| 52.45–66 | Décor cinéma entier visible dès l'entrée : sièges, CRT rétro, support de David, bobines / pellicule, seau et caméra |
 | 59.4–59.7 | Les CRT affichent DEVFEST simultanément |
 | 66–77, à l'écran | Première de David : lumière avant le fondu du nom, écran physique supporté, zone plus calme |
 | 77–84.5 | Bobines frontales reliées par une pellicule animée ; seau visible, bascule à 77.7, déversement à 78.2 |
-| 84–90 | Caméra de cinéma géante face à nous ; objectif centré sur notre trajectoire |
+| 84–90 | Approche de la caméra géante déjà visible ; objectif centré sur notre trajectoire |
 | 90–99 | Traversée optique, projecteur à 91.2, espace à 93, retour de l'architecture digitale vers 95 |
 | 99–116 | Eric, premier chapitre du D digital, avec flux de données convergents |
+| 109.5–119 | Rack BUFFER OVERFLOW dans le S ; 32 blocs Havok débordent à 113.2 ; texte terminé à 116.8 avant le cassoulet |
 | 114–132 | Six structures de données s'élèvent progressivement, pulse mobile et transition cyan → or |
 | 117–125 | `npm install cassoulet / package size: 4.8 GB`, **après Eric**, avant Mitsuru |
 | 128–146 | Mitsuru : nom orbital, énergie dorée plus intense, vumètre derrière |
+| 140–149.4 | Fusée au **coin suivant**, avant le virage vers Orbital Link : approche lisible, décollage à 144.6, impact au plafond à 146.8, flash / onde / 240 étincelles ; pad immobile |
 | 143–166 | TOULOUSE / ORBITAL LINK, placé en profondeur et conservé pendant le début du zoom-out |
 | 153–159 | Dernier vumètre, retournement et préparation de la sortie, sans longue attente |
 | 159–173 | Recul et montée : reveal du titre complet et de la connexion au sol |
@@ -114,12 +118,16 @@ Ces décisions évitent de réintroduire des éléments retirés lors des nombre
 
 - Le T a été **désencombré** : six bornes latérales, moins de sprites et moins d'objets redondants. Ne pas remettre la grosse borne au centre. Conserver le texte d'ouverture.
 - Les sprites sont plaqués sur les **murs latéraux**, au-dessus des objets, pas à l'intérieur des bornes ou en tas.
+- Ce sont maintenant des **décalcomanies fixes**. L'atlas contient des personnages différents, pas une animation : ne pas changer de tuile avec le temps / kick, ni faire pomper leur taille ou leur position.
 - Le personnage voxel a été remplacé par le **violon**, associé à Anne-Flore, centré sous sa fiche et près du sol.
 - Les anciens ballons rebondissants, y compris le ballon de rugby, et leurs plateformes ne font plus partie du show actuel. Havok sert maintenant aux pièces, au mur et au pop-corn.
 - La blague **Canal du Midi** et le texte **CONTAINER / NO CLOUD REQUIRED** ont été retirés. Les noms de certains anciens shaders/rubans peuvent encore évoquer MIDI : cela ne signifie pas qu'il faut remettre le panneau.
 - Ne pas rétablir **GAME OVER 404 / EXIT NOT FOUND / TEST PASSED** : le récit de sortie est désormais `git rebase --continue` qui déverrouille la porte.
 - Le cassoulet doit rester **entre Eric et Mitsuru**, et visible assez longtemps. Une ancienne demande le plaçait après David ; elle a été corrigée ensuite.
 - Le cinéma doit rester une **composition architecturale symétrique**, pas une distribution aléatoire de sièges flottants, de CRT inclinés et de pancartes.
+- Tous ses props sont visibles dès l'entrée. Ne pas confondre chargement et visibilité : précharger un GLB puis cacher sa racine jusqu'à son beat provoque quand même un pop.
+- Les écrans CRT utilisent toute la vraie surface courbe du GLB, avec huit interfaces originales évoquant DOS / Windows 95 / BBS / écrans bleus. Ne pas remettre de petit panneau flottant devant le verre.
+- Les panneaux `agent.observe()` / `agent.plan()` / `agent.act()` sous Eric sont supprimés ; ils appartenaient à une ancienne présentation de David.
 - Les props géants sont des héros intentionnels : clap, bobines, caméra. La chaise de réalisateur et les VHS sont des détails, pas des concurrents du speaker.
 - La caméra géante doit **pointer vers nous** et être traversée par son objectif. Pas une petite caméra posée sur le côté qui filme dans l'autre sens.
 - Éviter les signes plats génériques supplémentaires. Les textes existants sont justifiés par une fiche, un écran, un terminal, un clap ou une architecture.
@@ -141,11 +149,14 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Violon voxel et traînées de vitesse | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts) |
 | Pièces et mur de dette technique, Havok / seek / cleanup | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
 | Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
+| Textures rétro et couverture exacte de la surface courbe des CRT | [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Chargement local, normalisation, instances, clone de caméra et animation du clap | [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
 | Seau / source, 36 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
 | Progression entre Eric et Mitsuru et flux de données distincts | [DigitalMoments.ts](src/scene/DigitalMoments.ts), [Interior.ts](src/scene/Interior.ts) |
+| Rack BUFFER OVERFLOW, vrais blocs Havok, cleanup / replay dans le S | [DigitalOverflow.ts](src/scene/DigitalOverflow.ts), activation physique dans [App.ts](src/engine/App.ts) |
 | Portails non cinéma, typographie et présentation orbitale de Mitsuru | [SpeakerPortal.ts](src/scene/SpeakerPortal.ts) |
-| Blagues, cassoulet, satellite et label ORBITAL LINK | [EasterEggs.ts](src/scene/EasterEggs.ts) |
+| Blagues, cassoulet, orchestration de la fusée, satellite et ORBITAL LINK | [EasterEggs.ts](src/scene/EasterEggs.ts) |
+| Fusée, pad fixe, décollage et explosion déterministes | [DeployRocket.ts](src/scene/DeployRocket.ts), configuration / déplacement dans [showBeats.ts](src/content/showBeats.ts) |
 | Lasers au sol, vrais spotlights, spectres au sol et aux murs | [ShowLighting.ts](src/effects/ShowLighting.ts), [WallMeters.ts](src/effects/WallMeters.ts) |
 | Particules et rubans réactifs ; entrées audio / événementielles | [MusicReactive.ts](src/effects/MusicReactive.ts), [AudioAnalyzer.ts](src/engine/AudioAnalyzer.ts), [ShowController.ts](src/engine/ShowController.ts), [protocol.ts](src/engine/protocol.ts) |
 | Texte sur meshes, boîtes instanciées, habillage de l'événement / fond | [WorldText.ts](src/scene/WorldText.ts), [Instances.ts](src/scene/Instances.ts), [EventBranding.ts](src/scene/EventBranding.ts), [Atmosphere.ts](src/scene/Atmosphere.ts) |
@@ -168,15 +179,23 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 
 La route utilise Catmull–Rom, mais **44–58 s** emploie des tangentes Hermite limitées pour éviter l'overshoot / le demi-tour parasite près du ralentissement du clap. Un regard dirigé dans le foyer **59–71 s** évite un virage trop brutal.
 
-Les tests maintiennent les rotations sous **45°/s**, la clearance des murs et au moins **quatre secondes** de cadrage complet pour les noms et le clap. Ne pas déplacer Eric plus tard sans retravailler aussi le regard : ce cas a déjà cassé la fenêtre de lecture.
+Les tests maintiennent les rotations sous **45°/s**, la clearance des murs et au moins **quatre secondes** de cadrage complet pour les noms. Le clap sans panneau textuel ne requiert plus que **deux secondes**, volontairement pour accélérer cette transition. Le regard de 140–151 s suit maintenant la fusée du coin suivant, puis un relais doux vers ORBITAL LINK de 146.8–157 s évite le retour brutal vers l'horizon. Les positions de caméra et le reveal restent inchangés. Ne pas déplacer Eric plus tard sans retravailler aussi le regard.
+
+**Fusée / plafond :**
+- `DEPLOY_ROCKET.time = 148.5`, offset latéral -6, yaw fixé à PI : ancrage près de la cellule D `(3,6)`, à l'intérieur des nervures du plafond.
+- La racine reste à y = 0 et le pad reste ancré au sol ; seule `airframe` monte. Le panneau de lancement et ses supports restent également au sol.
+- Décollage 144.6, contact 146.8. La sous-face réelle est **32.85** (`HEIGHT = 34`, `ROOF_THICKNESS = 2.3`) ; le nez étant à 18, la montée est bornée à **14.85**.
+- Pas de rigid body Havok pour la fusée : la trajectoire cinématique, le flash, l'onde et les 240 particules sont recalculés à partir du temps absolu. Pause, seek et retour arrière ne déclenchent pas de callbacks irréversibles.
+- Les particules partent sous le plafond avec des vitesses vers le bas, dans un shader déterministe seedé. Elles sont exclues du GlowLayer ; flash / onde respectent leur opacité dans le sélecteur de glow des meshes `FX/Rocket /`.
+- Airframe masquée au contact ; effets terminés à 149.4 ; pad et console nettoyés avant 159. ORBITAL LINK conserve sa présence jusqu'à 166.
 
 Les textes sont des textures sur meshes **dans le monde 3D**, pas des overlays HTML. Les tests de projection ne détectent pas toutes les occlusions par d'autres meshes ; une vérification visuelle reste nécessaire.
 
 ### Clap : ne pas rejouer toute l'animation
 
-Le GLB contient une séquence ouverture / fermeture / réouverture. Utiliser seulement **les frames source 50 → 60**, définies par `CLAPPER_CLOSE`, pendant **53.65–54.55 s**.
+Le GLB contient une séquence ouverture / fermeture / réouverture. Utiliser seulement **les frames source 50 → 60**, définies par `CLAPPER_CLOSE`, pendant **51.55–52.2 s**.
 
-Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouvert soit inclus dans ses bounds. Sa taille héroïque est 22. La typographie est positionnée sur le vrai corps via le landmark **`Object_4`** ; ne pas la laisser flotter hors du clap.
+Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouvert soit inclus dans ses bounds. Sa taille héroïque est 22. Le panneau typographique ajouté devant le clap a été retiré à la demande de l'utilisateur.
 
 `takeClapper` utilise le modèle animé original : instancier aveuglément sa hiérarchie ne garantit pas que l'AnimationGroup cible la bonne copie.
 
@@ -186,6 +205,7 @@ Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouve
 - Les sièges et la chaise de réalisateur ont une hauteur normalisée de **4.2 unités**.
 - Les racines glTF peuvent avoir une **échelle Z négative** liée au changement de repère. La préserver : la remplacer arbitrairement par une échelle uniforme inverse certains modèles.
 - Les répétitions utilisent des instances partageant la géométrie. La caméra héroïque utilise des **clones partageant la géométrie** : modifier `visibility` sur un `InstancedMesh` ne fonctionne pas et produit des warnings à chaque frame.
+- CRT : conserver le yaw local **-π/2**, recopier la surface courbe **`Object_8`** dans le repère du support, puis refaire les UV 0–1. Cacher les surfaces originales `Object_6` / `Object_8`, pas le boîtier. La conversion glTF rend les rotations intuitives trompeuses : vérifier les coordonnées réelles.
 - La caméra géante est normalisée à 40 ; son objectif est aligné sur l'ancre **90 s** via **`lenses_low_40`**, pas via le centre global du modèle. Elle pointe vers nous avec le yaw de route + π.
 - Remplacer un GLB impose de revoir ses landmarks, ses axes, sa licence et ses bounds, pas seulement son nom de fichier.
 - Un `BoxBatch` fige sa matrice monde. Si on le parente ensuite à une racine transformée, utiliser le pattern existant d'`unfreezeWorldMatrix()`.
@@ -193,6 +213,7 @@ Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouve
 ### Faisceaux, transparence et ancienne architecture
 
 - David a un écran opaque supporté, une projection arrière et deux spotlights d'allée. Le nom apparaît après l'allumage de la lumière.
+- La typographie de David doit recevoir les lumières (`disableLighting = false`). Les spots d'allée visent **l'intérieur du panneau**, du centre vers les côtés et retour, pas x = ±10.8 / y = 23.7 hors de la fiche. Falloff physique, spots ciblant seulement le panneau et specular du support à zéro évitent les énormes halos blancs sur les montants.
 - Une texture de texte avec alpha peut être triée comme transparente même si son fond semble opaque. Pour ces écrans, `MATERIAL_OPAQUE` empêche les cônes arrière de passer artificiellement devant le texte.
 - Le glow des meshes **`FX/Cinema /`** tient compte de **`material.alpha * mesh.visibility`**. Sans cela, un cône léger devient un masque blanc énorme.
 - De **48.8 à 95 s**, l'ancien intérieur digital, ses panneaux NODE, les vumètres, les particules / rubans musicaux concernés et le spectre au sol sont masqués ou calmés. Ne pas réactiver ce bruit pendant la première de David.
@@ -202,7 +223,7 @@ Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouve
 
 ### Havok et pop-corn
 
-Havok simule les pièces / le mur du T puis un seul déversement de **36 grains**, de **78.2 à 84.5 s**. L'application ne fait avancer la physique que pendant la lecture et les fenêtres concernées : T avant 44 s, puis la fenêtre exportée du pop-corn.
+Havok simule les pièces / le mur du T, **36 grains** de 78.2 à 84.5 s, puis **32 blocs** du buffer de 113.2 à 119 s. L'application ne fait avancer la physique que pendant la lecture et ces fenêtres. Le rack de données a un sol et un plateau colliders ; ses blocs sont maintenus avant le débordement, puis réellement dynamiques. Nettoyage à la sortie de fenêtre et reconstruction au seek / rewind.
 
 Le seau est ancré à **79.5 s**, offset latéral **-5**, hauteur **11.5**, taille **4.8**. Le public doit voir le seau basculer avant de traverser les grains, pas découvrir une pluie tardive au plafond.
 
@@ -319,6 +340,19 @@ Référence validée le 6 octobre 2026 :
 - Les 36 grains tombent et sont nettoyés ; le premier termine vers y = **0.578**, au-dessus du deck de 0.28, pas dedans.
 - Sièges et chaise mesurés à **4.2 unités de haut** ; clone de caméra supportant le fondu ; clap réellement ouvert puis fermé.
 
+Passe visuelle du **7 octobre 2026** :
+
+- **34 tests ciblés / 10 fichiers** et build TypeScript / Vite réussis, sans prétendre avoir relancé toute la suite Strudel.
+- Répétition réelle **180.007 s**, vitesse 1, navigateur actif en 1600×900 et niveaux / kicks injectés par l'API. Zéro erreur, warning, requête externe ou requête échouée.
+- Sprites fixes malgré les basses ; huit surfaces CRT de 81 sommets entièrement couvertes ; props cinéma activés dès l'entrée et au rewind ; ancien panneau du clap et snippets d'Eric absents.
+- Reveal inchangé : caméra `(0,1110,-755)`, pont activé à y = 0, son point le plus haut restant sous 0.5.
+
+Suivi fusée :
+- **33 tests ciblés / 5 fichiers** et build TypeScript / Vite réussis : placement au prochain coin, pad immobile, contact exact sous le toit, cadrage du nez / impact, particules bornées, seek / replay, cleanup et enveloppes asymétriques du regard.
+- Inspection active 1600×900 de l'approche, du décollage, de l'explosion et du virage vers ORBITAL LINK ; répétition réelle **139–180 s en 41.003 s**, vitesse 1.
+- Zéro erreur / warning navigateur, requête échouée ou ressource externe ; finale `(0,1110,-755)` et pont au sol conservés. Cette passe ne prétend pas avoir rejoué toute l'intro de trois minutes.
+- Après le dernier ajustement pour éviter l'interpénétration initiale des blocs, nouvelle lecture réelle de la fenêtre **109–119 s**, chute Havok et cleanup vérifiés.
+
 Ce sont des résultats historiques, **pas une garantie pour la prochaine modification ou un autre GPU**. Aucun 60 FPS soutenu sur le vrai poste de projection n'a été certifié. Refaire un profil Native / 4K et une répétition avec les vrais musiciens sur cette machine.
 
 Tests les plus utiles pour une itération de mise en scène :
@@ -328,8 +362,13 @@ Tests les plus utiles pour une itération de mise en scène :
 - [SceneClearance.test.ts](src/scene/SceneClearance.test.ts) : murs, roof, core orbital, fog et framing.
 - [CinemaAssets.test.ts](src/scene/CinemaAssets.test.ts) : bounds sans socles, échelle et clones supportant `visibility`.
 - [CinemaWorld.test.ts](src/scene/CinemaWorld.test.ts) : cut, écrans, ordre des étapes et rewind.
+- [CinemaCRT.test.ts](src/scene/CinemaCRT.test.ts) : surface entière, courbure et UV des CRT.
+- [PixelWorld.test.ts](src/scene/PixelWorld.test.ts) : atlas et transforms fixes malgré les basses, le temps et le rewind.
 - [CinemaPopcorn.test.ts](src/scene/CinemaPopcorn.test.ts) : vrais corps Havok, repos sur le bon sol, nettoyage et replay.
 - [DigitalMoments.test.ts](src/scene/DigitalMoments.test.ts) : progression sans trou et cleanup avant le final.
+- [DigitalOverflow.test.ts](src/scene/DigitalOverflow.test.ts) : corps Havok, chute / repos / nettoyage et replay.
+- [DigitalProps.test.ts](src/scene/DigitalProps.test.ts) : retrait des anciens panneaux, fusée au sol et conservation du satellite.
+- [DeployRocket.test.ts](src/scene/DeployRocket.test.ts) : coin suivant, pad fixe, montée plafonnée, explosion déterministe et cleanup / rewind.
 - [ShowLighting.test.ts](src/effects/ShowLighting.test.ts) : lasers et spectres.
 
 Les tests NullEngine mockent certains textes / DynamicTextures car ils n'ont pas l'environnement graphique du navigateur. **Des tests verts ne remplacent pas une inspection visuelle.**

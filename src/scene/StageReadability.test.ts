@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { cellPosition } from "../content/title";
-import { CASSOULET_SIGN, ORBIT_LINK, T_SIGN_ANCHORS } from "./EasterEggs";
-import { CINEMA } from "../content/showBeats";
+import { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK, T_SIGN_ANCHORS } from "./EasterEggs";
+import { BUFFER_OVERFLOW } from "./DigitalOverflow";
+import { CINEMA, rocketLift } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 
@@ -25,15 +26,45 @@ function longestReadableInterval(start: number, end: number, world: Matrix, widt
 }
 
 describe("readable arcade jokes at projector aspect", () => {
-  it("frames the full hero clap for at least four seconds without rushing into its plane", () => {
+  it("frames the unlabelled clap for two seconds and shortens the cut without hitting its plane", () => {
     const anchor = routeAnchor(CINEMA.clapperAnchor);
     const world = Matrix.RotationY(anchor.yaw)
       .multiply(Matrix.Translation(anchor.position.x, anchor.position.y, anchor.position.z));
-    expect(CINEMA.clap - CINEMA.clapperStart).toBeGreaterThanOrEqual(5);
+    expect(CINEMA.clap - CINEMA.clapperStart).toBeLessThanOrEqual(3.5);
     expect(longestReadableInterval(CINEMA.clapperStart, CINEMA.clapperClose, world, 22, 23))
-      .toBeGreaterThanOrEqual(4);
+      .toBeGreaterThanOrEqual(2);
+    expect(Vector3.Distance(cameraPose(49).position, cameraPose(CINEMA.start).position)).toBeGreaterThan(9);
     for (let time = CINEMA.clapperStart; time < CINEMA.clap; time += .1) {
       expect(Vector3.Distance(cameraPose(time).position, anchor.position)).toBeGreaterThan(15);
+    }
+  });
+
+  it("frames the overflow before the cassoulet, and the rocket before the final right turn", () => {
+    const buffer = BUFFER_OVERFLOW;
+    const anchor = routeAnchor(buffer.anchor);
+    const world = Matrix.RotationY(anchor.yaw)
+      .multiply(Matrix.Translation(anchor.position.x, buffer.height, anchor.position.z));
+    expect(longestReadableInterval(buffer.start, buffer.signEnd, world, buffer.width, 4.4)).toBeGreaterThanOrEqual(3);
+    expect(buffer.signEnd).toBeLessThan(CASSOULET_SIGN.start);
+    const rocket = routeAnchor(DEPLOY_ROCKET.time, DEPLOY_ROCKET.lateral);
+    const rocketWorld = Matrix.RotationY(DEPLOY_ROCKET.yaw)
+      .multiply(Matrix.Translation(rocket.position.x, DEPLOY_ROCKET.height / 2, rocket.position.z));
+    expect(longestReadableInterval(DEPLOY_ROCKET.lookStart, DEPLOY_ROCKET.launch, rocketWorld, DEPLOY_ROCKET.width, DEPLOY_ROCKET.height))
+      .toBeGreaterThanOrEqual(2);
+  });
+
+  it("keeps the ascending nose and ceiling impact in view through the flash and shockwave", () => {
+    const anchor = routeAnchor(DEPLOY_ROCKET.time, DEPLOY_ROCKET.lateral);
+    for (let time = DEPLOY_ROCKET.launch; time < DEPLOY_ROCKET.impact + 1.2; time += .05) {
+      const impact = new Vector3(anchor.position.x, DEPLOY_ROCKET.height + rocketLift(time) - .05, anchor.position.z);
+      const pose = cameraPose(time);
+      const transform = Matrix.LookAtLH(pose.position, pose.target, Vector3.Up())
+        .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
+      const screen = Vector3.TransformCoordinates(impact, transform);
+      expect(Math.abs(screen.x), `impact horizontal framing at ${time}`).toBeLessThan(.85);
+      expect(Math.abs(screen.y), `impact vertical framing at ${time}`).toBeLessThan(.85);
+      expect(screen.z).toBeGreaterThan(0);
+      expect(screen.z).toBeLessThan(1);
     }
   });
 

@@ -3,7 +3,7 @@ import { CELL, cellPosition } from "../content/title";
 import { clamp, smootherstep, smoothstep } from "../engine/Timeline";
 import { SPEAKERS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
-import { CINEMA } from "../content/showBeats";
+import { CINEMA, DEPLOY_ROCKET, ORBIT_LINK, rocketLift } from "../content/showBeats";
 
 interface Keyframe { time: number; col: number; row: number; y: number }
 
@@ -17,7 +17,7 @@ const keyframes: Keyframe[] = [
   { time: 39, col: 0, row: 9, y: 12 },
   { time: 44, col: 1, row: 9, y: 11 },
   { time: 49, col: 2, row: 9, y: 11 },
-  { time: 54.85, col: 2.01, row: 8.86, y: 11.5 },
+  { time: CINEMA.start, col: 2.01, row: 8.65, y: 11.5 },
   { time: 58, col: 2.1, row: 8, y: 12 },
   { time: 61, col: 2.1, row: 7, y: 12 },
   { time: 65, col: 1.95, row: 6, y: 12 },
@@ -120,6 +120,20 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
         const weight = cueEnvelope(time, cue.start, cue.end, cue.fade ?? Math.min(3, (cue.end - cue.start) / 2));
         focusCamera(local, localTarget, point, weight * (cue.weight ?? .85));
       }
+    }
+    if (time >= DEPLOY_ROCKET.lookStart && time < DEPLOY_ROCKET.lookEnd) {
+      const focus = routeAnchor(DEPLOY_ROCKET.time, DEPLOY_ROCKET.lateral).position;
+      focus.y = 10 + rocketLift(time) * 1.35;
+      focusCamera(local, localTarget, focus,
+        cueEnvelope(time, DEPLOY_ROCKET.lookStart, DEPLOY_ROCKET.lookEnd, 3.5, 2.5) * .9);
+    }
+    if (time >= ORBIT_LINK.lookStart && time < ORBIT_LINK.lookEnd) {
+      const orbit = routeAnchor(ORBIT_LINK.time);
+      const focus = orbit.position.add(new Vector3(
+        Math.sin(orbit.yaw) * ORBIT_LINK.depth, 0, Math.cos(orbit.yaw) * ORBIT_LINK.depth));
+      focus.y = ORBIT_LINK.height;
+      focusCamera(local, localTarget, focus,
+        cueEnvelope(time, ORBIT_LINK.lookStart, ORBIT_LINK.lookEnd, 3.5, 5) * .9);
     }
     const arcadePulse = .06 * cueEnvelope(time, 31, 34, .5);
     const warp = .08 * Math.max(cueEnvelope(time, 46, CINEMA.clapperStart, .7),

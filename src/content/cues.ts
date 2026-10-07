@@ -8,8 +8,8 @@ export const EASTER_EGGS = [
   { id: "orbit", start: 143, end: 166, label: "TOULOUSE / ORBITAL LINK" },
 ] as const;
 
-export function cueEnvelope(time: number, start: number, end: number, fade = 1): number {
-  return smoothstep((time - start) / fade) * (1 - smoothstep((time - end + fade) / fade));
+export function cueEnvelope(time: number, start: number, end: number, fade = 1, fadeOut = fade): number {
+  return smoothstep((time - start) / fade) * (1 - smoothstep((time - end + fadeOut) / fadeOut));
 }
 
 export function activeCues(time: number): string[] {

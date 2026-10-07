@@ -14,16 +14,6 @@ import { cueEnvelope } from "../content/cues";
 import { emissive } from "./Labyrinth";
 import { createWorldText } from "./WorldText";
 
-interface Sprite {
-  mesh: Mesh;
-  uvs: number[];
-  row: number;
-  baseZ: number;
-  side: number;
-  layer: number;
-  index: number;
-}
-
 export const RUNNER_COUNT = 12;
 export const SCENERY_COUNT = 6;
 
@@ -66,8 +56,8 @@ function tileUV(mesh: Mesh, original: number[], column: number, row: number,
 }
 
 export class PixelWorld {
-  private readonly sprites: Sprite[] = [];
-  private readonly backgrounds: Sprite[] = [];
+  private readonly sprites: Mesh[] = [];
+  private readonly backgrounds: Mesh[] = [];
   private readonly prompts: Mesh[] = [];
   private readonly platforms: Mesh[] = [];
   private readonly projectile: Mesh;
@@ -94,9 +84,11 @@ export class PixelWorld {
       mesh.rotation.y = side * Math.PI / 2;
       mesh.isPickable = false;
       const uvs = Array.from(mesh.getVerticesData(VertexBuffer.UVKind)!);
-      this.sprites.push({ mesh, uvs, row: (index + layer) % 3,
-        baseZ: cellPosition(-1, 14.4 - Math.floor(index / 2) * .85).z,
-        side, layer, index });
+      // This atlas contains distinct characters, not frames of a walk cycle.
+      tileUV(mesh, uvs, index % 9, (index + layer) % 3, 24, 25, 224, 74);
+      mesh.position.set(cellPosition(-1, 12).x + side * 12.9,
+        12 + index % 4 * 2.2, cellPosition(-1, 14.4 - Math.floor(index / 2) * .85).z);
+      this.sprites.push(mesh);
     }
     for (let index = 0; index < SCENERY_COUNT; index++) {
       const side = index % 2 ? 1 : -1;
@@ -108,8 +100,9 @@ export class PixelWorld {
       mesh.isPickable = false;
       const uvs = Array.from(mesh.getVerticesData(VertexBuffer.UVKind)!);
       tileUV(mesh, uvs, 2 + index % 5, 1 + layer, 18, 19, 379, 170);
-      this.backgrounds.push({ mesh, uvs, row: 0,
-        baseZ: cellPosition(-1, 14.2 - Math.floor(index / 2) * 2).z, side, layer, index });
+      mesh.position.set(cellPosition(-1, 12).x + side * 13.15,
+        15 + layer * 4, cellPosition(-1, 14.2 - Math.floor(index / 2) * 2).z);
+      this.backgrounds.push(mesh);
     }
     const keys = ["key-w.png", "key-a.png", "key-s.png", "key-d.png"];
     keys.forEach((file, index) => {
@@ -159,30 +152,16 @@ export class PixelWorld {
 
   async prepare(): Promise<void> {
     const [characters, terrain, ...keys] = await this.ready;
-    if (!characters) this.sprites.forEach(({ mesh }) => mesh.dispose());
-    if (!terrain) this.backgrounds.forEach(({ mesh }) => mesh.dispose());
+    if (!characters) this.sprites.forEach((mesh) => mesh.dispose());
+    if (!terrain) this.backgrounds.forEach((mesh) => mesh.dispose());
     keys.forEach((loaded, index) => { if (!loaded) this.prompts[index].dispose(); });
   }
 
   update(time: number, audio: AudioFeatures): void {
     const stem = time >= 5 && time < 33;
-    for (const sprite of this.sprites) {
-      if (sprite.mesh.isDisposed()) continue;
-      sprite.mesh.setEnabled(stem);
-      if (!stem) continue;
-      const { mesh, index, layer, side, baseZ, row, uvs } = sprite;
-      tileUV(mesh, uvs, Math.floor(time * (5 + audio.kick * 5) + index * 1.7) % 9,
-        row, 24, 25, 224, 74);
-      mesh.position.set(cellPosition(-1, 12).x + side * 12.9,
-        12 + index % 4 * 2.2 + Math.abs(Math.sin(time * 2.4 + index)) * (.7 + audio.bass * .3),
-        baseZ + Math.sin(time * (.28 + layer * .16) + index) * .5);
-      mesh.scaling.setAll(1 + audio.kick * .08);
-    }
-    for (const { mesh, index, layer, side, baseZ } of this.backgrounds) {
+    for (const mesh of [...this.sprites, ...this.backgrounds]) {
       if (mesh.isDisposed()) continue;
       mesh.setEnabled(stem);
-      mesh.position.set(cellPosition(-1, 12).x + side * 13.15,
-        15 + layer * 4, baseZ + Math.sin(time * (.1 + layer * .09) + index) * .6);
     }
     this.prompts.forEach((mesh, index) => {
       if (mesh.isDisposed()) return;

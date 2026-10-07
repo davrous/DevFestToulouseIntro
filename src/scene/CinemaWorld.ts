@@ -16,6 +16,7 @@ import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { BoxBatch } from "./Instances";
 import { CinemaAssets, CLAPPER_CLOSE } from "./CinemaAssets";
+import { createCrtMaterial, fitCrtScreen } from "./CinemaCRT";
 import { createWorldText } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { CINEMA_FLOOR_TOP, POPCORN_SOURCE } from "./CinemaPopcorn";
@@ -55,7 +56,6 @@ export class CinemaWorld {
   private readonly projectorRoot: TransformNode;
   private readonly spaceRoot: TransformNode;
   private readonly shutter: Mesh;
-  private readonly slate: Mesh;
   private readonly reelNodes: TransformNode[] = [];
   private readonly televisions: { screen: Mesh; material: StandardMaterial; tint: Color3 }[] = [];
   private readonly spotBeams: Mesh[] = [];
@@ -82,17 +82,6 @@ export class CinemaWorld {
     const clapperAnchor = routeAnchor(CINEMA.clapperAnchor);
     this.clapperRoot.position.y = clapperAnchor.position.y;
     this.clapperRoot.rotation.y += Math.PI / 2;
-    this.slate = createWorldText(scene, {
-      name: "Cinema / slate title", width: 16.8, height: 7.8,
-      background: "#10131d", border: "#ebc0a0",
-      lines: [
-        { text: "DEVFEST", color: "#ffe2c6" },
-        { text: "SCENE 02 / TAKE 2026", color: "#faf0dd" },
-      ],
-    });
-    this.slate.parent = this.clapperRoot;
-    this.slate.position.set(2.2, 1, 0);
-    this.slate.rotation.y = -Math.PI / 2;
     this.shutter = MeshBuilder.CreatePlane("FX/Cinema / shutter cut", { size: 3 }, scene);
     this.shutter.material = emissive(scene, "Cinema / physical black shutter", "#000000", 0);
     this.shutter.isPickable = false;
@@ -158,19 +147,7 @@ export class CinemaWorld {
     }
 
     this.televisionRoot = at(scene, "Cinema / aligned CRT installation", 58);
-    const baseScreens = [
-      ["// PLAY", "#f5bb98"], ["SYSTEM / READY", "#8fd8db"], ["01 / TAKE", "#a4eeb3"],
-    ] as const;
-    const screenMaterials = baseScreens.map(([text, color], index) => {
-      const content = createWorldText(scene, {
-        name: `Cinema / CRT content ${index}`, width: 2.6, height: 1.85,
-        background: "#10252e", lines: [{ text, color }],
-      });
-      content.setEnabled(false);
-      if (!(content.material instanceof StandardMaterial)) throw new Error("CRT content requires a StandardMaterial.");
-      content.material.transparencyMode = StandardMaterial.MATERIAL_OPAQUE;
-      return content.material;
-    });
+    this.televisionRoot.parent = this.architecture;
     const sync = createWorldText(scene, {
       name: "Cinema / synchronized CRT frame", width: 5, height: 3.2,
       background: "#13131f", lines: [{ text: "DEVFEST", color: "#f4e9dd" }],
@@ -193,7 +170,7 @@ export class CinemaWorld {
       screen.parent = support;
       screen.position.set(0, .1, -1.5);
       screen.isPickable = false;
-      const material = screenMaterials[i % screenMaterials.length];
+      const material = createCrtMaterial(scene, i);
       screen.material = material;
       this.televisions.push({ screen, material, tint: material.emissiveColor.clone() });
     }
@@ -215,10 +192,15 @@ export class CinemaWorld {
     this.screenText.position.set(0, 17, -.12);
     if (this.screenText.material instanceof StandardMaterial) {
       this.screenText.material.transparencyMode = StandardMaterial.MATERIAL_OPAQUE;
+      this.screenText.material.disableLighting = false;
+      this.screenText.material.maxSimultaneousLights = 8;
+      this.screenText.material.emissiveColor.set(.35, .37, .4);
+      this.screenText.material.diffuseColor.set(.65, .65, .65);
     }
     const hardware = new StandardMaterial("Cinema / illuminated premiere hardware", scene);
     hardware.diffuseColor = Color3.FromHexString("#574337");
-    hardware.emissiveColor = Color3.FromHexString("#1c1610");
+    hardware.emissiveColor = Color3.FromHexString("#100d09");
+    hardware.specularColor = Color3.Black();
     const screenFrame = new BoxBatch("Cinema / physical premiere screen support", hardware);
     for (const side of [-1, 1]) screenFrame.add(side * 10.8, 11, .2, .35, 22, .4);
     for (const y of [12.4, 21.6]) screenFrame.add(0, y, .2, 22, .25, .4);
@@ -235,6 +217,7 @@ export class CinemaWorld {
       Math.PI / 3, 2, scene);
     this.screenLight.diffuse = Color3.FromHexString("#ffe3bd");
     this.screenLight.range = 85;
+    this.screenLight.falloffType = SpotLight.FALLOFF_PHYSICAL;
     this.screenLight.intensity = 0;
     this.screenLight.includedOnlyMeshes = [support, this.screenText];
     this.premiereBeam = MeshBuilder.CreateTube("FX/Cinema / premiere projector light",
@@ -245,19 +228,21 @@ export class CinemaWorld {
     this.premiereBeam.isPickable = false;
     for (const side of [-1, 1]) {
       const start = new Vector3(side * 8, 1.8, -12);
-      const end = new Vector3(side * 10.8, 23.7, .8);
+      const end = new Vector3(side * .3, 17, -.12);
       const beam = MeshBuilder.CreateTube(`FX/Cinema / premiere aisle spotlight ${side}`, {
         path: [start, Vector3.Lerp(start, end, .5), end],
-        radiusFunction: (index) => [.12, .55, .9][index], tessellation: 12,
+        radiusFunction: (index) => [.12, 1.5, 3][index], tessellation: 12, updatable: true,
       }, scene);
       beam.parent = this.davidRoot;
-      beam.material = glow(scene, `Cinema / premiere aisle haze ${side}`, "#ffe2b4", .045);
+      beam.material = glow(scene, `Cinema / premiere aisle haze ${side}`, "#ffe2b4", .018);
       beam.isPickable = false;
       this.premiereSideBeams.push(beam);
-      const spot = new SpotLight(`Cinema / premiere aisle lighting ${side}`, start, end.subtract(start).normalize(), .2, 2, scene);
+      const spot = new SpotLight(`Cinema / premiere aisle lighting ${side}`, start, end.subtract(start).normalize(), .36, 2, scene);
       spot.parent = this.davidRoot;
       spot.diffuse = Color3.FromHexString("#ffe2b4");
-      spot.includedOnlyMeshes = [support, this.screenText];
+      spot.range = 60;
+      spot.falloffType = SpotLight.FALLOFF_PHYSICAL;
+      spot.includedOnlyMeshes = [this.screenText];
       spot.intensity = 0;
       this.premiereLights.push(spot);
     }
@@ -404,16 +389,6 @@ export class CinemaWorld {
   async prepare(): Promise<void> {
     await this.assets.prepare();
     this.clapper = this.assets.takeClapper(this.clapperRoot, 22);
-    if (this.clapper) {
-      const board = this.clapper.node.getChildMeshes().find((mesh) => mesh.name === "Object_4");
-      if (!board) throw new Error("The clapper asset needs its main slate landmark.");
-      board.computeWorldMatrix(true);
-      const inverse = this.clapperRoot.getWorldMatrix().clone().invert();
-      const center = Vector3.TransformCoordinates(board.getBoundingInfo().boundingBox.centerWorld, inverse);
-      const front = Math.max(...board.getBoundingInfo().boundingBox.vectorsWorld.map((point) =>
-        Vector3.TransformCoordinates(point, inverse).x));
-      this.slate.position.set(front + .08, center.y + .65, center.z);
-    }
     for (const [root, rows, levels] of [
       [this.foyer, FOYER_ROWS, 3], [this.auditorium, SEAT_ROWS, 3],
     ] as const) {
@@ -456,7 +431,10 @@ export class CinemaWorld {
     }
     for (const [index, support] of this.crtSupports.entries()) {
       const tv = this.assets.create("television", support, `Cinema / aligned CRT ${index}`, 3.6);
-      if (tv) tv.rotation.y = -Math.PI / 2;
+      if (tv) {
+        tv.rotation.y = -Math.PI / 2;
+        fitCrtScreen(this.televisions[index].screen, tv);
+      }
     }
     for (const side of [-1, 1]) {
       const tape = this.assets.create("vhs", this.auditorium, `Cinema / VHS Easter egg ${side}`, 1.2);
@@ -521,19 +499,28 @@ export class CinemaWorld {
       this.clapperRoot.rotation.z = -smoothstep((time - CINEMA.clapperClose) / .9) * .16;
     }
     this.shutter.setEnabled(time >= CINEMA.clap && time < CINEMA.start);
-    this.architecture.setEnabled(time >= CINEMA.start && time < CINEMA.camera);
-    this.foyer.setEnabled(time < 66);
-    this.televisionRoot.setEnabled(time >= CINEMA.start && time < 64);
-    this.davidRoot.setEnabled(time >= this.davidConfig.startTime - 2 && time < this.davidConfig.gateTime + 1);
+    this.architecture.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
+    this.davidRoot.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
     const reveal = cueEnvelope(time, this.davidConfig.startTime, this.davidConfig.endTime, 1.2);
     this.screenText.visibility = smoothstep((time - this.davidConfig.startTime - 1) / 1.8) * reveal;
     this.screenLight.intensity = 180 * reveal * (1 + audio.kick * .12);
     this.premiereBeam.setEnabled(reveal > 0 && this.davidRoot.isEnabled());
     if (!this.davidRoot.isEnabled()) this.screenLight.intensity = 0;
     this.premiereBeam.visibility = reveal;
-    this.premiereSideBeams.forEach((beam) => { beam.visibility = reveal; });
-    this.premiereLights.forEach((spot) => { spot.intensity = this.davidRoot.isEnabled() ? 12 * reveal : 0; });
-    this.reelsRoot.setEnabled(time >= CINEMA.reels && time < CINEMA.camera + .5);
+    this.premiereLights.forEach((spot, index) => {
+      spot.intensity = this.davidRoot.isEnabled() ? 4200 * reveal : 0;
+      const beam = this.premiereSideBeams[index];
+      beam.visibility = reveal;
+      if (!this.davidRoot.isEnabled() || reveal <= 0) return;
+      const side = index ? 1 : -1;
+      const sweep = .5 - .5 * Math.cos(Math.max(0, time - this.davidConfig.startTime) * Math.PI / 2.4);
+      const end = new Vector3(side * (.3 + sweep * 7.3), 18.6 + Math.sin(time * .8) * 1.3, -.12);
+      spot.direction.copyFrom(end.subtract(spot.position).normalize());
+      MeshBuilder.CreateTube(beam.name, {
+        path: [spot.position, Vector3.Lerp(spot.position, end, .5), end], instance: beam,
+      });
+    });
+    this.reelsRoot.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
     this.filmTexture.uOffset = -time * .2;
     if (this.bucket) this.bucket.rotation.z = -.1 - smoothstep((time - CINEMA.popcornTip) / .6) * 1.25;
     this.reelNodes.forEach((reel, index) => {
@@ -544,13 +531,13 @@ export class CinemaWorld {
       material.emissiveColor.copyFrom(tint).scaleInPlace(1 + audio.snare * .18);
     });
     this.spotlightMaterial.alpha = .035 + audio.kick * .015;
-    this.lensRoot.setEnabled(time >= CINEMA.camera && time < 99);
+    this.lensRoot.setEnabled(time >= CINEMA.start && time < 99);
     this.cameraModel?.setEnabled(time < CINEMA.lens);
     this.cameraModel?.getChildMeshes().forEach((mesh) => {
       mesh.visibility = 1 - smoothstep((time - CINEMA.lens + .55) / .45);
     });
     this.cameraLights.forEach((light) => {
-      light.intensity = 900 * cueEnvelope(time, CINEMA.camera, CINEMA.lens, .5);
+      light.intensity = 900 * cueEnvelope(time, CINEMA.start, CINEMA.lens, .5);
     });
     this.cameraRim.setEnabled(time < CINEMA.lens + .15);
     this.optical.forEach((ring) => {

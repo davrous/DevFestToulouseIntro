@@ -41,19 +41,21 @@ the supplied music excerpt.
 | Time | Scene |
 | --- | --- |
 | 0:00–0:06 | DEVFEST ARCADE / PRESS ANY KEY opens the show without a giant central cabinet; the camera discovers the arcade corridor |
-| 0:05–0:31 | Pixel runners and scenery stay against the T's side walls, above six grounded Kenney cabinets; the last pair sits forward of Anne-Flore's card; `GET /pain-au-chocolat` redirects to `/chocolatine` before she arrives |
+| 0:05–0:31 | Fixed pixel-art decals and scenery stay against the T's side walls, above six grounded Kenney cabinets; bass never changes their character, position or scale; `GET /pain-au-chocolat` redirects to `/chocolatine` before Anne-Flore |
 | 0:17–0:31 | Anne-Flore's cyan gateway, with a voxel violin and bow centered directly below her card |
 | 0:30–0:41 | Bonus tokens fall just beyond the violin; the FINAL BOSS announces LEGACY CODE before its translucent Havok wall appears and collapses at 0:38 |
 | 0:41–0:49 | `$ git rebase --continue` announces EXIT UNLOCKED, then the T door opens |
-| 0:46–0:55 | A brief centered LEVEL COMPLETE gives way to an unobstructed giant clapperboard; the approach slows locally, the clap closes over 0.9 seconds, then the black shutter cuts GAME to CINEMA at 0:54.55 |
-| 0:55–1:06 | A symmetrical cinema cathedral: mirrored, regularly spaced seat tiers with architectural supports, warm foyer beams, and eight aligned CRTs with screens mounted on their cases; all briefly flash DEVFEST together at 0:59.4 |
+| 0:46–0:52 | LEVEL COMPLETE gives way to the original giant clapperboard without an added title panel; the camera keeps moving, the clap closes in 0.65 seconds, and a 0.25-second shutter cuts to CINEMA at 0:52.45 |
+| 0:52–1:06 | A symmetrical cinema cathedral with eight full curved CRT screens: MS-DOS, CONFIG.SYS, AUTOEXEC.BAT, Windows 95, blue-screen jokes, floppy installation and a Toulouse BBS; all briefly flash DEVFEST at 0:59.4 |
 | 1:06–1:23 | David Rousset is introduced **once**, as a movie premiere projected onto a world-space cinema screen with his configured demo title |
 | 1:17–1:24 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; a low, visible striped bucket tips at 1:17.7 and spills 36 Havok kernels across the approaching camera at 1:18.2 |
-| 1:24–1:39 | A giant frontal cinema camera appears on-axis; we approach and enter its lens at 1:30. Only then do short, coaxial optical rings lead into the projector beam, transparent floor and space warp; the digital architecture returns through haze at 1:35 |
-| 1:35–1:56 | The digital D emerges gradually from the warp; several seconds later, Eric Mittelette's neural gateway appears at 1:39 with converging data streams and code panels |
+| 1:24–1:39 | The already-visible giant frontal cinema camera is approached and entered through its lens at 1:30. Only then do short, coaxial optical rings lead into the projector beam, transparent floor and space warp; digital architecture returns through haze at 1:35 |
+| 1:35–1:56 | Eric Mittelette's gateway and converging data streams, without the obsolete `agent.observe()` / `agent.plan()` panels |
+| 1:49–1:59 | A physical memory rack overflows in the S bend: `BUFFER OVERFLOW / console.log('just one more...')`, then 32 Havok bytes spill at 1:53.2; the caption fades before the cassoulet |
 | 1:57–2:05 | `npm install cassoulet / package size: 4.8 GB` stays readable after Eric and disappears before Mitsuru's entrance |
 | 1:54–2:12 | A traveling architectural pulse progressively raises six symmetrical data gates, shifting cyan to gold; it continues behind the cassoulet gag and hands off to Mitsuru without an empty corridor |
 | 2:08–2:35 | Mitsuru Furuta / floating orbital name instead of another rectangular card; denser golden data streams and a three-band meter behind him build the D climax |
+| 2:20–2:29 | A procedural deployment rocket waits at the **next corner**, before the right turn toward Orbital Link. After a readable approach, it launches at 2:24.6 and hits the actual ceiling underside at 2:26.8: a brief flash, expanding shockwave and 240 falling sparks. The pad stays grounded; the camera follows the ascent then smoothly hands over to Orbital Link |
 | 2:23–2:46 | Toulouse orbital hardware sits deeper in the D; its two-line `TOULOUSE / ORBITAL LINK` label remains present into the final zoom-out |
 | 2:33–2:39 | Brief turn by the last meter, then escape |
 | 2:39–2:53 | Faster backward/upward pullback exposes the complete title and the force-field floor connecting the T and D at corridor level; no raised or overhead copy is rendered |
@@ -61,7 +63,9 @@ the supplied music excerpt.
 
 During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok instead simulates 26 arcade tokens and 48 labeled legacy-code blocks; the cinema adds one short 36-kernel popcorn cascade with seat ledge collisions. Physics debris cannot block the camera, and temporary bodies are cleaned up and recreated on a backward seek. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
 
-For Anne-Flore and Eric, beams rise from floor projectors and **dynamic spotlights** illuminate the physical cards. David uses a supported theatre screen with a rear projection cone and two dedicated aisle spotlights: light precedes the name fade, and opaque typography keeps the beam behind the text. The surrounding composition stays calmer during his reading window. Mitsuru's name floats inside two animated overclock orbits rather than repeating Eric's card. Cinema haze bloom respects beam opacity instead of washing out names or models. Music never alters the deterministic camera route. OVERCLOCK intensifies the final digital section; these effects fade before the title reveal.
+The cinema's seats, CRTs, screen support, popcorn bucket, film/reels and giant camera are preloaded and visible from entry at 52.45 seconds, not enabled one prop at a time. Their narrative actions still occur later: David's name fades in, the bucket tips and spills, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows.
+
+For Anne-Flore and Eric, beams rise from floor projectors and **dynamic spotlights** illuminate the physical cards. David's light-reactive screen receives two moving aisle spotlights that sweep from its center across the name and back, using physical falloff and targeting the screen rather than its side posts. Light precedes the name fade; opaque typography preserves readability and the hardware avoids blown-out halos. Mitsuru's name floats inside two animated overclock orbits rather than repeating Eric's card. Cinema haze bloom respects beam opacity. Music never alters the deterministic camera route. OVERCLOCK intensifies the final digital section; these effects fade before the title reveal.
 
 ### Configure speakers
 
@@ -242,7 +246,7 @@ npm test
 npm run build
 ```
 
-Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, the clapper shutter, CRT flash, physical asset normalization, supported camera fading, popcorn-body cleanup, continuous D escalation, wall/roof clearance, camera turns below 45 degrees/second, at least four seconds of complete clap and speaker framing, and full-title projection by 2:53 at several aspect ratios.
+Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, the shorter clapper shutter, full curved CRT coverage, stable wall sprites, spotlight hits inside David's card, physical asset normalization, camera fading, popcorn/overflow cleanup, continuous D escalation, wall/roof clearance, camera turns below 45 degrees/second, at least two seconds of full unlabelled clap framing and four seconds for speaker names, and full-title projection by 2:53 at several aspect ratios.
 
 Scene-clearance tests additionally keep drifting dust below the camera, the orbiting core clear of walls/roof/camera, and Mitsuru's panel inside the corridor. Interior fog now dissipates during the escape, before the pullback reaches large distances; the solid letters remain visible rather than disappearing behind their glow. The pipeline uses up to 4x MSAA when supported, with FXAA as the fallback.
 
@@ -257,6 +261,10 @@ Browser validation additionally covers physical text readability, synthetic Web 
 - Native 3840×2160 rendering and the live mesh/triangle/draw-call monitor are available for rehearsal. These checks do **not** establish sustained 60 FPS on the actual projector workstation; profile and rehearse there with the real audio feed.
 
 ### Before going on stage
+
+Latest visual pass (2026-10-07): **34 targeted tests across 10 files** and the production build pass. An active 1600×900 browser rehearsal with injected musical levels/kicks took **180.007 seconds** at speed 1, with no console errors/warnings, failed requests or external resources. Stable sprites, all eight curved CRT surfaces, cinema props visible throughout approach/rewind, the original final camera and the floor-only bridge were checked. The final non-overlapping buffer-stack adjustment was subsequently replayed in the real 109–119-second physics window, including cleanup. This does not certify projector/4K performance.
+
+Rocket follow-up: **33 targeted tests across 5 files** and the production build pass. The moved rocket, fixed pad, ascent/impact framing, deterministic seek/replay and cleanup were checked in an active 1600×900 browser. The real 139–180-second segment took **41.003 seconds** at speed 1, with no browser errors/warnings or failed/external requests. Camera turns remain below 45°/s, Orbital Link stays readable, and the original final pose and floor-only bridge are preserved. This follow-up did not rerun the full three-minute rehearsal.
 
 - Replace demo titles and rehearse all spoken introductions against their actual gate windows.
 - Run the production build, leave the local server running, and test with the Internet disconnected.

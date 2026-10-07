@@ -5,6 +5,7 @@ import { DebugPanel } from "../debug/DebugPanel";
 import { ShowController } from "./ShowController";
 import { silentFeatures } from "./AudioAnalyzer";
 import { POPCORN_END, POPCORN_START } from "../scene/CinemaPopcorn";
+import { overflowPhysicsActive } from "../scene/DigitalOverflow";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -85,7 +86,7 @@ export class App {
       this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent);
       this.world.scene.physicsEnabled = !!this.world.scene.getPhysicsEngine()
         && !this.inLobby && this.timeline.playing
-        && (time < 44 || (time >= POPCORN_START && time < POPCORN_END));
+        && (time < 44 || (time >= POPCORN_START && time < POPCORN_END) || overflowPhysicsActive(time));
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {

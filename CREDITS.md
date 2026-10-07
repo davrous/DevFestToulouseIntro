@@ -1,6 +1,6 @@
 # 3D artwork credits
 
-The cinema models in `public/assets/cinema/` are local copies of the credited originals. Each is licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). The show changes scale, placement, repetition and animation at runtime; the GLB files are not modified. At runtime the cinema camera's presentation ground and the director chair's presentation socle are omitted before scale normalization, and procedural spokes supplement the film reels. The movie theatre environment is retained locally but no longer staged or preloaded.
+The cinema models in `public/assets/cinema/` are local copies of the credited originals. Each is licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). The show changes scale, placement, repetition and animation at runtime; the GLB files are not modified. At runtime the cinema camera's presentation ground and the director chair's presentation socle are omitted before scale normalization, and procedural spokes supplement the film reels. The CRT's curved front geometry is reused with remapped UVs and original retro-computing textures, while its original glass/screen layers are hidden. The movie theatre environment is retained locally but no longer staged or preloaded.
 
 | Local file | Original model | Creator | Source |
 | --- | --- | --- | --- |

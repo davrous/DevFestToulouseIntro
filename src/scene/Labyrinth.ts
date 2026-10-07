@@ -5,7 +5,7 @@ import { DynamicTexture } from "@babylonjs/core/Materials/Textures/dynamicTextur
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { CELL, HEIGHT, SEED, cellPosition, createTitleCells, seededRandom, type TitleCell } from "../content/title";
+import { CELL, HEIGHT, ROOF_THICKNESS, SEED, cellPosition, createTitleCells, seededRandom, type TitleCell } from "../content/title";
 import { BoxBatch } from "./Instances";
 
 function metal(scene: Scene, name: string, hex: string, metallic: number, roughness: number): PBRMaterial {
@@ -123,7 +123,7 @@ export function createLabyrinth(scene: Scene): Labyrinth {
     const { x, z, col, row, line, letter } = cell;
     const neon = line === 0 ? cyanLines : amberLines;
     decks.add(x, -1.4, z, CELL, 2.8, CELL);
-    roofs.add(x, HEIGHT, z, CELL - .15, 2.3, CELL - .15);
+    roofs.add(x, HEIGHT, z, CELL - .15, ROOF_THICKNESS, CELL - .15);
     roofs.add(x, HEIGHT + 1.35, z, CELL - 3, .4, CELL - 3);
     neon.add(x, HEIGHT + 1.65, z + CELL / 2 - 1.4, CELL - 2.8, .16, .22);
     neon.add(x - CELL / 2 + 1.4, HEIGHT + 1.65, z, .22, .16, CELL - 2.8);

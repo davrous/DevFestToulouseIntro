@@ -1,5 +1,6 @@
 export const CELL = 28;
 export const HEIGHT = 34;
+export const ROOF_THICKNESS = 2.3;
 export const TITLE_WIDTH = 47 * CELL;
 export const TITLE_DEPTH = 16 * CELL;
 export const SEED = "DEVFEST_TOULOUSE_2026";
