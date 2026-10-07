@@ -1,199 +1,274 @@
-// INTO THE UNEXPECTED / original three-minute score in Bb minor.
-// Slow bowed-synth writing, not a quotation or arrangement of Barber.
-// Local synths + original local drums only. No soundfont/CDN downloads.
+// INTO THE UNEXPECTED / original three-minute accompaniment in Bb minor.
+// The live viola leads the opening, lens passage and spacious final reveal.
+// Original themes, local synthesis and original local drums only.
 setcpm(150 / 4)
 
 const CPS = 150 / 240
 const END = 180 * CPS
-// Shared visual timings are provided by the local performance page.
-const STOP_START = clapTiming.start * CPS
-const RESTART = clapTiming.reopen * CPS
 const STOP_LENGTH = clapTiming.collapsed - clapTiming.start
-// Preserve every later section boundary and the three-minute ending.
-const SECTIONS = [20, STOP_START - 20, RESTART - STOP_START, 52 - RESTART, 8, 20, 12, 8, 8, 2, 2.5]
-const once = p => p.filterHaps(h =>
+const TIMES = {
+  opening: 0, lift: 6.4, pulse: 12.8, dialogue: 25.6, tension: 38.4,
+  brake: cinemaTiming.clapperStart, stop: clapTiming.start,
+  restart: clapTiming.reopen, premiere: speakerTimings[1],
+  ease: 76.8, hush: 80,
+  lens: cinemaTiming.camera - .8, digital: cinemaTiming.digital + 1,
+  pursuit: 112, summit: speakerTimings[3], climax: 147.2, rise: 155.8,
+  exit: 159, afterglow: 163, resolve: 173, tail: 176, end: 180,
+}
+const BOUNDARIES = Object.values(TIMES)
+const BEAT = .4
+const NAMES = Object.keys(TIMES)
+const SECTIONS = NAMES.slice(0, -1).map((name, i) =>
+  [(TIMES[NAMES[i + 1]] - TIMES[name]) * CPS, name])
+const V = { strings: 1, cello: 2, flute: 3, pizz: 4, horns: 5, bell: 6, sub: 7, drums: 8, upper: 9 }
+const voice = (id, p) => p.withValue(v => ({ ...v, scoreVoice: id }))
+const SHOW_SPAN = new TimeSpan(0, END)
+const once = p => p.withQuerySpanMaybe(span => span.intersection(SHOW_SPAN)).filterHaps(h =>
   h.hasOnset() && h.whole && Number(h.whole.begin) >= 0 && Number(h.whole.begin) < END)
-const form = (...parts) => once(arrange(
-  ...parts.map((p, i) => [SECTIONS[i], p]))).withHap(h => {
+
+const DECORATIONS = [V.flute, V.pizz, V.upper]
+const slowVoice = h => !h.value.scoreAccent && [V.strings, V.cello].includes(h.value.scoreVoice)
+const sectionEnd = onset => BOUNDARIES.find(t => t > onset + 1e-7)
+const mix = p => once(p)
+  // Decorative voices rest around each portrait, leaving a clean space rather than a wobbling gain.
+  .filterHaps(h => !h.whole || h.value.scoreAccent || !DECORATIONS.includes(h.value.scoreVoice)
+    || !speakerTimings.some(t => {
+      const onset = Number(h.whole.begin) / CPS
+      return onset > t - 1.8 - 1e-7 && onset < t + 2.6 - 1e-7
+    }))
+  // A slow-attack chord that would be cut within half a second would only be a stray swell.
+  .filterHaps(h => !h.whole || !slowVoice(h) || (sectionEnd(Number(h.whole.begin) / CPS) ?? Infinity)
+    - Number(h.whole.begin) / CPS >= .5)
+  .withHap(h => {
     if (!h.whole || !h.value.s) return h
     const onset = Number(h.whole.begin) / CPS
     const duration = Number(h.duration) / CPS
     const tail = Number(h.value.release || 0) + (h.value.room ? Number(h.value.roomsize || 0) : 0)
-    if (onset >= clapTiming.start || onset + duration + tail <= clapTiming.start) return h
-    // Clear sustained voices/reverb before the one-shot stop, rather than hiding it under old tails.
-    return h.withValue(v => ({ ...v, room: 0, release: .02,
-      duration: Math.min(duration, clapTiming.start - onset - .02) * CPS }))
+    // Only the clap stop and the final silence need a hard deadline for reverb and releases.
+    const deadline = [clapTiming.start, TIMES.end].find(t => t > onset + 1e-7 && onset + duration + tail > t)
+    if (deadline) {
+      const release = Math.min(.02, (deadline - onset) / 4)
+      return h.withValue(v => ({ ...v, room: 0, clip: 1, release,
+        duration: Math.min(duration, deadline - onset - release) * CPS }))
+    }
+    // Held chords end with their own natural release at the next section instead of overlapping it.
+    const next = sectionEnd(onset)
+    if (next === undefined || onset + duration <= next + 1e-7) return h
+    return h.withValue(v => ({ ...v, clip: 1, duration: (next - onset) * CPS }))
   })
-const oneShot = (p, seconds, duration) => p.slow(duration * CPS).late(seconds * CPS)
-  .filterHaps(h => h.hasOnset() && h.whole &&
-    Math.abs(Number(h.whole.begin) - seconds * CPS) < 1e-7)
+const form = parts => {
+  if (Object.keys(parts).some(name => !NAMES.slice(0, -1).includes(name))) {
+    throw new Error("Unknown keynote section")
+  }
+  return mix(arrange(...SECTIONS.map(([length, name]) => [length, parts[name] || silence])))
+}
+const oneShot = (p, seconds, duration) => {
+  const window = new TimeSpan(seconds * CPS, (seconds + duration) * CPS)
+  return p.slow(duration * CPS).late(seconds * CPS)
+    .withQuerySpanMaybe(span => span.intersection(window)).filterHaps(h => h.hasOnset())
+}
 
-const HARMONY = note("<[bb3,db4,f4] [gb3,bb3,db4] [db4,f4,ab4] [ab3,c4,eb4]>").slow(4)
+const HARMONY = note("<[bb2,f3,db4] [gb2,db3,bb3] [db3,ab3,f4] [ab2,eb3,c4]>").slow(4)
 const SUSPENDED = note("<[bb3,db4,f4,c5] [gb3,bb3,db4,ab4] [eb3,gb3,bb3,f4] [f3,ab3,c4,eb4]>").slow(4)
+const DOMINANT = note("<[eb3,gb3,bb3] [f3,a3,c4,eb4]>").slow(2)
 const LIFT = note("<[bb3,db4,f4,ab4] [gb3,bb3,db4,f4] [eb3,gb3,bb3,db5] [f3,a3,c4,eb4]>").slow(2)
-const CADENCE = note("<[gb3,bb3,db4] [eb3,gb3,bb3] [f3,a3,c4,eb4] [f3,a3,c4]>").slow(2)
-const TONIC = note("[bb3,db4,f4,bb4]").slow(2)
+const CADENCE = note("<[gb2,db3,bb3] [eb3,gb3,bb3] [f3,a3,c4,eb4] [f3,a3,c4]>").slow(2)
+const TONIC = note("[bb2,bb3,db4,f4]").slow(2)
 const ROOTS = note("<bb2 gb2 db3 ab2>").slow(4)
-const MOTIF = note("<bb4 f5 db5 eb5 c5 ab4 f4 db5>").slow(2)
-const ANSWER = note("<f4 eb4 bb3 db4 ab3 c4 db4 f4>").slow(4)
+const MOVING_ROOTS = note("<bb2 gb2 eb2 f2>").slow(2)
+const CALL = note("bb3 f4 db4 ab4 eb4 f4 c4 db4").mask("<1 1 0 0>")
+const ANSWER = note("<f5 eb5 db5 c5>").mask("<0 0 1 1>")
+const MOTIF = note("bb4 ~ f5 ~ db5 ~ eb5 ~").mask("<1 1 0 0>")
 const SUMMIT = note("<f5 ab5 db6 c6>").slow(2)
-const OPENING = note("~ ~ bb4 f5 db5").slow(20)
-const BRIGHTNESS = signal(c => c >= 100
-  ? Math.max(1100, 3200 - (c - 100) * 262.5)
-  : 900 + 2300 * Math.min(1, Math.max(0, (c - 35) / 60)))
+const BRIGHTNESS = signal(c => {
+  const t = c / CPS
+  if (t < 25.6) return 650 + t * 35
+  if (t >= TIMES.ease && t < TIMES.lens) return 1500 - (t - TIMES.ease) / (TIMES.lens - TIMES.ease) * 980
+  if (t >= TIMES.lens && t < TIMES.digital) return 520
+  if (t >= TIMES.exit) return 900
+  return Math.min(3400, 1500 + Math.max(0, t - TIMES.digital) * 34)
+})
 
-const bowed = (p, level) => p.s("supersaw")
-  .unison(3).detune(.075).spread(.45).vib(5).vibmod(.09)
-  .attack(.85).decay(.3).sustain(.85).release(1.25)
-  .lpf(900).lpq(.5).gain(level)
-  .room(.24).roomsize(1.4).roomfade(.1)
-const cello = (p, level) => p.s("sawtooth")
-  .attack(.6).decay(.25).sustain(.8).release(1.2)
-  .lpf(650).vib(4.4).vibmod(.06).gain(level)
-  .room(.18).roomsize(1.4).roomfade(.1)
+const bowed = (p, level, id = V.strings) => voice(id, p.s("supersaw")
+  .unison(3).detune(.075).spread(.45).vib(5).vibmod(.07)
+  .attack(.55).decay(.22).sustain(.8).release(.65)
+  .lpf(1000).lpq(.5).gain(level).room(.18).roomsize(.9).roomfade(.1))
+const cello = (p, level) => voice(V.cello, p.s("sawtooth")
+  .attack(.3).decay(.2).sustain(.8).release(.55)
+  .lpf(550).vib(4.4).vibmod(.04).gain(level).pan(.43)
+  .room(.12).roomsize(.8).roomfade(.1))
+const flute = (p, level) => voice(V.flute, p.s("triangle")
+  .attack(.12).decay(.12).sustain(.75).release(.25)
+  .vib(5.2).vibmod(.05).lpf(2800).gain(level).pan(.72)
+  .room(.12).roomsize(.7).roomfade(.1))
+const pizz = (p, level) => voice(V.pizz, p.s("triangle")
+  .attack(.004).decay(.12).sustain(.03).release(.06).clip(.65)
+  .lpf(2100).gain(level).pan(.28).room(.06).roomsize(.5).roomfade(.05))
+const horns = (p, level) => voice(V.horns, p.s("sawtooth")
+  .attack(.08).decay(.18).sustain(.65).release(.35)
+  .lpf(850).lpenv(1.2).lpattack(.12).lpdecay(.25).gain(level).pan(.58)
+  .room(.16).roomsize(.85).roomfade(.1))
+const sub = (p, level) => voice(V.sub, p.s("sine")
+  .attack(.015).decay(.1).sustain(.65).release(.1).gain(level))
+const bell = (p, level) => voice(V.bell, p.s("sine")
+  .attack(.002).decay(.45).sustain(.03).release(.2)
+  .gain(level).pan(.7).room(.14).roomsize(.9).roomfade(.1))
+const drums = (p, level) => voice(V.drums, p.gain(level).clip(1).release(.01).room(0))
 
-// The same harmonic foundation opens up into suspensions and a final F7 -> Bbm.
-$: form(
-  bowed(HARMONY, .075),
-  bowed(SUSPENDED, .105),
-  silence,
-  bowed(SUSPENDED, .125),
-  bowed(note("<[bb3,db4,f4] [f3,ab3,c4]>").slow(4), .09),
-  bowed(HARMONY, .13),
-  bowed(LIFT, .16),
-  bowed(LIFT, .2),
-  bowed(CADENCE, .12),
-  bowed(TONIC, .095),
-  silence
-).lpf(BRIGHTNESS)
+// A quicker opening crescendo supports the live viola instead of doubling its line.
+$: form({
+  opening: bowed(HARMONY, .035), lift: bowed(HARMONY, .06),
+  pulse: bowed(HARMONY, .085), dialogue: bowed(SUSPENDED, .105),
+  tension: bowed(DOMINANT, .125), brake: bowed(note("[f3,a3,c4]").slow(2), .075),
+  restart: bowed(HARMONY, .11), premiere: bowed(SUSPENDED, .12),
+  ease: bowed(note("[gb3,bb3,db4,ab4]").slow(2), .095),
+  hush: bowed(note("[eb3,gb3,bb3,f4]").slow(2), .07),
+  lens: bowed(note("<[bb2,f3] [gb2,db3]>").slow(4), .035),
+  digital: bowed(LIFT, .13), pursuit: bowed(LIFT, .15),
+  summit: bowed(LIFT, .17), climax: bowed(LIFT, .19),
+  rise: bowed(note("[f3,ab3,c4,eb4]").slow(2), .21),
+  exit: bowed(note("[bb2,f3,db4]").slow(2), .075),
+  afterglow: bowed(CADENCE, .06), resolve: bowed(TONIC, .055),
+}).lpf(BRIGHTNESS)
+$: form({
+  opening: cello(ROOTS, .075), lift: cello(ROOTS, .11),
+  pulse: cello(ROOTS, .145), dialogue: cello(MOVING_ROOTS, .15),
+  tension: cello(MOVING_ROOTS, .16), brake: cello(note("f2").slow(2), .13),
+  restart: cello(ROOTS, .15), premiere: cello(MOVING_ROOTS, .15),
+  ease: cello(note("gb2").slow(2), .115), hush: cello(note("eb2").slow(2), .085),
+  lens: cello(note("<bb2 f2>").slow(4), .05),
+  digital: cello(MOVING_ROOTS, .17), pursuit: cello(MOVING_ROOTS, .18),
+  summit: cello(MOVING_ROOTS, .19), climax: cello(MOVING_ROOTS, .2),
+  rise: cello(note("f2").slow(2), .21),
+  exit: cello(note("bb2").slow(2), .09),
+  afterglow: cello(note("<gb2 eb2 f2 f2>").slow(2), .07),
+  resolve: cello(note("bb2").slow(2), .06),
+})
 
-$: form(
-  cello(ROOTS, .13),
-  cello(note("<bb2 gb2 eb2 f2>").slow(4), .16),
-  silence,
-  cello(note("<bb2 gb2 eb2 f2>").slow(4), .17),
-  cello(note("<bb2 f2>").slow(4), .1),
-  cello(ROOTS, .15),
-  cello(note("<bb2 gb2 eb2 f2>").slow(2), .18),
-  cello(note("<bb2 gb2 eb2 f2>").slow(2), .2),
-  cello(note("<gb2 eb2 f2 f2>").slow(2), .12),
-  cello(note("bb2").slow(2), .085),
-  silence
-)
+// Plucked questions and wind answers alternate in four-cycle phrases.
+$: form({
+  lift: pizz(CALL, .025), pulse: pizz(CALL, .055), dialogue: pizz(CALL, .075),
+  tension: pizz(CALL, .085), restart: pizz(CALL, .065), premiere: pizz(CALL, .07), ease: pizz(CALL, .04),
+  digital: pizz(CALL.fast(2), .09), pursuit: pizz(CALL.fast(2), .11),
+  summit: pizz(CALL.fast(2), .12), climax: pizz(CALL.fast(2), .13),
+})
+$: form({
+  dialogue: flute(ANSWER, .065), tension: flute(ANSWER, .075),
+  restart: flute(ANSWER, .06), premiere: flute(ANSWER, .075),
+  digital: flute(ANSWER, .08), pursuit: flute(ANSWER, .085),
+  summit: flute(ANSWER, .09), climax: flute(ANSWER, .095),
+})
+$: form({
+  tension: horns(note("<bb2 gb2 eb3 f3>").mask("<0 0 1 1>"), .075),
+  premiere: horns(note("<bb2 gb2 eb3 f3>").slow(2), .055),
+  digital: horns(note("<bb2 gb2 eb3 f3>").mask("<0 0 1 1>"), .085),
+  pursuit: horns(note("<bb2 gb2 eb3 f3>").mask("<0 0 1 1>"), .105),
+  summit: horns(note("<bb2 gb2 eb3 f3>").slow(2), .115),
+  climax: horns(note("<[bb2,f3] [gb2,db3] [eb3,bb3] [f3,a3]>"), .13),
+  afterglow: horns(note("<gb2 eb3 f3 f3>").slow(2), .045),
+})
+$: form({
+  tension: bowed(MOTIF, .065, V.upper), premiere: bowed(MOTIF.slow(2), .055, V.upper),
+  digital: bowed(MOTIF, .075, V.upper), pursuit: bowed(MOTIF, .09, V.upper),
+  summit: bowed(SUMMIT, .1, V.upper), climax: bowed(SUMMIT, .12, V.upper),
+  rise: bowed(note("c6").slow(2), .09, V.upper),
+}).lpf(BRIGHTNESS)
+$: form({
+  dialogue: sub(note("<bb1 gb1 eb2 f1>").slow(4), .11),
+  tension: sub(note("<eb2 f1>").slow(2), .13),
+  restart: sub(note("bb1").slow(4), .11),
+  digital: sub(note("<bb1 gb1 eb2 f1>").slow(2), .16),
+  pursuit: sub(note("<bb1 gb1 eb2 f1>").slow(2), .18),
+  summit: sub(note("<bb1 gb1 eb2 f1>").slow(2), .19),
+  climax: sub(note("<bb1 gb1 eb2 f1>").slow(2), .2),
+})
 
-// Original wide-interval melody; upper strings arrive gradually.
-$: form(
-  bowed(OPENING, .085),
-  bowed(MOTIF, .1),
-  silence,
-  bowed(MOTIF, .125),
-  bowed(note("<f5 eb5 db5 ab4>").slow(2), .075),
-  bowed(MOTIF, .11),
-  bowed(note("<db5 ab5 f5 gb5 eb5 f5 c5 db5>").slow(2), .14),
-  bowed(SUMMIT, .16),
-  bowed(note("<ab5 f5 eb5 a4>").slow(2), .085),
-  bowed(note("f5").slow(2), .055),
-  silence
-).lpf(BRIGHTNESS)
-
-$: form(
-  silence, silence, silence,
-  bowed(ANSWER, .065),
-  silence,
-  bowed(ANSWER, .065),
-  bowed(ANSWER.fast(2), .075),
-  bowed(note("<db5 eb5 f5 a4>").slow(2), .09),
-  silence, silence, silence
-).lpf(BRIGHTNESS)
-
-const ARP = note("bb3 f4 db4 ab4 eb4 f4 c4 db4").s("triangle")
-  .attack(.008).decay(.12).sustain(.12).release(.1)
-  .lpf(2400).room(.1).roomsize(1.4).roomfade(.1)
-$: form(
-  silence, silence, silence, silence, silence,
-  ARP.gain(.09),
-  ARP.gain(.12),
-  ARP.gain(.15),
-  ARP.slow(2).gain(.05),
-  silence, silence
-)
-
-const sub = (p, level) => p.s("sine")
-  .attack(.025).decay(.15).sustain(.65).release(.15).gain(level)
-$: form(
-  silence,
-  sub(note("<bb1 gb1 eb2 f1>").slow(4), .13),
-  silence, silence, silence,
-  sub(note("<bb1 gb1 db2 ab1>").slow(4), .18),
-  sub(note("<bb1 gb1 eb2 f1>").slow(2), .2),
-  sub(note("<bb1 gb1 eb2 f1>").slow(2), .23),
-  silence, silence, silence
-)
-
-// 150-BPM grid underneath long phrases; a breath at the clap and lens passage.
-const KICK = form(
-  s("bd ~ bd ~").gain(.17),
-  s("bd*4").gain(.23),
-  silence,
-  s("bd ~ bd ~").gain(.17),
-  silence,
-  s("bd*4").gain(.29),
-  s("bd*4").gain(.33),
-  s("bd*4").gain(.38),
-  s("bd ~ ~ ~").gain(.15),
-  silence, silence
-)
-const SNARE = form(
-  silence,
-  s("~ sd ~ sd").gain(.1),
-  silence, silence, silence,
-  s("~ sd ~ sd").gain(.16),
-  s("~ sd ~ sd").gain(.19),
-  s("~ sd ~ sd").gain(.23),
-  silence, silence, silence
-)
-const HATS = form(
-  silence,
-  s("hh*8").gain(.025),
-  silence,
-  s("hh*4").gain(.022),
-  silence,
-  s("hh*8").gain(.045),
-  s("hh*16").gain(.055),
-  s("hh*16").gain(.065),
-  silence, silence, silence
-)
+const KICK = form({
+  opening: drums(s("bd ~ ~ ~"), .1), lift: drums(s("bd ~ bd ~"), .14),
+  pulse: drums(s("bd*4"), .2), dialogue: drums(s("bd*4"), .23),
+  tension: drums(s("bd*4"), .27), brake: drums(s("bd*4"), .29),
+  restart: drums(s("bd*4"), .23), premiere: drums(s("bd ~ bd ~"), .2),
+  ease: drums(s("bd ~ bd ~"), .13), hush: drums(s("bd ~ ~ ~"), .075),
+  digital: drums(s("bd*4"), .3), pursuit: drums(s("bd*4"), .33),
+  summit: drums(s("bd*4"), .35), climax: drums(s("bd*4"), .37),
+  rise: drums(s("bd*4"), .38),
+})
+const SNARE = form({
+  dialogue: drums(s("~ sd ~ sd"), .09), tension: drums(s("~ sd ~ sd"), .12),
+  restart: drums(s("~ sd ~ sd"), .09),
+  digital: drums(s("~ sd ~ sd"), .15), pursuit: drums(s("~ sd ~ sd"), .18),
+  summit: drums(s("~ sd ~ sd"), .2), climax: drums(s("~ sd ~ [sd sd]"), .21),
+  // A two-cycle snare roll accelerates the energy into the exit impact.
+  rise: voice(V.drums, s("sd*16").gain(saw.range(.06, .3).slow(2)).clip(1).release(.01).room(0)),
+})
+const HATS = form({
+  pulse: drums(s("hh*4"), .022), dialogue: drums(s("hh*8"), .03),
+  tension: drums(s("hh*8"), .04), brake: drums(s("hh*16"), .04),
+  restart: drums(s("hh*8"), .03), premiere: drums(s("hh*4"), .026),
+  ease: drums(s("hh*4"), .016),
+  digital: drums(s("hh*8"), .045), pursuit: drums(s("hh*16"), .05),
+  summit: drums(s("hh*16"), .055), climax: drums(s("hh*16"), .06),
+  rise: drums(s("hh*16"), .06),
+})
 $: audioAndVisual(KICK, "kick")
 $: SNARE.visual("snare")
 $: audioAndVisual(HATS, "hat")
 
-// Tape-stop gesture: continuous three-octave descent plus slower, lower drum pulses.
-$: oneShot(note("bb4").s("sawtooth")
+// Beat-aligned F7 stabs prepare the unresolved stop; Bbm resolves at CRT reopening.
+$: mix(stack(...[1.85, 1.05, .65, .25].map((before, i) =>
+  oneShot(horns(note("[f3,a3,c4,eb4]"), .055 + i * .018)
+    .attack(.006).release(.03).room(0),
+    clapTiming.start - before, .11))))
+$: oneShot(note("f4").s("sawtooth")
   .penv(-36).panchor(0).pcurve(0).pattack(STOP_LENGTH - .01)
   .pdecay(.001).psustain(1).prelease(.001)
   .attack(.004).decay(.08).sustain(.75).release(.01)
-  .lpf(1800).gain(.11).room(0),
+  .lpf(1800).gain(.145).room(0),
   clapTiming.start, STOP_LENGTH - .01)
 $: stack(...[0, .045, .115, .225, .39].map(offset =>
   oneShot(s("bd").speed(2 ** (-3 * offset / STOP_LENGTH))
-    .gain(.13).clip(1).release(.006).room(0),
+    .gain(.14).clip(1).release(.006).room(0),
     clapTiming.start + offset, Math.min(.05 + offset * .2, STOP_LENGTH - offset - .01))))
+$: mix(oneShot(horns(note("[bb2,f3,db4]"), .12).attack(.015),
+  clapTiming.reopen, .6))
+
+// Every portrait uses the Bb-minor triad, which fits the chord already sounding. A sus4 swell
+// resolves exactly on the card, then a bell answers on the next pulse beat.
+const PORTRAIT_CHORDS = ["[bb3,f4,db5]", "[bb3,db4,f4,c5]", "[bb3,f4,db5,f5]", "[bb3,f4,bb4,db5,f5]"]
+const PORTRAIT_REPLIES = ["f5 bb5", "db5 f5", "f5 db6", "bb4 f5"]
+const portrait = (p, index) => p.withValue(v => ({ ...v, scoreAccent: index + 1 }))
+const nextBeat = t => Math.ceil((t + .35) / BEAT - 1e-7) * BEAT
+$: mix(stack(...speakerTimings.flatMap((time, i) => [
+  oneShot(portrait(bowed(note("[bb3,eb4,f4,bb4]"), .11)
+    .attack(1.35).decay(.1).sustain(1).release(.08), i), time - 1.6, 1.55),
+  oneShot(portrait(bowed(note(PORTRAIT_CHORDS[i]), .15).attack(.05).release(1.6), i), time, 1.6),
+  oneShot(portrait(bell(note(PORTRAIT_REPLIES[i]), .07), i), nextBeat(time), .8),
+])))
+
+// A bloom follows the exit impact, then low support gives the live viola room.
+$: mix(oneShot(horns(note("[bb1,f2,bb2,db3]"), .15).attack(.015).release(1.8)
+  .room(.2).roomsize(1.1), TIMES.exit, 2.4))
+$: mix(oneShot(bowed(note("[bb2,f3,bb3,db4,f4]"), .15).attack(.12).release(2.2), TIMES.exit, 3.2))
+$: mix(oneShot(sub(note("bb1"), .16).release(1.5), TIMES.exit, 2.4))
+$: oneShot(s("bd").gain(.3).clip(1).release(.01), TIMES.exit, .2)
+$: mix(oneShot(flute(note("~ f5 ~ db5"), .045), 166.4, 2))
+$: mix(oneShot(horns(note("[bb2,f3,db4]"), .08).attack(.08), TIMES.resolve, 1.6))
+$: mix(oneShot(bell(note("[bb4,f5]"), .055), TIMES.resolve, .4))
 
 // One-shot scheduler cues: Babylon's camera/timeline remains authoritative.
 $: cueAt("game", 0)
 $: cueAt("level-complete", 46.3 * CPS)
 $: cueAt("cinema-cut", cinemaTiming.clap * CPS)
 $: cueAt("cinema", cinemaTiming.start * CPS)
-$: cueAt("speaker-david", 66 * CPS)
-$: cueAt("film-reels", 77 * CPS)
-$: cueAt("popcorn", 78.2 * CPS)
-$: cueAt("lens", 90 * CPS)
-$: cueAt("projector", 91.2 * CPS)
-$: cueAt("warp", 93 * CPS)
-$: cueAt("d-entry", 96 * CPS)
-$: cueAt("speaker-eric", 99 * CPS)
-$: cueAt("speaker-mitsuru", 128 * CPS)
+$: cueAt("speaker-david", speakerTimings[1] * CPS)
+$: cueAt("film-reels", cinemaTiming.reels * CPS)
+$: cueAt("popcorn", cinemaTiming.popcorn * CPS)
+$: cueAt("lens", cinemaTiming.lens * CPS)
+$: cueAt("projector", cinemaTiming.projector * CPS)
+$: cueAt("warp", cinemaTiming.space * CPS)
+$: cueAt("d-entry", TIMES.digital * CPS)
+$: cueAt("speaker-eric", speakerTimings[2] * CPS)
+$: cueAt("speaker-mitsuru", speakerTimings[3] * CPS)
 $: cueAt("climax", 147 * CPS)
-$: cueAt("reveal", 173 * CPS)
-// Last tonic: 172.8-176s; short releases/reverb settle before 180s.
-// No looping at 180s. Stop/restart Strudel to replay from cycle zero.
+$: cueAt("reveal", TIMES.resolve * CPS)
+// Last notes end at 176s; releases/reverb settle before 180s. Restart from cycle zero.

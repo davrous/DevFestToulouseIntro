@@ -55,7 +55,9 @@ saved draft until Evaluate.
 material in **B-flat minor**, the key of Barber's *Adagio for Strings*. It evokes
 slow bowed phrases, suspensions, expanding registers and an emotional crescendo,
 without quoting its melody, copying its arrangement or using its recordings.
-The local string-like timbre is synthesized, not a sampled acoustic orchestra.
+The orchestral colors are synthesized, not a sampled acoustic orchestra. The
+live viola remains external: this score is its accompaniment, not a substitute
+or a doubled solo line.
 
 In the performance page, stop playback and choose **Load keynote / Bb minor /
 3:00**, confirm replacement of the editor text, then Evaluate. Copy/export
@@ -63,17 +65,30 @@ unfinished work first. The engineering demo and supplied excerpt remain separate
 
 | Time | Musical progression |
 | --- | --- |
-| 0:00-0:32 | Low cello foundation, intimate sustained harmony, original upper melody entering at 0:12.8; a quiet half-time heartbeat |
-| 0:32-0:50.65 | Suspended chords, deeper bass, introduction of the 150-BPM four-on-the-floor pulse |
-| 0:50.65-0:51.135 | One-shot sawtooth descends three octaves while five local kick pulses become slower and lower; preceding sustained voices/reverb clear before the gesture |
+| 0:00-0:12.8 | Sparse low cello and string bed leave the live viola in front; stronger harmony and quiet pizzicato enter at 0:06.4 |
+| 0:12.8-0:38.4 | The electronic pulse arrives earlier; plucked questions and wind-like answers alternate in four-cycle phrases, widening the ensemble without a continuous competing solo |
+| 0:38.4-0:50.65 | Upper strings, horn-like synth and sub deepen the tension; beat-aligned F7 stabs at 48.8 / 49.6 / 50 / 50.4 prepare the unresolved stop |
+| 0:50.65-0:51.135 | F4 descends three octaves while five local kick pulses become slower and lower; preceding sustained voices/reverb clear before the violent stop |
 | 0:51.135-0:51.38 | Quiet 245-ms breath while the green phosphor line remains closed |
-| 0:51.38-1:23.2 | Score resumes with the CRT opening; broader strings and answering voice under David's premiere and the reels |
-| 1:23.2-1:36 | Percussion retreats for the lens/projector/warp passage |
-| 1:36-2:08 | Electronic pulse returns, quiet arpeggio joins the slow strings |
-| 2:08-2:27.2 | Higher voicings, rising string brightness, more insistent hats |
-| 2:27.2-2:40 | Full original orchestral/electronic summit |
-| 2:40-2:52.8 | Percussion recedes; broad Gb/Ebm/F7 cadence during the pullback |
-| 2:52.8-3:00 | Final Bbm, natural release and short local reverb, then silence |
+| 0:51.38-1:23.2 | A Bbm resolution restarts with the CRT opening; warm ensemble dialogue accompanies David and the reels |
+| 1:23.2-1:36 | No percussion, arpeggio or foreground wind/brass: soft cello and low string shells leave the lens/projector passage to the live viola |
+| 1:36-2:08 | Stronger four-on-the-floor return, faster pizzicato questions, answering winds and expanding horns/upper strings |
+| 2:08-2:27.2 | Mitsuru's cadence opens the summit; broader voicings, denser hats and answering registers keep building |
+| 2:27.2-2:39 | Full orchestral/electronic pursuit continues all the way to the camera's exit |
+| 2:39-2:43 | A low, expansive Bbm impact marks the exit; the ongoing beat stops and the viola has room to emerge |
+| 2:43-2:53 | Spacious Gb/Ebm/F7 cadence, restrained wind replies and low horn support under the pullback |
+| 2:53-3:00 | Bbm resolution and a soft bell mark the settled title; no new notes after 2:56, then natural release and silence |
+
+Each portrait has its own emotional cadence at the **actual shared speaker
+arrival**: Anne-Flore 17 s, David 66 s, Eric 99 s, Mitsuru 128 s. A short F7
+preparation resolves into a distinct chord, then two wind notes and a plucked
+reply answer it. Foreground accompaniment is reduced around the arrival.
+These are musical voices, not new scene-control events.
+
+The palette preserves the bowed-synth identity while adding low cello,
+left-side plucked-string-like triangles, right-side wind-like triangles,
+filtered sawtooth horns, a sine sub and a quiet final sine bell. These are
+deliberate synth timbres, not claims of realistic orchestral samples.
 
 The unchanged tempo is 150 BPM / 37.5 CPM / 0.625 CPS. The complete form is
 **112.5 cycles = 180 seconds**, including the ending tail. Onset filtering makes
@@ -89,12 +104,15 @@ The A-natural in F7 is the conventional harmonic-minor dominant; the score stays
 in Bb minor and ends on its tonic. Automation is applied after `arrange` so it
 uses the global cycle rather than restarting its crescendo inside each section.
 
-The local REPL supplies `clapTiming` and `cinemaTiming` from the visual
+The local REPL supplies `clapTiming`, `cinemaTiming` and `speakerTimings` from the visual
 [show beats](src/content/showBeats.ts), avoiding duplicated clap timestamps.
 The tape-stop is an original synthesized gesture with a continuous pitch envelope
 and decelerating sample pulses, not time-stretching a captured external DJ mix.
-The global tempo remains 150 BPM; all section boundaries after 83.2 s and the
-180-s ending are unchanged. Reload the bundled keynote to replace an older draft
+The global tempo remains 150 BPM; the lens calm still begins at 83.2 s, the
+energetic return is at 96 s, the exit impact at 159 s and title resolution at
+173 s. The 180-s ending is unchanged. One-shot phrases use bounded public
+Strudel query spans, retaining their internal notes without generating
+repetitions across the entire score. Reload the bundled keynote to replace an older draft
 explicitly; saved editor text is never silently updated.
 
 ## Architecture

@@ -31,11 +31,18 @@ scheduler events over same-origin BroadcastChannel alongside the unchanged FFT
 capture. See [STRUDEL_SYNC.md](STRUDEL_SYNC.md) for launch, helpers, cue windows,
 offline instruments and rehearsal diagnostics. The Babylon page still plays no audio.
 The separate [original keynote score](examples/devfest-keynote.strudel) lasts
-three minutes in Bb minor, with slow synthesized strings, a progressive crescendo
-and the 150-BPM electronic grid, including a descending tape-stop at the clap.
+three minutes in Bb minor, with a quicker initial rise, answering string-like /
+wind-like / horn-like synth voices, an emotional cadence at each speaker,
+and the 150-BPM electronic grid. Its F7 preparation integrates the descending
+tape-stop at the clap rather than interrupting an unrelated phrase.
 Load it explicitly from the performance page;
 it uses only local instruments and does not replace the engineering demo or
 the supplied music excerpt.
+
+The accompaniment leaves the external live viola central at the opening and
+through the quiet lens passage. After 96 s it rebuilds more vigorously until
+the 159-s exit impact, then clears the beat for a spacious dramatic pullback
+and a Bbm resolution at the settled title (173 s).
 
 ## The show
 

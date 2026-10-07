@@ -16,7 +16,7 @@ const browser = await chromium.launch({
 });
 try {
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
-  const errors = [], external = [];
+  const errors = [], external = [], debugLogs = [];
   await context.route("**/*", (route) => {
     const url = route.request().url();
     if (/^https?:/.test(url) && new URL(url).origin !== origin) {
@@ -28,6 +28,7 @@ try {
   const watch = (page) => {
     page.on("pageerror", (error) => errors.push(error.message));
     page.on("console", (message) => {
+      if (process.env.AV_DEBUG && !["warning", "error"].includes(message.type())) debugLogs.push(message.text().slice(0, 200));
       if (["warning", "error"].includes(message.type())) errors.push(message.text().slice(0, 500));
     });
   };
@@ -99,8 +100,9 @@ try {
       const probe = window.avAudioProbe;
       const module = new Blob([`
         class AVMeter extends AudioWorkletProcessor {
-          peak = 0; sum = 0; count = 0;
+          peak = 0; sum = 0; count = 0; frames = 0; from = 0;
           process(inputs) {
+            if (!this.frames) this.from = currentTime;
             for (const channel of inputs[0] ?? []) {
               for (const value of channel) {
                 this.peak = Math.max(this.peak, Math.abs(value));
@@ -108,10 +110,12 @@ try {
                 this.count++;
               }
             }
-            if (this.count >= sampleRate / 5) {
-              this.port.postMessage({ at: currentTime, peak: this.peak,
+            const frames = inputs[0]?.[0]?.length ?? 0;
+            this.frames += frames;
+            if (this.frames >= sampleRate / 50) {
+              this.port.postMessage({ from: this.from, at: currentTime + frames / sampleRate, peak: this.peak,
                 rms: Math.sqrt(this.sum / this.count) });
-              this.peak = this.sum = this.count = 0;
+              this.peak = this.sum = this.count = this.frames = 0;
             }
             return true;
           }
@@ -186,6 +190,8 @@ try {
     });
     app.world.scene.onAfterRenderObservable.add(() => {
       if (probe.done) return;
+      // Measure the show clock itself; the button/launch lead-in is not part of the 180 seconds.
+      if (app.timeline.playing && app.timeline.time > 0) probe.timelineStart ??= performance.now() - app.timeline.time * 1000;
       const energy = app.showController.audio.features.energy;
       if (app.showController.audio.connected && energy > .02) {
         probe.fftFrames++;
@@ -206,7 +212,7 @@ try {
         .filter((mesh) => mesh.name.startsWith("Cinema / popcorn kernel") && mesh.physicsBody).length);
       if (app.timeline.time === 180) {
         probe.crt.detachedAtEnd = !app.world.camera._postProcesses.includes(transition.postProcess);
-        probe.done = { elapsed: (performance.now() - probe.started) / 1000,
+        probe.done = { elapsed: (performance.now() - (probe.timelineStart ?? probe.started)) / 1000,
           camera: app.world.camera.position.asArray(), playing: app.timeline.playing };
       }
     });
@@ -270,15 +276,31 @@ try {
   }
   if (capture) {
     await music.waitForTimeout(500);
-    result.audio = await music.evaluate(() => {
+    result.audio = await music.evaluate((isKeynote) => {
       const samples = window.avAudioProbe.samples;
+      // Anchor the short hold to the real pitch-envelope onset, not the button click.
+      const scoreZero = isKeynote ? window.avTapeProbe?.[0]?.begin - 50.65 : window.avAudioProbe.startedAt;
+      if (!Number.isFinite(scoreZero)) throw new Error("Missing audio clock anchor for PCM measurements.");
       const rms = (from, to) => {
-        const section = samples.filter((sample) => sample.seconds >= from && sample.seconds < to);
+        const section = samples.filter((sample) => sample.from - scoreZero >= from
+          && sample.at - scoreZero <= to);
+        if (!section.length) throw new Error(`No PCM samples for score window ${from}-${to}.`);
         return Math.sqrt(section.reduce((sum, sample) => sum + sample.rms ** 2, 0) / section.length);
       };
-      return { peak: Math.max(...samples.map((sample) => sample.peak)), samples: samples.length,
+      const metrics = { peak: Math.max(...samples.map((sample) => sample.peak)), samples: samples.length,
         openingRms: rms(2, 25), climaxRms: rms(148, 159), finalRms: rms(179.8, 180.4) };
-    });
+      if (!isKeynote) return metrics;
+      return { ...metrics, profile: Array.from({ length: 180 }, (_, i) => +rms(i, i + 1).toFixed(4)),
+        openingLift: rms(8, 16) / rms(1, 6),
+        lensRms: rms(85, 94), returnRms: rms(113, 126),
+        pullbackRms: rms(163, 172),
+        phosphorHoldRms: rms(51.15, 51.35),
+        portraitsRms: [17, 66, 99, 128].map((time) => ({ time, rms: rms(time, time + 1.4) })),
+        portraitSwells: [17, 66, 99, 128].map((time) => ({ time, before: rms(time - 3.4, time - 1.8),
+          swell: rms(time - 1.4, time - .1), arrival: rms(time, time + 1.2) })),
+        lensEntry: { before: rms(79, 80), hush: rms(82.2, 83.2), after: rms(83.2, 84.2), calm: rms(86, 88) },
+        exitEntry: { roll: rms(157.5, 159), impact: rms(159, 160), bloom: rms(161, 163), calm: rms(166, 170) } };
+    }, Boolean(keynote));
     console.log(JSON.stringify({ phase: "audio measurements", fftFrames: result.fftFrames,
       fftWindows: result.fftWindows, fftPeak: result.fftPeak, ...result.audio }));
     assert.ok(result.fftFrames > 500, `FFT did not follow real Strudel audio: ${result.fftFrames} frames`);
@@ -290,6 +312,13 @@ try {
     assert.ok(result.audio.openingRms > .005, `Opening is inaudible: RMS ${result.audio.openingRms}`);
     assert.ok(result.audio.climaxRms > result.audio.openingRms * 1.4, "No measured musical crescendo");
     assert.ok(result.audio.finalRms < .0001, `Music did not finish at 180s: RMS ${result.audio.finalRms}`);
+    if (keynote) {
+      assert.ok(result.audio.openingLift > 1.25, "No faster initial musical rise");
+      assert.ok(result.audio.returnRms > result.audio.lensRms * 2, "No dynamic return after the lens calm");
+      assert.ok(result.audio.climaxRms > result.audio.pullbackRms * 1.5, "No space cleared during the epic pullback");
+      assert.ok(result.audio.phosphorHoldRms < .002, "The violent stop leaks audio into the phosphor hold");
+      assert.ok(result.audio.portraitsRms.every((portrait) => portrait.rms > .01), "Inaudible portrait cadence");
+    }
   }
   await music.close();
   await show.waitForFunction(() => window.showController.strudelEvents.getStatus() === "DISCONNECTED");
@@ -300,6 +329,8 @@ try {
   await reopened.goto(`${origin}/strudel/`);
   await reopened.waitForFunction(() => window.strudelAV?.transport.getStatus() === "CONNECTED");
   assert.equal(await show.evaluate(() => window.showController.strudelEvents.getStatus()), "CONNECTED");
+  if (process.env.AV_DEBUG) console.log("DEBUGLOGS", JSON.stringify(debugLogs.reduce((all, text) => {
+    all[text] = (all[text] ?? 0) + 1; return all; }, {})));
   assert.deepEqual(external, []);
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ ...result, externalRequests: external.length, browserErrors: errors.length,

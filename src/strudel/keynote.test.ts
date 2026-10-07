@@ -7,6 +7,7 @@ import { transpiler } from "@strudel/transpiler";
 import { StrudelEventTransport } from "../engine/StrudelEventTransport";
 import { createVisualHelpers } from "./helpers";
 import { CINEMA, CLAP_CRT } from "../content/showBeats";
+import { SPEAKERS } from "../content/speakers";
 
 const source = readFileSync(new URL("../../examples/devfest-keynote.strudel", import.meta.url), "utf8");
 const controls = (hap: Hap): Record<string, unknown> => {
@@ -19,7 +20,8 @@ async function score() {
   const transport = new StrudelEventTransport("strudel", vi.fn(), vi.fn());
   const send = vi.spyOn(transport, "send").mockImplementation(() => {});
   const helpers = createVisualHelpers(transport, () => ({ currentTime: 0, baseLatency: 0 }));
-  await core.evalScope(core, mini, helpers, { clapTiming: CLAP_CRT, cinemaTiming: CINEMA });
+  await core.evalScope(core, mini, helpers, { clapTiming: CLAP_CRT, cinemaTiming: CINEMA,
+    speakerTimings: SPEAKERS.map((speaker) => speaker.startTime) });
   const repl = core.repl({ getTime: () => 0, defaultOutput: vi.fn(), transpiler,
     onEvalError: (error) => { throw error; } });
   const pattern = await repl.evaluate(source, false);
@@ -59,13 +61,13 @@ describe("original three-minute keynote score", () => {
 
   it("builds the string crescendo and leaves room for releases before 180 seconds", async () => {
     const { pattern } = await score();
-    const levels = (from: number, to: number) => pattern.queryArc(from, to).map(controls)
-      .filter((value) => value.s === "supersaw").map((value) => Number(value.gain));
+    const levels = (from: number, to: number) => pattern.queryArc(from * .625, to * .625).map(controls)
+      .filter((value) => value.scoreVoice === 1 && !value.scoreAccent).map((value) => Number(value.gain));
     const average = (values: number[]) => values.reduce((sum, value) => sum + value, 0) / values.length;
-    expect(average(levels(92, 100))).toBeGreaterThan(average(levels(0, 20)) * 1.8);
-    const cutoff = (from: number, to: number) => pattern.queryArc(from, to).map(controls)
-      .filter((value) => value.s === "supersaw").map((value) => Number(value.cutoff));
-    expect(average(cutoff(92, 100))).toBeGreaterThan(average(cutoff(0, 20)) * 2);
+    expect(average(levels(147.2, 159))).toBeGreaterThan(average(levels(0, 6.4)) * 3);
+    const cutoff = (from: number, to: number) => pattern.queryArc(from * .625, to * .625).map(controls)
+      .filter((value) => value.scoreVoice === 1).map((value) => Number(value.cutoff));
+    expect(average(cutoff(147.2, 159))).toBeGreaterThan(average(cutoff(0, 6.4)) * 2);
     const sounds = pattern.queryArc(0, 112.5).filter((hap) => controls(hap).s !== undefined);
     for (const hap of sounds) {
       const value = controls(hap);
@@ -95,7 +97,7 @@ describe("original three-minute keynote score", () => {
     const cues = events.filter((event) => !["kick", "snare", "hat", "impact"].includes(event.event));
     expect(cues).toHaveLength(15);
     for (const [name, seconds] of [["cinema-cut", CINEMA.clap], ["cinema", CINEMA.start],
-      ["popcorn", 78.2], ["warp", 93], ["reveal", 173]] as const) {
+      ["popcorn", CINEMA.popcorn], ["warp", 93], ["reveal", 173]] as const) {
       expect(cues.filter((event) => event.event === name)).toHaveLength(1);
       expect(cues.find((event) => event.event === name)!.cycle).toBeCloseTo(seconds * .625, 7);
     }
@@ -112,6 +114,7 @@ describe("original three-minute keynote score", () => {
     expect(Number(stop.duration) / cps + Number(controls(stop).release)).toBeCloseTo(
       CLAP_CRT.collapsed - CLAP_CRT.start, 7);
     expect(controls(stop)).toMatchObject({ panchor: 0, pcurve: 0, psustain: 1, room: 0 });
+    expect(controls(stop).note).toBe("f4");
     expect(Number(controls(stop).pattack)).toBeCloseTo(Number(stop.duration) / cps, 7);
     const pulses = sounds.filter((hap) => controls(hap).s === "bd" && controls(hap).speed !== undefined);
     expect(pulses).toHaveLength(5);
@@ -129,5 +132,141 @@ describe("original three-minute keynote score", () => {
     }
     const resumed = sounds.filter((hap) => Number(hap.whole!.begin) / cps >= CLAP_CRT.reopen - 1e-7);
     expect(Math.min(...resumed.map((hap) => Number(hap.whole!.begin) / cps))).toBeCloseTo(CLAP_CRT.reopen, 7);
+    const stabs = sounds.filter((hap) => controls(hap).scoreVoice === 5
+      && Number(hap.whole!.begin) / cps >= CINEMA.clapperStart - 1e-7
+      && Number(hap.whole!.begin) / cps < CLAP_CRT.start);
+    const stabTimes = [...new Set(stabs.map((hap) => Number(hap.whole!.begin) / cps))];
+    expect(stabTimes).toHaveLength(4);
+    for (const [i, time] of stabTimes.entries()) {
+      expect(time).toBeCloseTo(CLAP_CRT.start - [1.85, 1.05, .65, .25][i], 7);
+    }
+    expect(stabs.every((hap) => ["f3", "a3", "c4", "eb4"].includes(String(controls(hap).note)))).toBe(true);
+  });
+
+  it("builds earlier while introducing orchestral colors without a synthetic viola solo", async () => {
+    const { pattern, cps } = await score();
+    const sounds = pattern.queryArc(0, 112.5).filter((hap) => controls(hap).s !== undefined);
+    const during = (from: number, to: number) => sounds.filter((hap) => {
+      const t = Number(hap.whole!.begin) / cps;
+      return t >= from - 1e-7 && t < to - 1e-7;
+    });
+    const voices = (from: number, to: number) =>
+      new Set(during(from, to).map(controls).map((value) => value.scoreVoice));
+    expect([...voices(0, 6.4)].sort()).toEqual([1, 2, 8]);
+    expect(voices(12.8, 16).size).toBeGreaterThanOrEqual(4);
+    expect(voices(38.4, 48.8).size).toBeGreaterThanOrEqual(7);
+    const kickDensity = (from: number, to: number) =>
+      during(from, to).filter((hap) => controls(hap).s === "bd").length / (to - from);
+    expect(kickDensity(12.8, 16)).toBeGreaterThan(kickDensity(0, 6.4) * 3);
+    expect(during(0, 16).some((hap) => [3, 5, 6, 9].includes(Number(controls(hap).scoreVoice)))).toBe(false);
+  });
+
+  it("alternates plucked questions and wind answers rather than layering every melody continuously", async () => {
+    const { pattern, cps } = await score();
+    const dialogue = pattern.queryArc(25.6 * cps, 38.4 * cps).filter((hap) => controls(hap).s !== undefined);
+    const questions = dialogue.filter((hap) => controls(hap).scoreVoice === 4);
+    const answers = dialogue.filter((hap) => controls(hap).scoreVoice === 3);
+    expect(questions.length).toBeGreaterThan(10);
+    expect(answers.length).toBeGreaterThanOrEqual(4);
+    const cycle = (hap: Hap) => Math.floor((Number(hap.whole!.begin) / cps - 25.6) / 1.6 + 1e-7) % 4;
+    expect(questions.every((hap) => cycle(hap) < 2)).toBe(true);
+    expect(answers.every((hap) => cycle(hap) >= 2)).toBe(true);
+    expect(questions.map(controls).every((value) => Number(value.pan) < .4)).toBe(true);
+    expect(answers.map(controls).every((value) => Number(value.pan) > .6)).toBe(true);
+  });
+
+  it("resolves a swell exactly on each portrait with harmony that fits the underlying chord", async () => {
+    const { pattern, cps } = await score();
+    const sounds = pattern.queryArc(0, 112.5).filter((hap) => controls(hap).s !== undefined);
+    const onset = (hap: Hap) => Number(hap.whole!.begin) / cps;
+    const pitchClass = (note: unknown) => String(note).replace(/\d+$/, "");
+    const chords = [["bb", "f", "db"], ["bb", "db", "f", "c"], ["bb", "f", "db", "f"], ["bb", "f", "bb", "db", "f"]];
+    for (const [index, speaker] of SPEAKERS.entries()) {
+      const time = speaker.startTime;
+      const accents = sounds.filter((hap) => controls(hap).scoreAccent === index + 1);
+      const at = (seconds: number) => accents.filter((hap) => Math.abs(onset(hap) - seconds) < 1e-7);
+      const swell = at(time - 1.6).map(controls);
+      expect(swell.map((value) => value.note).sort()).toEqual(["bb3", "bb4", "eb4", "f4"]);
+      expect(swell.every((value) => value.attack === 1.35)).toBe(true);
+      const arrival = at(time).map(controls);
+      expect(arrival.length).toBeGreaterThanOrEqual(3);
+      expect(arrival.every((value) => value.attack === .05)).toBe(true);
+      expect(new Set(arrival.map((value) => pitchClass(value.note)))).toEqual(new Set(chords[index]));
+      const replies = accents.filter((hap) => controls(hap).scoreVoice === 6);
+      expect(replies).toHaveLength(2);
+      for (const hap of replies) {
+        expect(onset(hap)).toBeGreaterThan(time + .3);
+        expect(Math.abs(onset(hap) / .4 - Math.round(onset(hap) / .4))).toBeLessThan(1e-6);
+      }
+      expect(accents.some((hap) => [3, 4].includes(Number(controls(hap).scoreVoice)))).toBe(false);
+      const decorative = sounds.filter((hap) => !controls(hap).scoreAccent
+        && [3, 4, 9].includes(Number(controls(hap).scoreVoice))
+        && onset(hap) > time - 1.8 + 1e-7 && onset(hap) < time + 2.6 - 1e-7);
+      expect(decorative).toHaveLength(0);
+      expect(sounds.some((hap) => controls(hap).s === "bd" && onset(hap) > time && onset(hap) < time + 1))
+        .toBe(true);
+    }
+  });
+
+  it("descends into the lens calm and builds into the exit without abruptly cutting the ensemble", async () => {
+    const { pattern, cps } = await score();
+    const sounds = pattern.queryArc(0, 112.5).filter((hap) => controls(hap).s !== undefined);
+    const during = (from: number, to: number) => sounds.filter((hap) => {
+      const t = Number(hap.whole!.begin) / cps;
+      return t >= from - 1e-7 && t < to - 1e-7;
+    });
+    const level = (from: number, to: number, voice: number) => {
+      const values = during(from, to).map(controls).filter((value) => value.scoreVoice === voice && !value.scoreAccent);
+      return values.reduce((sum, value) => sum + Number(value.gain), 0) / values.length;
+    };
+    const count = (from: number, to: number, sound: string) =>
+      during(from, to).filter((hap) => controls(hap).s === sound).length;
+    expect(level(66, 76.8, 1)).toBeGreaterThan(level(76.8, 80, 1));
+    expect(level(76.8, 80, 1)).toBeGreaterThan(level(80, 83.2, 1));
+    expect(level(80, 83.2, 1)).toBeGreaterThan(level(83.2, 96, 1) * 1.9);
+    expect(count(66, 76.8, "bd") / 10.8).toBeGreaterThan(count(76.8, 80, "bd") / 3.2 - 1e-7);
+    expect(count(76.8, 80, "bd")).toBeGreaterThan(count(80, 83.2, "bd"));
+    expect(count(80, 83.2, "bd")).toBeGreaterThan(0);
+    expect(count(80, 96, "hh")).toBe(0);
+    expect(count(83.2, 96, "bd")).toBe(0);
+    const cutoffs = during(76.8, 83.2).map(controls).filter((value) => value.scoreVoice === 1)
+      .map((value) => Number(value.cutoff));
+    expect(cutoffs[0]).toBeGreaterThan(cutoffs[cutoffs.length - 1]);
+    for (const value of during(76, 96).map(controls).filter((entry) => [1, 2].includes(Number(entry.scoreVoice)))) {
+      expect(Number(value.release)).toBeGreaterThanOrEqual(.5);
+      expect(Number(value.room)).toBeGreaterThan(0);
+    }
+    const roll = during(155.8, 159).map(controls).filter((value) => value.s === "sd");
+    expect(roll).toHaveLength(32);
+    const gains = roll.map((value) => Number(value.gain));
+    expect(gains[gains.length - 1]).toBeGreaterThan(gains[0] * 4);
+    expect(gains).toEqual([...gains].sort((a, b) => a - b));
+    const bloom = during(159, 159.05).map(controls);
+    expect(bloom.some((value) => value.scoreVoice === 1 && Number(value.release) > 2)).toBe(true);
+    expect(bloom.some((value) => value.scoreVoice === 7)).toBe(true);
+    expect(level(155.8, 159, 1)).toBeGreaterThan(level(159, 163, 1));
+    expect(level(159, 163, 1)).toBeGreaterThan(level(163, 173, 1));
+    expect(level(163, 173, 1)).toBeGreaterThan(level(173, 176, 1) - 1e-7);
+  });
+
+  it("keeps the lens passage sparse, returns more dynamically, and leaves space for viola in the epic reveal", async () => {
+    const { pattern, cps } = await score();
+    const sounds = pattern.queryArc(0, 112.5).filter((hap) => controls(hap).s !== undefined);
+    const during = (from: number, to: number) => sounds.filter((hap) => {
+      const t = Number(hap.whole!.begin) / cps;
+      return t >= from - 1e-7 && t < to - 1e-7;
+    });
+    const quiet = during(84, 96);
+    expect(quiet.length).toBeGreaterThan(0);
+    expect(quiet.every((hap) => [1, 2].includes(Number(controls(hap).scoreVoice)))).toBe(true);
+    expect(quiet.map(controls).every((value) => Number(value.gain) <= .05)).toBe(true);
+    expect(during(112, 128).length / 16).toBeGreaterThan(quiet.length / 12 * 5);
+    const exit = during(159, 159.05);
+    expect(exit.map(controls).some((value) => value.scoreVoice === 5 && value.note === "bb1")).toBe(true);
+    expect(exit.map(controls).some((value) => value.s === "bd")).toBe(true);
+    expect(during(159.25, 180).map(controls).some((value) => ["bd", "sd", "hh"].includes(String(value.s)))).toBe(false);
+    expect(during(159.25, 173).map(controls).filter((value) => [3, 4, 6, 9].includes(Number(value.scoreVoice))))
+      .toHaveLength(2);
+    expect(during(173, 173.05).map(controls).some((value) => value.scoreVoice === 6)).toBe(true);
   });
 });

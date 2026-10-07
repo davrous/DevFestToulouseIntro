@@ -10,6 +10,7 @@ import guide from "../../STRUDEL_SYNC.md?url";
 import { StrudelEventTransport } from "../engine/StrudelEventTransport";
 import { audioTimeToEpoch, createVisualHelpers, withSynchronizedStart } from "./helpers";
 import { CINEMA, CLAP_CRT } from "../content/showBeats";
+import { SPEAKERS } from "../content/speakers";
 import "./style.css";
 
 function element<T extends HTMLElement>(id: string): T {
@@ -44,6 +45,7 @@ const ready = (async () => {
   await core.evalScope(core, mini, tonal, audio, {
     visual: helpers.visual, cue: helpers.cue, cueAt: helpers.cueAt, audioAndVisual: helpers.audioAndVisual,
     clapTiming: CLAP_CRT, cinemaTiming: CINEMA,
+    speakerTimings: SPEAKERS.map((speaker) => speaker.startTime),
   });
 })();
 

@@ -271,6 +271,14 @@ localement pour une utilisation complete hors ligne.
 La nouvelle [composition originale](examples/devfest-keynote.strudel) est
 separee de cet extrait : 3:00 en si bemol mineur, grille electronique 150 BPM,
 cordes synthetisees progressives et notes originales, sans citation de Barber.
+La montee initiale est plus rapide ; pizzicatos et vents synthetiques se
+repondent, puis cors et cordes hautes elargissent l'ensemble. Chaque arrivee
+de fiche a sa cadence, tiree des memes horaires `SPEAKERS` que la mise en
+scene. F7 prepare le tape-stop sur F4, puis Bbm resout a la reouverture CRT.
+L'alto live reste externe et central au debut, dans l'objectif (83.2-96 s)
+et apres l'impact de sortie (159 s). La relance a 96 s se densifie jusqu'a
+la sortie ; la resolution finale reste a 173 s. Les phrases one-shot bornent
+leurs queries avant expansion, sans supprimer leurs notes interieures.
 Elle utilise uniquement les syntheses locales et les trois WAVs generes.
 Chargement explicite avec confirmation dans `/strudel/`; pas de boucle apres
 112.5 cycles, mais le scheduler reste actif en silence jusqu'au Stop.
@@ -278,6 +286,9 @@ Le [verificateur navigateur](scripts/verify-av.mjs), `npm run verify:av`, repete
 180 secondes reelles. `AV_CAPTURE=1` ajoute le vrai mix Strudel via un relay
 WebRTC local au FFT et mesure crete/RMS/silence final, sans automatiser les
 permissions de capture d'onglet ni changer le routage audio de production.
+Pour la keynote, les fenetres PCM de 20 ms sont calees sur l'horloge de la
+vraie enveloppe de pitch : montee initiale, silence du trait CRT, cadences
+speaker, respiration dans l'objectif, relance et espace du pullback.
 
 ## 9. Assets, licences et portabilité
 
@@ -374,6 +385,24 @@ Correctif du lancement depuis l'autre onglet :
 - **21 tests ciblés / 4 fichiers**, type-check et build réussis. [App.test.ts](src/engine/App.test.ts) couvre le lancement sans frame, le rattrapage du temps, les changements d'onglet, l'auto-pause ordinaire et l'annulation des timers.
 - Vérification dans deux vrais onglets d'une même fenêtre Edge, avec `connectOverCDP({ noDefaults: true })` : Babylon réellement caché, render loop explicitement arrêté, démarrage confirmé et musique toujours active ; au retour, horloge à **3.5142 s** pour **3.517 s** attendues, zéro erreur navigateur. Auto-pause ordinaire conservée.
 - Attention : Playwright active normalement l'émulation de focus et peut présenter tous les onglets comme visibles. Les précédents tests avec pages ordinaires ne reproduisaient donc pas ce cas réel. Cette passe cible le démarrage, sans prétendre avoir relancé une répétition complète de trois minutes.
+
+Réorchestration de la keynote :
+- **19 tests ciblés / 3 fichiers** ([keynote.test.ts](src/strudel/keynote.test.ts), helpers Strudel et lancement App), type-check et build TypeScript / Vite réussis. Les phrases d'accents conservent leurs notes intérieures et le score reste muet hors de ses 112.5 cycles.
+- Répétition entière de production à vitesse 1, **Start show + music**, vrai mix Web Audio, FFT et réseau désactivé après préchargement : horloge finale **180 s**, caméra `(0,1110,-755)`, aucune erreur / warning navigateur ni requête externe ; réévaluation sans nouvelle session et reconnexion vérifiées.
+- Pic audio **0.523**, RMS initial **0.0253**, climax **0.0735**, fin **0**. Montée initiale mesurée **2.96×** ; RMS objectif **0.00448**, relance **0.0621**, pullback **0.00671**. Les quatre cadences sont audibles et le RMS du trait phosphore est **0**.
+- Clap appliqué à **51.039 s** pour **51.03 s** prévu ; vraie rampe sur F4 à **-3600 cents / 0.475 s**. CRT de **50.655 à 52.172 s**, **15 images** de trait tenu ; **72 grains** puis cleanup complet.
+- Cette validation confirme les horaires et la dynamique technique, pas le goût musical ni l'équilibre avec le vrai alto ; répétition avec l'instrumentiste encore nécessaire.
+
+Seconde passe musicale (speakers + transitions) : **EN COURS, À VÉRIFIER** (session interrompue, aucun commit) :
+- Retour utilisateur : portraits d'orateurs musicalement étranges ; transitions trop violentes vers l'accalmie de la caméra et vers la sortie. Après écoute de la version en cours : « pas trop mal ».
+- Cause identifiée : accords de portrait (F7 puis Gb/Eb/Db) en conflit avec l'harmonie réelle, deux portraits (17 s, 99 s) en contretemps de croche, baisses de gain saccadées autour des orateurs, et coupures nettes de toutes les voix aux frontières de section.
+- Fait dans [devfest-keynote.strudel](examples/devfest-keynote.strudel) : portraits = montée sus4 (t-1.6 s) résolue sur un accord de si bémol mineur exactement sur la fiche, cloche sur le temps suivant ; voix décoratives (flûte / pizz / cordes hautes) retirées de t-1.8 à t+2.6 s ; sections `ease` 76.8 / `hush` 80 (descente en volume, kicks, hats, filtre) ; `rise` 155.8 (roulement de caisse claire crescendo, Fm7) ; impact + floraison à 159 s ; les accords tenus se terminent à la section suivante avec leur relâchement naturel (coupure dure seulement avant le tape-stop et la fin) ; fragments de cordes < 0.5 s supprimés.
+- [keynote.test.ts](src/strudel/keynote.test.ts) : 10 tests (dont portraits et transitions) et 16 avec helpers passent ; build réussi.
+- [verify-av.mjs](scripts/verify-av.mjs) : mesure l'horloge du spectacle dès son vrai démarrage (le décalage de 1.2 s venait du lead-in) ; ajout de mesures swell / lens / exit, d'un profil RMS par seconde et d'un mode `AV_DEBUG=1` (logs console du scheduler).
+- **Point ouvert important :** la répétition réelle (profil RMS par seconde) mesure un **silence exact d'environ 82 à 96 s et après 163 s**, alors que les tests de haps (y compris requêtes de la taille du scheduler) trouvent bien les notes (pads 83.2 s, 89.6 s ; afterglow 163 s...). La première répétition de la journée (ancienne version) mesurait 0.0045 et 0.0067 dans ces zones. À éclaircir : vrai silence audio ou artefact de mesure ?
+  - Pistes : requêtes ignorées par le scheduler (`skip query: too late`, charge machine élevée, load average ~8.6 pendant les tests) ; changement de fenêtre du worklet de mesure (20 ms, `inputs` vide en silence) ; notes sans `room: 0` / sans coupure dure ; ou vrai problème de lecture des pads graves à bas gain / lpf bas.
+  - Prochaine étape : relancer `AV_DEBUG=1 AV_URL=http://127.0.0.1:4175 AV_CAPTURE=1 npm run verify:av -- examples/devfest-keynote.strudel` (preview : `npm run build && npm run preview -- --host 127.0.0.1 --port 4175 --strictPort`), lire `DEBUGLOGS` et le profil ; puis assertions sur `portraitSwells`, `lensEntry`, `exitEntry` une fois les valeurs saines.
+- Documentation à mettre à jour après validation : [STRUDEL_SYNC.md](STRUDEL_SYNC.md) et [README.md](README.md) décrivent encore l'ancienne préparation F7 / réponses flûte + pizzicato des portraits.
 
 Ce sont des résultats historiques, **pas une garantie pour la prochaine modification ou un autre GPU**. Aucun 60 FPS soutenu sur le vrai poste de projection n'a été certifié. Refaire un profil Native / 4K et une répétition avec les vrais musiciens sur cette machine.
 
