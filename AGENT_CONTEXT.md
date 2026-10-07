@@ -239,6 +239,16 @@ recreer les corps physiques. Diagnostics et tests manuels K/S/H/I restent dans D
 Le demo conserve les 150 BPM de l'extrait fourni ; ce n'est pas la composition
 de keynote, dont les banques Roland, soundfonts et Hydra doivent etre stages
 localement pour une utilisation complete hors ligne.
+La nouvelle [composition originale](examples/devfest-keynote.strudel) est
+separee de cet extrait : 3:00 en si bemol mineur, grille electronique 150 BPM,
+cordes synthetisees progressives et notes originales, sans citation de Barber.
+Elle utilise uniquement les syntheses locales et les trois WAVs generes.
+Chargement explicite avec confirmation dans `/strudel/`; pas de boucle apres
+112.5 cycles, mais le scheduler reste actif en silence jusqu'au Stop.
+Le [verificateur navigateur](scripts/verify-av.mjs), `npm run verify:av`, repete
+180 secondes reelles. `AV_CAPTURE=1` ajoute le vrai mix Strudel via un relay
+WebRTC local au FFT et mesure crete/RMS/silence final, sans automatiser les
+permissions de capture d'onglet ni changer le routage audio de production.
 
 ## 9. Assets, licences et portabilité
 

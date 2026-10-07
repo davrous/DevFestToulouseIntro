@@ -1,6 +1,6 @@
 declare module "@strudel/core" {
   export interface Hap {
-    whole: { begin: { valueOf(): number; toString(): string } } | null;
+    whole: { begin: { valueOf(): number; toString(): string }; end: { valueOf(): number } } | null;
     value: unknown;
     context: { onTrigger?: HapTrigger; dominantTrigger?: boolean };
     duration: { valueOf(): number };
@@ -21,6 +21,12 @@ declare module "@strudel/core" {
   export function register(name: string, fn: (value: unknown, pattern: Pattern) => Pattern, patternify?: boolean):
     (value: unknown, pattern: Pattern) => Pattern;
   export function evalScope(...modules: object[]): Promise<object[]>;
+  export function repl(options: {
+    getTime(): number;
+    defaultOutput(hap: Hap, deadline: number, duration: number, cps: number, targetTime: number): unknown;
+    transpiler: typeof import("@strudel/transpiler").transpiler;
+    onEvalError(error: Error): void;
+  }): { evaluate(code: string, autostart?: boolean): Promise<Pattern | undefined>; scheduler: { cps: number } };
   export function getTrigger(options: {
     getTime(): number;
     defaultOutput(hap: Hap, deadline: number, duration: number, cps: number, targetTime: number): unknown;

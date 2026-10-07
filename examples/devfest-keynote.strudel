@@ -1,0 +1,171 @@
+// INTO THE UNEXPECTED / original three-minute score in Bb minor.
+// Slow bowed-synth writing, not a quotation or arrangement of Barber.
+// Local synths + original local drums only. No soundfont/CDN downloads.
+setcpm(150 / 4)
+
+const CPS = 150 / 240
+const END = 180 * CPS
+// 0, 32, 54.4, 56, 83.2, 96, 128, 147.2, 160, 172.8, 176, 180 seconds.
+const SECTIONS = [20, 14, 1, 17, 8, 20, 12, 8, 8, 2, 2.5]
+const once = p => p.filterHaps(h =>
+  h.hasOnset() && h.whole && Number(h.whole.begin) >= 0 && Number(h.whole.begin) < END)
+const form = (...parts) => once(arrange(
+  ...parts.map((p, i) => [SECTIONS[i], p])))
+
+const HARMONY = note("<[bb3,db4,f4] [gb3,bb3,db4] [db4,f4,ab4] [ab3,c4,eb4]>").slow(4)
+const SUSPENDED = note("<[bb3,db4,f4,c5] [gb3,bb3,db4,ab4] [eb3,gb3,bb3,f4] [f3,ab3,c4,eb4]>").slow(4)
+const LIFT = note("<[bb3,db4,f4,ab4] [gb3,bb3,db4,f4] [eb3,gb3,bb3,db5] [f3,a3,c4,eb4]>").slow(2)
+const CADENCE = note("<[gb3,bb3,db4] [eb3,gb3,bb3] [f3,a3,c4,eb4] [f3,a3,c4]>").slow(2)
+const TONIC = note("[bb3,db4,f4,bb4]").slow(2)
+const ROOTS = note("<bb2 gb2 db3 ab2>").slow(4)
+const MOTIF = note("<bb4 f5 db5 eb5 c5 ab4 f4 db5>").slow(2)
+const ANSWER = note("<f4 eb4 bb3 db4 ab3 c4 db4 f4>").slow(4)
+const SUMMIT = note("<f5 ab5 db6 c6>").slow(2)
+const OPENING = note("~ ~ bb4 f5 db5").slow(20)
+const BRIGHTNESS = signal(c => c >= 100
+  ? Math.max(1100, 3200 - (c - 100) * 262.5)
+  : 900 + 2300 * Math.min(1, Math.max(0, (c - 35) / 60)))
+
+const bowed = (p, level) => p.s("supersaw")
+  .unison(3).detune(.075).spread(.45).vib(5).vibmod(.09)
+  .attack(.85).decay(.3).sustain(.85).release(1.25)
+  .lpf(900).lpq(.5).gain(level)
+  .room(.24).roomsize(1.4).roomfade(.1)
+const cello = (p, level) => p.s("sawtooth")
+  .attack(.6).decay(.25).sustain(.8).release(1.2)
+  .lpf(650).vib(4.4).vibmod(.06).gain(level)
+  .room(.18).roomsize(1.4).roomfade(.1)
+
+// The same harmonic foundation opens up into suspensions and a final F7 -> Bbm.
+$: form(
+  bowed(HARMONY, .075),
+  bowed(SUSPENDED, .105),
+  silence,
+  bowed(SUSPENDED, .125),
+  bowed(note("<[bb3,db4,f4] [f3,ab3,c4]>").slow(4), .09),
+  bowed(HARMONY, .13),
+  bowed(LIFT, .16),
+  bowed(LIFT, .2),
+  bowed(CADENCE, .12),
+  bowed(TONIC, .095),
+  silence
+).lpf(BRIGHTNESS)
+
+$: form(
+  cello(ROOTS, .13),
+  cello(note("<bb2 gb2 eb2 f2>").slow(4), .16),
+  silence,
+  cello(note("<bb2 gb2 eb2 f2>").slow(4), .17),
+  cello(note("<bb2 f2>").slow(4), .1),
+  cello(ROOTS, .15),
+  cello(note("<bb2 gb2 eb2 f2>").slow(2), .18),
+  cello(note("<bb2 gb2 eb2 f2>").slow(2), .2),
+  cello(note("<gb2 eb2 f2 f2>").slow(2), .12),
+  cello(note("bb2").slow(2), .085),
+  silence
+)
+
+// Original wide-interval melody; upper strings arrive gradually.
+$: form(
+  bowed(OPENING, .085),
+  bowed(MOTIF, .1),
+  silence,
+  bowed(MOTIF, .125),
+  bowed(note("<f5 eb5 db5 ab4>").slow(2), .075),
+  bowed(MOTIF, .11),
+  bowed(note("<db5 ab5 f5 gb5 eb5 f5 c5 db5>").slow(2), .14),
+  bowed(SUMMIT, .16),
+  bowed(note("<ab5 f5 eb5 a4>").slow(2), .085),
+  bowed(note("f5").slow(2), .055),
+  silence
+).lpf(BRIGHTNESS)
+
+$: form(
+  silence, silence, silence,
+  bowed(ANSWER, .065),
+  silence,
+  bowed(ANSWER, .065),
+  bowed(ANSWER.fast(2), .075),
+  bowed(note("<db5 eb5 f5 a4>").slow(2), .09),
+  silence, silence, silence
+).lpf(BRIGHTNESS)
+
+const ARP = note("bb3 f4 db4 ab4 eb4 f4 c4 db4").s("triangle")
+  .attack(.008).decay(.12).sustain(.12).release(.1)
+  .lpf(2400).room(.1).roomsize(1.4).roomfade(.1)
+$: form(
+  silence, silence, silence, silence, silence,
+  ARP.gain(.09),
+  ARP.gain(.12),
+  ARP.gain(.15),
+  ARP.slow(2).gain(.05),
+  silence, silence
+)
+
+const sub = (p, level) => p.s("sine")
+  .attack(.025).decay(.15).sustain(.65).release(.15).gain(level)
+$: form(
+  silence,
+  sub(note("<bb1 gb1 eb2 f1>").slow(4), .13),
+  silence, silence, silence,
+  sub(note("<bb1 gb1 db2 ab1>").slow(4), .18),
+  sub(note("<bb1 gb1 eb2 f1>").slow(2), .2),
+  sub(note("<bb1 gb1 eb2 f1>").slow(2), .23),
+  silence, silence, silence
+)
+
+// 150-BPM grid underneath long phrases; a breath at the clap and lens passage.
+const KICK = form(
+  s("bd ~ bd ~").gain(.17),
+  s("bd*4").gain(.23),
+  silence,
+  s("bd ~ bd ~").gain(.17),
+  silence,
+  s("bd*4").gain(.29),
+  s("bd*4").gain(.33),
+  s("bd*4").gain(.38),
+  s("bd ~ ~ ~").gain(.15),
+  silence, silence
+)
+const SNARE = form(
+  silence,
+  s("~ sd ~ sd").gain(.1),
+  silence, silence, silence,
+  s("~ sd ~ sd").gain(.16),
+  s("~ sd ~ sd").gain(.19),
+  s("~ sd ~ sd").gain(.23),
+  silence, silence, silence
+)
+const HATS = form(
+  silence,
+  s("hh*8").gain(.025),
+  silence,
+  s("hh*4").gain(.022),
+  silence,
+  s("hh*8").gain(.045),
+  s("hh*16").gain(.055),
+  s("hh*16").gain(.065),
+  silence, silence, silence
+)
+$: audioAndVisual(KICK, "kick")
+$: SNARE.visual("snare")
+$: audioAndVisual(HATS, "hat")
+
+// One-shot scheduler cues: Babylon's camera/timeline remains authoritative.
+$: cueAt("game", 0)
+$: cueAt("level-complete", 46.3 * CPS)
+$: cueAt("cinema-cut", 54.55 * CPS)
+$: cueAt("cinema", 56 * CPS)
+$: cueAt("speaker-david", 66 * CPS)
+$: cueAt("film-reels", 77 * CPS)
+$: cueAt("popcorn", 78.2 * CPS)
+$: cueAt("lens", 90 * CPS)
+$: cueAt("projector", 91.2 * CPS)
+$: cueAt("warp", 93 * CPS)
+$: cueAt("d-entry", 96 * CPS)
+$: cueAt("speaker-eric", 99 * CPS)
+$: cueAt("speaker-mitsuru", 128 * CPS)
+$: cueAt("climax", 147 * CPS)
+$: cueAt("reveal", 173 * CPS)
+// Last tonic: 172.8-176s; short releases/reverb settle before 180s.
+// No looping at 180s. Stop/restart Strudel to replay from cycle zero.

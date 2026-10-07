@@ -30,6 +30,11 @@ The optional **local Strudel performance tab** at `/strudel/` adds precise
 scheduler events over same-origin BroadcastChannel alongside the unchanged FFT
 capture. See [STRUDEL_SYNC.md](STRUDEL_SYNC.md) for launch, helpers, cue windows,
 offline instruments and rehearsal diagnostics. The Babylon page still plays no audio.
+The separate [original keynote score](examples/devfest-keynote.strudel) lasts
+three minutes in Bb minor, with slow synthesized strings, a progressive crescendo
+and the 150-BPM electronic grid. Load it explicitly from the performance page;
+it uses only local instruments and does not replace the engineering demo or
+the supplied music excerpt.
 
 ## The show
 

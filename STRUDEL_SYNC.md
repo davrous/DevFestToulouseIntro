@@ -34,8 +34,49 @@ ports, or `file://` URLs. BroadcastChannel cannot cross origins.
 The included [engineering demo](examples/devfest-av-sync.strudel) is **not** the
 keynote music. It uses three original local test drum samples and no downloads.
 The supplied keynote excerpt uses `setcpm(150 / 4)`, so the demo preserves **150
-BPM**, four beats per cycle: CPM = BPM / 4; CPS = BPM / 240 = 0.625. No production
-composition or tempo has been changed.
+BPM**, four beats per cycle: CPM = BPM / 4; CPS = BPM / 240 = 0.625. The supplied
+excerpt has not been modified. A separate original keynote score is now
+available below; loading it requires confirmation and does not overwrite a
+saved draft until Evaluate.
+
+## Original keynote score: 3:00 in Bb minor
+
+[Into the unexpected](examples/devfest-keynote.strudel) is original musical
+material in **B-flat minor**, the key of Barber's *Adagio for Strings*. It evokes
+slow bowed phrases, suspensions, expanding registers and an emotional crescendo,
+without quoting its melody, copying its arrangement or using its recordings.
+The local string-like timbre is synthesized, not a sampled acoustic orchestra.
+
+In the performance page, stop playback and choose **Load keynote / Bb minor /
+3:00**, confirm replacement of the editor text, then Evaluate. Copy/export
+unfinished work first. The engineering demo and supplied excerpt remain separate.
+
+| Time | Musical progression |
+| --- | --- |
+| 0:00-0:32 | Low cello foundation, intimate sustained harmony, original upper melody entering at 0:12.8; a quiet half-time heartbeat |
+| 0:32-0:54.4 | Suspended chords, deeper bass, introduction of the 150-BPM four-on-the-floor pulse |
+| 0:54.4-0:56 | Short breath around the cinema clap; existing string releases continue naturally |
+| 0:56-1:23.2 | Broader strings and answering voice under David's premiere and the reels |
+| 1:23.2-1:36 | Percussion retreats for the lens/projector/warp passage |
+| 1:36-2:08 | Electronic pulse returns, quiet arpeggio joins the slow strings |
+| 2:08-2:27.2 | Higher voicings, rising string brightness, more insistent hats |
+| 2:27.2-2:40 | Full original orchestral/electronic summit |
+| 2:40-2:52.8 | Percussion recedes; broad Gb/Ebm/F7 cadence during the pullback |
+| 2:52.8-3:00 | Final Bbm, natural release and short local reverb, then silence |
+
+The unchanged tempo is 150 BPM / 37.5 CPM / 0.625 CPS. The complete form is
+**112.5 cycles = 180 seconds**, including the ending tail. Onset filtering makes
+it one-shot: it does not start again at 3:00. The scheduler can remain running
+silently; stop/restart Strudel to replay from cycle zero. Re-evaluation preserves
+the current cycle, so evaluating after the end is not a restart.
+
+All voices use built-in synthesis and the three original local WAVs. There are
+no remote soundfonts, Hydra imports or sample-bank downloads. Kick/snare/hats
+use the same audio-preserving event helpers; 15 explicit `cueAt` outputs follow
+the existing scene/speaker timing. These are optional accents, not scene control.
+The A-natural in F7 is the conventional harmonic-minor dominant; the score stays
+in Bb minor and ends on its tonic. Automation is applied after `arrange` so it
+uses the global cycle rather than restarting its crescendo inside each section.
 
 ## Architecture
 
@@ -173,6 +214,60 @@ npm run build
 npm run preview
 ```
 
+With the production server still running, use the persistent two-tab browser
+rehearsal (about three minutes per score):
+
+```powershell
+$env:AV_URL = "http://127.0.0.1:4173"
+npm run verify:av
+
+$env:AV_CAPTURE = "1"
+npm run verify:av -- .\examples\devfest-keynote.strudel
+Remove-Item Env:\AV_CAPTURE
+```
+
+Playwright is pinned as a dev dependency. The verifier defaults to installed
+Microsoft Edge; use `AV_BROWSER=chrome` for installed Chrome. If no supported
+browser is installed, run `npx playwright install chromium` and set
+`$env:AV_BROWSER = "chromium"`. This is test tooling, not a runtime download.
+
+It blocks external HTTP requests from cold load, waits for actual local audio
+playback/preload, then disables browser networking. It verifies real 180-second
+playback, re-evaluation without changing the session, cue decisions, final camera
+pose, 36 peak/zero final popcorn bodies, disconnection and reconnection. Keynote
+loading also tests Cancel/confirm protection of the editor text. The optional
+audio test taps the real final Web Audio mix and relays it over **local WebRTC
+with no STUN servers** into the unchanged `AudioAnalyzer.connectStream`. An
+AudioWorklet measures every audio block for peak, section RMS and ending silence.
+FFT activity is checked in the opening, digital section and climax, not merely
+at connection time. A muted test media sink drives Chromium's WebRTC decoder;
+it does not monitor audio through speakers.
+No duplicate signal is routed to speakers, and no musical events are fabricated.
+This is not automation of the permission-sensitive browser tab picker.
+
+Recorded production engineering rehearsal: **180.013 s**, **1,596** dispatched
+events; transport median **0.10 ms**, p95 **1.0 ms**, render dispatch lateness
+p95 **17.0 ms**. Cinema-cut/popcorn/lens/projector/warp/speaker/climax/reveal cues
+were accepted; final camera `(0, 1110, -755)` and physics cleanup were preserved.
+External requests and browser warning/errors: **zero**; offline playback,
+re-evaluation and reconnection passed. This run deliberately used no FFT input,
+proving events and the timeline remain independent of audio permission.
+
+Recorded production **keynote + real FFT** rehearsal: **180.013 s**, **1,081**
+scheduled events and **all 15 cues applied**. Transport median **0.10 ms**, p95
+**0.70 ms**; render dispatch lateness p95 **16.73 ms**. FFT remained active during
+**8,586 render frames**, including **1,372** in the opening, **1,793** in the
+digital section and **734** at the climax. Full-mix peak was **0.507**
+(approximately **-5.9 dBFS**, without clipping); opening RMS **0.0201** rose to
+**0.0733** at the summit, about **3.65 times** the amplitude. Ending RMS at
+179.8-180.4 seconds was **zero**. Camera, physics cleanup, stop/loading guards,
+Cancel/confirm, re-evaluation, reconnection and offline operation passed, with
+zero external requests and zero browser warnings/errors.
+
+These measurements are from a local headless Edge rehearsal at 1280x720,
+not a certified 4K/60-fps stage test or a room/projector/acoustic calibration.
+Perform the tab-picker and live-input rehearsal on the actual stage machine.
+
 Tests exercise real pinned Strudel patterns/output callbacks, not fabricated
 rhythms, plus scheduling, validation, deduplication, cue windows, heartbeat
 reconnection and FFT coexistence. Browser rehearsal must also confirm audible
@@ -186,4 +281,4 @@ installed npm packages, and the matching release sources are at
 licensing obligations before publishing/distributing an integrated application.
 This change does not silently relicense existing project files. The drum WAVs
 are original generated engineering fixtures, reproducible with
-`node scripts/generate-sync-samples.mjs`, not Roland recordings.
+`node .\scripts\generate-sync-samples.mjs`, not Roland recordings.

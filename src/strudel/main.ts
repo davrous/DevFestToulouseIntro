@@ -5,6 +5,7 @@ import * as tonal from "@strudel/tonal";
 import * as audio from "@strudel/webaudio";
 import { transpiler } from "@strudel/transpiler";
 import demo from "../../examples/devfest-av-sync.strudel?raw";
+import keynote from "../../examples/devfest-keynote.strudel?raw";
 import guide from "../../STRUDEL_SYNC.md?url";
 import { StrudelEventTransport } from "../engine/StrudelEventTransport";
 import { createVisualHelpers } from "./helpers";
@@ -78,10 +79,13 @@ async function run(): Promise<void> {
 
 evaluate.addEventListener("click", () => void run());
 element("stop").addEventListener("click", () => void editor.stop());
-element("load-demo").addEventListener("click", () => {
-  if (editor.repl.scheduler.started) { report("Stop playback before loading the engineering demo. Your current code was not changed."); return; }
-  editor.setCode(demo);
-});
+function loadScore(source: string): void {
+  if (editor.repl.scheduler.started) { report("Stop playback before loading a score. Your current code was not changed."); return; }
+  if (editor.code !== source && !window.confirm("Replace the editor's current code? Copy/export your work first. The saved draft changes only after Evaluate.")) return;
+  editor.setCode(source);
+}
+element("load-demo").addEventListener("click", () => loadScore(demo));
+element("load-keynote").addEventListener("click", () => loadScore(keynote));
 const health = setInterval(() => {
   const connected = transport.getStatus() === "CONNECTED";
   sync.textContent = `BABYLON SYNC / ${transport.getStatus()}`;
