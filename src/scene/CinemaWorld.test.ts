@@ -3,8 +3,10 @@ import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { silentFeatures } from "../engine/AudioAnalyzer";
-import { CINEMA, REHEARSAL_STOPS } from "../content/showBeats";
+import { CINEMA, CLAP_CRT, REHEARSAL_STOPS } from "../content/showBeats";
+import { clapCrtState } from "../effects/ClapCrtTransition";
 import { SPEAKERS } from "../content/speakers";
 import { CinemaWorld } from "./CinemaWorld";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
@@ -62,33 +64,76 @@ describe("cinematic show choreography", () => {
     expect(REHEARSAL_STOPS.at(-1)?.label).toBe("FINAL REVEAL");
   });
 
-  it("cuts on the clapper, projects David once, then travels through lens and space without entering the finale", () => {
+  it("prepares a raised bucket on each side and mirrors their inward tilt on playback and rewind", async () => {
+    const engine = new NullEngine();
+    const scene = new Scene(engine);
+    new FreeCamera("Cinematic camera", Vector3.Zero(), scene);
+    const cinema = new CinemaWorld(scene);
+    vi.spyOn(cinema.assets, "prepare").mockResolvedValue();
+    vi.spyOn(cinema.assets, "takeClapper").mockReturnValue(undefined);
+    vi.spyOn(cinema.assets, "create").mockImplementation((asset, parent, name) => {
+      if (asset !== "popcorn") return undefined;
+      const bucket = new TransformNode(name, scene);
+      bucket.parent = parent;
+      return bucket;
+    });
+    await cinema.prepare();
+    const left = scene.getTransformNodeByName("Cinema / tipping popcorn bucket -1")!;
+    const right = scene.getTransformNodeByName("Cinema / tipping popcorn bucket 1")!;
+    cinema.update(CINEMA.start, silentFeatures());
+    expect(left.isEnabled() && right.isEnabled()).toBe(true);
+    expect(left.parent).toBeInstanceOf(TransformNode);
+    expect(right.parent).toBeInstanceOf(TransformNode);
+    expect(scene.getTransformNodeByName("Cinema / popcorn support -1")!.position.y).toBe(18);
+    expect(scene.getTransformNodeByName("Cinema / popcorn support 1")!.position.y).toBe(18);
+    expect(left.rotation.z).toBeCloseTo(-.1);
+    expect(right.rotation.z).toBeCloseTo(.1);
+    cinema.update(CINEMA.popcorn, silentFeatures());
+    expect(left.rotation.z).toBeCloseTo(-1.35);
+    expect(right.rotation.z).toBeCloseTo(1.35);
+    cinema.update(CINEMA.popcornTip - .1, silentFeatures());
+    expect(left.rotation.z).toBeCloseTo(-.1);
+    expect(right.rotation.z).toBeCloseTo(.1);
+    cinema.update(CINEMA.lens, silentFeatures());
+    expect(left.isEnabled() || right.isEnabled()).toBe(false);
+    scene.dispose();
+    engine.dispose();
+  });
+
+  it("hands off behind the CRT line without a black plane, then projects David and crosses lens and space", () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
     new FreeCamera("Cinematic camera", Vector3.Zero(), scene);
     const cinema = new CinemaWorld(scene);
     const silence = silentFeatures();
-    const shutter = scene.getMeshByName("FX/Cinema / shutter cut");
+    expect(scene.getMeshByName("FX/Cinema / shutter cut")).toBeNull();
     const reels = scene.getTransformNodeByName("Cinema / reels and moving film architecture");
     const crt = scene.getMeshByName("Cinema / CRT display 0");
     const lens = scene.getTransformNodeByName("Cinema / camera iris to projector");
     const space = scene.getTransformNodeByName("Cinema / brief Toulouse space crossing");
-    if (!shutter || !reels || !crt || !lens || !space) throw new Error("Cinema stages must be built before playback.");
+    if (!reels || !crt || !lens || !space) throw new Error("Cinema stages must be built before playback.");
     cinema.update(49.9, silence);
-    expect(shutter.isEnabled()).toBe(false);
+    expect(clapCrtState(49.9).active).toBe(false);
     const clapper = scene.getTransformNodeByName("Cinema / clapperboard transition");
     const architecture = scene.getTransformNodeByName("Cinema / impossible auditorium");
     if (!clapper || !architecture) throw new Error("Both sides of the cut must exist.");
-    for (let time = CINEMA.clapperStart; time < CINEMA.clap; time += .25) {
+    for (let time = 0; time < CINEMA.clap; time += .25) {
       cinema.update(time, silence);
       expect(clapper.isEnabled()).toBe(true);
       expect(architecture.isEnabled()).toBe(false);
       expect(crt.isEnabled()).toBe(false);
     }
     cinema.update(CINEMA.clap + .01, silence);
-    expect(shutter.isEnabled()).toBe(true);
+    expect(clapCrtState(CINEMA.clap + .01).active).toBe(true);
+    expect(clapCrtState(CINEMA.start).signalHeight).toBeCloseTo(CLAP_CRT.minimumHeight);
+    cinema.update(CINEMA.start, silence);
+    expect(architecture.isEnabled()).toBe(true);
+    expect(clapper.isEnabled()).toBe(false);
+    cinema.update(44, silence);
+    expect(clapper.isEnabled()).toBe(true);
+    expect(architecture.isEnabled()).toBe(false);
     cinema.update(70, silence);
-    expect(shutter.isEnabled()).toBe(false);
+    expect(clapCrtState(70).active).toBe(false);
     expect(cinema.davidRoot.isEnabled()).toBe(true);
     cinema.update(CINEMA.crtSync + .1, silence);
     expect(crt.material?.name).toBe("Cinema / synchronized CRT frame test texture");
@@ -109,7 +154,8 @@ describe("cinematic show choreography", () => {
     expect(cinema.davidRoot.isEnabled()).toBe(false);
     expect(scene.getLightByName("Cinema / one real premiere projector")?.intensity).toBe(0);
     cinema.update(CINEMA.clap + .01, silence);
-    expect(shutter.isEnabled()).toBe(true);
+    expect(clapper.isEnabled()).toBe(true);
+    expect(architecture.isEnabled()).toBe(false);
     scene.dispose();
     engine.dispose();
   });

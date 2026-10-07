@@ -24,6 +24,9 @@ export class App {
   private idleTimer = 0;
   private lastDiagnostics = 0;
   private noticeTimer = 0;
+  private synchronizedStart?: { at: number; senderId: string };
+  private synchronizedStartTimer = 0;
+  private synchronizedPlayback = false;
   private readonly visualAudio = silentFeatures();
   private visualRevealAccent = 0;
   private readonly lobby = element("lobby");
@@ -36,14 +39,30 @@ export class App {
     this.engine = this.createEngine();
     this.setResolution(false);
     this.showController = new ShowController(this.timeline, (message) => this.showNotice(message));
+    this.showController.strudelEvents.onShowStart = (at, senderId) => {
+      if (!this.ready) throw new Error("Wait for SYSTEM READY before launching the show.");
+      if (this.timeline.playing || this.synchronizedStart) throw new Error("Pause the show before a synchronized restart.");
+      this.synchronizedStart = { at, senderId };
+      // Background tabs may not render any frames, so launch independently of RAF.
+      this.synchronizedStartTimer = window.setTimeout(() => this.beginSynchronizedStart(performance.now()),
+        Math.ceil(Math.max(0, at - performance.timeOrigin - performance.now())));
+    };
+    this.showController.strudelEvents.onShowStartCancelled = (senderId) => {
+      if (this.synchronizedStart?.senderId === senderId) this.cancelSynchronizedStart();
+    };
     this.world = new DevFestScene(this.engine);
     this.debug = new DebugPanel(this);
     document.body.classList.add("lobby-visible");
     this.bindControls();
-    window.addEventListener("pagehide", () => this.showController.strudelEvents.disconnect());
+    window.addEventListener("pagehide", () => {
+      this.cancelSynchronizedStart();
+      this.timeline.pause();
+      this.showController.strudelEvents.disconnect();
+    });
     canvas.addEventListener("webglcontextlost", (event) => {
       event.preventDefault();
       this.timeline.pause();
+      this.cancelSynchronizedStart();
       this.ready = false;
       this.playButton.disabled = true;
       this.previewButton.disabled = true;
@@ -59,7 +78,8 @@ export class App {
       this.engine.resize();
     });
     document.addEventListener("visibilitychange", () => {
-      if (document.hidden && this.timeline.playing) {
+      if (!document.hidden) this.beginSynchronizedStart(performance.now());
+      if (document.hidden && this.timeline.playing && !this.synchronizedPlayback) {
         this.timeline.pause();
         this.showNotice("Show paused because this tab is hidden. Press SPACE when ready.");
       }
@@ -77,6 +97,7 @@ export class App {
     this.engine.runRenderLoop(() => {
       if (!this.ready) return;
       const now = performance.now();
+      this.beginSynchronizedStart(now);
       const time = this.inLobby ? 0 : this.timeline.tick(now);
       const audio = this.showController.sample(now);
       if (this.timeline.playing || this.inLobby || !this.showController.enabled) {
@@ -105,6 +126,7 @@ export class App {
   }
 
   start(time = 0): void {
+    this.cancelSynchronizedStart();
     if (!this.ready) {
       this.showNotice("The renderer is loading or recovering. Wait for SYSTEM READY before starting.");
       return;
@@ -133,6 +155,7 @@ export class App {
   }
 
   togglePlayback(): void {
+    this.cancelSynchronizedStart();
     if (!this.ready) {
       this.showNotice("The renderer is not ready. Wait for initialization or graphics recovery before playing.");
       return;
@@ -150,6 +173,7 @@ export class App {
   }
 
   seek(time: number): void {
+    this.cancelSynchronizedStart();
     if (!this.ready) {
       this.showNotice("Wait for the renderer to be ready before seeking.");
       return;
@@ -163,6 +187,7 @@ export class App {
   }
 
   returnToLobby(): void {
+    this.cancelSynchronizedStart();
     this.timeline.pause();
     this.inLobby = true;
     this.lobby.hidden = false;
@@ -219,6 +244,22 @@ export class App {
       doNotHandleContextLost: true,
       audioEngine: false,
     });
+  }
+
+  private cancelSynchronizedStart(): void {
+    window.clearTimeout(this.synchronizedStartTimer);
+    this.synchronizedStartTimer = 0;
+    this.synchronizedStart = undefined;
+    this.synchronizedPlayback = false;
+  }
+
+  private beginSynchronizedStart(now: number): void {
+    if (!this.synchronizedStart || performance.timeOrigin + now < this.synchronizedStart.at) return;
+    const elapsed = (performance.timeOrigin + now - this.synchronizedStart.at) / 1000;
+    this.timeline.speed = 1;
+    this.start(elapsed);
+    this.synchronizedPlayback = true;
+    this.timeline.tick(now);
   }
 
   private resetCursor(): void {

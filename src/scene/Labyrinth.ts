@@ -6,6 +6,8 @@ import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { CELL, HEIGHT, ROOF_THICKNESS, SEED, cellPosition, createTitleCells, seededRandom, type TitleCell } from "../content/title";
+import { BRIDGE_CLOSE } from "../content/showBeats";
+import { smoothstep } from "../engine/Timeline";
 import { BoxBatch } from "./Instances";
 
 function metal(scene: Scene, name: string, hex: string, metallic: number, roughness: number): PBRMaterial {
@@ -28,7 +30,7 @@ export function emissive(scene: Scene, name: string, color: string, strength = 1
 
 export interface Labyrinth {
   meshes: Mesh[];
-  bridge: TransformNode;
+  bridge: ForceFieldBridge;
   cyan: StandardMaterial;
   amber: StandardMaterial;
   roof: PBRMaterial;
@@ -42,37 +44,65 @@ export function isArcadeExit(cell: TitleCell, dc: number, dr: number): boolean {
 export const BRIDGE_CELLS = [9, 8, 7].map((row) => ({ col: 2, row })) as readonly { col: number; row: number }[];
 
 export function bridgeVisible(time: number): boolean {
-  return time >= 0 && time <= 180;
+  return time >= 0;
 }
 
-function createBridge(scene: Scene): TransformNode {
-  const root = new TransformNode("Arcade / force-field bridge", scene);
-  const light = emissive(scene, "Bridge / visible connector", "#72ffe0", 2.3);
-  const lights = new BoxBatch("FX/Bridge / circuit traces", light);
-  const field = new StandardMaterial("Bridge / transparent floor field", scene);
-  field.disableLighting = true;
-  field.diffuseColor = Color3.FromHexString("#18313a");
-  field.emissiveColor = Color3.FromHexString("#174b52");
-  field.alpha = .4;
-  field.backFaceCulling = false;
-  const decks = new BoxBatch("Bridge / transparent force field", field);
-  for (const { col, row } of BRIDGE_CELLS) {
-    const { x, z } = cellPosition(col, row);
-    decks.add(x - (row === 9 ? 1.5 : 0), -.1, z + (row === 7 ? 1.5 : 0),
-      CELL + (row === 9 ? 3 : 0), .16, CELL + (row === 7 ? 3 : 0));
-    for (const offset of [-CELL / 2 + 1, CELL / 2 - 1]) {
-      lights.add(x + offset, .08, z, 1.4, .12, CELL);
-    }
-    lights.add(x, .08, z, CELL, .12, 1.4);
-    if (row === 9) lights.add(x - CELL / 2, .08, z, 3, .12, CELL);
-    if (row === 7) lights.add(x, .08, z + CELL / 2, CELL, .12, 3);
+export function bridgeClosure(time: number): number {
+  return smoothstep((time - BRIDGE_CLOSE.start) / (BRIDGE_CLOSE.end - BRIDGE_CLOSE.start));
+}
+
+export class ForceFieldBridge {
+  readonly root: TransformNode;
+  readonly leaves: readonly TransformNode[];
+  private readonly field: StandardMaterial;
+
+  constructor(scene: Scene) {
+    this.root = new TransformNode("Arcade / force-field bridge", scene);
+    const light = emissive(scene, "Bridge / visible connector", "#72ffe0", 2.3);
+    this.field = new StandardMaterial("Bridge / transparent floor field", scene);
+    this.field.disableLighting = true;
+    this.field.diffuseColor = Color3.FromHexString("#18313a");
+    this.field.emissiveColor = Color3.FromHexString("#174b52");
+    this.field.alpha = .4;
+    this.field.backFaceCulling = false;
+    const t = cellPosition(1, 9);
+    const d = cellPosition(2, 6);
+    this.leaves = [
+      { name: "T", x: t.x + CELL / 2, z: t.z, yaw: Math.PI / 2, length: CELL },
+      { name: "D", x: d.x, z: d.z - CELL / 2, yaw: Math.PI, length: CELL * 2 },
+    ].map(({ name, x, z, yaw, length }) => {
+      const hinge = new TransformNode(`Bridge / ${name} drawbridge hinge`, scene);
+      hinge.parent = this.root;
+      hinge.position.set(x, 0, z);
+      hinge.rotation.y = yaw;
+      const decks = new BoxBatch(`Bridge / ${name} transparent force field`, this.field);
+      const lights = new BoxBatch(`FX/Bridge / ${name} circuit traces`, light);
+      decks.add(0, -.1, length / 2, CELL, .16, length);
+      for (const offset of [-CELL / 2 + 1, CELL / 2 - 1]) {
+        lights.add(offset, .08, length / 2, 1.4, .12, length);
+      }
+      for (let z = 0; z <= length; z += CELL / 2) lights.add(0, .08, z, CELL, .12, 1.4);
+      for (const batch of [decks, lights]) {
+        const mesh = batch.build(scene);
+        mesh.unfreezeWorldMatrix();
+        mesh.parent = hinge;
+      }
+      return hinge;
+    });
+    this.update(0);
   }
-  for (const batch of [decks, lights]) {
-    const mesh = batch.build(scene);
-    mesh.unfreezeWorldMatrix();
-    mesh.parent = root;
+
+  update(time: number): void {
+    this.root.setEnabled(bridgeVisible(time));
+    const closing = bridgeClosure(time);
+    this.leaves.forEach((leaf, index) => {
+      leaf.rotation.x = -closing * Math.PI / 2;
+      // Telescope the long D span into its aperture as the two decks become doors.
+      leaf.scaling.z = 1 + closing * ((index ? 24 / (CELL * 2) : 26 / CELL) - 1);
+      leaf.scaling.x = index ? 1 + closing * (20 / CELL - 1) : 1;
+    });
+    this.field.alpha = .4 + closing * .5;
   }
-  return root;
 }
 
 export function createLabyrinth(scene: Scene): Labyrinth {
@@ -183,6 +213,6 @@ export function createLabyrinth(scene: Scene): Labyrinth {
     }
   }
   const meshes = [bodies, decks, roofs, ribs, panels, cyanLines, amberLines, lamps].map((batch) => batch.build(scene));
-  const bridge = createBridge(scene);
+  const bridge = new ForceFieldBridge(scene);
   return { meshes, bridge, cyan, amber, roof, cellCount: cells.length };
 }

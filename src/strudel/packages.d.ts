@@ -17,6 +17,7 @@ declare module "@strudel/core" {
     visual(event: string): Pattern;
   }
   export function pure(value: unknown): Pattern;
+  export function stack(...patterns: Pattern[]): Pattern;
   export function isPattern(value: unknown): value is Pattern;
   export function register(name: string, fn: (value: unknown, pattern: Pattern) => Pattern, patternify?: boolean):
     (value: unknown, pattern: Pattern) => Pattern;
@@ -25,6 +26,7 @@ declare module "@strudel/core" {
     getTime(): number;
     defaultOutput(hap: Hap, deadline: number, duration: number, cps: number, targetTime: number): unknown;
     transpiler: typeof import("@strudel/transpiler").transpiler;
+    editPattern?(pattern: Pattern): Pattern;
     onEvalError(error: Error): void;
   }): { evaluate(code: string, autostart?: boolean): Promise<Pattern | undefined>; scheduler: { cps: number } };
   export function getTrigger(options: {
@@ -63,6 +65,7 @@ declare module "@strudel/codemirror" {
       root: HTMLElement; initialCode: string; prebake(): Promise<unknown>;
       getTime(): number; defaultOutput: typeof import("@strudel/webaudio").webaudioOutput;
       transpiler: typeof import("@strudel/transpiler").transpiler;
+      editPattern?(pattern: Pattern): Pattern;
       beforeStart(): Promise<void>; onToggle(started: boolean): void;
       onUpdateState(state: ReplState): void; afterEval(options: { code: string; pattern: Pattern }): void;
     });

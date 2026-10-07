@@ -14,6 +14,7 @@ import { cellPosition } from "../content/title";
 import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { createWorldText } from "./WorldText";
+import { CINEMA, LEVEL_COMPLETE } from "../content/showBeats";
 
 const ROOT = "/assets/kenney/arcade/";
 export const CABINET_COUNT = 6;
@@ -87,13 +88,13 @@ export class ArcadeCathedral {
     });
     this.next.position.set(bridge.position.x, 21, bridge.position.z + 9);
     this.next.rotation.y = bridge.yaw;
-    const exit = routeAnchor(58);
+    const exit = routeAnchor(CINEMA.clapperAnchor);
     this.complete = createWorldText(scene, {
-      name: "Arcade / level complete", width: 18, height: 4,
+      name: "Arcade / level complete", width: LEVEL_COMPLETE.width, height: 4,
       background: "#101926", border: "#aaff98",
       lines: [{ text: "LEVEL COMPLETE", color: "#c5ffa4" }],
     });
-    this.complete.position.set(exit.position.x, 14, exit.position.z);
+    this.complete.position.set(exit.position.x, LEVEL_COMPLETE.height, exit.position.z);
     this.complete.rotation.y = exit.yaw;
     this.update(0, silentFeatures());
   }
@@ -160,7 +161,7 @@ export class ArcadeCathedral {
     this.scanlineMaterial.setFloat("flash", audio.snare + audio.kick * .5 + (1 - cross) * .45);
     this.scanlineMaterial.setFloat("interference", 1 - cross + audio.treble * .5);
     this.light.intensity = (350 + audio.kick * 500 + audio.snare * 360) * portal * cross;
-    this.complete.visibility = cueEnvelope(time, 46.3, 48.8, .35);
+    this.complete.visibility = cueEnvelope(time, LEVEL_COMPLETE.start, LEVEL_COMPLETE.end, .25);
     this.next.visibility = cueEnvelope(time, 55.1, 59.5, .45);
   }
 }

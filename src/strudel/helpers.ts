@@ -1,4 +1,4 @@
-import { isPattern, pure, register, type Pattern, type Hap } from "@strudel/core";
+import { isPattern, pure, register, stack, type Pattern, type Hap } from "@strudel/core";
 import { epochNow, eventName, isShowCue, type AVEventName } from "../engine/avProtocol";
 import type { StrudelEventTransport } from "../engine/StrudelEventTransport";
 
@@ -14,7 +14,14 @@ export function audioTimeToEpoch(targetTime: number, context: OutputClock): numb
   if (stamp?.contextTime && stamp.performanceTime) {
     return performance.timeOrigin + stamp.performanceTime + (targetTime - stamp.contextTime) * 1000;
   }
+
   return epochNow() + (targetTime - context.currentTime + (context.outputLatency ?? context.baseLatency)) * 1000;
+}
+
+export function withSynchronizedStart(pattern: Pattern, launch: (targetTime: number) => Promise<void>): Pattern {
+  const start = pure({}).filterHaps((hap) => !!hap.whole && hap.whole.begin.valueOf() === 0)
+    .onTrigger((_hap, _time, _cps, targetTime) => launch(targetTime), true);
+  return stack(pattern, start);
 }
 
 export function createVisualHelpers(transport: StrudelEventTransport, getContext: () => OutputClock) {

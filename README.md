@@ -6,7 +6,7 @@ For future agents and cross-machine handoff, start with [AGENT_CONTEXT.md](AGENT
 
 ## Run locally
 
-Requires Node.js 22.12+ (or 20.19+).
+Requires Node.js 22.12+.
 
 ```powershell
 npm ci
@@ -32,7 +32,8 @@ capture. See [STRUDEL_SYNC.md](STRUDEL_SYNC.md) for launch, helpers, cue windows
 offline instruments and rehearsal diagnostics. The Babylon page still plays no audio.
 The separate [original keynote score](examples/devfest-keynote.strudel) lasts
 three minutes in Bb minor, with slow synthesized strings, a progressive crescendo
-and the 150-BPM electronic grid. Load it explicitly from the performance page;
+and the 150-BPM electronic grid, including a descending tape-stop at the clap.
+Load it explicitly from the performance page;
 it uses only local instruments and does not replace the engineering demo or
 the supplied music excerpt.
 
@@ -42,13 +43,13 @@ the supplied music excerpt.
 | --- | --- |
 | 0:00–0:06 | DEVFEST ARCADE / PRESS ANY KEY opens the show without a giant central cabinet; the camera discovers the arcade corridor |
 | 0:05–0:31 | Fixed pixel-art decals and scenery stay against the T's side walls, above six grounded Kenney cabinets; bass never changes their character, position or scale; `GET /pain-au-chocolat` redirects to `/chocolatine` before Anne-Flore |
-| 0:17–0:31 | Anne-Flore's cyan gateway, with a voxel violin and bow centered directly below her card |
+| 0:17–0:31 | Anne-Flore's cyan gateway, with a voxel violin and bow centered directly below her card; their cubes collapse with Havok at 0:22, early enough to see the floor bounces before the camera passes |
 | 0:30–0:41 | Bonus tokens fall just beyond the violin; the FINAL BOSS announces LEGACY CODE before its translucent Havok wall appears and collapses at 0:38 |
 | 0:41–0:49 | `$ git rebase --continue` announces EXIT UNLOCKED, then the T door opens |
-| 0:46–0:52 | LEVEL COMPLETE gives way to the original giant clapperboard without an added title panel; the camera keeps moving, the clap closes in 0.65 seconds, and a 0.25-second shutter cuts to CINEMA at 0:52.45 |
-| 0:52–1:06 | A symmetrical cinema cathedral with eight full curved CRT screens: MS-DOS, CONFIG.SYS, AUTOEXEC.BAT, Windows 95, blue-screen jokes, floppy installation and a Toulouse BBS; all briefly flash DEVFEST at 0:59.4 |
+| 0:46–0:52 | The original giant clapperboard is already present during the approach, below LEVEL COMPLETE, and snaps shut in 0.18 seconds from 0:50.85. The fullscreen CRT transition holds a green phosphor line from 0:51.135 to 0:51.38, then reopens on CINEMA and clears by 0:52.18; no black plane |
+| 0:51–1:06 | A symmetrical cinema cathedral with eight full curved CRT screens: MS-DOS, CONFIG.SYS, AUTOEXEC.BAT, Windows 95, blue-screen jokes, floppy installation and a Toulouse BBS; all briefly flash DEVFEST at 0:59.4 |
 | 1:06–1:23 | David Rousset is introduced **once**, as a movie premiere projected onto a world-space cinema screen with his configured demo title |
-| 1:17–1:24 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; a low, visible striped bucket tips at 1:17.7 and spills 36 Havok kernels across the approaching camera at 1:18.2 |
+| 1:17–1:24 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; two raised striped buckets, left and right, tip inward at 1:17.55 and spill 72 Havok kernels from 1:18.1, while still in front of the camera so the falling rain stays visible before passing overhead |
 | 1:24–1:39 | The already-visible giant frontal cinema camera is approached and entered through its lens at 1:30. Only then do short, coaxial optical rings lead into the projector beam, transparent floor and space warp; digital architecture returns through haze at 1:35 |
 | 1:35–1:56 | Eric Mittelette's gateway and converging data streams, without the obsolete `agent.observe()` / `agent.plan()` panels |
 | 1:49–1:59 | A physical memory rack overflows in the S bend: `BUFFER OVERFLOW / console.log('just one more...')`, then 32 Havok bytes spill at 1:53.2; the caption fades before the cassoulet |
@@ -58,12 +59,18 @@ the supplied music excerpt.
 | 2:20–2:29 | A procedural deployment rocket waits at the **next corner**, before the right turn toward Orbital Link. After a readable approach, it launches at 2:24.6 and hits the actual ceiling underside at 2:26.8: a brief flash, expanding shockwave and 240 falling sparks. The pad stays grounded; the camera follows the ascent then smoothly hands over to Orbital Link |
 | 2:23–2:46 | Toulouse orbital hardware sits deeper in the D; its two-line `TOULOUSE / ORBITAL LINK` label remains present into the final zoom-out |
 | 2:33–2:39 | Brief turn by the last meter, then escape |
-| 2:39–2:53 | Faster backward/upward pullback exposes the complete title and the force-field floor connecting the T and D at corridor level; no raised or overhead copy is rendered |
+| 2:39–2:53 | Faster backward/upward pullback exposes the complete title and the force-field floor connecting the T and D at corridor level; at 2:48–2:52.5 its two spans rise like drawbridges and telescope into the T exit and lower D doorway |
 | 2:50–3:00 | World-space **AI4Fun** signature and subtle anniversary marks; title settled by 2:53, seven-second final hold |
 
-During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok instead simulates 26 arcade tokens and 48 labeled legacy-code blocks; the cinema adds one short 36-kernel popcorn cascade with seat ledge collisions. Physics debris cannot block the camera, and temporary bodies are cleaned up and recreated on a backward seek. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
+During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok instead simulates the violin/bow cubes, 26 arcade tokens and 48 labeled legacy-code blocks; the cinema adds two synchronized popcorn cascades totaling 72 kernels with seat ledge collisions. Physics debris cannot block the camera, and temporary bodies are cleaned up and recreated on a backward seek. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
 
-The cinema's seats, CRTs, screen support, popcorn bucket, film/reels and giant camera are preloaded and visible from entry at 52.45 seconds, not enabled one prop at a time. Their narrative actions still occur later: David's name fades in, the bucket tips and spills, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows.
+The cinema's seats, CRTs, screen support, both popcorn buckets, film/reels and giant camera are preloaded and visible from entry at 51.18 seconds, not enabled one prop at a time. Their narrative actions still occur later: David's name fades in, the buckets tip and spill, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows. The drawbridges stay closed throughout the final hold and reset when seeking backward.
+
+The clap's original [CRT transition shader](src/effects/ClapCrtTransition.ts) combines square arcade pixels, restrained RGB separation and row interference, a soft green phosphor shutdown line, then a curved CRT reopening with raster scanlines and an RGB shadow mask. Its [timing](src/content/showBeats.ts) spans 50.65–52.18 seconds: the scene still swaps at 51.18, hidden behind a 245-ms phosphor hold, and the image starts reopening at 51.38. The shader is compiled before SYSTEM READY, follows absolute show time for pause/seek/replay, and is detached outside this window. As a narrative transition it remains active when optional Bloom/FXAA is disabled, just as the former physical shutter did.
+
+For the local keynote score, **Start show + music** on `/strudel/` launches both clocks from the scheduled audible cycle-zero onset, including when Babylon is in another tab of the same window. Switch to the Babylon tab after clicking: its clock catches up to the music even if background rendering was suspended. Synchronized playback keeps time across tab switches; ordinary playback still auto-pauses when hidden. A loading or already-playing show explicitly rejects the launch. Normal Evaluate, pause and seek remain independent. The one-shot Strudel gesture descends three octaves with increasingly spaced, lower drum pulses, leaves the phosphor hold quiet, and resumes the score at 51.38. Reload the keynote to update an existing saved draft; no draft is overwritten automatically.
+
+Research references: [GM Shaders Mini: CRT](https://mini.gmshaders.com/p/gm-shaders-mini-crt) for CRT/phosphor techniques and [The Book of Shaders: Noise](https://thebookofshaders.com/11/) for procedural interference. The in-project GLSL implementation is original, not copied from these tutorials, and uses no extra assets or runtime network requests.
 
 For Anne-Flore and Eric, beams rise from floor projectors and **dynamic spotlights** illuminate the physical cards. David's light-reactive screen receives two moving aisle spotlights that sweep from its center across the name and back, using physical falloff and targeting the screen rather than its side posts. Light precedes the name fade; opaque typography preserves readability and the hardware avoids blown-out halos. Mitsuru's name floats inside two animated overclock orbits rather than repeating Eric's card. Cinema haze bloom respects beam opacity. Music never alters the deterministic camera route. OVERCLOCK intensifies the final digital section; these effects fade before the title reveal.
 
@@ -105,7 +112,7 @@ The **STORY / REHEARSAL JUMPS** in flight control also include POPCORN and D ESC
 
 **Balanced** caps the render buffer at 2560×1440. **Native / 4K** uses full device resolution. Normal playback hides HTML controls and the cursor. At speed 1, the clock stops at exactly 3:00; only the already-finished final image remains on screen indefinitely.
 
-Hidden tabs pause rather than silently skip the finale. Keep the show visible on the projector; run Strudel in a separate window instead of switching the show tab. A lost graphics context pauses the timeline and rebuilds GPU resources when the context returns. The timestamp, audio controller and settings survive; press Space after recovery.
+Ordinary playback auto-pauses in hidden tabs rather than silently skipping the finale. Playback launched with **Start show + music** instead keeps its clock aligned across tab switches. Keep the show visible on the projector for smooth rendering; a separate Strudel window is still useful for live editing. A lost graphics context pauses the timeline and rebuilds GPU resources when the context returns. The timestamp, audio controller and settings survive; press Space after recovery.
 
 ## Live audio analysis
 
@@ -205,7 +212,8 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [Labyrinth](src/scene/Labyrinth.ts): thin-instanced floors, roofs, boundary walls, panels and light traces.
 - [Camera](src/camera/CameraPath.ts): deterministic T-to-D Catmull–Rom route, lens/warp gaze accents and the original final full-title reveal.
 - [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, staged typography reveal, theme and animated ornaments.
-- [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local preloaded Sketchfab models, giant animated slate and shutter cut, climbing-instanced seats, CRT synchronization, David's premiere, linked film reels, giant lens, procedural projector and short space crossing.
+- [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local preloaded Sketchfab models, giant animated slate and scene handoff, climbing-instanced seats, CRT synchronization, David's premiere, linked film reels, giant lens, procedural projector and short space crossing.
+- [ClapCrtTransition](src/effects/ClapCrtTransition.ts): precompiled fullscreen arcade-to-CRT shader, phosphor-line handoff, deterministic uniforms and no extra render pass outside the transition.
 - [CinemaPopcorn](src/scene/CinemaPopcorn.ts): 36 short-lived Havok kernels with static floor/seat ledge colliders and seek-safe cleanup.
 - [DigitalMoments](src/scene/DigitalMoments.ts): two different thin-instanced data-stream passages for Eric and Mitsuru, intensified by the music without moving the camera.
 - [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
@@ -246,7 +254,7 @@ npm test
 npm run build
 ```
 
-Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, the shorter clapper shutter, full curved CRT coverage, stable wall sprites, spotlight hits inside David's card, physical asset normalization, camera fading, popcorn/overflow cleanup, continuous D escalation, wall/roof clearance, camera turns below 45 degrees/second, at least two seconds of full unlabelled clap framing and four seconds for speaker names, and full-title projection by 2:53 at several aspect ratios.
+Tests cover clock behavior, malformed inputs, frequency bands, transient decay, event/camera independence, speaker/cue timing, backward seeking, CRT transition envelopes/precompilation/errors/pipeline rebuilds, full curved CRT coverage, stable wall sprites, spotlight hits inside David's card, physical asset normalization, camera fading, popcorn/overflow cleanup, continuous D escalation, wall/roof clearance, camera turns below 45 degrees/second, at least two seconds of full unlabelled clap framing and four seconds for speaker names, and full-title projection by 2:53 at several aspect ratios.
 
 Scene-clearance tests additionally keep drifting dust below the camera, the orbiting core clear of walls/roof/camera, and Mitsuru's panel inside the corridor. Interior fog now dissipates during the escape, before the pullback reaches large distances; the solid letters remain visible rather than disappearing behind their glow. The pipeline uses up to 4x MSAA when supported, with FXAA as the fallback.
 

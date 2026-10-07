@@ -4,9 +4,10 @@ import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { cellPosition } from "../content/title";
 import { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK, T_SIGN_ANCHORS } from "./EasterEggs";
 import { BUFFER_OVERFLOW } from "./DigitalOverflow";
-import { CINEMA, rocketLift } from "../content/showBeats";
+import { CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
+import { POPCORN_SOURCES } from "./CinemaPopcorn";
 
 function longestReadableInterval(start: number, end: number, world: Matrix, width: number, height: number, lateral = 0): number {
   let best = 0;
@@ -30,7 +31,9 @@ describe("readable arcade jokes at projector aspect", () => {
     const anchor = routeAnchor(CINEMA.clapperAnchor);
     const world = Matrix.RotationY(anchor.yaw)
       .multiply(Matrix.Translation(anchor.position.x, anchor.position.y, anchor.position.z));
-    expect(CINEMA.clap - CINEMA.clapperStart).toBeLessThanOrEqual(3.5);
+    expect(CINEMA.clap - CINEMA.clapperStart).toBeLessThanOrEqual(2.3);
+    expect(CINEMA.clap - CINEMA.clapperClose).toBeLessThanOrEqual(.2);
+    expect(CINEMA.start - CINEMA.clap).toBeLessThanOrEqual(.16);
     expect(longestReadableInterval(CINEMA.clapperStart, CINEMA.clapperClose, world, 22, 23))
       .toBeGreaterThanOrEqual(2);
     expect(Vector3.Distance(cameraPose(49).position, cameraPose(CINEMA.start).position)).toBeGreaterThan(9);
@@ -75,6 +78,15 @@ describe("readable arcade jokes at projector aspect", () => {
     expect(longestReadableInterval(CINEMA.camera, CINEMA.lens, world, 13.6, 13.6))
       .toBeGreaterThanOrEqual(2);
   });
+  it("looks up enough to show both raised buckets before their overhead spill", () => {
+    for (const source of POPCORN_SOURCES) {
+      const anchor = routeAnchor(source.time, source.lateral);
+      const world = Matrix.RotationY(anchor.yaw)
+        .multiply(Matrix.Translation(anchor.position.x, source.height, anchor.position.z));
+      expect(longestReadableInterval(CINEMA.popcornLookStart, CINEMA.popcorn, world, source.size, source.size))
+        .toBeGreaterThanOrEqual(1.5);
+    }
+  });
   it("keeps David's cinema screen readable before the projector transition", () => {
     const anchor = routeAnchor(CINEMA.davidGate);
     const world = Matrix.RotationY(anchor.yaw)
@@ -83,11 +95,14 @@ describe("readable arcade jokes at projector aspect", () => {
       .toBeGreaterThanOrEqual(4);
   });
 
-  it("shows LEVEL COMPLETE before the clapperboard cut", () => {
-    const anchor = routeAnchor(58);
+  it("keeps LEVEL COMPLETE above the clapperboard and readable during its approach", () => {
+    const anchor = routeAnchor(CINEMA.clapperAnchor);
     const world = Matrix.RotationY(anchor.yaw)
-      .multiply(Matrix.Translation(anchor.position.x, 14, anchor.position.z));
-    expect(longestReadableInterval(46.3, 48.8, world, 18, 4)).toBeGreaterThanOrEqual(1.25);
+      .multiply(Matrix.Translation(anchor.position.x, LEVEL_COMPLETE.height, anchor.position.z));
+    expect(LEVEL_COMPLETE.height - 2).toBeGreaterThan(anchor.position.y + 11);
+    expect(LEVEL_COMPLETE.end).toBe(CINEMA.clap);
+    expect(longestReadableInterval(CINEMA.clapperStart, CINEMA.clapperClose,
+      world, LEVEL_COMPLETE.width, 4)).toBeGreaterThanOrEqual(1.25);
   });
   it("halves the original cabinet and sprite clutter", () => {
     expect(CABINET_COUNT).toBeLessThanOrEqual(6);

@@ -38,6 +38,28 @@ try {
   assert.equal(await show.evaluate(() => window.showController.audio.connected), false);
   const music = await context.newPage();
   watch(music);
+  if (keynote) {
+    await music.addInitScript(() => {
+      window.avTapeProbe = [];
+      const create = AudioContext.prototype.createOscillator;
+      AudioContext.prototype.createOscillator = function (...args) {
+        const oscillator = Reflect.apply(create, this, args);
+        const ramp = oscillator.detune.linearRampToValueAtTime;
+        const set = oscillator.detune.setValueAtTime;
+        let begin;
+        oscillator.detune.setValueAtTime = function (value, at) {
+          begin ??= at;
+          return Reflect.apply(set, this, [value, at]);
+        };
+        oscillator.detune.linearRampToValueAtTime = function (value, at) {
+          if (value <= -3500) window.avTapeProbe.push({ begin, at, cents: value,
+            frequency: oscillator.frequency.value, type: oscillator.type });
+          return Reflect.apply(ramp, this, [value, at]);
+        };
+        return oscillator;
+      };
+    });
+  }
   if (capture) {
     // Test-only tap of the real final Web Audio mix; no production audio routing changes.
     await music.addInitScript(() => {
@@ -148,16 +170,19 @@ try {
     console.log("Audio preflight passed: real full-mix PCM and received FFT energy.");
     await music.evaluate(() => window.strudelAV.editor.stop());
   }
+  if (keynote && !capture) await music.evaluate(() => window.strudelAV.editor.stop());
   await show.bringToFront();
-  await show.evaluate(() => {
+  await show.evaluate((synchronized) => {
     const app = window.devfest;
     const probe = window.avVerification = { events: [], peakBodies: 0, fftFrames: 0,
-      fftWindows: { opening: 0, digital: 0, climax: 0 }, fftPeak: 0, done: null, started: performance.now() };
+      fftWindows: { opening: 0, digital: 0, climax: 0 }, fftPeak: 0, done: null, started: performance.now(),
+      crt: { first: null, last: null, heldFrames: 0, detachedAtEnd: false } };
     app.showController.musicEvents.subscribe((event) => {
       if (probe.done) return;
       const record = app.showController.musicEvents.records.find((entry) =>
         entry.event.id === event.id && entry.outcome !== "duplicate");
-      probe.events.push({ name: event.event, latency: record?.latency, late: record?.lateness, outcome: record?.outcome });
+      probe.events.push({ name: event.event, time: app.timeline.time,
+        latency: record?.latency, late: record?.lateness, outcome: record?.outcome });
     });
     app.world.scene.onAfterRenderObservable.add(() => {
       if (probe.done) return;
@@ -170,16 +195,31 @@ try {
         if (time >= 147 && time < 160) probe.fftWindows.climax++;
       }
       probe.fftPeak = Math.max(probe.fftPeak, energy);
+      const transition = app.world.clapTransition;
+      if (transition.state.active) {
+        probe.crt.first ??= app.timeline.time;
+        probe.crt.last = app.timeline.time;
+        if (transition.state.signalHeight <= .00401) probe.crt.heldFrames++;
+        if (!transition.postProcess.isReady()) throw new Error("CRT shader was not precompiled.");
+      }
       probe.peakBodies = Math.max(probe.peakBodies, app.world.scene.meshes
         .filter((mesh) => mesh.name.startsWith("Cinema / popcorn kernel") && mesh.physicsBody).length);
       if (app.timeline.time === 180) {
+        probe.crt.detachedAtEnd = !app.world.camera._postProcesses.includes(transition.postProcess);
         probe.done = { elapsed: (performance.now() - probe.started) / 1000,
           camera: app.world.camera.position.asArray(), playing: app.timeline.playing };
       }
     });
-    app.start(0);
-  });
-  if (capture) {
+    if (!synchronized) app.start(0);
+  }, Boolean(keynote));
+  if (keynote) {
+    if (capture) await music.evaluate(() => {
+      window.avAudioProbe.startedAt = window.avAudioProbe.context.currentTime;
+      window.avAudioProbe.samples = [];
+    });
+    await music.getByRole("button", { name: "Start show + music", exact: true }).click();
+    await show.waitForFunction(() => window.devfest.timeline.playing);
+  } else if (capture) {
     await music.evaluate(() => {
       const probe = window.avAudioProbe;
       probe.startedAt = probe.context.currentTime;
@@ -200,7 +240,7 @@ try {
     const probe = window.avVerification;
     const quantile = (key, fraction) => probe.events.map((event) => event[key])
       .sort((a, b) => a - b)[Math.floor(probe.events.length * fraction)];
-    return { ...probe.done, eventCount: probe.events.length, peakBodies: probe.peakBodies,
+    return { ...probe.done, crt: probe.crt, eventCount: probe.events.length, peakBodies: probe.peakBodies,
       finalBodies: window.devfest.world.scene.meshes
         .filter((mesh) => mesh.name.startsWith("Cinema / popcorn kernel") && mesh.physicsBody).length,
       transportMedianMs: quantile("latency", .5), transportP95Ms: quantile("latency", .95),
@@ -212,8 +252,19 @@ try {
   assert.ok(Math.abs(result.elapsed - 180) < 1, `Unexpected duration: ${result.elapsed}`);
   assert.deepEqual(result.camera, [0, 1110, -755]);
   assert.ok(result.eventCount > 500, `Too few genuine scheduled events: ${result.eventCount}`);
-  assert.equal(result.peakBodies, 36);
+  assert.equal(result.peakBodies, 72);
   assert.equal(result.finalBodies, 0);
+  assert.ok(Math.abs(result.crt.first - 50.65) < .1, "CRT started late");
+  assert.ok(Math.abs(result.crt.last - 52.18) < .1, "CRT ended late");
+  assert.ok(result.crt.heldFrames >= 3, "No visible phosphor-line hold");
+  assert.equal(result.crt.detachedAtEnd, true);
+  if (keynote) {
+    result.tapeStop = await music.evaluate(() => window.avTapeProbe);
+    assert.ok(result.tapeStop.some((ramp) => ramp.type === "sawtooth" && ramp.cents === -3600
+      && Math.abs(ramp.at - ramp.begin - .475) < .001), "Missing real descending Web Audio pitch ramp");
+    const cut = result.cues.find((event) => event.name === "cinema-cut");
+    assert.ok(Math.abs(cut.time - 51.03) < .1, "Synchronized cinema cue drifted");
+  }
   for (const cue of ["cinema-cut", "popcorn", "warp", "reveal"]) {
     assert.ok(result.cues.some((event) => event.name === cue && event.outcome === "applied"), `${cue} was not accented`);
   }

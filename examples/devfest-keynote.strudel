@@ -5,12 +5,28 @@ setcpm(150 / 4)
 
 const CPS = 150 / 240
 const END = 180 * CPS
-// 0, 32, 54.4, 56, 83.2, 96, 128, 147.2, 160, 172.8, 176, 180 seconds.
-const SECTIONS = [20, 14, 1, 17, 8, 20, 12, 8, 8, 2, 2.5]
+// Shared visual timings are provided by the local performance page.
+const STOP_START = clapTiming.start * CPS
+const RESTART = clapTiming.reopen * CPS
+const STOP_LENGTH = clapTiming.collapsed - clapTiming.start
+// Preserve every later section boundary and the three-minute ending.
+const SECTIONS = [20, STOP_START - 20, RESTART - STOP_START, 52 - RESTART, 8, 20, 12, 8, 8, 2, 2.5]
 const once = p => p.filterHaps(h =>
   h.hasOnset() && h.whole && Number(h.whole.begin) >= 0 && Number(h.whole.begin) < END)
 const form = (...parts) => once(arrange(
-  ...parts.map((p, i) => [SECTIONS[i], p])))
+  ...parts.map((p, i) => [SECTIONS[i], p]))).withHap(h => {
+    if (!h.whole || !h.value.s) return h
+    const onset = Number(h.whole.begin) / CPS
+    const duration = Number(h.duration) / CPS
+    const tail = Number(h.value.release || 0) + (h.value.room ? Number(h.value.roomsize || 0) : 0)
+    if (onset >= clapTiming.start || onset + duration + tail <= clapTiming.start) return h
+    // Clear sustained voices/reverb before the one-shot stop, rather than hiding it under old tails.
+    return h.withValue(v => ({ ...v, room: 0, release: .02,
+      duration: Math.min(duration, clapTiming.start - onset - .02) * CPS }))
+  })
+const oneShot = (p, seconds, duration) => p.slow(duration * CPS).late(seconds * CPS)
+  .filterHaps(h => h.hasOnset() && h.whole &&
+    Math.abs(Number(h.whole.begin) - seconds * CPS) < 1e-7)
 
 const HARMONY = note("<[bb3,db4,f4] [gb3,bb3,db4] [db4,f4,ab4] [ab3,c4,eb4]>").slow(4)
 const SUSPENDED = note("<[bb3,db4,f4,c5] [gb3,bb3,db4,ab4] [eb3,gb3,bb3,f4] [f3,ab3,c4,eb4]>").slow(4)
@@ -151,11 +167,23 @@ $: audioAndVisual(KICK, "kick")
 $: SNARE.visual("snare")
 $: audioAndVisual(HATS, "hat")
 
+// Tape-stop gesture: continuous three-octave descent plus slower, lower drum pulses.
+$: oneShot(note("bb4").s("sawtooth")
+  .penv(-36).panchor(0).pcurve(0).pattack(STOP_LENGTH - .01)
+  .pdecay(.001).psustain(1).prelease(.001)
+  .attack(.004).decay(.08).sustain(.75).release(.01)
+  .lpf(1800).gain(.11).room(0),
+  clapTiming.start, STOP_LENGTH - .01)
+$: stack(...[0, .045, .115, .225, .39].map(offset =>
+  oneShot(s("bd").speed(2 ** (-3 * offset / STOP_LENGTH))
+    .gain(.13).clip(1).release(.006).room(0),
+    clapTiming.start + offset, Math.min(.05 + offset * .2, STOP_LENGTH - offset - .01))))
+
 // One-shot scheduler cues: Babylon's camera/timeline remains authoritative.
 $: cueAt("game", 0)
 $: cueAt("level-complete", 46.3 * CPS)
-$: cueAt("cinema-cut", 54.55 * CPS)
-$: cueAt("cinema", 56 * CPS)
+$: cueAt("cinema-cut", cinemaTiming.clap * CPS)
+$: cueAt("cinema", cinemaTiming.start * CPS)
 $: cueAt("speaker-david", 66 * CPS)
 $: cueAt("film-reels", 77 * CPS)
 $: cueAt("popcorn", 78.2 * CPS)

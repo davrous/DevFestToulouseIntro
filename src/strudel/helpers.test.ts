@@ -5,11 +5,24 @@ import * as miniModule from "@strudel/mini";
 import { mini, miniAllStrings } from "@strudel/mini";
 import { evaluate } from "@strudel/transpiler";
 import { StrudelEventTransport } from "../engine/StrudelEventTransport";
-import { createVisualHelpers, audioTimeToEpoch } from "./helpers";
+import { createVisualHelpers, audioTimeToEpoch, withSynchronizedStart } from "./helpers";
 
 miniAllStrings();
 
 describe("real pinned Strudel event outputs", () => {
+  it("adds exactly one silent launch at the scheduled cycle-zero onset without changing audio", async () => {
+    const launch = vi.fn().mockResolvedValue(undefined);
+    const audio = vi.fn();
+    const output = getTrigger({ getTime: () => 1, defaultOutput: audio });
+    const original = mini("bd*4").s("bd");
+    const combined = withSynchronizedStart(original, launch);
+    const haps = combined.queryArc(0, 2);
+    for (const hap of haps) await output(hap, .1, Number(hap.duration) / .625, .625,
+      2 + Number(hap.whole!.begin) / .625);
+    expect(audio).toHaveBeenCalledTimes(8);
+    expect(launch).toHaveBeenCalledExactlyOnceWith(2);
+    expect(combined.queryArc(2, 180)).toHaveLength(original.queryArc(2, 180).length);
+  });
   const setup = () => {
     const transport = new StrudelEventTransport("strudel", vi.fn(), vi.fn());
     const send = vi.spyOn(transport, "send").mockImplementation(() => {});

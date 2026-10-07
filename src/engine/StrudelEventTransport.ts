@@ -19,6 +19,11 @@ export class StrudelEventTransport {
   private cps?: number;
   private lastWarning = -Infinity;
   private error?: string;
+  onShowStart?: (scheduledTime: number, senderId: string) => void;
+  onShowStartCancelled?: (senderId: string) => void;
+  private readonly starts = new Map<string, {
+    resolve(): void; reject(error: Error): void; timer: ReturnType<typeof setTimeout>;
+  }>();
 
   constructor(
     readonly role: SyncRole,
@@ -46,12 +51,18 @@ export class StrudelEventTransport {
   }
 
   disconnect(): void {
+    for (const start of this.starts.values()) {
+      clearTimeout(start.timer);
+      start.reject(new Error("Show launch cancelled: Strudel sync disconnected."));
+    }
+    this.starts.clear();
     if (this.channel) this.post({ version: 1, type: "bye", senderId: this.senderId });
     if (this.timer) clearInterval(this.timer);
     this.timer = undefined;
     this.channel?.close();
     this.channel = undefined;
     for (const id of this.peers.keys()) this.onPeerLost(id);
+    for (const id of this.peers.keys()) this.onShowStartCancelled?.(id);
     this.peers.clear();
   }
 
@@ -59,6 +70,24 @@ export class StrudelEventTransport {
     if (this.role !== "strudel") throw new Error("Only the Strudel transport sends musical events.");
     this.post({ ...event, version: 1, type: "musical-event", source: "strudel",
       senderId: this.senderId, sentAt: this.clock() });
+  }
+
+  requestShowStart(scheduledTime: number): Promise<void> {
+    if (this.role !== "strudel" || this.getStatus() !== "CONNECTED") {
+      return Promise.reject(new Error("Open the ready Babylon show on the same origin before synchronized playback."));
+    }
+    if (!Number.isFinite(scheduledTime) || scheduledTime < 0) {
+      return Promise.reject(new RangeError("Synchronized launch requires a finite non-negative onset."));
+    }
+    const id = crypto.randomUUID();
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.starts.delete(id);
+        reject(new Error("Babylon did not confirm the synchronized launch."));
+      }, 2000);
+      this.starts.set(id, { resolve, reject, timer });
+      this.post({ version: 1, type: "show-start", senderId: this.senderId, id, scheduledTime, sentAt: this.clock() });
+    });
   }
 
   setPlayback(playing: boolean): void {
@@ -84,7 +113,11 @@ export class StrudelEventTransport {
   private tick(): void {
     const now = this.clock();
     for (const [id, peer] of this.peers) {
-      if (now - peer.seenAt > 3500) { this.peers.delete(id); this.onPeerLost(id); }
+      if (now - peer.seenAt > 3500) {
+        this.peers.delete(id);
+        this.onPeerLost(id);
+        this.onShowStartCancelled?.(id);
+      }
     }
     this.post({ version: 1, type: "heartbeat", role: this.role, senderId: this.senderId, sentAt: now,
       session: this.session, playing: this.playing, cycle: this.cycle, cps: this.cps });
@@ -104,6 +137,7 @@ export class StrudelEventTransport {
         const previous = this.peers.get(message.senderId);
         if (!message.playing || (previous?.session !== undefined && previous.session !== message.session)) {
           this.onPeerLost(message.senderId);
+          this.onShowStartCancelled?.(message.senderId);
         }
         this.peers.set(message.senderId, { seenAt: this.clock(), heartbeat: message, session: message.session });
         this.post({ version: 1, type: "ack", senderId: this.senderId, targetId: message.senderId, sentAt: this.clock() });
@@ -113,6 +147,32 @@ export class StrudelEventTransport {
       } else if (message.type === "bye") {
         this.peers.delete(message.senderId);
         this.onPeerLost(message.senderId);
+        this.onShowStartCancelled?.(message.senderId);
+      } else if (message.type === "show-start" && this.role === "babylon") {
+        let error: string | undefined;
+        try {
+          if (this.peers.get(message.senderId)?.heartbeat?.role !== "strudel") {
+            throw new Error("Show launch requires a connected Strudel peer.");
+          }
+          if (Math.abs(message.scheduledTime - this.clock()) > 2000 || this.clock() - message.sentAt > 2000) {
+            throw new Error("The synchronized launch request is stale.");
+          }
+          if (!this.onShowStart) throw new Error("The Babylon renderer is not ready to launch.");
+          this.onShowStart(message.scheduledTime, message.senderId);
+        } catch (cause) {
+          error = cause instanceof Error ? cause.message : String(cause);
+          console.warn("Synchronized show launch rejected", cause);
+        }
+        this.post({ version: 1, type: "show-start-result", senderId: this.senderId,
+          targetId: message.senderId, id: message.id, sentAt: this.clock(), error });
+      } else if (message.type === "show-start-result" && this.role === "strudel"
+        && message.targetId === this.senderId) {
+        const start = this.starts.get(message.id);
+        if (!start) return;
+        clearTimeout(start.timer);
+        this.starts.delete(message.id);
+        if (message.error) start.reject(new Error(message.error));
+        else start.resolve();
       } else if (message.type === "musical-event" && this.role === "babylon") {
         this.onEvent(message);
       }

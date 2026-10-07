@@ -17,6 +17,50 @@ class LocalChannel implements SyncChannel {
 afterEach(() => vi.useRealTimers());
 
 describe("same-origin event transport health", () => {
+  it("launches only on an explicit scheduled request, confirms it and cancels a pending launch on stop", async () => {
+    vi.useFakeTimers();
+    const channels = new Set<LocalChannel>();
+    const factory = () => new LocalChannel(channels);
+    const show = new StrudelEventTransport("babylon", vi.fn(), vi.fn(), vi.fn(), () => 1000, factory);
+    const music = new StrudelEventTransport("strudel", vi.fn(), vi.fn(), vi.fn(), () => 1000, factory);
+    const start = show.onShowStart = vi.fn();
+    const cancel = show.onShowStartCancelled = vi.fn();
+    show.connect(); music.connect(); music.setPlayback(true);
+    music.send({ event: "game", id: "cue", velocity: 1, scheduledTime: 1100 });
+    expect(start).not.toHaveBeenCalled();
+    await expect(music.requestShowStart(1100)).resolves.toBeUndefined();
+    expect(start).toHaveBeenCalledExactlyOnceWith(1100, music.senderId);
+    music.setPlayback(false);
+    expect(cancel).toHaveBeenCalledWith(music.senderId);
+    await expect(music.requestShowStart(Infinity)).rejects.toThrow("finite");
+    show.disconnect(); music.disconnect();
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it("reports renderer refusal, stale starts and missing confirmation instead of claiming success", async () => {
+    vi.useFakeTimers();
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const channels = new Set<LocalChannel>();
+    const factory = () => new LocalChannel(channels);
+    const show = new StrudelEventTransport("babylon", vi.fn(), vi.fn(), vi.fn(), () => 1000, factory);
+    const music = new StrudelEventTransport("strudel", vi.fn(), vi.fn(), vi.fn(), () => 1000, factory);
+    show.connect(); music.connect();
+    show.onShowStart = () => { throw new Error("Keep Babylon visible."); };
+    await expect(music.requestShowStart(1100)).rejects.toThrow("Keep Babylon visible");
+    await expect(music.requestShowStart(4000)).rejects.toThrow("stale");
+    [...channels][0].onmessage = null;
+    const launch = music.requestShowStart(1100);
+    const result = expect(launch).rejects.toThrow("did not confirm");
+    vi.advanceTimersByTime(2000);
+    await result;
+    const disconnected = music.requestShowStart(1100);
+    const cancelled = expect(disconnected).rejects.toThrow("disconnected");
+    music.disconnect();
+    await cancelled;
+    show.disconnect();
+    warn.mockRestore();
+    expect(vi.getTimerCount()).toBe(0);
+  });
   it("confirms both roles, carries scheduled events, cancels on stop and reconnects after closing", () => {
     vi.useFakeTimers();
     const channels = new Set<LocalChannel>();

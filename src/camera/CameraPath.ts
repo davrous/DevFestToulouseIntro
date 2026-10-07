@@ -51,7 +51,7 @@ export const TITLE_TARGET = new Vector3(0, 12, 0);
 const attentionCues = [
   { start: 4, end: 13, anchor: 16, height: 15 },
   { start: 41, end: 46, anchor: 47, height: 16 },
-  { start: 44.8, end: CINEMA.clap, anchor: CINEMA.clapperAnchor, height: 12, fade: 3, weight: 1 },
+  { start: 44.8, end: CINEMA.clap, anchor: CINEMA.clapperAnchor, height: 14.5, fade: 3, fadeOut: 1.2, weight: 1 },
   { start: CINEMA.camera, end: CINEMA.lens - .4, anchor: CINEMA.lens, height: 12.5 },
 ];
 
@@ -117,9 +117,16 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
         if (time < cue.start || time >= cue.end) continue;
         const point = interiorPosition(cue.anchor);
         point.y = cue.height;
-        const weight = cueEnvelope(time, cue.start, cue.end, cue.fade ?? Math.min(3, (cue.end - cue.start) / 2));
+        const weight = cueEnvelope(time, cue.start, cue.end,
+          cue.fade ?? Math.min(3, (cue.end - cue.start) / 2), cue.fadeOut);
         focusCamera(local, localTarget, point, weight * (cue.weight ?? .85));
       }
+    }
+    if (time >= CINEMA.popcornLookStart && time < CINEMA.popcornLookEnd) {
+      const focus = local.add(localTarget.subtract(local).normalize().scale(20));
+      focus.y = local.y + 14;
+      focusCamera(local, localTarget, focus,
+        cueEnvelope(time, CINEMA.popcornLookStart, CINEMA.popcornLookEnd, 1.4, 1.7) * .9);
     }
     if (time >= DEPLOY_ROCKET.lookStart && time < DEPLOY_ROCKET.lookEnd) {
       const focus = routeAnchor(DEPLOY_ROCKET.time, DEPLOY_ROCKET.lateral).position;

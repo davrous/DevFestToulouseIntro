@@ -51,6 +51,8 @@ export interface Heartbeat {
 
 export type SyncMessage = AVEvent | Heartbeat
   | { version: 1; type: "ack"; senderId: string; targetId: string; sentAt: number }
+  | { version: 1; type: "show-start"; senderId: string; id: string; scheduledTime: number; sentAt: number }
+  | { version: 1; type: "show-start-result"; senderId: string; targetId: string; id: string; sentAt: number; error?: string }
   | { version: 1; type: "bye"; senderId: string };
 
 function object(input: unknown): input is Record<string, unknown> {
@@ -76,6 +78,15 @@ export function parseSyncMessage(input: unknown): SyncMessage {
   const sentAt = finite(input.sentAt, "sentAt");
   if (input.type === "ack") {
     return { version: 1, type: "ack", senderId, targetId: text(input.targetId, "targetId"), sentAt };
+  }
+  if (input.type === "show-start") {
+    return { version: 1, type: "show-start", senderId, sentAt,
+      id: text(input.id, "launch ID"), scheduledTime: finite(input.scheduledTime, "scheduledTime") };
+  }
+  if (input.type === "show-start-result") {
+    return { version: 1, type: "show-start-result", senderId, sentAt,
+      id: text(input.id, "launch ID"), targetId: text(input.targetId, "targetId"),
+      error: input.error === undefined ? undefined : text(input.error, "launch error") };
   }
   const timing = {
     cycle: input.cycle === undefined ? undefined : finite(input.cycle, "cycle"),

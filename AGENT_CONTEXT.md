@@ -2,7 +2,7 @@
 
 > Lire ce document avant d'explorer le code. Il décrit le spectacle existant et les décisions déjà validées, pas un nouveau backlog à implémenter.
 >
-> État documenté le **7 octobre 2026**, après les raffinements arcade / cinéma / digital et l'ajout de Strudel local. Base Git observée : `392c52a` ; cette passe visuelle est dans le worktree tant qu'elle n'a pas été commitée. Les fichiers source restent la référence si des changements plus récents existent.
+> État documenté le **7 octobre 2026**, après les raffinements arcade / cinéma / digital, l'ajout de Strudel local, la chute physique du violon, le clap accéléré et sa transition shader CRT, la pluie de pop-corn bilatérale et la fermeture finale de la passerelle. Base Git observée : `392c52a` ; cette passe visuelle est dans le worktree tant qu'elle n'a pas été commitée. Les fichiers source restent la référence si des changements plus récents existent.
 
 Dépôt : [davrous/DevFestToulouseIntro](https://github.com/davrous/DevFestToulouseIntro).
 
@@ -48,7 +48,7 @@ La musique est jouée **à l'extérieur de cette page**, notamment avec **Strude
 - **180 s à vitesse 1.** Le titre est entièrement cadré vers **173 s**, puis reste stable jusqu'à 180 s et après l'arrêt de l'horloge.
 - Le **reveal final est très apprécié de l'utilisateur**. Ne pas le réinventer pour corriger un problème local.
 - La caméra reste **indépendante de l'audio** : son trajet, les speakers et la sortie ne doivent pas dériver avec le rythme ou le volume.
-- La passerelle physique **T–D reste visible pendant le reveal**, à **y = 0**. Elle est constituée uniquement d'un champ de force transparent au sol et de traces lumineuses. Pas de murs, de toit, de copie en hauteur ou d'élévation au moment du zoom-out.
+- La passerelle physique **T–D reste au sol à y = 0 jusqu'à 168 s**, sans murs, toit ou copie en hauteur. À la demande de l'utilisateur, ses deux parties se relèvent en ponts-levis de **168 à 172.5 s**, avec rétraction des longueurs vers les ouvertures du T et du bas du D. Elles restent fermées pendant le hold final. Ne pas avancer cette fermeture avant la sortie caméra.
 - Garder les **quatre speakers**, leurs noms et leurs titres de démo, sauf demande explicite. David ne doit pas réapparaître dans un ancien portail du D.
 - Les noms et les blagues doivent être dans le champ de la caméra, suffisamment grands et lisibles. L'état « mesh enabled » ne prouve pas qu'un spectateur peut lire.
 - Les objets physiques ne poussent pas la caméra : elle n'a pas de corps Havok. Les props permanents du T sont visibles pendant leur approche, pas révélés par un pop tardif.
@@ -70,7 +70,7 @@ Configuration : [src/content/speakers.ts](src/content/speakers.ts).
 
 `gateTime` sert aussi d'**ancre spatiale sur la trajectoire**, pas seulement de timestamp. Changer ce nombre déplace le panneau et modifie son angle d'approche. `endTime` n'est pas une garantie que le panneau soit encore dans le champ : la caméra peut déjà l'avoir dépassé.
 
-David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son support physique est visible dès **52.45 s**, comme les autres props cinéma, jusqu'à la traversée optique à 90 s. Son nom garde son fondu à partir de **67 s** et l'enveloppe de présentation **66–83 s**. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
+David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son support physique est visible dès **51.18 s**, comme les autres props cinéma, jusqu'à la traversée optique à 90 s. Son nom garde son fondu à partir de **67 s** et l'enveloppe de présentation **66–83 s**. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
 
 Les constantes cinéma de [src/content/showBeats.ts](src/content/showBeats.ts) reprennent certains timings de David : conserver leur cohérence avec la configuration des speakers.
 
@@ -82,17 +82,17 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | --- | --- |
 | 0–6 | DEVFEST ARCADE / PRESS ANY KEY, avec les bornes latérales, sans énorme borne centrale |
 | 5–14 | La requête `GET /pain-au-chocolat` devient une redirection vers `/chocolatine`, avant Anne-Flore |
-| 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche |
+| 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; cubes dynamiques Havok à 22, suffisamment tôt pour voir leurs rebonds au sol, puis nettoyés à 38 |
 | 30.5 et suivantes | Les pièces bonus tombent juste après le violon |
 | 33–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 |
 | 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture de la porte vers 42.6 |
-| 46.3–48.8 | LEVEL COMPLETE, court et centré |
-| 48.8–52.2 | Clap original sans panneau DEVFEST / SCENE 02 ajouté ; fermeture de 51.55 à 52.2, approche sans quasi-arrêt |
-| 52.2–52.45 | Shutter noir au contact du clap, puis cinéma |
-| 52.45–66 | Décor cinéma entier visible dès l'entrée : sièges, CRT rétro, support de David, bobines / pellicule, seau et caméra |
+| 46.3–51.03 | LEVEL COMPLETE au-dessus du clap à y = 26, encore visible pendant son approche |
+| Approche jusqu'à 51.03 | Clap original déjà présent dès le chargement, sans panneau DEVFEST / SCENE 02 ajouté, ancré à 59 s ; fermeture de 50.85 à 51.03, approche sans quasi-arrêt |
+| 50.65–52.18 | Shader plein écran : arcade pixellisée, fermeture CRT à 51.03, trait vert maintenu de 51.135 à 51.38 pendant le changement de décor à 51.18, puis rallumage cathodique ; aucun plan noir |
+| 51.18–66 | Décor cinéma entier visible dès l'entrée : sièges, CRT rétro, support de David, bobines / pellicule, deux seaux et caméra |
 | 59.4–59.7 | Les CRT affichent DEVFEST simultanément |
 | 66–77, à l'écran | Première de David : lumière avant le fondu du nom, écran physique supporté, zone plus calme |
-| 77–84.5 | Bobines frontales reliées par une pellicule animée ; seau visible, bascule à 77.7, déversement à 78.2 |
+| 77–84.5 | Bobines frontales reliées par une pellicule animée ; deux seaux à y = 18, bascule vers l'allée à 77.55, pluie de 72 grains à partir de 78.1, encore devant la caméra avant de passer au-dessus |
 | 84–90 | Approche de la caméra géante déjà visible ; objectif centré sur notre trajectoire |
 | 90–99 | Traversée optique, projecteur à 91.2, espace à 93, retour de l'architecture digitale vers 95 |
 | 99–116 | Eric, premier chapitre du D digital, avec flux de données convergents |
@@ -104,6 +104,7 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 143–166 | TOULOUSE / ORBITAL LINK, placé en profondeur et conservé pendant le début du zoom-out |
 | 153–159 | Dernier vumètre, retournement et préparation de la sortie, sans longue attente |
 | 159–173 | Recul et montée : reveal du titre complet et de la connexion au sol |
+| 168–172.5 | Les deux parties de la passerelle se relèvent en ponts-levis et se rétractent pour fermer les ouvertures T / D |
 | 173–180 | Image finale stable, AI4Fun et petites signatures de l'événement |
 
 ### Important : narration et géométrie ne sont pas la même chose
@@ -120,7 +121,7 @@ Ces décisions évitent de réintroduire des éléments retirés lors des nombre
 - Les sprites sont plaqués sur les **murs latéraux**, au-dessus des objets, pas à l'intérieur des bornes ou en tas.
 - Ce sont maintenant des **décalcomanies fixes**. L'atlas contient des personnages différents, pas une animation : ne pas changer de tuile avec le temps / kick, ni faire pomper leur taille ou leur position.
 - Le personnage voxel a été remplacé par le **violon**, associé à Anne-Flore, centré sous sa fiche et près du sol.
-- Les anciens ballons rebondissants, y compris le ballon de rugby, et leurs plateformes ne font plus partie du show actuel. Havok sert maintenant aux pièces, au mur et au pop-corn.
+- Les anciens ballons rebondissants, y compris le ballon de rugby, et leurs plateformes ne font plus partie du show actuel. Havok sert maintenant au violon, aux pièces, au mur et au pop-corn.
 - La blague **Canal du Midi** et le texte **CONTAINER / NO CLOUD REQUIRED** ont été retirés. Les noms de certains anciens shaders/rubans peuvent encore évoquer MIDI : cela ne signifie pas qu'il faut remettre le panneau.
 - Ne pas rétablir **GAME OVER 404 / EXIT NOT FOUND / TEST PASSED** : le récit de sortie est désormais `git rebase --continue` qui déverrouille la porte.
 - Le cassoulet doit rester **entre Eric et Mitsuru**, et visible assez longtemps. Une ancienne demande le plaçait après David ; elle a été corrigée ensuite.
@@ -149,9 +150,10 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Violon voxel et traînées de vitesse | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts) |
 | Pièces et mur de dette technique, Havok / seek / cleanup | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
 | Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
+| Transition plein écran arcade → ligne de phosphore → CRT, pause / rewind / pipeline | [ClapCrtTransition.ts](src/effects/ClapCrtTransition.ts), [showBeats.ts](src/content/showBeats.ts) |
 | Textures rétro et couverture exacte de la surface courbe des CRT | [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Chargement local, normalisation, instances, clone de caméra et animation du clap | [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
-| Seau / source, 36 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
+| Deux seaux / sources, 72 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
 | Progression entre Eric et Mitsuru et flux de données distincts | [DigitalMoments.ts](src/scene/DigitalMoments.ts), [Interior.ts](src/scene/Interior.ts) |
 | Rack BUFFER OVERFLOW, vrais blocs Havok, cleanup / replay dans le S | [DigitalOverflow.ts](src/scene/DigitalOverflow.ts), activation physique dans [App.ts](src/engine/App.ts) |
 | Portails non cinéma, typographie et présentation orbitale de Mitsuru | [SpeakerPortal.ts](src/scene/SpeakerPortal.ts) |
@@ -177,7 +179,7 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 
 ### Caméra et lisibilité
 
-La route utilise Catmull–Rom, mais **44–58 s** emploie des tangentes Hermite limitées pour éviter l'overshoot / le demi-tour parasite près du ralentissement du clap. Un regard dirigé dans le foyer **59–71 s** évite un virage trop brutal.
+La route utilise Catmull–Rom, mais **44–58 s** emploie des tangentes Hermite limitées pour éviter l'overshoot / le demi-tour parasite près du ralentissement du clap. Un regard dirigé dans le foyer **59–71 s** évite un virage trop brutal. De **76 à 81.5 s**, une inclinaison douce vers le haut montre les deux seaux surélevés avant leur pluie ; la cible reste devant la caméra pour ne pas provoquer de demi-tour sous les seaux.
 
 Les tests maintiennent les rotations sous **45°/s**, la clearance des murs et au moins **quatre secondes** de cadrage complet pour les noms. Le clap sans panneau textuel ne requiert plus que **deux secondes**, volontairement pour accélérer cette transition. Le regard de 140–151 s suit maintenant la fusée du coin suivant, puis un relais doux vers ORBITAL LINK de 146.8–157 s évite le retour brutal vers l'horizon. Les positions de caméra et le reveal restent inchangés. Ne pas déplacer Eric plus tard sans retravailler aussi le regard.
 
@@ -193,11 +195,17 @@ Les textes sont des textures sur meshes **dans le monde 3D**, pas des overlays H
 
 ### Clap : ne pas rejouer toute l'animation
 
-Le GLB contient une séquence ouverture / fermeture / réouverture. Utiliser seulement **les frames source 50 → 60**, définies par `CLAPPER_CLOSE`, pendant **51.55–52.2 s**.
+Le GLB contient une séquence ouverture / fermeture / réouverture. Utiliser seulement **les frames source 50 → 60**, définies par `CLAPPER_CLOSE`, pendant **50.85–51.03 s**. `LEVEL_COMPLETE` reste au-dessus du modèle ; le regard et l'ancre à 59 s permettent de cadrer simultanément le texte et le clap.
 
 Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouvert soit inclus dans ses bounds. Sa taille héroïque est 22. Le panneau typographique ajouté devant le clap a été retiré à la demande de l'utilisateur.
 
 `takeClapper` utilise le modèle animé original : instancier aveuglément sa hiérarchie ne garantit pas que l'AnimationGroup cible la bonne copie.
+
+Le plan noir de transition a été supprimé. [ClapCrtTransition.ts](src/effects/ClapCrtTransition.ts) applique un shader GLSL original après le tone mapping : pixellisation, léger décalage RGB et déchirures de lignes, compression verticale en trait vert de phosphore, puis réouverture avec courbure, raster et masque RGB. `CLAP_CRT` couvre **50.65–52.18 s** ; le trait reste fermé **245 ms**, de **51.135 à 51.38 s**. Le changement de décor reste à **51.18 s**, masqué par le trait, et la fermeture du clap conserve ses 0.18 s. Le clap est activé dès le début de la séquence, et non à `clapperStart` (48.8 s), qui reste un repère de lumière / fin de warp.
+
+La partition locale originale utilise `clapTiming` / `cinemaTiming`, fournis par le REPL à partir de ces constantes : descente synthétique de trois octaves et cinq impulsions de kick de plus en plus espacées, silence pendant le trait, reprise à 51.38 s. Les dernières voix avant l'effet raccourcissent leur durée / release et suppriment leur reverb pour ne pas masquer la pause. Le bouton **Start show + music** ajoute un seul hap silencieux à zéro via le hook public `editPattern`, transmet un `show-start` confirmé par le transport, et ancre Babylon au timestamp audible (latence de sortie comprise). Pas d'auto-start par les cues musicaux ordinaires, pas de suivi continu de l'horloge audio. Le lancement accepte désormais l'autre onglet masqué : un timer indépendant du rendu lance l'horloge et le premier frame visible rattrape le temps écoulé. Cette lecture synchronisée continue son horloge lors des changements d'onglet ; les commandes locales restaurent l'auto-pause ordinaire. Refus explicite si non prêt ou déjà en lecture. Pause / seek restent indépendants ; arrêter la musique et relancer les deux après une répétition.
+
+Le shader est compilé avant SYSTEM READY ; une erreur de compilation remonte à l'initialisation, sans fallback noir. Les uniforms dépendent uniquement du temps absolu ; une pause conserve la même image. Le post-process est détaché hors de la fenêtre et replacé en dernier après toute reconstruction Bloom/FXAA. Cette transition narrative reste active même si les effets optionnels sont désactivés. Références conceptuelles : [GM Shaders Mini: CRT](https://mini.gmshaders.com/p/gm-shaders-mini-crt) et [The Book of Shaders: Noise](https://thebookofshaders.com/11/), sans copie de leur code ni ressource externe au runtime.
 
 ### Bounds, échelle et orientation des modèles
 
@@ -223,9 +231,9 @@ Le clap est normalisé après pose ouverte à la frame 50, afin que le bras ouve
 
 ### Havok et pop-corn
 
-Havok simule les pièces / le mur du T, **36 grains** de 78.2 à 84.5 s, puis **32 blocs** du buffer de 113.2 à 119 s. L'application ne fait avancer la physique que pendant la lecture et ces fenêtres. Le rack de données a un sol et un plateau colliders ; ses blocs sont maintenus avant le débordement, puis réellement dynamiques. Nettoyage à la sortie de fenêtre et reconstruction au seek / rewind.
+Havok simule les cubes du violon / archet de **22 à 38 s**, les pièces / le mur du T, **72 grains** de 78.1 à 84.5 s, puis **32 blocs** du buffer de 113.2 à 119 s. L'application ne fait avancer la physique que pendant la lecture et ces fenêtres. Le violon utilise les thin instances avant la chute, puis des cubes individuels avec collisions au sol, sans dispersion animée vers le plafond. Le rack de données a un sol et un plateau colliders ; ses blocs sont maintenus avant le débordement, puis réellement dynamiques. Nettoyage à la sortie de fenêtre et reconstruction au seek / rewind.
 
-Le seau est ancré à **79.5 s**, offset latéral **-5**, hauteur **11.5**, taille **4.8**. Le public doit voir le seau basculer avant de traverser les grains, pas découvrir une pluie tardive au plafond.
+Les deux seaux sont ancrés à **80.4 s**, offsets latéraux **-5 / +5**, hauteur **18**, taille verticale **4.8**. Leur inclinaison est symétrique dans le repère de la route, vers l'allée. Le déversement débute une fois la bascule terminée, par vagues de six grains par côté espacées de 0.12 s. Les vitesses initiales visent la future position de la caméra à hauteur de tête ; Havok assure ensuite les collisions et le rebond au sol. Le public doit voir les seaux basculer avant de traverser les grains. Le collider de sol couvre tout l'auditorium et ses parois latérales retiennent les grains du déversement anticipé.
 
 **`CINEMA_FLOOR_TOP = 0.28`** est partagé entre scène et collider : le sol visuel est légèrement surélevé. Un collider resté à y = 0 enterre les grains dans le deck. Le test physique simule jusqu'au repos et vérifie cette cohérence.
 
@@ -325,7 +333,7 @@ window.devfest.start(0);
 
 Les jumps nommés incluent CLAPPERBOARD, CINEMA, DAVID, FILM REELS, POPCORN, CAMERA LENS, PROJECTOR, SPACE WARP, D ENTRY, ERIC, D ESCALATION, MITSURU et FINAL REVEAL.
 
-**Attention aux captures trompeuses :** un onglet caché met le show en pause. Vérifier `document.hidden` et travailler dans une page réellement visible ; certaines captures d'un onglet caché semblaient figées malgré des changements de state.
+**Attention aux captures trompeuses :** un onglet caché met la lecture ordinaire en pause, mais la lecture explicitement synchronisée avec Strudel garde son horloge active. Le navigateur peut suspendre les frames dans les deux cas. Vérifier `document.hidden` et travailler dans une page réellement visible ; certaines captures d'un onglet caché semblaient figées malgré des changements de state.
 
 Balanced plafonne le buffer à **2560×1440** ; Native utilise la résolution réelle. Après un redimensionnement, attendre le resize puis vérifier le buffer du moteur avant d'affirmer qu'un test a été fait en 4K.
 
@@ -353,6 +361,20 @@ Suivi fusée :
 - Zéro erreur / warning navigateur, requête échouée ou ressource externe ; finale `(0,1110,-755)` et pont au sol conservés. Cette passe ne prétend pas avoir rejoué toute l'intro de trois minutes.
 - Après le dernier ajustement pour éviter l'interpénétration initiale des blocs, nouvelle lecture réelle de la fenêtre **109–119 s**, chute Havok et cleanup vérifiés.
 
+Suivi clap / CRT / tape-stop Strudel :
+- **92 tests ciblés / 10 fichiers** et build TypeScript / Vite réussis.
+- Répétition de production entière à vitesse 1 avec **Start show + music** et capture du vrai mix Strudel, réseau désactivé après préchargement : horloge finale 180 s, caméra `(0,1110,-755)`, zéro erreur / warning navigateur et zéro requête externe.
+- Shader actif de **50.651 à 52.169 s**, trait fermé sur **15 images** ; cue du clap reçu à **51.035 s** pour un repère de 51.03 s. Descente Web Audio réellement mesurée à **-3600 cents** sur **0.475 s**, et pas seulement simulée dans les tests.
+- Les **72 grains** sont présents simultanément puis nettoyés ; shader détaché à la fin. Pic du mix **0.477**, RMS final **0**, crescendo conservé.
+- Clap vu avant son ancien seuil d'apparition ; images à temps constant identiques et rendu hors transition identique après aller-retour par seek, avec rendu explicite dans la page de prévisualisation masquée.
+- UI vérifiée : Evaluate reste indépendant, et les lancements sur spectacle caché / non prêt / déjà en lecture arrêtent la musique et affichent un refus explicite. Le cycle de heartbeat est borné à zéro pendant la prélecture audio négative de Strudel.
+
+Correctif du lancement depuis l'autre onglet :
+- Le refus d'onglet caché de la passe précédente était un bug d'usage : il arrêtait Strudel après la première note. Ce refus a été retiré ; les refus de renderer non prêt / déjà en lecture restent actifs.
+- **21 tests ciblés / 4 fichiers**, type-check et build réussis. [App.test.ts](src/engine/App.test.ts) couvre le lancement sans frame, le rattrapage du temps, les changements d'onglet, l'auto-pause ordinaire et l'annulation des timers.
+- Vérification dans deux vrais onglets d'une même fenêtre Edge, avec `connectOverCDP({ noDefaults: true })` : Babylon réellement caché, render loop explicitement arrêté, démarrage confirmé et musique toujours active ; au retour, horloge à **3.5142 s** pour **3.517 s** attendues, zéro erreur navigateur. Auto-pause ordinaire conservée.
+- Attention : Playwright active normalement l'émulation de focus et peut présenter tous les onglets comme visibles. Les précédents tests avec pages ordinaires ne reproduisaient donc pas ce cas réel. Cette passe cible le démarrage, sans prétendre avoir relancé une répétition complète de trois minutes.
+
 Ce sont des résultats historiques, **pas une garantie pour la prochaine modification ou un autre GPU**. Aucun 60 FPS soutenu sur le vrai poste de projection n'a été certifié. Refaire un profil Native / 4K et une répétition avec les vrais musiciens sur cette machine.
 
 Tests les plus utiles pour une itération de mise en scène :
@@ -362,6 +384,7 @@ Tests les plus utiles pour une itération de mise en scène :
 - [SceneClearance.test.ts](src/scene/SceneClearance.test.ts) : murs, roof, core orbital, fog et framing.
 - [CinemaAssets.test.ts](src/scene/CinemaAssets.test.ts) : bounds sans socles, échelle et clones supportant `visibility`.
 - [CinemaWorld.test.ts](src/scene/CinemaWorld.test.ts) : cut, écrans, ordre des étapes et rewind.
+- [ClapCrtTransition.test.ts](src/effects/ClapCrtTransition.test.ts) : enveloppes bornées, ligne pendant le changement de décor, précompilation / erreurs, pause / seek et ordre après reconstruction du pipeline.
 - [CinemaCRT.test.ts](src/scene/CinemaCRT.test.ts) : surface entière, courbure et UV des CRT.
 - [PixelWorld.test.ts](src/scene/PixelWorld.test.ts) : atlas et transforms fixes malgré les basses, le temps et le rewind.
 - [CinemaPopcorn.test.ts](src/scene/CinemaPopcorn.test.ts) : vrais corps Havok, repos sur le bon sol, nettoyage et replay.

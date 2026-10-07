@@ -20,7 +20,7 @@ import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import type { Section } from "../engine/protocol";
 import { SPEAKERS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
-import { bridgeVisible, createLabyrinth } from "./Labyrinth";
+import { createLabyrinth } from "./Labyrinth";
 import { createInterior, updateInterior, createFinalCaption } from "./Interior";
 import { createAtmosphere, DUST, showFogDensity } from "./Atmosphere";
 import { SpeakerPortal } from "./SpeakerPortal";
@@ -34,6 +34,7 @@ import { MusicReactive } from "../effects/MusicReactive";
 import { CINEMA } from "../content/showBeats";
 import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
+import { ClapCrtTransition } from "../effects/ClapCrtTransition";
 import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
 import { CinemaPopcorn } from "./CinemaPopcorn";
@@ -67,6 +68,7 @@ export class DevFestScene {
   private readonly popcorn: CinemaPopcorn;
   private readonly digitalMoments: DigitalMoments;
   private readonly overflow: DigitalOverflow;
+  private readonly clapTransition: ClapCrtTransition;
   private readonly tint = new Color3();
   private readonly labyrinth;
   private readonly interior;
@@ -173,11 +175,13 @@ export class DevFestScene {
     image.vignetteWeight = 1.5;
     image.vignetteStretch = .4;
     image.vignetteColor = new Color4(.015, .035, .04, 1);
+    this.clapTransition = new ClapCrtTransition(this.camera, this.pipeline);
     this.update(0);
   }
 
   async prepare(): Promise<void> {
-    await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare()]);
+    await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare(),
+      this.clapTransition.prepare()]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
     const plugin = new HavokPlugin(true, havok);
     if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
@@ -187,6 +191,7 @@ export class DevFestScene {
     plugin.setVelocityLimits(32, 12);
     this.scene.physicsEnabled = false;
     this.arcadePhysics.initialize(plugin);
+    this.demoscene.initialize(plugin);
     this.popcorn.initialize(plugin);
     this.overflow.initialize(plugin);
     await this.branding.ready;
@@ -218,6 +223,7 @@ export class DevFestScene {
     this.camera.position.copyFrom(pose.position);
     this.camera.setTarget(pose.target);
     this.camera.fov = pose.fov;
+    this.clapTransition.update(time);
     this.headlight.position.copyFrom(pose.position);
     const wake = smoothstep(time / 35);
     const reveal = smoothstep((time - 159) / 10);
@@ -250,7 +256,7 @@ export class DevFestScene {
       this.labyrinth.amber.emissiveColor.scaleInPlace(.3);
     }
     this.labyrinth.roof.emissiveColor.set(.008 + reveal * .067, .018 + reveal * .15, .023 + reveal * .17);
-    this.labyrinth.bridge.setEnabled(bridgeVisible(time));
+    this.labyrinth.bridge.update(time);
     this.labyrinth.meshes.forEach((mesh) => {
       mesh.setEnabled(time < CINEMA.lens - .15 || time >= CINEMA.digital);
     });
@@ -266,9 +272,9 @@ export class DevFestScene {
     this.arcade.update(time, audio);
     this.pixelWorld.update(time, audio);
     this.cathedral.update(time, audio);
-    this.demoscene.update(time, audio);
+    this.demoscene.update(time, audio, speed);
     this.cinema.update(time, audio);
-    this.popcorn.update(time, audio);
+    this.popcorn.update(time, audio, speed);
     this.digitalMoments.update(time, audio);
     this.overflow.update(time, speed);
     this.arcadePhysics.update(time, audio);

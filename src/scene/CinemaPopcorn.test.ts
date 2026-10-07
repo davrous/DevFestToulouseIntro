@@ -2,12 +2,14 @@ import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
 import { Scene } from "@babylonjs/core/scene";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
 import "@babylonjs/core/Physics/joinedPhysicsEngineComponent";
 import HavokPhysics from "@babylonjs/havok";
 import { silentFeatures } from "../engine/AudioAnalyzer";
-import { CINEMA_FLOOR_TOP, CinemaPopcorn, POPCORN_COUNT, POPCORN_END, POPCORN_START } from "./CinemaPopcorn";
+import { CINEMA_FLOOR_TOP, CinemaPopcorn, POPCORN_COUNT, POPCORN_END, POPCORN_PER_BUCKET,
+  POPCORN_SOURCES, POPCORN_START, popcornTilt } from "./CinemaPopcorn";
+import { CINEMA } from "../content/showBeats";
 import { cameraPose } from "../camera/CameraPath";
 
 describe("cinema popcorn impact", () => {
@@ -26,22 +28,63 @@ describe("cinema popcorn impact", () => {
     popcorn.update(POPCORN_START - .1, silentFeatures());
     expect(pieces.every((mesh) => !mesh.isEnabled())).toBe(true);
     popcorn.update(POPCORN_START, { ...silentFeatures(), drop: 1 });
-    expect(pieces.every((mesh) => mesh.isEnabled() && mesh.physicsBody)).toBe(true);
+    expect(pieces.filter((mesh) => mesh.isEnabled() && mesh.physicsBody)).toHaveLength(12);
     const start = pieces[0].position.clone();
-    expect(start.y).toBeLessThan(18);
+    expect(start.y).toBeGreaterThan(cameraPose(POPCORN_START).position.y + 6);
     expect(Vector3.Distance(start, cameraPose(POPCORN_START).position)).toBeLessThan(16);
     expect(pieces[0].physicsBody?.getLinearVelocity().y).toBeLessThan(0);
-    for (let index = 1; index <= 270; index++) {
-      popcorn.update(POPCORN_START + index / 60, silentFeatures());
+    const overhead = new Set<number>();
+    const visibleFallTime = Array<number>(POPCORN_COUNT).fill(0);
+    const frames = Math.floor((POPCORN_END - POPCORN_START - .02) * 60);
+    for (let index = 1; index <= frames; index++) {
+      const time = POPCORN_START + index / 60;
+      popcorn.update(time, silentFeatures());
       scene.getPhysicsEngine()!._step(1 / 60);
+      const pose = cameraPose(time);
+      const camera = pose.position;
+      const view = Matrix.LookAtLH(camera, pose.target, Vector3.Up())
+        .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
+      pieces.forEach((piece, i) => {
+        if (!piece.isEnabled()) return;
+        const screen = Vector3.TransformCoordinates(piece.position, view);
+        const visible = Math.abs(screen.x) < .95 && Math.abs(screen.y) < .9 && screen.z > 0 && screen.z < 1;
+        if (visible) expect(piece.position.y - CINEMA_FLOOR_TOP).toBeGreaterThan(.2);
+        if (piece.position.y > camera.y + .5 && piece.physicsBody!.getLinearVelocity().y < -1
+          && visible) {
+          visibleFallTime[i] += 1 / 60;
+        }
+        if (Math.hypot(piece.position.x - camera.x, piece.position.z - camera.z) < 2.5
+          && piece.position.y >= camera.y && piece.position.y < camera.y + 2
+          && piece.physicsBody!.getLinearVelocity().y < -1) overhead.add(i);
+      });
     }
+    expect(visibleFallTime.filter((duration) => duration >= .35)).toHaveLength(POPCORN_COUNT);
+    expect(overhead.size).toBeGreaterThanOrEqual(24);
+    expect([...overhead].some((index) => index < POPCORN_PER_BUCKET)).toBe(true);
+    expect([...overhead].some((index) => index >= POPCORN_PER_BUCKET)).toBe(true);
     expect(Vector3.Distance(pieces[0].position, start)).toBeGreaterThan(.1);
-    expect(pieces[0].position.y - CINEMA_FLOOR_TOP).toBeGreaterThan(.2);
+    expect(pieces[0].position.y - CINEMA_FLOOR_TOP,
+      `kernel floor clearance at ${pieces[0].position.asArray().join(", ")}`).toBeGreaterThan(.2);
     popcorn.update(POPCORN_END, silentFeatures());
     expect(pieces.every((mesh) => !mesh.isEnabled() && !mesh.physicsBody)).toBe(true);
     popcorn.update(POPCORN_START, silentFeatures());
+    expect(pieces.filter((mesh) => mesh.isEnabled() && mesh.physicsBody)).toHaveLength(12);
+    popcorn.update(POPCORN_START + .61, silentFeatures());
     expect(pieces.every((mesh) => mesh.isEnabled() && mesh.physicsBody)).toBe(true);
+    popcorn.update(POPCORN_START - .1, silentFeatures());
+    expect(pieces.every((mesh) => !mesh.isEnabled() && !mesh.physicsBody)).toBe(true);
     scene.dispose();
     engine.dispose();
+  });
+
+  it("tips two raised buckets toward the aisle before releasing the synchronized rain", () => {
+    expect(POPCORN_SOURCES.map((source) => source.lateral)).toEqual([-5, 5]);
+    expect(POPCORN_SOURCES.every((source) => source.height >= 18)).toBe(true);
+    expect(popcornTilt(CINEMA.popcornTip, -1)).toBeCloseTo(-.1);
+    expect(popcornTilt(CINEMA.popcornTip, 1)).toBeCloseTo(.1);
+    expect(popcornTilt(POPCORN_START, -1)).toBeCloseTo(-1.35);
+    expect(popcornTilt(POPCORN_START, 1)).toBeCloseTo(1.35);
+    expect(popcornTilt(POPCORN_END, 1)).toBe(popcornTilt(POPCORN_START, 1));
+    expect(POPCORN_COUNT).toBe(72);
   });
 });

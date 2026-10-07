@@ -13,7 +13,7 @@ $: audioAndVisual(HATS, "hat")
 
 // Silent event outputs. Times assume independent starts are aligned.
 $: visual("impact").slow(8)
-$: cueAt("cinema-cut", 54.55 * .625)
+$: cueAt("cinema-cut", cinemaTiming.clap * .625)
 $: cueAt("popcorn", 78.2 * .625)
 $: cueAt("lens", 90 * .625)
 $: cueAt("projector", 91.2 * .625)

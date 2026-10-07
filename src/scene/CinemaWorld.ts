@@ -19,7 +19,7 @@ import { CinemaAssets, CLAPPER_CLOSE } from "./CinemaAssets";
 import { createCrtMaterial, fitCrtScreen } from "./CinemaCRT";
 import { createWorldText } from "./WorldText";
 import { emissive } from "./Labyrinth";
-import { CINEMA_FLOOR_TOP, POPCORN_SOURCE } from "./CinemaPopcorn";
+import { CINEMA_FLOOR_TOP, POPCORN_SOURCES, popcornTilt } from "./CinemaPopcorn";
 
 export const SEAT_ROWS = [-25, -15, -5, 5, 15, 25] as const;
 export const SEAT_HEIGHT = 4.2;
@@ -55,7 +55,6 @@ export class CinemaWorld {
   private readonly lensRoot: TransformNode;
   private readonly projectorRoot: TransformNode;
   private readonly spaceRoot: TransformNode;
-  private readonly shutter: Mesh;
   private readonly reelNodes: TransformNode[] = [];
   private readonly televisions: { screen: Mesh; material: StandardMaterial; tint: Color3 }[] = [];
   private readonly spotBeams: Mesh[] = [];
@@ -63,7 +62,7 @@ export class CinemaWorld {
   private readonly cameraRim: Mesh;
   private readonly crtSupports: TransformNode[] = [];
   private readonly spaceProps: { node: TransformNode; yaw: number; speed: number }[] = [];
-  private bucket?: TransformNode;
+  private readonly buckets: { node: TransformNode; side: number }[] = [];
   private cameraModel?: TransformNode;
   private readonly cameraLights: SpotLight[] = [];
   private readonly spotlightMaterial: StandardMaterial;
@@ -82,14 +81,6 @@ export class CinemaWorld {
     const clapperAnchor = routeAnchor(CINEMA.clapperAnchor);
     this.clapperRoot.position.y = clapperAnchor.position.y;
     this.clapperRoot.rotation.y += Math.PI / 2;
-    this.shutter = MeshBuilder.CreatePlane("FX/Cinema / shutter cut", { size: 3 }, scene);
-    this.shutter.material = emissive(scene, "Cinema / physical black shutter", "#000000", 0);
-    this.shutter.isPickable = false;
-    if (!scene.activeCamera) throw new Error("Cinema shutter requires the cinematic camera.");
-    this.shutter.parent = scene.activeCamera;
-    this.shutter.position.z = .3;
-    this.shutter.setEnabled(false);
-
     this.architecture = new TransformNode("Cinema / impossible auditorium", scene);
     this.foyer = at(scene, "Cinema / symmetrical foyer", 58);
     this.foyer.parent = this.architecture;
@@ -480,25 +471,29 @@ export class CinemaWorld {
       prop.rotation.y = anchor.yaw;
       this.spaceProps.push({ node: prop, yaw: anchor.yaw, speed: name === "astronaut" ? .2 : .5 });
     }
-    this.bucket = this.assets.create("popcorn", this.reelsRoot, "Cinema / tipping popcorn bucket", POPCORN_SOURCE.size);
-    if (this.bucket) {
-      const anchor = routeAnchor(POPCORN_SOURCE.time, POPCORN_SOURCE.lateral);
-      this.bucket.position.set(anchor.position.x, POPCORN_SOURCE.height, anchor.position.z);
-      this.bucket.rotation.set(0, anchor.yaw, -.1);
+    for (const source of POPCORN_SOURCES) {
+      const anchor = routeAnchor(source.time, source.lateral);
+      const pivot = new TransformNode(`Cinema / popcorn support ${source.side}`, this.reelsRoot.getScene());
+      pivot.parent = this.reelsRoot;
+      pivot.position.set(anchor.position.x, source.height, anchor.position.z);
+      pivot.rotation.y = anchor.yaw;
+      const bucket = this.assets.create("popcorn", pivot,
+        `Cinema / tipping popcorn bucket ${source.side}`, source.size, "height");
+      if (bucket) this.buckets.push({ node: bucket, side: source.side });
     }
     this.update(0, { energy: 0, bass: 0, mid: 0, treble: 0, kick: 0, snare: 0, drop: 0, beat: 0, violaEnergy: 0 });
   }
 
   update(time: number, audio: AudioFeatures): void {
-    this.clapperRoot.setEnabled(time >= CINEMA.clapperStart && time < CINEMA.start);
+    this.clapperRoot.setEnabled(time < CINEMA.start);
     if (this.clapper?.animation) {
       const group = this.clapper.animation;
       group.goToFrame(CLAPPER_CLOSE.from + (CLAPPER_CLOSE.to - CLAPPER_CLOSE.from) * smoothstep(
         (time - CINEMA.clapperClose) / (CINEMA.clap - CINEMA.clapperClose)));
     } else {
-      this.clapperRoot.rotation.z = -smoothstep((time - CINEMA.clapperClose) / .9) * .16;
+      this.clapperRoot.rotation.z = -smoothstep(
+        (time - CINEMA.clapperClose) / (CINEMA.clap - CINEMA.clapperClose)) * .16;
     }
-    this.shutter.setEnabled(time >= CINEMA.clap && time < CINEMA.start);
     this.architecture.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
     this.davidRoot.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
     const reveal = cueEnvelope(time, this.davidConfig.startTime, this.davidConfig.endTime, 1.2);
@@ -522,7 +517,7 @@ export class CinemaWorld {
     });
     this.reelsRoot.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
     this.filmTexture.uOffset = -time * .2;
-    if (this.bucket) this.bucket.rotation.z = -.1 - smoothstep((time - CINEMA.popcornTip) / .6) * 1.25;
+    this.buckets.forEach(({ node, side }) => { node.rotation.z = popcornTilt(time, side); });
     this.reelNodes.forEach((reel, index) => {
       reel.rotation.y = (index ? -1 : 1) * time * (.55 + audio.bass * .05);
     });

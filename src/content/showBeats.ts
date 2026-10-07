@@ -20,18 +20,20 @@ export function rocketLift(time: number): number {
 
 export const CINEMA = {
   clapperStart: 48.8,
-  clapperClose: 51.55,
-  clapperAnchor: 58,
-  clap: 52.2,
-  start: 52.45,
+  clapperClose: 50.85,
+  clapperAnchor: 59,
+  clap: 51.03,
+  start: 51.18,
   crtSync: 59.4,
   crtSyncEnd: 59.7,
   davidStart: 66,
   davidGate: 76,
   davidEnd: 83,
   reels: 77,
-  popcornTip: 77.7,
-  popcorn: 78.2,
+  popcornLookStart: 76,
+  popcornLookEnd: 81.5,
+  popcornTip: 77.55,
+  popcorn: 78.1,
   popcornEnd: 84.5,
   camera: 84,
   lens: 90,
@@ -40,13 +42,25 @@ export const CINEMA = {
   digital: 95,
 } as const;
 
+export const LEVEL_COMPLETE = { start: 46.3, end: CINEMA.clap, height: 26, width: 18 } as const;
+export const BRIDGE_CLOSE = { start: 168, end: 172.5 } as const;
+export const CLAP_CRT = {
+  start: CINEMA.clapperClose - .2,
+  collapse: CINEMA.clap,
+  collapsed: CINEMA.start - .045,
+  reopen: CINEMA.start + .2,
+  open: CINEMA.start + .68,
+  end: CINEMA.start + 1,
+  minimumHeight: .004,
+} as const;
+
 export const REHEARSAL_STOPS = [
   { label: "GAME", time: 0 },
   { label: "CLAPPERBOARD", time: 50 },
   { label: "CINEMA", time: 59 },
   { label: "DAVID", time: 68 },
   { label: "FILM REELS", time: 79 },
-  { label: "POPCORN", time: 78.6 },
+  { label: "POPCORN", time: 78.2 },
   { label: "CAMERA LENS", time: 87 },
   { label: "PROJECTOR", time: 91.5 },
   { label: "SPACE WARP", time: 94 },

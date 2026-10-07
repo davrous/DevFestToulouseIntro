@@ -19,17 +19,27 @@ ports, or `file://` URLs. BroadcastChannel cannot cross origins.
 
 1. Wait for SYSTEM READY in Babylon, then open the performance tab.
 2. Confirm **BABYLON SYNC / CONNECTED** and, under `D`, **STRUDEL_EVENTS: CONNECTED**.
-3. Start Babylon and Strudel independently. Evaluate with **Ctrl+Enter**; stop
-   Strudel with **Ctrl+.**. Re-evaluating replaces patterns while the cycle clock
-   keeps running. Code is saved locally after evaluation.
+3. For an aligned fresh run, leave Babylon paused or in its lobby, then click
+   **Start show + music** in Strudel. The two pages can be in separate tabs of
+   the same window. Switch to Babylon after clicking. This
+   schedules Babylon at the audible cycle-zero onset, including reported output
+   latency, even if the background Babylon tab is not rendering frames. An unready
+   or playing show rejects the launch and Strudel stops
+   with an explicit error. Fullscreen must still be requested in the show window.
+   Normal **Evaluate / Ctrl+Enter** starts only Strudel; stop it with **Ctrl+.**.
+   Re-evaluation preserves its clock. Code is saved locally after evaluation.
 4. In Babylon, connect **System / browser tab audio**, choose the Strudel tab
    and enable **Share audio**, exactly as before. No monitoring/double audio is
    routed to speakers. Browser permission still requires a user gesture.
 5. Observe continuous FFT energy and exact events separately. On the projector,
-   keep Babylon visible: hiding its tab deliberately pauses the show. Use two
+   keep Babylon visible for smooth rendering and physics. Synchronized playback
+   keeps its clock running across tab switches to stay aligned with the music;
+   ordinary playback still auto-pauses when hidden. Use two
    browser windows/displays for editing during playback, or pause/resume for
    inspection. Disable browser energy-saving/background throttling for rehearsal.
-6. Restart the show (`R`) and stop/restart Strudel for a fresh three-minute run.
+6. For a synchronized replay, stop Strudel, pause Babylon, then use **Start show
+   + music** again. Babylon pause, seek and playback-speed controls do not retime
+   Strudel; after those rehearsal actions, restart both for an aligned full run.
 
 The included [engineering demo](examples/devfest-av-sync.strudel) is **not** the
 keynote music. It uses three original local test drum samples and no downloads.
@@ -54,9 +64,10 @@ unfinished work first. The engineering demo and supplied excerpt remain separate
 | Time | Musical progression |
 | --- | --- |
 | 0:00-0:32 | Low cello foundation, intimate sustained harmony, original upper melody entering at 0:12.8; a quiet half-time heartbeat |
-| 0:32-0:54.4 | Suspended chords, deeper bass, introduction of the 150-BPM four-on-the-floor pulse |
-| 0:54.4-0:56 | Short breath around the cinema clap; existing string releases continue naturally |
-| 0:56-1:23.2 | Broader strings and answering voice under David's premiere and the reels |
+| 0:32-0:50.65 | Suspended chords, deeper bass, introduction of the 150-BPM four-on-the-floor pulse |
+| 0:50.65-0:51.135 | One-shot sawtooth descends three octaves while five local kick pulses become slower and lower; preceding sustained voices/reverb clear before the gesture |
+| 0:51.135-0:51.38 | Quiet 245-ms breath while the green phosphor line remains closed |
+| 0:51.38-1:23.2 | Score resumes with the CRT opening; broader strings and answering voice under David's premiere and the reels |
 | 1:23.2-1:36 | Percussion retreats for the lens/projector/warp passage |
 | 1:36-2:08 | Electronic pulse returns, quiet arpeggio joins the slow strings |
 | 2:08-2:27.2 | Higher voicings, rising string brightness, more insistent hats |
@@ -78,6 +89,14 @@ The A-natural in F7 is the conventional harmonic-minor dominant; the score stays
 in Bb minor and ends on its tonic. Automation is applied after `arrange` so it
 uses the global cycle rather than restarting its crescendo inside each section.
 
+The local REPL supplies `clapTiming` and `cinemaTiming` from the visual
+[show beats](src/content/showBeats.ts), avoiding duplicated clap timestamps.
+The tape-stop is an original synthesized gesture with a continuous pitch envelope
+and decelerating sample pulses, not time-stretching a captured external DJ mix.
+The global tempo remains 150 BPM; all section boundaries after 83.2 s and the
+180-s ending are unchanged. Reload the bundled keynote to replace an older draft
+explicitly; saved editor text is never silently updated.
+
 ## Architecture
 
 ```text
@@ -85,6 +104,7 @@ Strudel audio -> existing tab/line capture -> AudioAnalyzer FFT -> continuous en
 Strudel haps  -> public onTrigger callback -> BroadcastChannel -> MusicEventBus
                                                             -> reactive accents
 Babylon Timeline -> camera, scenes, speakers, physics release, final reveal
+Explicit Start show + music -> silent cycle-zero hap -> scheduled Babylon start
 ```
 
 The modular local REPL uses **@strudel/codemirror 1.3.0**, **@strudel/webaudio
@@ -119,12 +139,19 @@ $: audioAndVisual(s("hh*8").gain(.12), "hat")
 
 $: visual("impact").slow(8) // silent, scheduler-controlled event track
 $: cue("cinema-cut").slow(16) // silent repeated cue, guarded in Babylon
-$: cueAt("cinema-cut", 54.55 * .625) // one onset at this Strudel cycle
+$: cueAt("cinema-cut", cinemaTiming.clap * .625) // shared local visual timing
 ```
 
 `visual(name, pattern)` creates a **silent** output with the supplied pattern's
 rhythm; `pattern.visual(name)` preserves its audio. Transform rhythms *before*
 adding the helper when possible. Only intentional event tracks are forwarded.
+The synchronized launch uses the public REPL `editPattern` hook to add one
+silent cycle-zero hap; no sound is duplicated and ordinary musical cues never
+start or seek the camera. Launch confirmation and a two-second timeout surface
+failures. A timer independent of render frames launches the hidden Babylon tab;
+its first visible frame uses the elapsed time since the intended audible onset.
+Local controls/peer shutdown cancel a launch that has not started yet, including
+its timer. Manual playback controls restore ordinary hidden-tab auto-pause.
 Fractional `cueAt` cycle positions are supported. Tempo changes naturally affect
 when those cycle positions occur; cues do not follow Babylon time automatically.
 Align independent starts or move cue positions to match the performance.

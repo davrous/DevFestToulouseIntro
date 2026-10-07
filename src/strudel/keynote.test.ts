@@ -6,6 +6,7 @@ import * as mini from "@strudel/mini";
 import { transpiler } from "@strudel/transpiler";
 import { StrudelEventTransport } from "../engine/StrudelEventTransport";
 import { createVisualHelpers } from "./helpers";
+import { CINEMA, CLAP_CRT } from "../content/showBeats";
 
 const source = readFileSync(new URL("../../examples/devfest-keynote.strudel", import.meta.url), "utf8");
 const controls = (hap: Hap): Record<string, unknown> => {
@@ -18,7 +19,7 @@ async function score() {
   const transport = new StrudelEventTransport("strudel", vi.fn(), vi.fn());
   const send = vi.spyOn(transport, "send").mockImplementation(() => {});
   const helpers = createVisualHelpers(transport, () => ({ currentTime: 0, baseLatency: 0 }));
-  await core.evalScope(core, mini, helpers);
+  await core.evalScope(core, mini, helpers, { clapTiming: CLAP_CRT, cinemaTiming: CINEMA });
   const repl = core.repl({ getTime: () => 0, defaultOutput: vi.fn(), transpiler,
     onEvalError: (error) => { throw error; } });
   const pattern = await repl.evaluate(source, false);
@@ -93,10 +94,40 @@ describe("original three-minute keynote score", () => {
     expect(events.filter((event) => event.event === "hat").length).toBeGreaterThan(500);
     const cues = events.filter((event) => !["kick", "snare", "hat", "impact"].includes(event.event));
     expect(cues).toHaveLength(15);
-    for (const [name, seconds] of [["cinema-cut", 54.55], ["popcorn", 78.2], ["warp", 93], ["reveal", 173]] as const) {
+    for (const [name, seconds] of [["cinema-cut", CINEMA.clap], ["cinema", CINEMA.start],
+      ["popcorn", 78.2], ["warp", 93], ["reveal", 173]] as const) {
       expect(cues.filter((event) => event.event === name)).toHaveLength(1);
       expect(cues.find((event) => event.event === name)!.cycle).toBeCloseTo(seconds * .625, 7);
     }
     expect(audio).toHaveBeenCalledTimes(haps.filter((hap) => controls(hap).s !== undefined).length);
+  });
+
+  it("schedules one descending tape-stop, decelerates pulses and leaves the phosphor hold silent", async () => {
+    const { pattern, cps } = await score();
+    const sounds = pattern.queryArc(0, 112.5).filter((hap) => controls(hap).s !== undefined);
+    const stops = sounds.filter((hap) => controls(hap).penv === -36);
+    expect(stops).toHaveLength(1);
+    const stop = stops[0];
+    expect(Number(stop.whole!.begin) / cps).toBeCloseTo(CLAP_CRT.start, 7);
+    expect(Number(stop.duration) / cps + Number(controls(stop).release)).toBeCloseTo(
+      CLAP_CRT.collapsed - CLAP_CRT.start, 7);
+    expect(controls(stop)).toMatchObject({ panchor: 0, pcurve: 0, psustain: 1, room: 0 });
+    expect(Number(controls(stop).pattack)).toBeCloseTo(Number(stop.duration) / cps, 7);
+    const pulses = sounds.filter((hap) => controls(hap).s === "bd" && controls(hap).speed !== undefined);
+    expect(pulses).toHaveLength(5);
+    const onsets = pulses.map((hap) => Number(hap.whole!.begin) / cps).sort((a, b) => a - b);
+    for (let i = 2; i < onsets.length; i++) {
+      expect(onsets[i] - onsets[i - 1]).toBeGreaterThan(onsets[i - 1] - onsets[i - 2]);
+    }
+    expect(pulses.map((hap) => Number(controls(hap).speed))).toEqual(
+      [...pulses.map((hap) => Number(controls(hap).speed))].sort((a, b) => b - a));
+    for (const hap of sounds.filter((hap) => Number(hap.whole!.begin) / cps < CLAP_CRT.reopen - 1e-7)) {
+      const value = controls(hap);
+      const end = Number(hap.whole!.begin) / cps + Number(hap.duration) / cps
+        + Number(value.release ?? 0) + (value.room ? Number(value.roomsize ?? 0) : 0);
+      expect(end).toBeLessThanOrEqual(CLAP_CRT.collapsed + 1e-7);
+    }
+    const resumed = sounds.filter((hap) => Number(hap.whole!.begin) / cps >= CLAP_CRT.reopen - 1e-7);
+    expect(Math.min(...resumed.map((hap) => Number(hap.whole!.begin) / cps))).toBeCloseTo(CLAP_CRT.reopen, 7);
   });
 });
