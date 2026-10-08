@@ -6,6 +6,7 @@ import { ShowController } from "./ShowController";
 import { silentFeatures } from "./AudioAnalyzer";
 import { POPCORN_END, POPCORN_START } from "../scene/CinemaPopcorn";
 import { overflowPhysicsActive } from "../scene/DigitalOverflow";
+import { KEYNOTE_PERFORMANCE_URL } from "../strudel/performanceMode";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -154,6 +155,22 @@ export class App {
     await activation;
   }
 
+  async startWithStrudel(): Promise<void> {
+    this.cancelSynchronizedStart();
+    if (!this.ready) {
+      this.showNotice("The renderer is loading or recovering. Wait for SYSTEM READY before starting.");
+      return;
+    }
+    if (this.timeline.playing) {
+      this.showNotice("Pause or return to the lobby before starting the synchronized performance.");
+      return;
+    }
+    const frame = element<HTMLIFrameElement>("strudel-performance");
+    frame.src = `${KEYNOTE_PERFORMANCE_URL}&launch=${crypto.randomUUID()}`;
+    this.showNotice("Loading the bundled Strudel keynote. Music and visuals will start here when audio is ready.", true);
+    if (element<HTMLInputElement>("fullscreen").checked && !document.fullscreenElement) await this.toggleFullscreen();
+  }
+
   togglePlayback(): void {
     this.cancelSynchronizedStart();
     if (!this.ready) {
@@ -271,7 +288,10 @@ export class App {
   }
 
   private bindControls(): void {
-    this.playButton.addEventListener("click", () => void this.startFromGesture());
+    this.playButton.addEventListener("click", () => {
+      if (element<HTMLInputElement>("strudel-keynote").checked) void this.startWithStrudel();
+      else void this.startFromGesture();
+    });
     this.previewButton.addEventListener("click", () => void this.startFromGesture(155));
     element("resume").addEventListener("click", () => this.togglePlayback());
     element("return").addEventListener("click", () => this.returnToLobby());

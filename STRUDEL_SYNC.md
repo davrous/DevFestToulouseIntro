@@ -115,6 +115,16 @@ Strudel query spans, retaining their internal notes without generating
 repetitions across the entire score. Reload the bundled keynote to replace an older draft
 explicitly; saved editor text is never silently updated.
 
+## One-click launch from the show lobby
+
+Enable **Start the bundled Strudel keynote** on the Babylon lobby, then press
+**PLAY SEQUENCE**. The page loads `./strudel/?performance=keynote` in a hidden
+same-origin iframe with autoplay permission. That mode uses the bundled keynote
+for this run without overwriting the editor draft in local storage, waits for
+the Babylon peer, initializes audio, and requests the same confirmed
+synchronized onset used by **Start show + music**. The main Babylon page keeps
+focus throughout. Disable the option for visual-only playback.
+
 ## Architecture
 
 ```text

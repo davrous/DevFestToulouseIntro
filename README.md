@@ -44,6 +44,13 @@ through the quiet lens passage. After 96 s it rebuilds more vigorously until
 the 159-s exit impact, then clears the beat for a spacious dramatic pullback
 and a Bbm resolution at the settled title (173 s).
 
+For a one-click local performance, enable **Start the bundled Strudel keynote**
+on the main lobby and press **PLAY SEQUENCE**. The click opens a same-origin
+Strudel performance frame, loads the bundled keynote without replacing the
+saved editor draft, initializes local audio, and starts both clocks through the
+confirmed synchronized onset without leaving the Babylon tab. Leave the option
+disabled for visual-only playback.
+
 ## The show
 
 | Time | Scene |

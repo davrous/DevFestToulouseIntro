@@ -10,6 +10,7 @@
   </head>
   <body>
     <canvas id="render-canvas" tabindex="0" aria-label="DevFest Toulouse cinematic 3D sequence"></canvas>
+    <iframe id="strudel-performance" title="Local Strudel performance" allow="autoplay" hidden></iframe>
 
     <main id="lobby">
       <header class="masthead">
@@ -33,6 +34,7 @@
         <div class="loading-track" id="loading-track"><div id="loading-fill"></div></div>
         <p id="load-status" role="status">Initializing local renderer...</p>
         <label class="fullscreen-option"><input id="fullscreen" type="checkbox" checked /> Enter fullscreen on play <span>SPACE to start</span></label>
+        <label class="fullscreen-option"><input id="strudel-keynote" type="checkbox" /> Start the bundled Strudel keynote <span>PLAYS WITHOUT LEAVING THIS TAB</span></label>
         <details class="audio-setup">
           <summary>Live audio setup <span>OPTIONAL / NO SOUND IS PLAYED BY THIS PAGE</span></summary>
           <div class="audio-inputs">

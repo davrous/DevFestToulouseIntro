@@ -24,6 +24,8 @@ vi.mock("../debug/DebugPanel", () => ({
 class TestElement extends EventTarget {
   hidden = false;
   disabled = false;
+  checked = false;
+  src = "";
   textContent = "";
   style = { width: "" };
   classList = { add() {}, remove() {} };
@@ -71,6 +73,25 @@ async function setup() {
 }
 
 describe("synchronized launch from the other tab", () => {
+  it("loads the bundled keynote in the hidden performance frame without starting visuals early", async () => {
+    const { app } = await setup();
+    (doc.getElementById("strudel-keynote") as TestElement).checked = true;
+    doc.getElementById("play")!.dispatchEvent(new Event("click"));
+    expect((doc.getElementById("strudel-performance") as TestElement).src)
+      .toMatch(/^\.\/strudel\/\?performance=keynote&launch=[\w-]+$/);
+    expect(app.inLobby).toBe(true);
+    expect(app.timeline.playing).toBe(false);
+  });
+
+  it("reloads the performance frame for a fresh synchronized run", async () => {
+    await setup();
+    (doc.getElementById("strudel-keynote") as TestElement).checked = true;
+    doc.getElementById("play")!.dispatchEvent(new Event("click"));
+    const first = (doc.getElementById("strudel-performance") as TestElement).src;
+    doc.getElementById("play")!.dispatchEvent(new Event("click"));
+    expect((doc.getElementById("strudel-performance") as TestElement).src).not.toBe(first);
+  });
+
   it("starts a hidden show with no render frames, keeps time on return, and stays synchronized across tab switches", async () => {
     const { app, launch } = await setup();
     doc.hidden = true;

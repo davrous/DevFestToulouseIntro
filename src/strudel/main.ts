@@ -11,6 +11,7 @@ import { StrudelEventTransport } from "../engine/StrudelEventTransport";
 import { audioTimeToEpoch, createVisualHelpers, withSynchronizedStart } from "./helpers";
 import { CINEMA, CLAP_CRT } from "../content/showBeats";
 import { SPEAKERS } from "../content/speakers";
+import { requestsKeynotePerformance } from "./performanceMode";
 import "./style.css";
 
 function element<T extends HTMLElement>(id: string): T {
@@ -33,6 +34,8 @@ let initialized = false;
 let synchronized = false;
 let evaluating = false;
 let playing = false;
+const performanceMode = requestsKeynotePerformance(location.search);
+let automaticKeynote = performanceMode;
 
 function updateStartButton(): void {
   startTogether.disabled = !initialized || evaluating || playing || transport.getStatus() !== "CONNECTED";
@@ -56,7 +59,7 @@ function savedCode(): string {
 
 const editor = new StrudelMirror({
   root: element("editor"),
-  initialCode: savedCode(),
+  initialCode: performanceMode ? keynote : savedCode(),
   prebake: () => ready,
   getTime: () => audio.getAudioContext().currentTime,
   defaultOutput: audio.webaudioOutput,
@@ -95,6 +98,7 @@ const editor = new StrudelMirror({
   },
   afterEval: ({ code }) => {
     synchronized = false;
+    if (performanceMode) return;
     try { localStorage.setItem("devfest-strudel-code-v1", code); }
     catch (error) { console.warn("Strudel draft could not be saved", error); report("Draft not saved; export your code before closing."); }
   },
@@ -105,15 +109,17 @@ async function run(): Promise<void> {
   catch (error) { console.error("Strudel evaluation failed", error); report(String(error)); }
 }
 
-evaluate.addEventListener("click", () => void run());
-startTogether.addEventListener("click", () => {
+function launchSynchronized(): void {
   if (editor.repl.scheduler.started || transport.getStatus() !== "CONNECTED") {
     report("Stop Strudel and open the ready Babylon show before synchronized playback.");
     return;
   }
   synchronized = true;
   void run().finally(() => { synchronized = false; });
-});
+}
+
+evaluate.addEventListener("click", () => void run());
+startTogether.addEventListener("click", launchSynchronized);
 element("stop").addEventListener("click", () => void editor.stop());
 function loadScore(source: string): void {
   if (editor.repl.scheduler.started) { report("Stop playback before loading a score. Your current code was not changed."); return; }
@@ -127,6 +133,12 @@ const health = setInterval(() => {
   sync.textContent = `BABYLON SYNC / ${transport.getStatus()}`;
   sync.dataset.connected = String(connected);
   updateStartButton();
+  if (automaticKeynote && initialized && connected && !evaluating && !playing) {
+    automaticKeynote = false;
+    status.dataset.error = "false";
+    status.textContent = "KEYNOTE READY / starting synchronized performance...";
+    launchSynchronized();
+  }
   // The scheduler briefly reports negative cycles during its cycle-zero audio preroll.
   if (editor.repl.scheduler.started) transport.setTiming(Math.max(0, editor.repl.scheduler.now()), editor.repl.scheduler.cps);
 }, 1000);
