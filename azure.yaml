@@ -1,0 +1,13 @@
+name: devfest-toulouse-intro
+metadata:
+  template: devfest-toulouse-intro@0.0.1
+
+infra:
+  provider: bicep
+  path: infra
+
+hooks:
+  postprovision:
+    shell: sh
+    run: ./scripts/deploy-azure-static-site.sh
+    continueOnError: false

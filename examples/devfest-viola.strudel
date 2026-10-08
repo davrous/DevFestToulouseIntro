@@ -1,0 +1,227 @@
+// Three original scores, one visual clock. Choose arcade, cinema or trance.
+// Local VSCO 2 CE (CC0) orchestra + Strudel synthesis. The solo viola is live.
+const VERSION = 'arcade'
+setcpm(150 / 4)
+
+const CPS = .625
+const END = 180 * CPS
+const P = {
+  arcade: { transpose: 0, chip: 'pulse', chipLevel: .07, trance: .14,
+    strings: .075, piano: .11, horn: .085, arpSpeed: 1, rhythm: 1, majorEnding: false },
+  cinema: { transpose: 5, chip: 'square', chipLevel: .035, trance: .085,
+    strings: .095, piano: .17, horn: .09, arpSpeed: 1, rhythm: .88, majorEnding: false },
+  trance: { transpose: 0, chip: 'square', chipLevel: .055, trance: .18,
+    strings: .08, piano: .09, horn: .13, arpSpeed: 2, rhythm: 1.08, majorEnding: true },
+}[VERSION]
+if (!P) throw new Error('Unknown viola score')
+
+const H = {
+  dm: { pad: "[d3,a3,f4]", upper: "[f4,a4,d5]", root: "d2",
+    arp: "d4 a4 f5 a4 e5 a4 f5 a4", answer: "a5 ~ f5 e5", horn: "[d3,a3]", piano: "d4 ~ a4 e5", turn: "f5 a5 d6 a5" },
+  bb: { pad: "[bb2,f3,d4]", upper: "[f4,bb4,d5]", root: "bb1",
+    arp: "bb3 f4 d5 f4 c5 f4 d5 f4", answer: "f5 ~ d5 c5", horn: "[bb2,f3]", piano: "bb3 ~ f4 d5", turn: "d5 f5 bb5 f5" },
+  f: { pad: "[f3,a3,c4,g4]", upper: "[a4,c5,f5]", root: "f2",
+    arp: "f4 c5 a5 c5 g5 c5 a5 c5", answer: "a5 g5 f5 ~", horn: "[f3,c4]", piano: "f4 ~ c5 a4", turn: "a5 g5 f5 c5" },
+  c: { pad: "[c3,g3,e4]", upper: "[g4,c5,e5]", root: "c2",
+    arp: "c4 g4 e5 g4 d5 g4 e5 g4", answer: "g5 ~ e5 d5", horn: "[c3,g3]", piano: "c4 ~ g4 e5", turn: "e5 g5 c6 g5" },
+  gm: { pad: "[g2,d3,bb3,f4]", upper: "[bb4,d5,g5]", root: "g2",
+    arp: "g3 d4 bb4 d4 a4 d4 bb4 d4", answer: "d5 ~ bb4 a4", horn: "[g2,d3]", piano: "g3 ~ d4 bb4", turn: "bb4 d5 g5 d5" },
+  a: { pad: "[a2,e3,g3,c#4]", upper: "[g4,a4,c#5,e5]", root: "a1",
+    arp: "a3 e4 c#5 e4 g4 e4 c#5 e4", answer: "e5 ~ c#5 a4", horn: "[a2,e3]", piano: "a3 ~ e4 c#5", turn: "c#5 e5 a5 e5" },
+  open: { pad: "[d3,a3,e4]", upper: "[a4,d5,e5]", root: "d2",
+    arp: "d4 ~ a4 ~ e5 ~ a4 ~", answer: "~ a5 ~ e5", horn: "[d3,a3]", piano: "d4 ~ ~ a4 ~ e5 ~ ~", turn: "a4 ~ e5 ~" },
+  major: { pad: "[d3,a3,f#4,e5]", upper: "[f#4,a4,d5]", root: "d2",
+    arp: "d4 a4 f#5 a4 e5 a4 f#5 a4", answer: "a5 ~ f#5 e5", horn: "[d3,a3]", piano: "d4 ~ a4 f#5", turn: "f#5 a5 d6 a5" },
+}
+// Speaker chords belong to the current progression, never a second unrelated cadence.
+const PHASES = [
+  [0, 6.4, 'dm', 'opening', .12], [6.4, 12.8, 'dm', 'lift', .32],
+  [12.8, 25.6, 'bb', 'arcade', .5], [25.6, 32, 'f', 'dialogue', .61],
+  [32, 38.4, VERSION === 'cinema' ? 'gm' : 'c', 'dialogue', .66],
+  [38.4, 44.8, 'gm', 'build', .76], [44.8, 48.8, 'a', 'tension', .84],
+  [48.8, clapTiming.start, 'a', 'brake', .6],
+  [clapTiming.reopen, 52.8, 'dm', 'restart', .3], [52.8, 56, 'dm', 'cinema-lift', .42],
+  [56, 59.2, 'bb', 'warm', .48], [59.2, 62.4, 'c', 'lead-in', .53],
+  [62.4, 70.4, 'f', 'david', .55], [70.4, 78.4, 'gm', 'reels', .64],
+  [78.4, 81.6, 'open', 'ease', .3], [81.6, 96, 'open', 'calm', .12],
+  [96, 102.4, 'dm', 'return', .65], [102.4, 108.8, 'bb', 'return', .73],
+  [108.8, 112, 'a', 'return', .77], [112, 118.4, 'dm', 'drive', .83],
+  [118.4, 124.8, VERSION === 'cinema' ? 'gm' : 'f', 'drive', .86],
+  [124.8, 128, 'a', 'drive', .87], [128, 134.4, 'bb', 'summit', .92],
+  [134.4, 140.8, 'f', 'summit', .94], [140.8, 147.2, 'gm', 'summit', .97],
+  [147.2, 150.4, 'bb', 'exit-lift', 1], [150.4, 153.6, 'gm', 'exit-open', .86],
+  [153.6, 156.8, 'a', 'exit-cadence', .7], [156.8, 159, 'a', 'exit-breath', .5],
+  [159, 163, 'dm', 'reveal', .8],
+  [163, 166.2, 'bb', 'discover', .7], [166.2, 169.4, 'f', 'discover', .76],
+  [169.4, 173, 'a', 'cadence', .62], [173, 176, P.majorEnding ? 'major' : 'dm', 'title', .7],
+]
+const V = { pad: 1, cello: 2, flute: 3, harp: 4, horn: 5, bell: 6, sub: 7,
+  drums: 8, strings: 9, chip: 10, trance: 11, piano: 12, acid: 13, mallet: 14, choir: 15, timpani: 17 }
+const role = (id, p) => p.withValue(v => ({ ...v, scoreVoice: id }))
+const sound = (id, p, name, gain) => role(id, p.s(name).gain(gain))
+const pad = (p, gain) => sound(V.pad, p, "triangle", gain).fm(.22).fmh(1)
+  .attack(.5).decay(.2).sustain(.85).release(.75).lpf(1600).room(.12).roomsize(.7)
+const strings = (p, gain) => sound(V.strings, p, "orchestra_strings", gain)
+  .attack(.18).decay(.1).sustain(.9).release(.65).pan(.36).lpf(4800).room(.13).roomsize(.75)
+const cello = (p, gain) => sound(V.cello, p, "orchestra_cello", gain)
+  .attack(.12).decay(.1).sustain(.85).release(.6).pan(.46).lpf(1700).room(.09).roomsize(.6)
+const piano = (p, gain) => sound(V.piano, p, "orchestra_piano", gain)
+  .attack(.004).decay(.3).sustain(.25).release(.45).pan(.56).room(.12).roomsize(.7)
+const harp = (p, gain) => sound(V.harp, p, "orchestra_harp", gain)
+  .attack(.003).decay(.16).sustain(.2).release(.35).pan(.24).room(.1).roomsize(.6)
+const flute = (p, gain) => sound(V.flute, p, "orchestra_flute", gain)
+  .attack(.1).decay(.1).sustain(.85).release(.25).pan(.73).room(.1).roomsize(.65)
+const horn = (p, gain) => sound(V.horn, p, "orchestra_horn", gain)
+  .attack(.09).decay(.15).sustain(.9).release(.65).pan(.6).room(.14).roomsize(.8)
+const chip = (p, gain) => sound(V.chip, p, P.chip, gain)
+  .attack(.003).decay(.11).sustain(.12).release(.04).pw(.28).lpf(2800).crush(12)
+const trance = (p, gain, unison = 4) => sound(V.trance, p, "supersaw", gain)
+  .unison(unison).detune(.12).spread(.65).attack(.015).decay(.12).sustain(.18).release(.07).lpf(3800)
+const sub = (p, gain) => sound(V.sub, p, "sine", gain).attack(.01).sustain(.8).release(.1)
+const acid = (p, gain) => sound(V.acid, p, "sawtooth", gain)
+  .attack(.005).decay(.12).sustain(.3).release(.06).lpf(750).lpq(1.5).lpenv(1.3)
+const bell = (p, gain) => sound(V.bell, p, "sine", gain).fm(1.6).fmh(3.5)
+  .fmdecay(.25).fmsustain(.04).attack(.003).decay(.3).sustain(.02).release(.25).room(.12).roomsize(.7)
+const mallet = (p, gain) => sound(V.mallet, p, "triangle", gain).fm(1.1).fmh(2)
+  .fmdecay(.1).fmsustain(.02).attack(.003).decay(.1).sustain(.05).release(.05).pan(.68)
+const choir = (p, gain) => sound(V.choir, p, "sawtooth", gain).vowel("o")
+  .attack(.7).decay(.3).sustain(.65).release(1.1).lpf(1900).room(.16).roomsize(.9)
+const drum = (p, gain) => role(V.drums, p.gain(gain).clip(1).release(.01).room(0))
+
+function finite(p, from, to, anchor = from) {
+  const span = new TimeSpan(from * CPS, to * CPS)
+  return p.late(anchor * CPS).withQuerySpanMaybe(query => query.intersection(span))
+    .filterHaps(h => h.hasOnset() && h.whole && Number(h.whole.begin) >= from * CPS - 1e-7
+      && Number(h.whole.begin) < to * CPS - 1e-7)
+    .withHap(h => {
+      const start = Number(h.whole.begin) / CPS
+      const raw = (Number(h.whole.end) - Number(h.whole.begin)) / CPS
+      let duration = Math.min(raw, to - start)
+      let release = Number(h.value.release || 0)
+      let room = h.value.room
+      const deadline = to <= clapTiming.start ? clapTiming.start : 180
+      if (start + duration + release + (room ? Number(h.value.roomsize || 0) : 0) > deadline) {
+        room = 0
+        release = Math.min(release, .04)
+        duration = Math.min(duration, deadline - start - release - .01)
+      }
+      // Fresh controls matter: Web Audio writes its duration back into the hap value.
+      return h.withValue(v => ({ ...v, room, release, duration: duration * CPS }))
+    })
+}
+const phrase = (p, from, seconds) => finite(p.slow(seconds * CPS), from, from + seconds)
+const decorative = p => p.filterHaps(h => h.value.scoreAccent || !speakerTimings.some(t =>
+  Number(h.whole.begin) / CPS >= t - 1.2 && Number(h.whole.begin) / CPS < t + 2.4))
+const layers = []
+// Rhythmic voices keep the global grid; held chords can start exactly on a visual cue.
+const pitched = (p, phase, anchor = phase[0]) => finite(p.transpose(P.transpose).withValue(v =>
+  ({ ...v, scoreSection: phase[3], scoreHarmony: phase[2] })), phase[0], phase[1], anchor)
+for (const phase of PHASES) {
+  const [from, to, harmony, name, energy] = phase
+  const h = H[harmony]
+  const quiet = ['opening', 'restart', 'calm'].includes(name)
+  const exit = name.startsWith('exit-')
+  const final = from >= 159
+  const held = note(h.pad).slow(2)
+  const base = note(h.root).slow(2)
+  layers.push(pitched(pad(held, .025 + .075 * energy), phase))
+  layers.push(pitched(cello(base, .035 + .07 * energy), phase))
+  if (name !== 'brake') {
+    layers.push(pitched(piano(note(h.piano).slow(quiet || exit || final ? 4 : 2),
+      P.piano * (quiet ? .35 : exit || final ? .55 : .7)), phase, 0))
+  }
+  if (!quiet && name !== 'brake') {
+    layers.push(pitched(strings(note(h.upper).slow(2), P.strings * energy), phase))
+  }
+  if (name === 'calm') {
+    layers.push(pitched(harp(note("~ d5 ~ ~ ~ a4 ~ ~").slow(4), .05), phase, 0))
+  }
+  if (['lift', 'arcade', 'dialogue', 'build', 'tension'].includes(name)) {
+    layers.push(pitched(decorative(chip(note(h.arp), P.chipLevel * energy)), phase, 0))
+    layers.push(pitched(decorative(mallet(note(h.turn).mask("<0 1>"), .045 * energy)), phase, 0))
+  }
+  if (['dialogue', 'build', 'cinema-lift', 'warm', 'lead-in', 'david', 'reels', 'return', 'drive', 'summit', 'exit-lift', 'exit-open'].includes(name)) {
+    if (name !== 'david') layers.push(pitched(decorative(flute(note(h.answer).slow(2).mask("<0 1>"), .07 * energy)), phase, 0))
+    layers.push(pitched(decorative(harp((exit ? note(h.turn).slow(2) : note(h.arp)).mask("<1 0>"), .065 * energy)), phase, 0))
+  }
+  if (from >= 25.6 && !quiet && name !== 'ease' && name !== 'brake') {
+    layers.push(pitched(horn(note(h.horn).slow(2).mask(final || exit ? "1" : "<0 1>"), P.horn * energy), phase))
+  }
+  if (['arcade', 'build', 'tension', 'return', 'drive', 'summit', 'exit-lift', 'exit-open'].includes(name)) {
+    const arp = exit ? note(h.arp).slow(name === 'exit-open' ? 2 : 1)
+      : VERSION === 'cinema' ? note(h.arp).mask("1 0 1 0 0 1 0 1") : note(h.arp).fast(P.arpSpeed)
+    layers.push(pitched(decorative(trance(arp, P.trance * energy * (exit ? .75 : 1), from >= 128 ? 6 : 4)), phase, 0))
+    layers.push(pitched(sub(note(h.root).slow(2), .12 * energy), phase))
+    if (from >= 96) layers.push(pitched(acid(note(h.root).fast(exit ? 4 : 8), .1 * energy * (exit ? .45 : 1)), phase, 0))
+  }
+  if (['cinema-lift', 'warm', 'lead-in', 'david', 'reels'].includes(name)) {
+    layers.push(pitched(sub(base, .07 * energy), phase))
+  }
+  if (final) {
+    layers.push(pitched(choir(note(h.upper).slow(2), .04 * energy), phase))
+  }
+  if (!quiet && !final) {
+    const beat = name === 'lift' ? "bd ~ ~ ~" : name === 'ease' || name === 'exit-breath' ? "bd ~ bd ~" : "bd*4"
+    layers.push(audioAndVisual(finite(drum(s(beat), (.09 + .23 * energy) * P.rhythm), from, to, 0), "kick"))
+    if (!['lift', 'ease', 'cinema-lift', 'david', 'warm', 'lead-in', 'exit-cadence', 'exit-breath'].includes(name)) {
+      layers.push(finite(drum(s("~ sd ~ sd"), .08 + .10 * energy).visual("snare"), from, to, 0))
+    }
+    if (name !== 'ease' && name !== 'exit-breath') {
+      const hats = name === 'cinema-lift' || name === 'exit-cadence' ? "hh*4"
+        : name === 'exit-open' ? "hh*8" : from >= 112 ? "hh*16" : "hh*8"
+      layers.push(audioAndVisual(finite(drum(s(hats), .016 + .035 * energy), from, to, 0), "hat"))
+    }
+  }
+}
+
+// David's lyrical turn starts inside the F-major passage, not over a new conflicting chord.
+const accent = (p, i) => p.withValue(v => ({ ...v, scoreAccent: i + 1 }))
+layers.push(phrase(accent(flute(note("a5 g5 f5 ~ e5 f5 a5 ~"), .08), 1).transpose(P.transpose), 63.6, 3.2))
+speakerTimings.forEach((time, i) => {
+  const phase = PHASES.find(([from, to]) => time >= from && time < to)
+  const h = H[phase[2]]
+  layers.push(phrase(accent(strings(note(h.upper), .065).attack(.32).release(1), i).transpose(P.transpose), time, 1.6))
+  const answer = Math.ceil((time + .6) / .4 - 1e-7) * .4
+  layers.push(phrase(accent(harp(note(h.turn), .07), i).transpose(P.transpose), answer, 1.6))
+})
+
+// The dominant is already sounding before the pitch descent; the restart resolves it.
+layers.push(phrase(horn(note("[a2,e3,g3,c#4]"), .085).attack(.04).release(.05).room(0)
+  .transpose(P.transpose), 48.8, 1.6))
+const stopLength = clapTiming.collapsed - clapTiming.start
+layers.push(phrase(note("a4").transpose(P.transpose).s("sawtooth")
+  .penv(-36).panchor(0).pcurve(0).pattack(stopLength - .01).pdecay(.001).psustain(1).prelease(.001)
+  .attack(.004).decay(.08).sustain(.75).release(.01).gain(.15).lpf(1700).room(0),
+  clapTiming.start, stopLength - .01))
+layers.push(stack(...[0, .045, .115, .225, .39].map(offset => phrase(s("bd")
+  .speed(2 ** (-3 * offset / stopLength)).gain(.12).clip(1).release(.006).room(0),
+  clapTiming.start + offset, Math.min(.05 + offset * .2, stopLength - offset - .01)))))
+layers.push(phrase(strings(note("[d4,f4,a4]"), .055).attack(.3).transpose(P.transpose),
+  clapTiming.reopen, 52.8 - clapTiming.reopen))
+
+// The long VI-iv-V preparation opens the texture before the orchestral tonic.
+for (const time of [159, 163, 169.4, 173]) {
+  layers.push(phrase(sound(V.timpani, note(time === 169.4 ? "a1" : "d2"), "orchestra_timpani", .2)
+    .attack(.003).release(.45).transpose(P.transpose), time, .7))
+}
+layers.push(phrase(horn(note("[d3,a3,d4]"), .10).attack(.4).release(1.2)
+  .transpose(P.transpose), 159, 2.4))
+layers.push(phrase(bell(note("[d5,a5]"), .09).transpose(P.transpose), 173, .8))
+$: stack(...layers)
+
+$: cueAt("game", 0)
+$: cueAt("level-complete", 46.3 * CPS)
+$: cueAt("cinema-cut", cinemaTiming.clap * CPS)
+$: cueAt("cinema", cinemaTiming.start * CPS)
+$: cueAt("speaker-david", speakerTimings[1] * CPS)
+$: cueAt("film-reels", cinemaTiming.reels * CPS)
+$: cueAt("popcorn", cinemaTiming.popcorn * CPS)
+$: cueAt("lens", cinemaTiming.lens * CPS)
+$: cueAt("projector", cinemaTiming.projector * CPS)
+$: cueAt("warp", cinemaTiming.space * CPS)
+$: cueAt("d-entry", 96 * CPS)
+$: cueAt("speaker-eric", speakerTimings[2] * CPS)
+$: cueAt("speaker-mitsuru", speakerTimings[3] * CPS)
+$: cueAt("climax", 147 * CPS)
+$: cueAt("reveal", 173 * CPS)
+// No new notes after 176 seconds. All releases end before 180. The score never loops.

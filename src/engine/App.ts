@@ -6,7 +6,9 @@ import { ShowController } from "./ShowController";
 import { silentFeatures } from "./AudioAnalyzer";
 import { POPCORN_END, POPCORN_START } from "../scene/CinemaPopcorn";
 import { overflowPhysicsActive } from "../scene/DigitalOverflow";
-import { KEYNOTE_PERFORMANCE_URL } from "../strudel/performanceMode";
+import { KEYNOTE_PERFORMANCE_URL, PERFORMANCE_ERROR } from "../strudel/performanceMode";
+import { fillScoreSelector, getScore } from "../strudel/scores";
+import { fillSoundtrackSelector, getSoundtrack } from "../audio/soundtracks";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -28,6 +30,9 @@ export class App {
   private synchronizedStart?: { at: number; senderId: string };
   private synchronizedStartTimer = 0;
   private synchronizedPlayback = false;
+  private strudelLaunchId?: string;
+  private soundtrackActive = false;
+  private soundtrackAttached = false;
   private readonly visualAudio = silentFeatures();
   private visualRevealAccent = 0;
   private readonly lobby = element("lobby");
@@ -35,6 +40,7 @@ export class App {
   private readonly notice = element("notice");
   private readonly playButton = element<HTMLButtonElement>("play");
   private readonly previewButton = element<HTMLButtonElement>("preview");
+  private readonly soundtrackPlayer = element<HTMLAudioElement>("soundtrack-player");
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.engine = this.createEngine();
@@ -58,6 +64,7 @@ export class App {
     window.addEventListener("pagehide", () => {
       this.cancelSynchronizedStart();
       this.timeline.pause();
+      this.soundtrackPlayer.pause();
       this.showController.strudelEvents.disconnect();
     });
     canvas.addEventListener("webglcontextlost", (event) => {
@@ -82,6 +89,7 @@ export class App {
       if (!document.hidden) this.beginSynchronizedStart(performance.now());
       if (document.hidden && this.timeline.playing && !this.synchronizedPlayback) {
         this.timeline.pause();
+        this.soundtrackPlayer.pause();
         this.showNotice("Show paused because this tab is hidden. Press SPACE when ready.");
       }
     });
@@ -100,6 +108,7 @@ export class App {
       const now = performance.now();
       this.beginSynchronizedStart(now);
       const time = this.inLobby ? 0 : this.timeline.tick(now);
+      if (this.soundtrackActive && time >= 180 && !this.timeline.playing) this.soundtrackPlayer.pause();
       const audio = this.showController.sample(now);
       if (this.timeline.playing || this.inLobby || !this.showController.enabled) {
         Object.assign(this.visualAudio, audio);
@@ -137,6 +146,10 @@ export class App {
     this.notice.hidden = true;
     document.body.classList.remove("lobby-visible");
     this.timeline.seek(time);
+    if (this.soundtrackActive) {
+      this.soundtrackPlayer.currentTime = time;
+      if (this.soundtrackPlayer.paused) void this.resumeSoundtrack();
+    }
     this.showController.resetTransient();
     Object.assign(this.visualAudio, silentFeatures());
     this.visualRevealAccent = 0;
@@ -146,10 +159,26 @@ export class App {
   }
 
   async startFromGesture(time = 0): Promise<void> {
+    const musicSource = element<HTMLSelectElement>("music-source").value;
+    if (time === 0 && musicSource === "strudel") {
+      this.soundtrackActive = false;
+      await this.startWithStrudel();
+      return;
+    }
+    this.soundtrackActive = musicSource === "wav";
     const activation = this.showController.audio.activate().catch((error: unknown) => {
       console.warn("Audio activation failed", error);
       this.showNotice("Audio could not be activated. The visual show continues without audio analysis.");
     });
+    if (this.soundtrackActive) {
+      try {
+        await this.playSoundtrack(time);
+      } catch (error) {
+        console.error("WAV soundtrack playback failed", error);
+        this.soundtrackActive = false;
+        this.showNotice(`WAV soundtrack unavailable: ${error instanceof Error ? error.message : String(error)}. The visual show will continue.`, true);
+      }
+    }
     this.start(time);
     if (element<HTMLInputElement>("fullscreen").checked && !document.fullscreenElement) await this.toggleFullscreen();
     await activation;
@@ -165,9 +194,13 @@ export class App {
       this.showNotice("Pause or return to the lobby before starting the synchronized performance.");
       return;
     }
+    this.soundtrackActive = false;
+    this.soundtrackPlayer.pause();
     const frame = element<HTMLIFrameElement>("strudel-performance");
-    frame.src = `${KEYNOTE_PERFORMANCE_URL}&launch=${crypto.randomUUID()}`;
-    this.showNotice("Loading the bundled Strudel keynote. Music and visuals will start here when audio is ready.", true);
+    const score = getScore(element<HTMLSelectElement>("strudel-score").value);
+    this.strudelLaunchId = crypto.randomUUID();
+    frame.src = `${KEYNOTE_PERFORMANCE_URL}&score=${score.id}&launch=${this.strudelLaunchId}`;
+    this.showNotice(`Loading ${score.label}. Music and visuals will start here when audio is ready.`, true);
     if (element<HTMLInputElement>("fullscreen").checked && !document.fullscreenElement) await this.toggleFullscreen();
   }
 
@@ -181,10 +214,12 @@ export class App {
       void this.startFromGesture();
     } else if (this.timeline.playing) {
       this.timeline.pause();
+      this.soundtrackPlayer.pause();
       document.body.classList.remove("idle");
     } else {
       this.notice.hidden = true;
       this.timeline.play();
+      if (this.soundtrackActive) void this.resumeSoundtrack();
       this.resetCursor();
     }
   }
@@ -197,6 +232,7 @@ export class App {
     }
     if (this.inLobby) this.start(time);
     else this.timeline.seek(time);
+    if (this.soundtrackActive) this.soundtrackPlayer.currentTime = time;
     this.showController.resetTransient();
     Object.assign(this.visualAudio, silentFeatures());
     this.visualRevealAccent = 0;
@@ -206,6 +242,9 @@ export class App {
   returnToLobby(): void {
     this.cancelSynchronizedStart();
     this.timeline.pause();
+    this.soundtrackPlayer.pause();
+    this.soundtrackPlayer.currentTime = 0;
+    this.soundtrackActive = false;
     this.inLobby = true;
     this.lobby.hidden = false;
     this.debug.setVisible(false);
@@ -288,9 +327,23 @@ export class App {
   }
 
   private bindControls(): void {
-    this.playButton.addEventListener("click", () => {
-      if (element<HTMLInputElement>("strudel-keynote").checked) void this.startWithStrudel();
-      else void this.startFromGesture();
+    fillScoreSelector(element<HTMLSelectElement>("strudel-score"));
+    fillSoundtrackSelector(element<HTMLSelectElement>("soundtrack"));
+    const musicSource = element<HTMLSelectElement>("music-source");
+    const updateMusicChoices = () => {
+      element("strudel-score-choice").hidden = musicSource.value !== "strudel";
+      element("soundtrack-choice").hidden = musicSource.value !== "wav";
+    };
+    musicSource.addEventListener("change", updateMusicChoices);
+    updateMusicChoices();
+    this.playButton.addEventListener("click", () => void this.startFromGesture());
+    window.addEventListener("message", (event: MessageEvent<unknown>) => {
+      const frame = element<HTMLIFrameElement>("strudel-performance");
+      if (event.origin !== location.origin || event.source !== frame.contentWindow) return;
+      const data = event.data;
+      if (!data || typeof data !== "object" || !("type" in data) || data.type !== PERFORMANCE_ERROR) return;
+      if (!("launch" in data) || data.launch !== this.strudelLaunchId || !("message" in data) || typeof data.message !== "string") return;
+      this.showNotice(`Strudel could not start: ${data.message.slice(0, 350)}`, true);
     });
     this.previewButton.addEventListener("click", () => void this.startFromGesture(155));
     element("resume").addEventListener("click", () => this.togglePlayback());
@@ -343,6 +396,32 @@ export class App {
     } finally {
       button.disabled = false;
       debugButton.disabled = false;
+    }
+  }
+
+  private async playSoundtrack(time: number): Promise<void> {
+    const soundtrack = getSoundtrack(element<HTMLSelectElement>("soundtrack").value);
+    if (!this.soundtrackAttached) {
+      await this.showController.soundtrack.connectMediaElement(this.soundtrackPlayer);
+      this.soundtrackAttached = true;
+    }
+    if (this.soundtrackPlayer.getAttribute("src") !== soundtrack.url) {
+      this.soundtrackPlayer.src = soundtrack.url;
+      this.soundtrackPlayer.dataset.title = soundtrack.label;
+      this.soundtrackPlayer.load();
+    }
+    this.soundtrackPlayer.currentTime = time;
+    await this.soundtrackPlayer.play();
+  }
+
+  private async resumeSoundtrack(): Promise<void> {
+    try {
+      this.soundtrackPlayer.currentTime = this.timeline.time;
+      await this.soundtrackPlayer.play();
+    } catch (error) {
+      console.error("WAV soundtrack resume failed", error);
+      this.soundtrackActive = false;
+      this.showNotice(`WAV soundtrack could not resume: ${error instanceof Error ? error.message : String(error)}.`, true);
     }
   }
 }

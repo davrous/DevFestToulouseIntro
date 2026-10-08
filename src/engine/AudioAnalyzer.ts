@@ -38,10 +38,12 @@ export class AudioAnalyzer {
   private context?: AudioContext;
   private analyser?: AnalyserNode;
   private preamp?: GainNode;
-  private inputGainDb = 12;
+  private inputGainDb: number;
   private levelDb = -Infinity;
-  private source?: MediaStreamAudioSourceNode;
+  private source?: AudioNode;
   private stream?: MediaStream;
+  private mediaElement?: HTMLMediaElement;
+  private routesToOutput = false;
   private ownsTracks = false;
   private request = 0;
   private cleanupTracks: Array<() => void> = [];
@@ -52,7 +54,12 @@ export class AudioAnalyzer {
   private lastBeat = -Infinity;
   private lastSample = 0;
 
-  constructor(private readonly notify: (message: string) => void) {}
+  constructor(private readonly notify: (message: string) => void, initialGainDb = 12) {
+    if (!Number.isFinite(initialGainDb) || initialGainDb < -12 || initialGainDb > 30) {
+      throw new RangeError("Initial gain must be between -12 and +30 dB.");
+    }
+    this.inputGainDb = initialGainDb;
+  }
 
   get gainDb(): number { return this.inputGainDb; }
   set gainDb(value: number) {
@@ -62,8 +69,14 @@ export class AudioAnalyzer {
   }
   get inputDb(): number { return this.levelDb; }
   get inputLevel(): number { return clamp((this.levelDb + 60) / 60); }
-  get connected(): boolean { return this.stream?.getAudioTracks().some((track) => track.readyState === "live") ?? false; }
-  get deviceName(): string { return this.stream?.getAudioTracks()[0]?.label || "No active input"; }
+  get connected(): boolean {
+    return this.mediaElement
+      ? !this.mediaElement.paused && !this.mediaElement.ended
+      : this.stream?.getAudioTracks().some((track) => track.readyState === "live") ?? false;
+  }
+  get deviceName(): string {
+    return this.mediaElement?.dataset.title || this.stream?.getAudioTracks()[0]?.label || "No active input";
+  }
 
   async activate(): Promise<void> {
     if (!this.context || this.context.state === "closed") {
@@ -123,6 +136,25 @@ export class AudioAnalyzer {
     this.status = "EXTERNAL STREAM / live";
   }
 
+  async connectMediaElement(element: HTMLMediaElement): Promise<void> {
+    if (this.mediaElement && this.mediaElement !== element) {
+      throw new Error("This analyzer is already attached to another media element.");
+    }
+    await this.activate();
+    if (!this.context || !this.preamp || !this.analyser) {
+      throw new Error("Audio analysis could not be initialized.");
+    }
+    if (!this.mediaElement) {
+      const source = this.context.createMediaElementSource(element);
+      source.connect(this.preamp);
+      this.analyser.connect(this.context.destination);
+      this.source = source;
+      this.mediaElement = element;
+      this.routesToOutput = true;
+    }
+    this.status = "SOUNDTRACK / live";
+  }
+
   disconnect(): void {
     ++this.request;
     this.releaseStream();
@@ -132,6 +164,9 @@ export class AudioAnalyzer {
   private releaseStream(): void {
     this.source?.disconnect();
     this.source = undefined;
+    if (this.routesToOutput) this.analyser?.disconnect();
+    this.mediaElement = undefined;
+    this.routesToOutput = false;
     this.cleanupTracks.forEach((cleanup) => cleanup());
     this.cleanupTracks = [];
     if (this.ownsTracks) this.stream?.getTracks().forEach((track) => track.stop());
@@ -148,7 +183,10 @@ export class AudioAnalyzer {
     const analyser = this.analyser;
     const context = this.context;
     const track = this.stream?.getAudioTracks()[0];
-    if (!analyser || !context || context.state !== "running" || !track || track.muted || track.readyState !== "live") {
+    const activeStream = !!track && !track.muted && track.readyState === "live";
+    const activeMedia = !!this.mediaElement && !this.mediaElement.paused && !this.mediaElement.ended
+      && this.mediaElement.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
+    if (!analyser || !context || context.state !== "running" || (!activeStream && !activeMedia)) {
       Object.assign(this.features, silentFeatures());
       this.levelDb = -Infinity;
       return this.features;

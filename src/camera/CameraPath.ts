@@ -122,12 +122,6 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
         focusCamera(local, localTarget, point, weight * (cue.weight ?? .85));
       }
     }
-    if (time >= CINEMA.popcornLookStart && time < CINEMA.popcornLookEnd) {
-      const focus = local.add(localTarget.subtract(local).normalize().scale(20));
-      focus.y = local.y + 14;
-      focusCamera(local, localTarget, focus,
-        cueEnvelope(time, CINEMA.popcornLookStart, CINEMA.popcornLookEnd, 1.4, 1.7) * .9);
-    }
     if (time >= DEPLOY_ROCKET.lookStart && time < DEPLOY_ROCKET.lookEnd) {
       const focus = routeAnchor(DEPLOY_ROCKET.time, DEPLOY_ROCKET.lateral).position;
       focus.y = 10 + rocketLift(time) * 1.35;

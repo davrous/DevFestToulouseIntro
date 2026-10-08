@@ -25,11 +25,21 @@ class TestElement extends EventTarget {
   hidden = false;
   disabled = false;
   checked = false;
+  paused = true;
+  currentTime = 0;
   src = "";
+  value = "";
   textContent = "";
+  dataset: Record<string, string> = {};
+  contentWindow = new EventTarget();
   style = { width: "" };
   classList = { add() {}, remove() {} };
   focus() {}
+  getAttribute(name: string) { return name === "src" ? this.src || null : null; }
+  load() {}
+  pause() { this.paused = true; }
+  async play() { this.paused = false; }
+  replaceChildren() {}
 }
 
 class TestDocument extends EventTarget {
@@ -54,6 +64,7 @@ beforeEach(() => {
     setTimeout: globalThis.setTimeout, clearTimeout: globalThis.clearTimeout,
   });
   vi.stubGlobal("window", win);
+  vi.stubGlobal("location", { origin: "http://127.0.0.1:5173" });
   vi.spyOn(StrudelEventTransport.prototype, "connect").mockImplementation(() => {});
 });
 afterEach(() => {
@@ -73,23 +84,74 @@ async function setup() {
 }
 
 describe("synchronized launch from the other tab", () => {
+  it("plays the selected WAV and keeps it aligned across transport controls", async () => {
+    const { app } = await setup();
+    doc.getElementById("music-source")!.value = "wav";
+    doc.getElementById("soundtrack")!.value = "viola-trance";
+    vi.spyOn(app.showController.soundtrack, "connectMediaElement").mockResolvedValue();
+    await app.startFromGesture();
+    const player = doc.getElementById("soundtrack-player")!;
+    expect(player.src).toBe("./assets/music/viola-trance.wav");
+    expect(player.paused).toBe(false);
+    app.togglePlayback();
+    expect(player.paused).toBe(true);
+    app.togglePlayback();
+    expect(player.paused).toBe(false);
+    app.seek(42);
+    expect(player.currentTime).toBe(42);
+    app.returnToLobby();
+    expect(player.paused).toBe(true);
+    expect(player.currentTime).toBe(0);
+  });
+
   it("loads the bundled keynote in the hidden performance frame without starting visuals early", async () => {
     const { app } = await setup();
-    (doc.getElementById("strudel-keynote") as TestElement).checked = true;
+    doc.getElementById("music-source")!.value = "strudel";
     doc.getElementById("play")!.dispatchEvent(new Event("click"));
     expect((doc.getElementById("strudel-performance") as TestElement).src)
-      .toMatch(/^\.\/strudel\/\?performance=keynote&launch=[\w-]+$/);
+      .toMatch(/^\.\/strudel\/\?performance=keynote&score=arcade&launch=[\w-]+$/);
     expect(app.inLobby).toBe(true);
     expect(app.timeline.playing).toBe(false);
   });
 
   it("reloads the performance frame for a fresh synchronized run", async () => {
     await setup();
-    (doc.getElementById("strudel-keynote") as TestElement).checked = true;
+    doc.getElementById("music-source")!.value = "strudel";
     doc.getElementById("play")!.dispatchEvent(new Event("click"));
     const first = (doc.getElementById("strudel-performance") as TestElement).src;
     doc.getElementById("play")!.dispatchEvent(new Event("click"));
     expect((doc.getElementById("strudel-performance") as TestElement).src).not.toBe(first);
+  });
+
+  it.each(["cinema", "trance", "legacy"])("launches the selected %s score from the main lobby", async (score) => {
+    const { app } = await setup();
+    doc.getElementById("music-source")!.value = "strudel";
+    doc.getElementById("strudel-score")!.value = score;
+    app.togglePlayback();
+    const url = new URL(doc.getElementById("strudel-performance")!.src, location.origin);
+    expect(url.searchParams.get("score")).toBe(score);
+    expect(app.inLobby).toBe(true);
+    expect(app.timeline.playing).toBe(false);
+  });
+
+  it("shows current performance errors persistently and ignores stale or unrelated messages", async () => {
+    await setup();
+    doc.getElementById("music-source")!.value = "strudel";
+    doc.getElementById("play")!.dispatchEvent(new Event("click"));
+    const frame = doc.getElementById("strudel-performance")!;
+    const launch = new URL(frame.src, location.origin).searchParams.get("launch");
+    const loading = doc.getElementById("notice")!.textContent;
+    const message = (origin: string, source: EventTarget, id: string | null) => window.dispatchEvent(Object.assign(new Event("message"), {
+      origin, source, data: { type: "devfest-strudel-performance-error", message: "Invalid score syntax", launch: id },
+    }));
+    message("https://unrelated.example", frame.contentWindow, launch);
+    message(location.origin, new EventTarget(), launch);
+    message(location.origin, frame.contentWindow, "previous-launch");
+    expect(doc.getElementById("notice")!.textContent).toBe(loading);
+    message(location.origin, frame.contentWindow, launch);
+    expect(doc.getElementById("notice")!.textContent).toContain("Invalid score syntax");
+    vi.advanceTimersByTime(10000);
+    expect(doc.getElementById("notice")!.hidden).toBe(false);
   });
 
   it("starts a hidden show with no render frames, keeps time on return, and stays synchronized across tab switches", async () => {

@@ -78,12 +78,12 @@ describe("readable arcade jokes at projector aspect", () => {
     expect(longestReadableInterval(CINEMA.camera, CINEMA.lens, world, 13.6, 13.6))
       .toBeGreaterThanOrEqual(2);
   });
-  it("looks up enough to show both raised buckets before their overhead spill", () => {
+  it("keeps both raised buckets visible without steering up before their overhead spill", () => {
     for (const source of POPCORN_SOURCES) {
       const anchor = routeAnchor(source.time, source.lateral);
       const world = Matrix.RotationY(anchor.yaw)
         .multiply(Matrix.Translation(anchor.position.x, source.height, anchor.position.z));
-      expect(longestReadableInterval(CINEMA.popcornLookStart, CINEMA.popcorn, world, source.size, source.size))
+      expect(longestReadableInterval(CINEMA.davidGate - 2, CINEMA.popcorn, world, source.size, source.size))
         .toBeGreaterThanOrEqual(1.5);
     }
   });

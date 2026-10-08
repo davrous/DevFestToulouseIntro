@@ -102,9 +102,18 @@ describe("independent music-reactive layer", () => {
   it("keeps monitoring input when visual reactivity is disabled", () => {
     const controller = new ShowController(new Timeline(), vi.fn());
     const sample = vi.spyOn(controller.audio, "sample").mockReturnValue({ ...silentFeatures(), energy: .8 });
+    const soundtrack = vi.spyOn(controller.soundtrack, "sample").mockReturnValue({ ...silentFeatures(), bass: .7 });
     controller.enabled = false;
     expect(controller.sample(500).energy).toBe(0);
     expect(sample).toHaveBeenCalledWith(500);
+    expect(soundtrack).toHaveBeenCalledWith(500);
+  });
+
+  it("layers live viola input over the WAV soundtrack", () => {
+    const controller = new ShowController(new Timeline(), vi.fn());
+    vi.spyOn(controller.audio, "sample").mockReturnValue({ ...silentFeatures(), violaEnergy: .8, mid: .4 });
+    vi.spyOn(controller.soundtrack, "sample").mockReturnValue({ ...silentFeatures(), energy: .7, bass: .6, mid: .2 });
+    expect(controller.sample(100)).toMatchObject({ energy: .7, bass: .6, mid: .4, violaEnergy: .8 });
   });
 
   it("detects quiet float waveforms below byte-analyser precision", () => {

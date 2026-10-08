@@ -45,11 +45,80 @@ The included [engineering demo](examples/devfest-av-sync.strudel) is **not** the
 keynote music. It uses three original local test drum samples and no downloads.
 The supplied keynote excerpt uses `setcpm(150 / 4)`, so the demo preserves **150
 BPM**, four beats per cycle: CPM = BPM / 4; CPS = BPM / 240 = 0.625. The supplied
-excerpt has not been modified. A separate original keynote score is now
-available below; loading it requires confirmation and does not overwrite a
+excerpt has not been modified. The original scores below are separate from it;
+loading one requires confirmation and does not overwrite a
 saved draft until Evaluate.
 
-## Original keynote score: 3:00 in Bb minor
+## Three viola-friendly arrangements: 3:00
+
+The [shared original score](examples/devfest-viola.strudel) provides three
+arrangements selected by the [score catalog](src/strudel/scores.ts):
+
+| Choice | Key | Musical direction |
+| --- | --- | --- |
+| Arcade symphonique | D minor | Retro pulse/FM, classical dialogue and a progressive trance build |
+| Cinema suspendu | G minor | More piano/harp/strings, lyrical flute and a spacious cinematic accompaniment |
+| Trance heroique | D minor, final D major | Denser trance layers, a larger orchestral second act and an epic major resolution |
+
+The viola is a **live external instrument**, not a synthesized solo doubled by
+the score. D/G minor and open-register accompaniments leave it space. The
+tempo stays **150 BPM / 37.5 CPM / 0.625 CPS**: the perceived acceleration comes
+from density, instrumentation and phrasing, not a changing camera or beat clock.
+Each score is one-shot, **112.5 cycles / 180 s**, without new onsets after 176 s.
+
+In Strudel, **Stop**, select the version, click **Load selected score / 3:00**,
+confirm, then **Start show + music**. The selector describes the chosen version;
+it does not silently replace the code already in the editor. Stop and reload
+explicitly after a score update, otherwise a saved older draft can keep playing.
+The main lobby selector also offers **Previous keynote**.
+
+| Seconds | Shared musical form |
+| --- | --- |
+| 0-50.65 | Gentle viola space, then faster-growing retro/FM, electro and orchestral layers; dominant preparation before the clap |
+| 50.65-51.135 | Dominant tape-stop descends three octaves over 0.475 s, with five decelerating kick pulses |
+| 51.135-51.38 | Quiet green-line hold |
+| 51.38-52.8 | Soft orchestral tonic pickup; no sudden kick/trance restart |
+| 52.8-62.4 | Continuous quarter-note kick grid and Dm-Bb-C preparation; no rhythmic reset at a section boundary |
+| 62.4-70.4 | F-major David passage, with a lyrical flute pickup from 63.6 s and space around his 66-s arrival |
+| 70.4-81.6 | Reels/popcorn movement, then gradual easing from 78.4 s, just after the 78.1-s release |
+| 81.6-96 | Suspended strings/cello/harp/pad accompaniment, without regular drums, trance or acid; room for live viola in the lens |
+| 96-147.2 | Stronger second act; answering orchestra and increasingly dense trance layers |
+| 147.2-159 | Bb-Gm-A7 exit preparation, widening/slowing figures and a short half-time breath; no sudden noise blast or accelerating snare roll |
+| 159-173 | Spacious epic exit and pullback, resolving the title at 173 s |
+| 173-180 | Tonic hold, last onsets before 176 s, natural release and ending silence |
+
+Harmony above is written for the D-minor versions. Cinema transposes it by five
+semitones to G minor, including D5 rather than A4 for the tape-stop. Trance
+resolves its final tonic to D major. Portraits remain on the shared visual
+timestamps **17 / 66 / 99 / 128 s**. Decorative rests are evaluated against
+absolute show time, and rhythmic voices keep one global grid across phases.
+Held chords can start on exact visual cues without shifting the percussion.
+
+### Local acoustic and synthetic palette
+
+Seven acoustic families use **18 local WAVs** from
+[VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE): violin ensemble,
+cello ensemble, flute, French horn, harp, upright piano and timpani. They are
+preloaded before playback, including when switching from the previous keynote
+in the same audio context. No runtime sample-bank download is needed.
+
+The [manifest](src/strudel/orchestraSamples.json) pins revision
+`440300901dfe9275fd84e0b7763af1f8443ae62e`, source files and note-map roots.
+Roots follow the source SFZ/piano mapping, not an assumed filename octave.
+The [staging script](scripts/stage-orchestra.mjs) requires `ffmpeg` only to
+restage assets: `node scripts/stage-orchestra.mjs`. It produces mono 32-kHz,
+16-bit WAVs, trims at six seconds, normalizes peak to -3 dB, and fades long
+tails over the final half-second. The local subset is approximately 6.5 MiB.
+Playback does not require ffmpeg or Internet access.
+
+Synthetic colors include pulse/square chiptune, triangle/FM pad and mallets,
+FM bell, supersaw, sine sub, filtered acid bass and a vowel-like choir layer.
+The three original local drum fixtures are retained. See
+[Strudel synthesis](https://strudel.cc/learn/synths/) for the native instruments,
+and [CREDITS.md](CREDITS.md) and the
+[CC0 license](public/licenses/VSCO-2-CE-CC0.txt) for the sample attribution.
+
+## Previous keynote: 3:00 in Bb minor
 
 [Into the unexpected](examples/devfest-keynote.strudel) is original musical
 material in **B-flat minor**, the key of Barber's *Adagio for Strings*. It evokes
@@ -59,8 +128,8 @@ The orchestral colors are synthesized, not a sampled acoustic orchestra. The
 live viola remains external: this score is its accompaniment, not a substitute
 or a doubled solo line.
 
-In the performance page, stop playback and choose **Load keynote / Bb minor /
-3:00**, confirm replacement of the editor text, then Evaluate. Copy/export
+In the performance page, stop playback, select **Previous keynote**, choose
+**Load selected score / 3:00**, confirm replacement, then Evaluate. Copy/export
 unfinished work first. The engineering demo and supplied excerpt remain separate.
 
 | Time | Musical progression |
@@ -117,13 +186,21 @@ explicitly; saved editor text is never silently updated.
 
 ## One-click launch from the show lobby
 
-Enable **Start the bundled Strudel keynote** on the Babylon lobby, then press
-**PLAY SEQUENCE**. The page loads `./strudel/?performance=keynote` in a hidden
-same-origin iframe with autoplay permission. That mode uses the bundled keynote
+Choose **Music version**, enable **Start the bundled Strudel keynote** on the
+Babylon lobby, then press **PLAY SEQUENCE** or **Space**. The page loads
+`./strudel/?performance=keynote&score=...&launch=...` in a hidden
+same-origin iframe with autoplay permission. That mode uses the selected score
 for this run without overwriting the editor draft in local storage, waits for
 the Babylon peer, initializes audio, and requests the same confirmed
 synchronized onset used by **Start show + music**. The main Babylon page keeps
 focus throughout. Disable the option for visual-only playback.
+
+The integrated frame uses [the lightweight player](src/strudel/performancePlayer.ts)
+and the same public Strudel core REPL/audio hooks, not a hidden CodeMirror
+instance. There is no editor drawing/highlighting loop competing with Babylon.
+The standalone editor keeps its normal visible behavior; drawing is suspended
+while its document is hidden and resumes when shown, without stopping audio,
+changing tempo or restarting synchronization.
 
 ## Architecture
 
@@ -137,9 +214,16 @@ Explicit Start show + music -> silent cycle-zero hap -> scheduled Babylon start
 
 The modular local REPL uses **@strudel/codemirror 1.3.0**, **@strudel/webaudio
 1.3.0**, and core/mini/tonal/transpiler **1.2.6**, pinned in the manifest and
-lockfile. It uses the real CodeMirror Strudel editor, mini-notation highlighting,
+lockfile. The standalone page uses the real CodeMirror Strudel editor, mini-notation highlighting,
 labels (`$:` / `_$:`), sliders, pattern transforms and Web Audio output.
 Babylon never imports the Strudel engine; it only loads the small sync modules.
+
+Performance regression check: on the isolated dense 128-137-s passage at
+1920x1080 with real audio, the former hidden editor produced five frame gaps
+over 50 ms in eight seconds (p99 83.3 ms). The lightweight player was tested
+twice on the same passage: p99 16.8 ms, no gaps over 33.4 ms, and 13 musical
+events/second, matching the visual-only control. This is a local 1080p check,
+not a certified 4K projector benchmark.
 
 The scheduler callback is the public `Pattern.onTrigger(hap, currentTime, cps,
 targetTime)` API in core 1.2.6. Its fourth argument is the **absolute AudioContext
@@ -278,6 +362,12 @@ npm run verify:av
 
 $env:AV_CAPTURE = "1"
 npm run verify:av -- .\examples\devfest-keynote.strudel
+
+# Direct live PCM without the test-only WebRTC FFT relay:
+$env:AV_CAPTURE = "pcm"
+npm run verify:av -- arcade
+npm run verify:av -- cinema
+npm run verify:av -- trance
 Remove-Item Env:\AV_CAPTURE
 ```
 
@@ -289,9 +379,11 @@ browser is installed, run `npx playwright install chromium` and set
 It blocks external HTTP requests from cold load, waits for actual local audio
 playback/preload, then disables browser networking. It verifies real 180-second
 playback, re-evaluation without changing the session, cue decisions, final camera
-pose, 36 peak/zero final popcorn bodies, disconnection and reconnection. Keynote
+pose, 72 peak/zero final popcorn bodies, visible 3D clap during its approach,
+disconnection and reconnection. Keynote
 loading also tests Cancel/confirm protection of the editor text. The optional
-audio test taps the real final Web Audio mix and relays it over **local WebRTC
+audio test taps only live AudioContexts, never the OfflineAudioContexts used
+to generate reverb impulses. `AV_CAPTURE=1` also relays the mix over **local WebRTC
 with no STUN servers** into the unchanged `AudioAnalyzer.connectStream`. An
 AudioWorklet measures every audio block for peak, section RMS and ending silence.
 FFT activity is checked in the opening, digital section and climax, not merely
@@ -299,6 +391,39 @@ at connection time. A muted test media sink drives Chromium's WebRTC decoder;
 it does not monitor audio through speakers.
 No duplicate signal is routed to speakers, and no musical events are fabricated.
 This is not automation of the permission-sensitive browser tab picker.
+
+`AV_CAPTURE=pcm` explicitly measures the real live mix without the relay; it
+does **not** validate FFT input. It is not an automatic fallback when WebRTC
+fails. Both capture modes require positive real-audio preflight before the
+three-minute run. An empty/invalid early RMS cannot pass the opening-crescendo
+check via an infinite ratio.
+
+### Current arrangements: verification limit
+
+**58 targeted tests / five files** and the TypeScript/Vite build pass, including
+the real REPL transpiler, all three scores, finite query windows, mutable audio
+controls, the 0.4-s post-clap kick spacing, absolute speaker rests and the
+11.8-s exit preparation. Browser launch tests cover all three choices, main-tab
+focus, Space, preserved drafts, loading all 18 acoustic buffers after Legacy,
+and explicit error reporting. The actual open clapperboard was visually
+verified at **49.8 s**; no visual/camera choreography was changed by this revision.
+
+**No complete real-audio rehearsal of these three arrangements has passed.**
+The previous test session froze a running live AudioContext near
+0.005-0.011 s; even a native oscillator, without Strudel or any audio tap,
+reproduces it in standalone Edge and the interactive browser after a user click.
+The WebRTC test relay also received no packets. A previous run that reached
+the visual ending used an invalid offline-context tap: its zero-RMS lens/finale
+measurements are not reliable evidence of missing production music. The tap
+has been corrected. On October 8 the native clock advances normally again and
+the dense real-audio performance checks above pass, but those short checks do
+not replace a full rehearsal of each arrangement.
+
+Run the three commands above on a working audio device/browser before stage
+use. Confirm the real lens/finale accompaniment, headroom, CRT silence and
+ending silence, then listen with the violist for balance and emotional flow.
+The successful historical measurements below belong to earlier scores, not
+to the current three versions.
 
 Recorded production engineering rehearsal: **180.013 s**, **1,596** dispatched
 events; transport median **0.10 ms**, p95 **1.0 ms**, render dispatch lateness

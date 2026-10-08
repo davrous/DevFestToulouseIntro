@@ -35,6 +35,7 @@ describe("cinema popcorn impact", () => {
     expect(pieces[0].physicsBody?.getLinearVelocity().y).toBeLessThan(0);
     const overhead = new Set<number>();
     const visibleFallTime = Array<number>(POPCORN_COUNT).fill(0);
+    let closestFloor = { clearance: Infinity, index: -1, time: 0 };
     const frames = Math.floor((POPCORN_END - POPCORN_START - .02) * 60);
     for (let index = 1; index <= frames; index++) {
       const time = POPCORN_START + index / 60;
@@ -48,7 +49,8 @@ describe("cinema popcorn impact", () => {
         if (!piece.isEnabled()) return;
         const screen = Vector3.TransformCoordinates(piece.position, view);
         const visible = Math.abs(screen.x) < .95 && Math.abs(screen.y) < .9 && screen.z > 0 && screen.z < 1;
-        if (visible) expect(piece.position.y - CINEMA_FLOOR_TOP).toBeGreaterThan(.2);
+        const clearance = piece.position.y - CINEMA_FLOOR_TOP;
+        if (visible && clearance < closestFloor.clearance) closestFloor = { clearance, index: i, time };
         if (piece.position.y > camera.y + .5 && piece.physicsBody!.getLinearVelocity().y < -1
           && visible) {
           visibleFallTime[i] += 1 / 60;
@@ -58,8 +60,13 @@ describe("cinema popcorn impact", () => {
           && piece.physicsBody!.getLinearVelocity().y < -1) overhead.add(i);
       });
     }
-    expect(visibleFallTime.filter((duration) => duration >= .35)).toHaveLength(POPCORN_COUNT);
-    expect(overhead.size).toBeGreaterThanOrEqual(24);
+    for (const bucket of [0, 1]) {
+      const foreground = visibleFallTime.slice(bucket * POPCORN_PER_BUCKET, (bucket + 1) * POPCORN_PER_BUCKET)
+        .filter((duration, index) => index % 2 === 1 && duration >= .35);
+      expect(foreground.length, `visible foreground rain from bucket ${bucket}`).toBeGreaterThanOrEqual(12);
+    }
+    expect.soft(closestFloor.clearance, `kernel ${closestFloor.index} at ${closestFloor.time}s`).toBeGreaterThan(.2);
+    expect.soft(overhead.size).toBeGreaterThanOrEqual(24);
     expect([...overhead].some((index) => index < POPCORN_PER_BUCKET)).toBe(true);
     expect([...overhead].some((index) => index >= POPCORN_PER_BUCKET)).toBe(true);
     expect(Vector3.Distance(pieces[0].position, start)).toBeGreaterThan(.1);

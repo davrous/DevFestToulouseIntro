@@ -2,7 +2,7 @@
 
 > Lire ce document avant d'explorer le code. Il décrit le spectacle existant et les décisions déjà validées, pas un nouveau backlog à implémenter.
 >
-> État documenté le **7 octobre 2026**, après les raffinements arcade / cinéma / digital, l'ajout de Strudel local, la chute physique du violon, le clap accéléré et sa transition shader CRT, la pluie de pop-corn bilatérale et la fermeture finale de la passerelle. Base Git observée : `392c52a` ; cette passe visuelle est dans le worktree tant qu'elle n'a pas été commitée. Les fichiers source restent la référence si des changements plus récents existent.
+> Historique visuel documenté le **7 octobre 2026**, complété le **8 octobre** par le lecteur Strudel allégé et le regard caméra droit devant aux popcorns. L'horloge audio native fonctionne de nouveau ; les répétitions musicales historiques ne valident pas automatiquement les trois nouveaux scores. Voir section 11 et vérifier le worktree : les fichiers source restent la référence.
 
 Dépôt : [davrous/DevFestToulouseIntro](https://github.com/davrous/DevFestToulouseIntro).
 
@@ -39,7 +39,12 @@ GAME / T
   → sortie / DEVFEST TOULOUSE / AI4Fun
 ```
 
-La musique est jouée **à l'extérieur de cette page**, notamment avec **Strudel et un alto**. L'application analyse éventuellement une entrée audio et/ou reçoit des événements musicaux. Elle ne joue pas la musique, ne l'enregistre pas et ne l'envoie pas à un serveur. Le spectacle fonctionne aussi sans audio.
+L'alto reste **live et externe**. Strudel peut jouer dans sa page locale ou dans
+une iframe intégrée à la page principale, pour un démarrage synchronisé sans
+changer d'onglet. L'application analyse éventuellement une entrée audio et/ou
+reçoit des événements musicaux ; l'entrée capturée n'est ni monitorée vers les
+haut-parleurs, ni enregistrée, ni envoyée à un serveur. La musique Strudel
+optionnelle est une sortie indépendante. Le spectacle fonctionne aussi sans audio.
 
 **Intention esthétique :** geek, ludique, cinématographique, avec quelques blagues toulousaines. Préférer des moments compréhensibles et bien cadrés à une accumulation de props, de particules ou de rectangles noirs.
 
@@ -179,7 +184,7 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 
 ### Caméra et lisibilité
 
-La route utilise Catmull–Rom, mais **44–58 s** emploie des tangentes Hermite limitées pour éviter l'overshoot / le demi-tour parasite près du ralentissement du clap. Un regard dirigé dans le foyer **59–71 s** évite un virage trop brutal. De **76 à 81.5 s**, une inclinaison douce vers le haut montre les deux seaux surélevés avant leur pluie ; la cible reste devant la caméra pour ne pas provoquer de demi-tour sous les seaux.
+La route utilise Catmull–Rom, mais **44–58 s** emploie des tangentes Hermite limitées pour éviter l'overshoot / le demi-tour parasite près du ralentissement du clap. Un regard dirigé dans le foyer **59–71 s** évite un virage trop brutal. À la demande de l'utilisateur, le regard spécifique vers le haut aux popcorns a été supprimé : de **76 à 84 s**, la caméra suit sa cible naturelle droit devant vers l'objectif. Les positions, FOV et timings restent inchangés. Les anciens `popcornLookStart/End` ont été supprimés ; les seaux restent cadrés plus tôt dans l'approche.
 
 Les tests maintiennent les rotations sous **45°/s**, la clearance des murs et au moins **quatre secondes** de cadrage complet pour les noms. Le clap sans panneau textuel ne requiert plus que **deux secondes**, volontairement pour accélérer cette transition. Le regard de 140–151 s suit maintenant la fusée du coin suivant, puis un relais doux vers ORBITAL LINK de 146.8–157 s évite le retour brutal vers l'horizon. Les positions de caméra et le reveal restent inchangés. Ne pas déplacer Eric plus tard sans retravailler aussi le regard.
 
@@ -268,7 +273,8 @@ recreer les corps physiques. Diagnostics et tests manuels K/S/H/I restent dans D
 Le demo conserve les 150 BPM de l'extrait fourni ; ce n'est pas la composition
 de keynote, dont les banques Roland, soundfonts et Hydra doivent etre stages
 localement pour une utilisation complete hors ligne.
-La nouvelle [composition originale](examples/devfest-keynote.strudel) est
+L'ancienne [composition originale](examples/devfest-keynote.strudel), conservée
+comme **Previous keynote**, est
 separee de cet extrait : 3:00 en si bemol mineur, grille electronique 150 BPM,
 cordes synthetisees progressives et notes originales, sans citation de Barber.
 La montee initiale est plus rapide ; pizzicatos et vents synthetiques se
@@ -290,6 +296,27 @@ Pour la keynote, les fenetres PCM de 20 ms sont calees sur l'horloge de la
 vraie enveloppe de pitch : montee initiale, silence du trait CRT, cadences
 speaker, respiration dans l'objectif, relance et espace du pullback.
 
+Les trois versions actuelles viennent de
+[devfest-viola.strudel](examples/devfest-viola.strudel) et du
+[catalogue](src/strudel/scores.ts) : Arcade symphonique / ré mineur,
+Cinema suspendu / sol mineur, Trance heroique / ré mineur puis ré majeur.
+Défaut : Arcade. **Music version** dans le lobby et le sélecteur Strudel utilisent
+les mêmes identifiants `arcade`, `cinema`, `trance`, `legacy`.
+En manuel : Stop, sélectionner, **Load selected score / 3:00**, confirmer,
+puis **Start show + music**. Le brouillon sauvegardé n'est jamais remplacé
+automatiquement ; changer le sélecteur seul ne change pas le code de l'éditeur.
+Le mode iframe reçoit score + UUID de lancement et ne sauvegarde pas son code.
+PLAY et Space suivent tous deux la sélection ; les erreurs de REPL sont
+transmises uniquement depuis l'iframe / origin / lancement courants.
+
+Les nouvelles versions ajoutent sept familles acoustiques CC0 (18 WAVs VSCO 2 CE)
+aux couleurs pulse/FM/supersaw/sub/acid/choeur. Les samples sont locaux,
+préchargés avant chaque évaluation, y compris après une lecture Legacy dans
+le même contexte audio. Voir [STRUDEL_SYNC.md](STRUDEL_SYNC.md) pour le détail.
+Le tempo et la durée restent 150 BPM / 0.625 CPS / 180 s.
+`AV_CAPTURE=pcm` mesure explicitement le mix live sans relay WebRTC, pas le FFT.
+Le tap de validation exclut les OfflineAudioContexts de génération de réverb.
+
 ## 9. Assets, licences et portabilité
 
 - Les assets Kenney sont dans [public/assets/kenney](public/assets/kenney), avec leurs licences CC0 et leurs dépendances de textures.
@@ -298,6 +325,7 @@ speaker, respiration dans l'objectif, relance et espace du pullback.
 - Le projecteur **Cinema Movie Projector AP5**, environ 1.37 million de triangles et licence **CC BY-NC**, a été exclu. Le projecteur affiché est procédural.
 - Les GLBs distribués restent inchangés ; suppressions de socles, placements, animation et ajouts de rayons de bobines se font au runtime.
 - L'habillage fourni par l'événement est dans [src/assets/event](src/assets/event) : drapeau vert, signature anniversaire, et image violette conservée mais plus affichée au-dessus de David.
+- Les 18 WAVs d'orchestre sont dans [public/assets/strudel/orchestra](public/assets/strudel/orchestra), licence CC0 locale et sources détaillées dans [CREDITS.md](CREDITS.md). [orchestraSamples.json](src/strudel/orchestraSamples.json) fixe la révision et les racines réelles vérifiées dans les SFZ / mapping piano. [stage-orchestra.mjs](scripts/stage-orchestra.mjs) nécessite ffmpeg uniquement pour restager, jamais pour jouer.
 - Une nouvelle machine n'a **pas besoin du dossier Downloads/SketchfabModels d'origine**, ni d'archives jointes au chat, ni des anciens IDs de pages navigateur.
 - Transférer le dépôt complet, **assets + lockfile + ce document**, pas seulement les fichiers TypeScript. Si le transfert passe par Git, vérifier que les changements à transmettre ont bien été commités / poussés.
 
@@ -393,7 +421,7 @@ Réorchestration de la keynote :
 - Clap appliqué à **51.039 s** pour **51.03 s** prévu ; vraie rampe sur F4 à **-3600 cents / 0.475 s**. CRT de **50.655 à 52.172 s**, **15 images** de trait tenu ; **72 grains** puis cleanup complet.
 - Cette validation confirme les horaires et la dynamique technique, pas le goût musical ni l'équilibre avec le vrai alto ; répétition avec l'instrumentiste encore nécessaire.
 
-Seconde passe musicale (speakers + transitions) : **EN COURS, À VÉRIFIER** (session interrompue, aucun commit) :
+Seconde passe musicale historique sur l'ancienne keynote (ne pas confondre avec les trois versions actuelles) :
 - Retour utilisateur : portraits d'orateurs musicalement étranges ; transitions trop violentes vers l'accalmie de la caméra et vers la sortie. Après écoute de la version en cours : « pas trop mal ».
 - Cause identifiée : accords de portrait (F7 puis Gb/Eb/Db) en conflit avec l'harmonie réelle, deux portraits (17 s, 99 s) en contretemps de croche, baisses de gain saccadées autour des orateurs, et coupures nettes de toutes les voix aux frontières de section.
 - Fait dans [devfest-keynote.strudel](examples/devfest-keynote.strudel) : portraits = montée sus4 (t-1.6 s) résolue sur un accord de si bémol mineur exactement sur la fiche, cloche sur le temps suivant ; voix décoratives (flûte / pizz / cordes hautes) retirées de t-1.8 à t+2.6 s ; sections `ease` 76.8 / `hush` 80 (descente en volume, kicks, hats, filtre) ; `rise` 155.8 (roulement de caisse claire crescendo, Fm7) ; impact + floraison à 159 s ; les accords tenus se terminent à la section suivante avec leur relâchement naturel (coupure dure seulement avant le tape-stop et la fin) ; fragments de cordes < 0.5 s supprimés.
@@ -401,8 +429,85 @@ Seconde passe musicale (speakers + transitions) : **EN COURS, À VÉRIFIER** (se
 - [verify-av.mjs](scripts/verify-av.mjs) : mesure l'horloge du spectacle dès son vrai démarrage (le décalage de 1.2 s venait du lead-in) ; ajout de mesures swell / lens / exit, d'un profil RMS par seconde et d'un mode `AV_DEBUG=1` (logs console du scheduler).
 - **Point ouvert important :** la répétition réelle (profil RMS par seconde) mesure un **silence exact d'environ 82 à 96 s et après 163 s**, alors que les tests de haps (y compris requêtes de la taille du scheduler) trouvent bien les notes (pads 83.2 s, 89.6 s ; afterglow 163 s...). La première répétition de la journée (ancienne version) mesurait 0.0045 et 0.0067 dans ces zones. À éclaircir : vrai silence audio ou artefact de mesure ?
   - Pistes : requêtes ignorées par le scheduler (`skip query: too late`, charge machine élevée, load average ~8.6 pendant les tests) ; changement de fenêtre du worklet de mesure (20 ms, `inputs` vide en silence) ; notes sans `room: 0` / sans coupure dure ; ou vrai problème de lecture des pads graves à bas gain / lpf bas.
-  - Prochaine étape : relancer `AV_DEBUG=1 AV_URL=http://127.0.0.1:4175 AV_CAPTURE=1 npm run verify:av -- examples/devfest-keynote.strudel` (preview : `npm run build && npm run preview -- --host 127.0.0.1 --port 4175 --strictPort`), lire `DEBUGLOGS` et le profil ; puis assertions sur `portraitSwells`, `lensEntry`, `exitEntry` une fois les valeurs saines.
-- Documentation à mettre à jour après validation : [STRUDEL_SYNC.md](STRUDEL_SYNC.md) et [README.md](README.md) décrivent encore l'ancienne préparation F7 / réponses flûte + pizzicato des portraits.
+  - Le tap du vérificateur interceptait aussi les connexions des OfflineAudioContexts de réverb et tentait de les connecter à un mix live d'un autre contexte. Ce défaut de mesure est corrigé ; les anciennes mesures de silence ne suffisent donc pas à conclure sur le son réel. Ne pas relancer aveuglément des répétitions de trois minutes sans réussir d'abord le preflight natif.
+
+### Trois compositions actuelles et retour musical utilisateur
+
+- **58 tests ciblés / cinq fichiers**, type-check et build Vite réussis :
+  [scores.test.ts](src/strudel/scores.test.ts), ancienne keynote, helpers,
+  lancement App et mode performance. Le test de montée audio rejette désormais
+  un RMS initial nul et un ratio infini.
+- Retour utilisateur : mauvaise reprise après le clap / rythme vers David sur
+  les trois versions, préparation de sortie trop brutale. Cause trouvée :
+  les phases réancraient leurs patterns rythmiques sur un début arbitraire
+  (intervalle de kick de 0.22 s au lieu de 0.4 s après le clap) ; les pauses
+  décoratives des speakers étaient calculées en temps local avant le décalage.
+- Correction commune : grille globale pour les voix rythmiques, accords tenus
+  autorisés sur un cue précis, pauses décoratives en temps absolu. Pickup
+  orchestral doux **51.38-52.8**, puis **64 kicks espacés de 0.4 s** jusqu'à
+  78.4. Dm-Bb-C prépare F pour David ; sa réponse flûte commence à 63.6 s,
+  sans flûte régulière concurrente.
+- Préparation finale anticipée de **147.2 à 159** (11.8 s) : Bb-Gm-A7,
+  arpèges élargis puis raréfiés, respiration finale à demi-temps ; roulement de
+  caisse claire précipité et souffle de bruit blanc supprimés. Entrée de cor
+  adoucie au reveal. Cinema transpose de cinq demi-tons ; Trance finit en majeur.
+- Accalmie après pop-corn de 78.4 à 81.6, accompagnement suspendu jusqu'à 96 ;
+  relance plus forte dans le D. Pas de changement caméra, physique ou mise en
+  scène. Le **clap 3D n'a pas été supprimé** : GLB chargé, meshes actifs et
+  vrai cadrage inspecté à **49.8 s**, sous LEVEL COMPLETE.
+- Navigateur : les trois versions démarrent depuis le même onglet principal,
+  focus conservé, aucune fenêtre supplémentaire, brouillon intact ; Space,
+  passage Legacy -> Cinema (18 buffers chargés) et erreur de parsing affichée
+  sur le lobby ont été vérifiés.
+- **Blocage audio historique du 7 octobre, validation alors non terminée.** Une répétition Arcade
+  a atteint les contrôles visuels de fin avec l'ancien tap invalide, puis a
+  échoué aux seuils audio ; ce n'est pas une répétition musicale validée.
+  Après correction du tap, le contexte live dit `running` mais son horloge
+  reste vers **0.005-0.011 s**, scheduler en prélecture négative. Un oscillateur
+  natif seul, sans Strudel ni tap, avance seulement de **0.0053 s en 1.5 s**
+  dans Edge et dans le navigateur interactif après clic. La bonne identité du
+  contexte global / contrôleur / destination a aussi été confirmée.
+  Le relay WebRTC de test ne reçoit pas de paquets. Ne pas modifier
+  AudioAnalyzer ni les services audio / permissions du poste partagé pour
+  masquer ces blocages.
+- Prochaine vérification : contrôler d'abord que l'horloge d'un AudioContext
+  natif avance réellement ; sur un poste fonctionnel, lancer successivement
+  `AV_CAPTURE=pcm npm run verify:av -- arcade`, puis `cinema`, puis `trance`
+  avec `AV_URL` sur le preview local. Vérifier mix audible dans l'objectif /
+  finale, headroom, silence du trait CRT et fin, puis écouter avec l'altiste.
+  Aucun goût musical ni équilibre live n'est certifié par les tests seuls.
+
+### Performance Strudel et caméra popcorns — 8 octobre
+
+- Demande utilisateur : chutes de framerate avec Strudel connecté ; ne plus
+  lever la caméra près des popcorns, continuer vers l'objectif. L'utilisateur
+  a confirmé l'adaptation des trajectoires pour garder une pluie visible.
+- Profilage réel : l'horloge AudioContext avance normalement sur ce poste,
+  contrairement au blocage précédent. Le CodeMirror de l'iframe cachée gardait
+  son Drawer actif et recalculait/surlignait les patterns ; ce travail n'est
+  pas nécessaire à l'audio ni à BroadcastChannel.
+- Sur le passage dense isolé **128-137 s**, en 1920x1080 et vrai Web Audio :
+  ancien lecteur = **5 frames >50 ms en 8 s**, p99 **83.3 ms** ; arrêter le
+  Drawer supprimait les pics, déconnecter seulement les événements ne les
+  supprimait pas. Nouveau lecteur, vérifié deux fois = **p99 16.8 ms**,
+  **0 frame >33.4 ms**, 13 événements/s, comme le contrôle sans musique.
+  Cela ne certifie pas le poste de projection en 4K.
+- [performancePlayer.ts](src/strudel/performancePlayer.ts) utilise le vrai
+  `core.repl`, avec les mêmes hooks, tempo, output audio et lancement confirmé,
+  mais sans CodeMirror ni boucle graphique. L'éditeur manuel reste disponible ;
+  son Drawer est suspendu quand la page est cachée puis repris quand elle
+  redevient visible, sans arrêter le scheduler/audio.
+- Régression de la caméra : cible naturelle / direction vers l'objectif,
+  pitch <8 degrés de 76 à 84 s, rotations globales <45 degrés/s et final
+  conservés. Les deux seaux restent entièrement visibles au moins 1.5 s
+  plus tôt dans l'approche.
+- [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) garde les 72 grains, les deux
+  seaux, hauteurs, release **78.1**, nettoyage **84.5** et replay. Une moitié
+  garde l'interception au-dessus de la caméra ; l'autre vise 2.1 s plus loin
+  dans l'allée. Tests Havok : au moins 12 grains de chaque seau visibles en
+  chute pendant 0.35 s, au moins 24 passages au-dessus de la tête, collisions
+  au sol, cleanup et retour arrière. Le rayon des sphères physiques est
+  explicitement celui des meshes, plutôt que le rayon réduit de leur boîte.
 
 Ce sont des résultats historiques, **pas une garantie pour la prochaine modification ou un autre GPU**. Aucun 60 FPS soutenu sur le vrai poste de projection n'a été certifié. Refaire un profil Native / 4K et une répétition avec les vrais musiciens sur cette machine.
 

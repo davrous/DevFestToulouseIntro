@@ -5,6 +5,7 @@ import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { SPEAKERS } from "../content/speakers";
 import { BRIDGE_CELLS, bridgeVisible, isArcadeExit } from "../scene/Labyrinth";
 import { arcadeDoorOpen } from "../scene/ArcadeT";
+import { CINEMA } from "../content/showBeats";
 
 describe("title labyrinth choreography", () => {
   it("builds the seven- and eight-letter words using reproducible modules", () => {
@@ -76,6 +77,20 @@ describe("title labyrinth choreography", () => {
       expect(p.position.subtract(next.position).length()).toBeLessThan(3);
       expect(p.target.subtract(p.position).length()).toBeGreaterThan(.1);
       if (t < 159) expect(p.reveal).toBe(0);
+    }
+  });
+
+  it("keeps looking forward towards the lens through the popcorn approach", () => {
+    const lens = routeAnchor(CINEMA.lens).position;
+    for (let time = CINEMA.reels - 1; time < CINEMA.camera; time += .05) {
+      const pose = cameraPose(time);
+      const forward = pose.target.subtract(pose.position).normalize();
+      const route = interiorPosition(time + 2.4).subtract(pose.position).normalize();
+      const towardsLens = lens.subtract(pose.position).normalize();
+      expect(Vector3.Dot(forward, route), `route heading at ${time}`).toBeCloseTo(1, 8);
+      expect(Vector3.Dot(forward, towardsLens), `lens heading at ${time}`).toBeGreaterThan(.99);
+      const pitch = Math.atan2(forward.y, Math.hypot(forward.x, forward.z)) * 180 / Math.PI;
+      expect(Math.abs(pitch), `pitch at ${time}`).toBeLessThan(8);
     }
   });
 

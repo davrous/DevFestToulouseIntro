@@ -24,32 +24,58 @@ npm run preview
 
 Open http://127.0.0.1:4173 and keep the local server running. After installation/build, no Internet is needed. Do not open the HTML using `file://`.
 
-**This page does not play music.** The viola and Strudel performance remain external. Visuals work without either audio input or the optional event bridge. No microphone permission is requested automatically.
+**Music is optional.** Choose **No bundled music**, **Strudel keynote**, or
+**WAV soundtrack** on the home page. The bundled `Viola's Journey` WAV is played
+locally and analyzed in real time to drive the same bass, mid, treble, transient,
+and energy reactions as the other music inputs. Visuals also work without music,
+audio input, or the optional event bridge.
 
-The optional **local Strudel performance tab** at `/strudel/` adds precise
-scheduler events over same-origin BroadcastChannel alongside the unchanged FFT
-capture. See [STRUDEL_SYNC.md](STRUDEL_SYNC.md) for launch, helpers, cue windows,
-offline instruments and rehearsal diagnostics. The Babylon page still plays no audio.
-The separate [original keynote score](examples/devfest-keynote.strudel) lasts
-three minutes in Bb minor, with a quicker initial rise, answering string-like /
-wind-like / horn-like synth voices, an emotional cadence at each speaker,
-and the 150-BPM electronic grid. Its F7 preparation integrates the descending
-tape-stop at the clap rather than interrupting an unrelated phrase.
-Load it explicitly from the performance page;
-it uses only local instruments and does not replace the engineering demo or
-the supplied music excerpt.
+For one-click Strudel playback, choose **Strudel keynote** and a
+**Strudel version**, then press **PLAY SEQUENCE** or **Space**. The same-origin
+frame preloads local audio and starts both clocks through the confirmed
+synchronized onset, without switching tabs or replacing the saved Strudel draft.
 
-The accompaniment leaves the external live viola central at the opening and
-through the quiet lens passage. After 96 s it rebuilds more vigorously until
-the 159-s exit impact, then clears the beat for a spacious dramatic pullback
-and a Bbm resolution at the settled title (173 s).
+For WAV playback, choose **WAV soundtrack**, then select `Viola's Journey` or
+`Viola & Trance`. Playback, pause, resume, and rehearsal seeks follow the visual timeline. The live input can
+remain connected at the same time: the WAV drives the complete scene while
+Anne-Flore's viola microphone adds its detected energy over the soundtrack. The
+microphone is analyzed locally and is never monitored through the speakers; no
+permission is requested automatically.
 
-For a one-click local performance, enable **Start the bundled Strudel keynote**
-on the main lobby and press **PLAY SEQUENCE**. The click opens a same-origin
-Strudel performance frame, loads the bundled keynote without replacing the
-saved editor draft, initializes local audio, and starts both clocks through the
-confirmed synchronized onset without leaving the Babylon tab. Leave the option
-disabled for visual-only playback.
+Additional WAV files can be added under `public/assets/music/` and registered in
+the `SOUNDTRACKS` list in `src/audio/soundtracks.ts`; the home-page selector is
+populated from that catalog.
+
+Integrated playback uses the Strudel core scheduler without creating a hidden
+CodeMirror editor or its drawing/highlighting loop. The normal editor remains
+available at `/strudel/`; its drawing pauses when that tab is hidden, while
+audio and synchronization continue. This avoids competing with the 3D render
+loop without reducing the instrumental palette or graphics quality.
+
+Three original arrangements share the [viola-friendly score](examples/devfest-viola.strudel):
+
+| Version | Key | Direction |
+| --- | --- | --- |
+| Arcade symphonique | D minor | Retro pulse/FM colors, answering orchestra and a growing trance accompaniment |
+| Cinema suspendu | G minor | More lyrical piano, harp, flute and strings, with space for live viola |
+| Trance heroique | D minor, final D major | Stronger electronic build, orchestral summit and a brighter epic resolution |
+| Previous keynote | Bb minor | The preserved [earlier synth-only score](examples/devfest-keynote.strudel) |
+
+All last three minutes at 150 BPM. The new arrangements use seven acoustic
+families from 18 locally hosted CC0 samples alongside pulse, FM, supersaw, sub,
+acid and choir-like synthesis. They start gently, rise through the arcade,
+prepare the clap stop, restart with an orchestral pickup and an uninterrupted
+beat grid towards David, then leave the lens passage to the viola. The bigger
+second act opens its texture from **147.2 s**, preparing the **159-s** exit over
+11.8 seconds rather than adding a last-second snare rush. The settled title
+resolves at **173 s**, with no new notes after 176 s.
+
+The standalone **local Strudel performance page** at `/strudel/` supports the
+same choices. To hear a revised score, **Stop**, select its version, click
+**Load selected score / 3:00**, confirm replacement, then **Start show + music**.
+Selection alone does not replace an existing editor draft. See
+[STRUDEL_SYNC.md](STRUDEL_SYNC.md) for launch, helpers, cue windows, local
+instruments, licensing and rehearsal diagnostics.
 
 ## The show
 
@@ -63,7 +89,7 @@ disabled for visual-only playback.
 | 0:46–0:52 | The original giant clapperboard is already present during the approach, below LEVEL COMPLETE, and snaps shut in 0.18 seconds from 0:50.85. The fullscreen CRT transition holds a green phosphor line from 0:51.135 to 0:51.38, then reopens on CINEMA and clears by 0:52.18; no black plane |
 | 0:51–1:06 | A symmetrical cinema cathedral with eight full curved CRT screens: MS-DOS, CONFIG.SYS, AUTOEXEC.BAT, Windows 95, blue-screen jokes, floppy installation and a Toulouse BBS; all briefly flash DEVFEST at 0:59.4 |
 | 1:06–1:23 | David Rousset is introduced **once**, as a movie premiere projected onto a world-space cinema screen with his configured demo title |
-| 1:17–1:24 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; two raised striped buckets, left and right, tip inward at 1:17.55 and spill 72 Havok kernels from 1:18.1, while still in front of the camera so the falling rain stays visible before passing overhead |
+| 1:17–1:24 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; two raised striped buckets, left and right, tip inward at 1:17.55 and spill 72 Havok kernels from 1:18.1. The camera keeps looking forward towards the lens: half the rain is aimed ahead for visibility and half still passes overhead |
 | 1:24–1:39 | The already-visible giant frontal cinema camera is approached and entered through its lens at 1:30. Only then do short, coaxial optical rings lead into the projector beam, transparent floor and space warp; digital architecture returns through haze at 1:35 |
 | 1:35–1:56 | Eric Mittelette's gateway and converging data streams, without the obsolete `agent.observe()` / `agent.plan()` panels |
 | 1:49–1:59 | A physical memory rack overflows in the S bend: `BUFFER OVERFLOW / console.log('just one more...')`, then 32 Havok bytes spill at 1:53.2; the caption fades before the cassoulet |
@@ -145,7 +171,10 @@ The Web Audio analyser uses floating-point waveform measurements and a local inp
 
 `violaEnergy` from mixed audio is a **smoothed mid-band proxy, not instrument separation**. For accurate viola control, use a dedicated input or send explicit `violaEnergy` levels through the event API.
 
-Audio is processed locally, never recorded or uploaded, and never connected to the page's speaker output. Disconnect releases captured microphone/display tracks. Permission denial, muted/lost input or a disconnected bridge does not stop the timeline.
+Captured input is processed locally, never recorded or uploaded, and never
+monitored through the speakers. This is independent of the optional embedded
+Strudel music output. Disconnect releases captured microphone/display tracks.
+Permission denial, muted/lost input or a disconnected bridge does not stop the timeline.
 
 For an embedded audio source, connect a caller-owned stream:
 
@@ -186,7 +215,10 @@ window.dispatchEvent(new CustomEvent("devfest:event", {
 }));
 ```
 
-Call these functions from the actual note-playback/scheduler callbacks in your Strudel setup, **not when a pattern is merely constructed**. This repository supplies the integration layer, not a Strudel editor, music composition or audio-routing configuration.
+Call these functions from the actual note-playback/scheduler callbacks in your
+Strudel setup, **not when a pattern is merely constructed**. The local editor
+and bundled compositions already use this integration; an external Strudel
+setup must wire its own playback callbacks and audio routing.
 
 ### Another local window/process
 
@@ -273,6 +305,24 @@ Tests cover clock behavior, malformed inputs, frequency bands, transient decay, 
 Scene-clearance tests additionally keep drifting dust below the camera, the orbiting core clear of walls/roof/camera, and Mitsuru's panel inside the corridor. Interior fog now dissipates during the escape, before the pullback reaches large distances; the solid letters remain visible rather than disappearing behind their glow. The pipeline uses up to 4x MSAA when supported, with FXAA as the fallback.
 
 Browser validation additionally covers physical text readability, synthetic Web Audio input, input disconnection, real events from a separate Node process through the relay, offline asset loading, fullscreen and graphics-context recovery. Vite's large Babylon bundle warning is non-blocking; stage shaders and materials are preloaded instead of fetched during the performance.
+
+Current music revision: **58 targeted tests across five files** and the
+TypeScript/Vite production build pass. Tests cover all three arrangements,
+global post-clap beat alignment, speaker rests, the longer exit preparation,
+finite endings, selection and launch behavior. All three choices were launched
+in a real browser without leaving the main tab; the existing editor draft was
+preserved, and the 3D clap was visually checked at 49.8 s.
+
+**Full real-audio rehearsal is still unverified for all three arrangements.**
+The previous test session reported a running AudioContext with its clock stalled
+near 0.005-0.011 s, reproduced with a native oscillator independent of Strudel.
+Earlier zero-RMS measurements also used an invalid tap of offline reverb
+rendering and cannot certify actual silence. The verifier now taps only live
+contexts and supports explicit `AV_CAPTURE=pcm` without the test WebRTC relay.
+The native clock is advancing normally in the October 8 performance tests;
+the dense real-audio passage now matches the visual-only frame-rate control.
+See [STRUDEL_SYNC.md](STRUDEL_SYNC.md) for the three full-run commands; rehearse
+on a machine with a functioning audio clock before stage use.
 
 ### Validation results — 2026-10-06
 

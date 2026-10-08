@@ -22,13 +22,33 @@ declare module "@strudel/core" {
   export function register(name: string, fn: (value: unknown, pattern: Pattern) => Pattern, patternify?: boolean):
     (value: unknown, pattern: Pattern) => Pattern;
   export function evalScope(...modules: object[]): Promise<object[]>;
-  export function repl(options: {
+  export interface ReplState {
+    error?: Error;
+    started: boolean;
+    pending: boolean;
+    code: string;
+    pattern?: Pattern;
+  }
+  export interface ReplOptions {
     getTime(): number;
     defaultOutput(hap: Hap, deadline: number, duration: number, cps: number, targetTime: number): unknown;
     transpiler: typeof import("@strudel/transpiler").transpiler;
     editPattern?(pattern: Pattern): Pattern;
-    onEvalError(error: Error): void;
-  }): { evaluate(code: string, autostart?: boolean): Promise<Pattern | undefined>; scheduler: { cps: number } };
+    beforeEval?(options: { code: string }): Promise<unknown> | void;
+    beforeStart?(): Promise<void> | void;
+    onToggle?(started: boolean): void;
+    onUpdateState?(state: ReplState): void;
+    afterEval?(options: { code: string; pattern: Pattern }): void;
+    onEvalError?(error: Error): void;
+  }
+  export interface Repl {
+    evaluate(code: string, autostart?: boolean): Promise<Pattern | undefined>;
+    stop(): void;
+    setCode(code: string): void;
+    scheduler: { cps: number; now(): number; started: boolean };
+    state: ReplState;
+  }
+  export function repl(options: ReplOptions): Repl;
   export function getTrigger(options: {
     getTime(): number;
     defaultOutput(hap: Hap, deadline: number, duration: number, cps: number, targetTime: number): unknown;
@@ -53,24 +73,18 @@ declare module "@strudel/webaudio" {
   export function initAudio(): Promise<void>;
   export function loadWorklets(): Promise<void>;
   export function registerSynthSounds(): void;
-  export function samples(map: Record<string, string[]>, baseUrl?: string): Promise<void>;
+  export function samples(map: Record<string, string[] | Record<string, string[]>>, baseUrl?: string): Promise<void>;
   export function loadBuffer(url: string, context: AudioContext, sound: string): Promise<AudioBuffer>;
   export function webaudioOutput(hap: Hap, deadline: number, duration: number, cps: number, targetTime: number): unknown;
 }
 declare module "@strudel/codemirror" {
-  import type { Pattern } from "@strudel/core";
-  export interface ReplState { error?: Error; started: boolean; pending: boolean }
+  import type { Repl, ReplOptions } from "@strudel/core";
+  export type ReplState = import("@strudel/core").ReplState;
   export class StrudelMirror {
-    constructor(options: {
-      root: HTMLElement; initialCode: string; prebake(): Promise<unknown>;
-      getTime(): number; defaultOutput: typeof import("@strudel/webaudio").webaudioOutput;
-      transpiler: typeof import("@strudel/transpiler").transpiler;
-      editPattern?(pattern: Pattern): Pattern;
-      beforeStart(): Promise<void>; onToggle(started: boolean): void;
-      onUpdateState(state: ReplState): void; afterEval(options: { code: string; pattern: Pattern }): void;
-    });
+    constructor(options: ReplOptions & { root: HTMLElement; initialCode: string; prebake(): Promise<unknown> });
     code: string;
-    repl: { scheduler: { now(): number; cps: number; started: boolean }; state: ReplState };
+    repl: Repl;
+    drawer: { start(scheduler: Repl["scheduler"]): void; stop(): void };
     evaluate(autostart?: boolean): Promise<void>;
     stop(): Promise<void>;
     setCode(code: string): void;

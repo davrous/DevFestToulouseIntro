@@ -30,8 +30,6 @@ export const CINEMA = {
   davidGate: 76,
   davidEnd: 83,
   reels: 77,
-  popcornLookStart: 76,
-  popcornLookEnd: 81.5,
   popcornTip: 77.55,
   popcorn: 78.1,
   popcornEnd: 84.5,

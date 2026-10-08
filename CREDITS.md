@@ -35,4 +35,25 @@ The [original keynote score](examples/devfest-keynote.strudel) uses original
 melodic material and local synthesis in Bb minor. Its slow-string emotional
 character is a stylistic reference, not a quotation, transcription or arrangement
 of Samuel Barber's *Adagio for Strings*. No Barber recording, score, MIDI or
-third-party orchestral samples are redistributed.
+other material from that work is redistributed. That previous score uses local
+synthesis, not acoustic orchestral recordings.
+
+The three [viola-friendly arrangements](examples/devfest-viola.strudel) also use
+original musical material. Their seven acoustic instrument families are a
+locally hosted subset of **VSCO 2 Community Edition** by **Sam Gossner and Simon
+Dalzell**, with sample cutting by **Elan Hickler / Soundemote**:
+
+- [Source repository](https://github.com/sgossner/VSCO-2-CE), revision
+  `440300901dfe9275fd84e0b7763af1f8443ae62e`.
+- [Official collection](https://versilian-studios.com/vsco-community/).
+- **CC0-1.0**, with the [license distributed locally](public/licenses/VSCO-2-CE-CC0.txt).
+- 18 WAVs: violin ensemble, cello ensemble, flute, French horn, harp, upright
+  piano and timpani. The [manifest](src/strudel/orchestraSamples.json) records
+  each source, local filename and mapped note root.
+- Files are trimmed to at most six seconds, peak-normalized to -3 dB, faded
+  where trimmed, and converted to mono 32-kHz 16-bit WAV. The
+  [staging script](scripts/stage-orchestra.mjs) reproduces these conversions.
+
+These CC0 recordings are redistributed under
+[public/assets/strudel/orchestra](public/assets/strudel/orchestra). They are
+not recordings of the live viola or samples from a copyrighted composition.

@@ -19,9 +19,12 @@
     <main id="editor" aria-label="Strudel live coding editor"></main>
     <footer>
       <span id="performance-status" role="status">Loading local Strudel...</span>
-      <button id="load-keynote">Load keynote / Bb minor / 3:00</button>
+      <label for="score-choice">Performance score</label>
+      <select id="score-choice" aria-describedby="score-description"></select>
+      <button id="load-keynote">Load selected score / 3:00</button>
       <button id="load-demo">Load engineering demo</button>
       <a id="sync-guide" target="_blank" rel="noopener">Sync guide</a>
+      <span id="score-description"></span>
     </footer>
     <script type="module" src="../src/strudel/main.ts"></script>
   </body>

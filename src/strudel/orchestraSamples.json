@@ -1,0 +1,25 @@
+{
+  "repository": "sgossner/VSCO-2-CE",
+  "revision": "440300901dfe9275fd84e0b7763af1f8443ae62e",
+  "license": "CC0-1.0",
+  "samples": [
+    { "sound": "orchestra_strings", "root": "d4", "file": "strings-d4.wav", "source": "Strings/Violin Section/susVib/VlnEns_susVib_D3_v1.wav" },
+    { "sound": "orchestra_strings", "root": "c5", "file": "strings-c5.wav", "source": "Strings/Violin Section/susVib/VlnEns_susVib_C4_v1.wav" },
+    { "sound": "orchestra_strings", "root": "d6", "file": "strings-d6.wav", "source": "Strings/Violin Section/susVib/VlnEns_susVib_D5_v1.wav" },
+    { "sound": "orchestra_cello", "root": "c2", "file": "cello-c2.wav", "source": "Strings/Cello Section/susvib/susvib_C1_v1_1.wav" },
+    { "sound": "orchestra_cello", "root": "d3", "file": "cello-d3.wav", "source": "Strings/Cello Section/susvib/susvib_D2_v1_1.wav" },
+    { "sound": "orchestra_cello", "root": "c4", "file": "cello-c4.wav", "source": "Strings/Cello Section/susvib/susvib_C3_v1_1.wav" },
+    { "sound": "orchestra_flute", "root": "c4", "file": "flute-c4.wav", "source": "Woodwinds/Flute/expvib/LDFlute_expvib_C3_v1_1.wav" },
+    { "sound": "orchestra_flute", "root": "c5", "file": "flute-c5.wav", "source": "Woodwinds/Flute/expvib/LDFlute_expvib_C4_v1_1.wav" },
+    { "sound": "orchestra_flute", "root": "a5", "file": "flute-a5.wav", "source": "Woodwinds/Flute/expvib/LDFlute_expvib_A4_v1_1.wav" },
+    { "sound": "orchestra_horn", "root": "c2", "file": "horn-c2.wav", "source": "Brass/F Horn/sus/MOHorn_sus_C1_v2_1.wav" },
+    { "sound": "orchestra_horn", "root": "d3", "file": "horn-d3.wav", "source": "Brass/F Horn/sus/MOHorn_sus_D2_v2_1.wav" },
+    { "sound": "orchestra_harp", "root": "g3", "file": "harp-g3.wav", "source": "Strings/Harp/KSHarp_G3_mf.wav" },
+    { "sound": "orchestra_harp", "root": "d4", "file": "harp-d4.wav", "source": "Strings/Harp/KSHarp_D4_mf.wav" },
+    { "sound": "orchestra_harp", "root": "a4", "file": "harp-a4.wav", "source": "Strings/Harp/KSHarp_A4_mf.wav" },
+    { "sound": "orchestra_piano", "root": "a2", "file": "piano-a2.wav", "source": "Keys/Upright Piano/Player_dyn1_rr1_012.wav" },
+    { "sound": "orchestra_piano", "root": "a4", "file": "piano-a4.wav", "source": "Keys/Upright Piano/Player_dyn1_rr1_024.wav" },
+    { "sound": "orchestra_piano", "root": "c#6", "file": "piano-cs6.wav", "source": "Keys/Upright Piano/Player_dyn1_rr1_032.wav" },
+    { "sound": "orchestra_timpani", "root": "f#2", "file": "timpani-fs2.wav", "source": "Percussion/Timpani/Timpani1_Hit_v3_rr1_Sum.wav" }
+  ]
+}

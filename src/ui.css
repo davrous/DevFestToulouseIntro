@@ -42,3 +42,6 @@ kbd { font: 8px Consolas, monospace; color: #6f9390; margin-left: 6px; }
 #debug > a { color: #99efcd; font-size: 10px; }
 #av-event-monitor { max-height: 180px; overflow: auto; background: #091c20; padding: 10px; white-space: pre; font: 9px/1.7 Consolas, monospace; color: #b3c9c4; }
 #lobby { overflow-y: auto; scrollbar-width: thin; scrollbar-color: #547a6f transparent; }
+.score-choice { display: flex; align-items: center; gap: 12px; margin-top: 12px; color: #91aaa6; font: 10px Consolas, monospace; }
+.score-choice select { max-width: 340px; background: #10272b; color: #afcec3; border: 1px solid #37544e; padding: 8px; font: inherit; }
+.score-choice[hidden] { display: none; }

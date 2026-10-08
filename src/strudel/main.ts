@@ -5,13 +5,14 @@ import * as tonal from "@strudel/tonal";
 import * as audio from "@strudel/webaudio";
 import { transpiler } from "@strudel/transpiler";
 import demo from "../../examples/devfest-av-sync.strudel?raw";
-import keynote from "../../examples/devfest-keynote.strudel?raw";
 import guide from "../../STRUDEL_SYNC.md?url";
 import { StrudelEventTransport } from "../engine/StrudelEventTransport";
 import { audioTimeToEpoch, createVisualHelpers, withSynchronizedStart } from "./helpers";
 import { CINEMA, CLAP_CRT } from "../content/showBeats";
 import { SPEAKERS } from "../content/speakers";
-import { requestsKeynotePerformance } from "./performanceMode";
+import { PERFORMANCE_ERROR, requestsKeynotePerformance } from "./performanceMode";
+import { createPerformancePlayer, type PerformancePlayer } from "./performancePlayer";
+import { DEFAULT_SCORE, fillScoreSelector, getScore, orchestraBuffers, orchestraSampleMap, scoreSource } from "./scores";
 import "./style.css";
 
 function element<T extends HTMLElement>(id: string): T {
@@ -24,8 +25,22 @@ const status = element("performance-status");
 const sync = element("sync-status");
 const evaluate = element<HTMLButtonElement>("evaluate");
 const startTogether = element<HTMLButtonElement>("start-together");
+const scoreChoice = element<HTMLSelectElement>("score-choice");
+const performanceMode = requestsKeynotePerformance(location.search);
+fillScoreSelector(scoreChoice);
 element<HTMLAnchorElement>("sync-guide").href = guide;
-const report = (message: string) => { status.textContent = message.slice(0, 400); status.dataset.error = "true"; };
+const report = (message: string) => {
+  status.textContent = message.slice(0, 400);
+  status.dataset.error = "true";
+  if (performanceMode && window.parent !== window) {
+    window.parent.postMessage({ type: PERFORMANCE_ERROR, message, launch: new URLSearchParams(location.search).get("launch") }, location.origin);
+  }
+};
+try { scoreChoice.value = getScore(new URLSearchParams(location.search).get("score") ?? DEFAULT_SCORE).id; }
+catch (error) {
+  report(`Invalid score selection: ${error instanceof Error ? error.message : String(error)}`);
+  throw error;
+}
 const transport = new StrudelEventTransport("strudel", () => {}, report);
 const helpers = createVisualHelpers(transport, audio.getAudioContext);
 const sampleBase = new URL("../assets/strudel/", location.href);
@@ -34,8 +49,13 @@ let initialized = false;
 let synchronized = false;
 let evaluating = false;
 let playing = false;
-const performanceMode = requestsKeynotePerformance(location.search);
 let automaticKeynote = performanceMode;
+function describeScore(): void {
+  const score = getScore(scoreChoice.value);
+  element("score-description").textContent = `${score.key} / 150 BPM / 3:00. ${score.description}`;
+}
+describeScore();
+scoreChoice.addEventListener("change", describeScore);
 
 function updateStartButton(): void {
   startTogether.disabled = !initialized || evaluating || playing || transport.getStatus() !== "CONNECTED";
@@ -44,7 +64,7 @@ function updateStartButton(): void {
 const ready = (async () => {
   mini.miniAllStrings();
   audio.registerSynthSounds();
-  await audio.samples({ bd: ["bd.wav"], sd: ["sd.wav"], hh: ["hh.wav"] }, sampleBase.href);
+  await audio.samples({ bd: ["bd.wav"], sd: ["sd.wav"], hh: ["hh.wav"], ...orchestraSampleMap }, sampleBase.href);
   await core.evalScope(core, mini, tonal, audio, {
     visual: helpers.visual, cue: helpers.cue, cueAt: helpers.cueAt, audioAndVisual: helpers.audioAndVisual,
     clapTiming: CLAP_CRT, cinemaTiming: CINEMA,
@@ -57,17 +77,14 @@ function savedCode(): string {
   catch (error) { console.warn("Strudel draft storage unavailable", error); report("Draft storage unavailable; export your code before closing."); return demo; }
 }
 
-const editor = new StrudelMirror({
-  root: element("editor"),
-  initialCode: performanceMode ? keynote : savedCode(),
-  prebake: () => ready,
+const playbackOptions: core.ReplOptions = {
   getTime: () => audio.getAudioContext().currentTime,
   defaultOutput: audio.webaudioOutput,
   transpiler,
   editPattern: (pattern) => synchronized ? withSynchronizedStart(pattern, async (targetTime) => {
     try {
       await transport.requestShowStart(audioTimeToEpoch(targetTime, audio.getAudioContext()));
-      status.textContent = "PLAYING / show synchronized / Switch to the Babylon tab";
+      status.textContent = performanceMode ? "PLAYING / music + show synchronized" : "PLAYING / show synchronized / Switch to the Babylon tab";
     }
     catch (error) {
       console.error("Synchronized launch failed", error);
@@ -79,22 +96,30 @@ const editor = new StrudelMirror({
     if (!audioReady) {
       await audio.initAudio();
       await audio.loadWorklets();
-      await Promise.all(["bd", "sd", "hh"].map((sound) =>
-        audio.loadBuffer(new URL(`${sound}.wav`, sampleBase).href, audio.getAudioContext(), sound)));
       audioReady = true;
     }
+    const buffers = ["bd", "sd", "hh"].map((sound) => ({ file: `${sound}.wav`, sound }));
+    if (editor.code.includes("orchestra_")) buffers.push(...orchestraBuffers);
+    await Promise.all(buffers.map(({ file, sound }) =>
+      audio.loadBuffer(new URL(file, sampleBase).href, audio.getAudioContext(), sound)));
     await audio.getAudioContext().resume();
     // Cyclist emits its first hap before onToggle; establish the session first.
     transport.setPlayback(true);
   },
-  onToggle: (playing) => transport.setPlayback(playing),
+  onToggle: (playing) => {
+    transport.setPlayback(playing);
+    if (!performanceMode && playing) {
+      // StrudelMirror starts its drawer after this hook; suspend it once that completes.
+      queueMicrotask(() => { if (document.hidden) uiEditor?.drawer.stop(); });
+    }
+  },
   onUpdateState: (state) => {
     evaluating = state.pending;
     playing = state.started;
     updateStartButton();
-    status.dataset.error = String(!!state.error);
-    status.textContent = state.error ? `Strudel: ${state.error.message.slice(0, 350)}`
-      : state.pending ? "Evaluating..." : state.started ? "PLAYING / scheduler events + local audio" : "STOPPED / audio starts on Evaluate";
+    if (state.error) { report(`Strudel: ${state.error.message}`); return; }
+    status.dataset.error = "false";
+    status.textContent = state.pending ? "Evaluating..." : state.started ? "PLAYING / scheduler events + local audio" : "STOPPED / audio starts on Evaluate";
   },
   afterEval: ({ code }) => {
     synchronized = false;
@@ -102,6 +127,17 @@ const editor = new StrudelMirror({
     try { localStorage.setItem("devfest-strudel-code-v1", code); }
     catch (error) { console.warn("Strudel draft could not be saved", error); report("Draft not saved; export your code before closing."); }
   },
+};
+
+const uiEditor: StrudelMirror | undefined = performanceMode ? undefined
+  : new StrudelMirror({ ...playbackOptions, root: element("editor"), initialCode: savedCode(), prebake: () => ready });
+const editor: PerformancePlayer = uiEditor
+  ?? createPerformancePlayer(scoreSource(scoreChoice.value), { ...playbackOptions, beforeEval: () => ready });
+
+document.addEventListener("visibilitychange", () => {
+  if (!uiEditor) return;
+  if (document.hidden) uiEditor.drawer.stop();
+  else if (uiEditor.repl.scheduler.started) uiEditor.drawer.start(uiEditor.repl.scheduler);
 });
 
 async function run(): Promise<void> {
@@ -127,7 +163,7 @@ function loadScore(source: string): void {
   editor.setCode(source);
 }
 element("load-demo").addEventListener("click", () => loadScore(demo));
-element("load-keynote").addEventListener("click", () => loadScore(keynote));
+element("load-keynote").addEventListener("click", () => loadScore(scoreSource(scoreChoice.value)));
 const health = setInterval(() => {
   const connected = transport.getStatus() === "CONNECTED";
   sync.textContent = `BABYLON SYNC / ${transport.getStatus()}`;
@@ -146,7 +182,7 @@ window.addEventListener("pagehide", () => { transport.disconnect(); clearInterva
 
 declare global {
   interface Window {
-    strudelAV: { editor: StrudelMirror; transport: StrudelEventTransport; helpers: typeof helpers };
+    strudelAV: { editor: PerformancePlayer; transport: StrudelEventTransport; helpers: typeof helpers };
   }
 }
 window.strudelAV = { editor, transport, helpers };

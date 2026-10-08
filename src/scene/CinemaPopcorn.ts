@@ -46,7 +46,8 @@ function spillVelocity(home: Vector3, release: number, index: number): Vector3 {
   const downward = -1.8 - index % 3 * .2;
   const cameraHeight = interiorPosition(release + .9).y;
   const fall = (downward + Math.sqrt(downward * downward + 34 * (home.y - cameraHeight))) / 17;
-  const target = interiorPosition(release + fall);
+  // Keep half the rain overhead and half visible ahead of the forward-facing camera.
+  const target = interiorPosition(release + fall + (index % 2 ? 2.1 : 0));
   return new Vector3((target.x - home.x) / fall, downward, (target.z - home.z) / fall);
 }
 
@@ -133,11 +134,12 @@ export class CinemaPopcorn {
       const elapsed = time - kernel.release;
       kernel.mesh.setEnabled(true);
       kernel.mesh.position.copyFrom(kernel.home).addInPlace(kernel.velocity.scale(elapsed));
-      const floorHeight = CINEMA_FLOOR_TOP + .3 + index % 4 * .04;
+      const radius = .3 + index % 4 * .04;
+      const floorHeight = CINEMA_FLOOR_TOP + radius;
       kernel.mesh.position.y = Math.max(floorHeight, kernel.mesh.position.y - elapsed * elapsed * 8.5);
       kernel.mesh.rotationQuaternion = Quaternion.RotationYawPitchRoll(index * .7, index * .3, 0);
       kernel.physics = new PhysicsAggregate(kernel.mesh, PhysicsShapeType.SPHERE,
-        { mass: .17, friction: .48, restitution: .55 }, this.scene);
+        { mass: .17, friction: .48, restitution: .55, radius }, this.scene);
       const body = kernel.physics.body;
       body.setMotionType(PhysicsMotionType.DYNAMIC);
       body.setLinearVelocity(new Vector3(kernel.velocity.x,

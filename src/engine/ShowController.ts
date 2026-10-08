@@ -7,6 +7,7 @@ import { StrudelEventTransport } from "./StrudelEventTransport";
 
 export class ShowController {
   readonly audio: AudioAnalyzer;
+  readonly soundtrack: AudioAnalyzer;
   readonly features = silentFeatures();
   readonly musicEvents: MusicEventBus;
   readonly strudelEvents: StrudelEventTransport;
@@ -33,6 +34,7 @@ export class ShowController {
     private readonly clock: () => number = () => performance.now(),
   ) {
     this.audio = new AudioAnalyzer(notify);
+    this.soundtrack = new AudioAnalyzer(notify, 0);
     this.musicEvents = new MusicEventBus(() => performance.timeOrigin + this.clock());
     this.musicEvents.subscribe((event) => this.applyMusicEvent(event));
     this.strudelEvents = new StrudelEventTransport("babylon", (event) => this.musicEvents.receive(event),
@@ -74,12 +76,15 @@ export class ShowController {
   sample(now = this.clock()): AudioFeatures {
     this.musicEvents.flush(performance.timeOrigin + now);
     const audio = this.audio.sample(now);
+    const soundtrack = this.soundtrack.sample(now);
     Object.assign(this.features, silentFeatures());
     this.revealAccent = this.enabled && this.revealPulse
       ? this.revealPulse.value * Math.exp(-Math.max(0, now - this.revealPulse.time) / 300) : 0;
     if (!this.enabled) return this.features;
     const decay = Math.exp(-Math.max(0, now - this.levelsAt - 250) / 500);
-    for (const key of CHANNELS) this.features[key] = Math.max(audio[key], (this.levels[key] ?? 0) * decay);
+    for (const key of CHANNELS) {
+      this.features[key] = Math.max(audio[key], soundtrack[key], (this.levels[key] ?? 0) * decay);
+    }
     for (const [event, pulse] of this.pulses) {
       const lifetime = event === "viola" ? 1800 : event === "drop" ? 1000 : event === "snare" ? 200 : 130;
       const value = pulse.value * Math.exp(-Math.max(0, now - pulse.time) / lifetime);
