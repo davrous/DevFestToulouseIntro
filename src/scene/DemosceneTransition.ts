@@ -1,8 +1,5 @@
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
-import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { PhysicsAggregate } from "@babylonjs/core/Physics/v2/physicsAggregate";
-import { PhysicsShapeType } from "@babylonjs/core/Physics/v2/IPhysicsEnginePlugin";
 import type { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
@@ -15,52 +12,13 @@ import { cueEnvelope } from "../content/cues";
 import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import { CINEMA } from "../content/showBeats";
 import { speakerReveal } from "../effects/ShowLighting";
-
-const VIOLIN = [
-  "......oo.........",
-  "......o#o........",
-  "......##.........",
-  ".....+##.........",
-  "....+.##.........",
-  "...+..##.........",
-  "..+...##.........",
-  ".+...o##o........",
-  "+...oo||oo.......",
-  ".+..o#||#o.......",
-  "..+.oo||oo.......",
-  "...+..||.........",
-  "....+o||o........",
-  ".....+||+........",
-  "....oo||oo.......",
-  "...ooo||ooo......",
-  "...ooo||ooo......",
-  "....oo||oo.......",
-  ".....o||o........",
-  "......##.........",
-];
-
-interface Bit { col: number; row: number; seed: number; color: number }
-const bits: Bit[] = VIOLIN.flatMap((line, row) => [...line].flatMap((pixel, col) =>
-  pixel === "." ? [] : [{
-    col, row, seed: (col * 37 + row * 97) % 61 / 61,
-    color: pixel === "+" || pixel === "|" ? 2 : pixel === "o" ? 1 : 0,
-  }]));
-
-export const VOXEL_COUNT = bits.length;
-export const VIOLIN_PATTERN = VIOLIN;
-export const VIOLIN_FALL = { start: 22, end: 38, size: .425, scale: 1.25 } as const;
-
-function violinLocalPosition(bit: Bit): Vector3 {
-  const centerY = 8.08;
-  return new Vector3((bit.col - 7.5) * .4 * VIOLIN_FALL.scale,
-    centerY + (11.5 - bit.row * .36 - centerY) * VIOLIN_FALL.scale, 5);
-}
+import { PONG_VOLLEY, VIOLIN_BITS as bits, VIOLIN_FALL, violinLocalPosition } from "../content/violin";
+import { bakeViolinPongImpact, type ViolinPongImpact } from "./ViolinPongImpact";
+import { samplePhysicsBake } from "./PhysicsBake";
+export { VOXEL_COUNT, VIOLIN_PATTERN, VIOLIN_FALL } from "../content/violin";
 
 interface Voxel {
   mesh: Mesh;
-  home: Vector3;
-  velocity: Vector3;
-  body?: PhysicsAggregate;
 }
 
 export class DemosceneTransition {
@@ -74,7 +32,11 @@ export class DemosceneTransition {
   private readonly pieces: Voxel[] = [];
   private readonly voxelMaterials: Array<{ material: StandardMaterial; tint: Color3 }> = [];
   private plugin?: HavokPlugin;
-  private previous?: number;
+  impact?: ViolinPongImpact;
+  private readonly sampledPosition = Vector3.Zero();
+  private readonly sampledRotation = Quaternion.Identity();
+  private readonly frameWorld: Matrix;
+  private readonly frameRotation: Quaternion;
 
   constructor(private readonly scene: Scene) {
     this.voxels = [0, 1, 2].map((color) => {
@@ -96,17 +58,17 @@ export class DemosceneTransition {
     const anchor = routeAnchor(SPEAKERS[0].gateTime);
     const world = Matrix.RotationY(anchor.yaw)
       .multiply(Matrix.Translation(anchor.position.x, 0, anchor.position.z));
+    this.frameWorld = world;
+    this.frameRotation = Quaternion.RotationYawPitchRoll(anchor.yaw, 0, 0);
     for (const [index, bit] of bits.entries()) {
       const mesh = MeshBuilder.CreateBox(`Arcade / violin voxel ${index}`, { size: VIOLIN_FALL.size }, scene);
       mesh.material = this.voxels[bit.color].material;
       mesh.isPickable = false;
       mesh.rotationQuaternion = Quaternion.RotationYawPitchRoll(anchor.yaw, 0, 0);
       const home = Vector3.TransformCoordinates(violinLocalPosition(bit), world);
-      const velocity = Vector3.TransformNormal(new Vector3(
-        (bit.seed - .5) * 2.4, -.4 - bit.seed, .3 + bit.seed * .8), world);
       mesh.position.copyFrom(home);
       mesh.setEnabled(false);
-      this.pieces.push({ mesh, home, velocity });
+      this.pieces.push({ mesh });
     }
     const streakMaterial = new StandardMaterial("Arcade / D warp light trails", scene);
     streakMaterial.disableLighting = true;
@@ -122,49 +84,29 @@ export class DemosceneTransition {
 
   initialize(plugin: HavokPlugin): void {
     this.plugin = plugin;
-    const anchor = routeAnchor(SPEAKERS[0].gateTime);
-    const floor = new TransformNode("Arcade / violin collision floor", this.scene);
-    floor.position.set(anchor.position.x, -.25, anchor.position.z);
-    floor.rotation.y = anchor.yaw;
-    new PhysicsAggregate(floor, PhysicsShapeType.BOX, {
-      mass: 0, friction: .7, restitution: .2, extents: new Vector3(26, .5, 28),
-    }, this.scene);
+    this.impact ??= bakeViolinPongImpact(this.scene, this.frameWorld);
   }
 
   private clearPieces(): void {
     for (const piece of this.pieces) {
-      piece.body?.dispose();
-      piece.body = undefined;
       piece.mesh.setEnabled(false);
     }
   }
 
-  update(time: number, audio: AudioFeatures, speed = 1): void {
-    const seek = this.previous === undefined || time < this.previous || time - this.previous > .3;
-    this.previous = time;
-    if (seek || time < VIOLIN_FALL.start || time >= VIOLIN_FALL.end) this.clearPieces();
-    const falling = time >= VIOLIN_FALL.start && time < VIOLIN_FALL.end;
+  update(time: number, audio: AudioFeatures, _speed = 1): void {
+    const falling = time >= (this.impact?.impactTime ?? VIOLIN_FALL.start) && time < VIOLIN_FALL.end;
+    if (!falling) this.clearPieces();
     const reveal = falling ? 1 : speakerReveal(time, SPEAKERS[0]);
     for (const { material, tint } of this.voxelMaterials) {
       material.alpha = reveal;
       material.emissiveColor.copyFrom(tint).scaleInPlace(1.3);
     }
-    if (falling && this.plugin) {
-      const elapsed = Math.max(0, time - VIOLIN_FALL.start);
+    if (falling && this.impact) {
       for (const [index, piece] of this.pieces.entries()) {
-        if (piece.body) continue;
         piece.mesh.setEnabled(true);
-        piece.mesh.position.copyFrom(piece.home).addInPlace(piece.velocity.scale(elapsed));
-        piece.mesh.position.y = Math.max(VIOLIN_FALL.size / 2,
-          piece.mesh.position.y - 8.5 * elapsed * elapsed);
-        piece.mesh.rotationQuaternion!.copyFrom(Quaternion.RotationYawPitchRoll(
-          routeAnchor(SPEAKERS[0].gateTime).yaw + elapsed * (index % 3 - 1), elapsed * .8, elapsed * .5));
-        piece.body = new PhysicsAggregate(piece.mesh, PhysicsShapeType.BOX,
-          { mass: .15, friction: .7, restitution: .18 }, this.scene);
-        piece.body.body.setLinearVelocity(new Vector3(piece.velocity.x,
-          piece.mesh.position.y <= VIOLIN_FALL.size / 2 ? 0 : piece.velocity.y - 17 * elapsed,
-          piece.velocity.z).scale(speed));
-        piece.body.body.setAngularVelocity(new Vector3((index % 3 - 1) * 2, .8, 1.2).scale(speed));
+        samplePhysicsBake(this.impact.bake, index, time - PONG_VOLLEY.shot, this.sampledPosition, this.sampledRotation);
+        Vector3.TransformCoordinatesToRef(this.sampledPosition, this.frameWorld, piece.mesh.position);
+        this.frameRotation.multiplyToRef(this.sampledRotation, piece.mesh.rotationQuaternion!);
       }
     }
     const voxelsVisible = reveal > 0 && time < VIOLIN_FALL.end && (!falling || !this.plugin);

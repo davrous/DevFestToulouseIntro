@@ -1,4 +1,4 @@
-import { HEIGHT, ROOF_THICKNESS } from "./title";
+import { HEIGHT, ROOF_THICKNESS, cellPosition } from "./title";
 
 export const ARCADE_ENTRY = {
   start: 4.3, cross: 5.925, end: 5.925,
@@ -38,15 +38,31 @@ export const CINEMA = {
   popcornTip: 77.55,
   popcorn: 78.1,
   popcornEnd: 84.5,
-  camera: 84.5,
-  lens: 86.3,
+  camera: 80,
+  lens: 80.45,
+  lensAnchor: 86.3,
   auditoriumEnd: 87.6,
-  vortexExit: 96.2,
-  vortexEnd: 97.8,
+  tunnelRoomReady: 90,
+  vortexExit: 92.8,
+  vortexEnd: 94.2,
   projector: 88.8,
   space: 90.6,
-  digital: 95,
+  digital: 94.2,
 } as const;
+
+export const TERMINATOR = {
+  start: CINEMA.start, end: 72, walkStart: 60.5, walkEnd: 69.5,
+  column: 0, row: 6, offsetX: -3, offsetZ: 4.5, height: 21.6,
+  distance: 4, groundOffset: .65, lookStart: 59.8, lookEnd: 67.8, clip: "The Chase",
+} as const;
+
+export function terminatorPosition(time: number): { x: number; y: number; z: number } {
+  const cell = cellPosition(TERMINATOR.column, TERMINATOR.row);
+  const progress = Math.max(0, Math.min(1, (time - TERMINATOR.walkStart) / (TERMINATOR.walkEnd - TERMINATOR.walkStart)));
+  return { x: cell.x + TERMINATOR.offsetX + TERMINATOR.distance * progress,
+    y: TERMINATOR.height / 2 + TERMINATOR.groundOffset,
+    z: cell.z + TERMINATOR.offsetZ };
+}
 
 export const LEVEL_COMPLETE = { start: 46.3, end: CINEMA.clap, height: 26, width: 18 } as const;
 export const BRIDGE_CLOSE = { start: 168, end: 172.5 } as const;
@@ -68,7 +84,7 @@ export const BUFFER_OVERFLOW = {
 } as const;
 export const ASTRONAUT_CORNER = {
   anchor: 121.75, lateral: -8, height: 6.5, start: CINEMA.digital, end: 124.5,
-  riseStart: 116.2, riseEnd: 118.4, archHeight: 9.2, archOffset: 7,
+  riseStart: 116.2, riseEnd: 118.4, finalScale: 1.6, gateTime: 122, gateLift: 3.2,
 } as const;
 export const CLAP_CRT = {
   start: CINEMA.clapperClose - .2,
@@ -90,9 +106,8 @@ export const REHEARSAL_STOPS = [
   { label: "FILM REELS", time: 79 },
   { label: "CAMERA LENS", time: CINEMA.lens - 2 },
   { label: "LENS VORTEX", time: CINEMA.lens + 1 },
-  { label: "PROJECTOR", time: CINEMA.projector + .3 },
-  { label: "SPACE WARP", time: CINEMA.space + 1 },
-  { label: "D ENTRY", time: 95 },
+  { label: "TUNNEL RIGHT TURN", time: 91.5 },
+  { label: "D ENTRY", time: CINEMA.vortexEnd },
   { label: "VORTEX EXIT", time: CINEMA.vortexExit + .6 },
   { label: "ERIC", time: 99 },
   { label: "BUFFER FULL", time: BUFFER_OVERFLOW.spill - .3 },

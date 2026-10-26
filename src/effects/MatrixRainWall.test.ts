@@ -30,11 +30,11 @@ describe("readable Matrix-style snack wall", () => {
     expect(wall.mesh.parent).toBe(root);
     expect(wall.mesh.position.asArray()).toEqual([MATRIX_WALL.offsetX, MATRIX_WALL.centerY, 4 - MATRIX_WALL.inset]);
     expect(wall.mesh.rotation.y).toBe(0);
-    expect(wall.leftMesh.position.asArray()).toEqual([-MATRIX_WALL.offsetX, MATRIX_WALL.centerY, 4 - MATRIX_WALL.inset]);
-    expect(wall.leftMesh.material).toBe(wall.material);
-    expect(wall.leftMesh.geometry).toBe(wall.mesh.geometry);
-    expect(wall.leftMesh.scaling.asArray()).toEqual([1, 1, 1]);
-    expect(wall.leftMesh.rotation.y).toBe(0);
+    expect(MATRIX_WALL.width).toBeCloseTo(MATRIX_WALL.right - MATRIX_WALL.left);
+    expect(MATRIX_WALL.height).toBeGreaterThan(32);
+    expect(MATRIX_WALL.floor).toBeLessThan(.1);
+    expect(MATRIX_WALL.ceiling).toBe(32.85);
+    expect(scene.getMeshByName("FX/Matrix / snack wall code rain left")).toBeNull();
     const clock = vi.spyOn(wall.material, "setFloat");
     wall.update(61.5);
     expect(clock).toHaveBeenLastCalledWith("time", 61.5);

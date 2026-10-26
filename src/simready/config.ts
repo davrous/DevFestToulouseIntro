@@ -1,6 +1,8 @@
 import { routeAnchor } from "../camera/CameraPath";
 import { CELL, cellPosition } from "../content/title";
 import { CASSOULET_PILE, CASSOULET_SIGN, CINEMA, DEPLOY_ROCKET } from "../content/showBeats";
+import { SPEAKERS } from "../content/speakers";
+import { PONG_VOLLEY } from "../content/violin";
 
 export const SIMREADY_GAGS = {
   pong: { title: "Retro Pong", flag: "enablePongGag", assets: ["pongPaddle", "pongBall"] },
@@ -55,7 +57,7 @@ export function createSimReadyConfig(enabled = true): SimReadyConfig {
     enablePongGag: true, enableToulouseEasterEggs: true,
     enableLaunchArm: true, enableSnackVendingMachine: true,
     gags: {
-      pong: placement(16.5, 0, 10.5, 7, 14.7, 13.7),
+      pong: placement(SPEAKERS[0].gateTime, 0, PONG_VOLLEY.centerY, PONG_VOLLEY.start, PONG_VOLLEY.end, PONG_VOLLEY.shot),
       pastry: placement(33.5, 6.5, 8.3, 27, 31.5, 30),
       cassoulet: placement(CASSOULET_SIGN.time + 4, -8.5, .02, CASSOULET_PILE.start, CASSOULET_PILE.end, 127.052),
       launchArm,

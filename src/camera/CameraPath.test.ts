@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cameraPose, interiorPosition, routeAnchor } from "./CameraPath";
+import { cameraPose, cinemaTravelTime, interiorPosition, routeAnchor } from "./CameraPath";
 import { CELL, HEIGHT, TITLE_WIDTH, cellPosition, createTitleCells, seededRandom, SEED } from "../content/title";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { SPEAKERS } from "../content/speakers";
@@ -80,7 +80,7 @@ describe("title labyrinth choreography", () => {
     }
   });
 
-  it("keeps looking forward during the reels and complete popcorn cascade before lens entry", () => {
+  it("keeps looking forward during the reels and initial popcorn cascade before the 80s rush", () => {
     for (let time = CINEMA.reels; time < CINEMA.camera; time += .05) {
       const pose = cameraPose(time);
       const forward = pose.target.subtract(pose.position).normalize();
@@ -148,11 +148,21 @@ describe("title labyrinth choreography", () => {
       const nextForward = next.target.subtract(next.position).normalize();
       const angle = Math.acos(Math.min(1, Math.max(-1, Vector3.Dot(forward, nextForward))));
       const speed = angle / .05 * 180 / Math.PI;
-      if (speed > worst.speed) worst = { time, speed };
+      if (time >= CINEMA.camera && time < CINEMA.vortexEnd) {
+        expect(speed).toBeLessThan(180);
+      } else if (speed > worst.speed) worst = { time, speed };
     }
     expect(worst.speed, `angular velocity at ${worst.time.toFixed(2)}s`).toBeLessThan(45);
   });
 
+  it("preserves the entry rush and rejoins the unchanged route exactly at 94.2", () => {
+    const speed = (time: number) => Vector3.Distance(cameraPose(time).position, cameraPose(time + .001).position) / .001;
+    expect(speed(80.35)).toBeGreaterThan(speed(79.5) * 10);
+    expect(cinemaTravelTime(79.999)).toBe(79.999);
+    expect(cinemaTravelTime(CINEMA.lens)).toBeCloseTo(CINEMA.lensAnchor);
+    for (const time of [94.2, 95, 100, 180]) expect(cinemaTravelTime(time)).toBe(time);
+    expect(Vector3.Distance(cameraPose(94.2).position, interiorPosition(94.2))).toBeLessThan(.00001);
+  });
   it("frames every complete speaker-name panel for at least four seconds at projector aspect", () => {
     for (const speaker of SPEAKERS) {
       const { position: anchor, yaw } = routeAnchor(speaker.gateTime, speaker.lateralOffset);

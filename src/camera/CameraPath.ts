@@ -3,7 +3,7 @@ import { CELL, cellPosition } from "../content/title";
 import { clamp, smootherstep, smoothstep } from "../engine/Timeline";
 import { SPEAKERS } from "../content/speakers";
 import { CHOCOLATINE, cueEnvelope } from "../content/cues";
-import { CINEMA, DEPLOY_ROCKET, ORBIT_LINK, rocketLift } from "../content/showBeats";
+import { CINEMA, DEPLOY_ROCKET, ORBIT_LINK, TERMINATOR, rocketLift, terminatorPosition } from "../content/showBeats";
 
 interface Keyframe { time: number; col: number; row: number; y: number }
 
@@ -53,7 +53,7 @@ const attentionCues = [
     anchor: CHOCOLATINE.anchor, height: CHOCOLATINE.height, weight: .85 },
   { start: 41, end: 46, anchor: 47, height: 16 },
   { start: 44.8, end: CINEMA.clap, anchor: CINEMA.clapperAnchor, height: 14.5, fade: 3, fadeOut: 1.2, weight: 1 },
-  { start: CINEMA.camera, end: CINEMA.lens - .4, anchor: CINEMA.lens, height: 12.5 },
+  { start: CINEMA.camera, end: CINEMA.lens, anchor: CINEMA.lensAnchor, height: 12.5, fade: .08, fadeOut: .02 },
 ];
 
 export function interiorPosition(time: number): Vector3 {
@@ -89,6 +89,16 @@ export function routeAnchor(time: number, lateralOffset = 0): { position: Vector
 
 export interface CameraPose { position: Vector3; target: Vector3; fov: number; reveal: number }
 
+export function cinemaTravelTime(time: number): number {
+  if (time <= CINEMA.camera || time >= CINEMA.vortexEnd) return time;
+  if (time < CINEMA.lens) {
+    const progress = (time - CINEMA.camera) / (CINEMA.lens - CINEMA.camera);
+    return CINEMA.camera + (CINEMA.lensAnchor - CINEMA.camera) * (.08 * progress + .92 * progress * progress);
+  }
+  const progress = (time - CINEMA.lens) / (CINEMA.vortexEnd - CINEMA.lens);
+  return time + (CINEMA.lensAnchor - CINEMA.lens) * (1 - smoothstep(progress));
+}
+
 function focusCamera(position: Vector3, target: Vector3, focus: Vector3, weight: number): void {
   const forward = target.subtract(position).normalize();
   const toward = focus.subtract(position).normalize();
@@ -96,8 +106,9 @@ function focusCamera(position: Vector3, target: Vector3, focus: Vector3, weight:
 }
 
 export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
-  const local = interiorPosition(Math.min(time, 159));
-  const ahead = interiorPosition(Math.min(time + 2.4, 159));
+  const travel = cinemaTravelTime(time);
+  const local = interiorPosition(Math.min(travel, 159));
+  const ahead = interiorPosition(Math.min(travel + 2.4, 159));
   const turn = smoothstep((time - 147) / 12);
   const backIntoRoom = EXIT.add(new Vector3(0, 3, CELL * 1.8));
   const localTarget = Vector3.Lerp(ahead, backIntoRoom, turn);
@@ -129,6 +140,16 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
       focusCamera(local, localTarget, focus,
         cueEnvelope(time, DEPLOY_ROCKET.lookStart, DEPLOY_ROCKET.lookEnd, 3.5, 2.5) * .9);
     }
+    if (time >= TERMINATOR.lookStart && time < TERMINATOR.lookEnd) {
+      const robot = terminatorPosition(time);
+      focusCamera(local, localTarget, new Vector3(robot.x, 12, robot.z),
+        cueEnvelope(time, TERMINATOR.lookStart, TERMINATOR.lookEnd, 1.8, 1.8) * .35);
+    }
+    if (time >= CINEMA.tunnelRoomReady && time < 98) {
+      const exitHeading = routeAnchor(100).yaw;
+      const intoRoom = local.add(new Vector3(Math.sin(exitHeading), .02, Math.cos(exitHeading)).scale(20));
+      focusCamera(local, localTarget, intoRoom, cueEnvelope(time, CINEMA.tunnelRoomReady, 98, 1, 1.5) * .95);
+    }
     if (time >= ORBIT_LINK.lookStart && time < ORBIT_LINK.lookEnd) {
       const orbit = routeAnchor(ORBIT_LINK.time);
       const focus = orbit.position.add(new Vector3(
@@ -140,8 +161,10 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
     const arcadePulse = .06 * cueEnvelope(time, 31, 34, .5);
     const warp = .08 * Math.max(cueEnvelope(time, 46, CINEMA.clapperStart, .7),
       cueEnvelope(time, CINEMA.projector, 99, 1.2));
+    const rush = .32 * smoothstep((time - CINEMA.camera) / .18)
+      * (1 - smoothstep((time - CINEMA.vortexExit) / (CINEMA.vortexEnd - CINEMA.vortexExit)));
     return { position: local, target: localTarget,
-      fov: .99 + .055 * smoothstep((time - 90) / 50) + arcadePulse + warp, reveal: 0 };
+      fov: .99 + .055 * smoothstep((time - 90) / 50) + arcadePulse + warp + rush, reveal: 0 };
   }
 
   const retreat = smootherstep((time - 159) / 12);

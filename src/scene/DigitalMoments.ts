@@ -10,6 +10,8 @@ import { SPEAKERS, THEME_COLORS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
 import { smoothstep } from "../engine/Timeline";
+import { ASTRONAUT_CORNER } from "../content/showBeats";
+import { astronautRiseState } from "../content/astronaut";
 
 interface Stream {
   mesh: Mesh;
@@ -74,12 +76,13 @@ export class DigitalMoments {
       for (const [index, gate] of DIGITAL_PROGRESSION.gates.entries()) {
         const anchor = routeAnchor(gate);
         const height = 8 + 20 * smoothstep((time - gate + 6) / 3);
+        const lift = gate === ASTRONAUT_CORNER.gateTime ? astronautRiseState(time).archY : 0;
         const pulse = 1 + Math.exp(-((time - gate + 1) ** 2)) * .7;
         for (let part = 0; part < 4; part++) {
           const side = part === 0 ? -1 : part === 1 ? 1 : 0;
           const lateral = side * 11.4;
           this.position.set(anchor.position.x + Math.cos(anchor.yaw) * lateral,
-            side ? height / 2 : part === 2 ? height : .3,
+            (side ? height / 2 : part === 2 ? height : .3) + lift,
             anchor.position.z - Math.sin(anchor.yaw) * lateral);
           this.scale.set(side ? .15 * pulse : 22.8, side ? height : .15 * pulse, .22 * pulse);
           Matrix.ComposeToRef(this.scale, Quaternion.RotationYawPitchRoll(anchor.yaw, 0, 0),

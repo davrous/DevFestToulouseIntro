@@ -82,9 +82,9 @@ digital entrance, overflow and rocket to measured attacks:
 | Legacy wall | 38.200 s | 38.105 s |
 | Clapperboard contact | 51.030 s | 50.876 s |
 | Synchronized CRTs | 59.400 s | 59.346 s |
-| Lens passage | 76.800 s | 76.827 s |
 | Popcorn spill | 78.100 s | 78.154 s |
-| Digital entrance | 95.000 s | 94.985 s |
+| Lens passage | 80.450 s | 80.450 s (fixed cinematic cue) |
+| Digital entrance | 94.200 s | 94.200 s (fixed cinematic cue) |
 | Buffer overflow | 110.700 s | 110.700 s |
 | Rocket launch | 144.600 s | 144.643 s |
 | Ceiling impact | 146.800 s | 146.618 s |
@@ -139,18 +139,19 @@ instruments, licensing and rehearsal diagnostics.
 | --- | --- |
 | 0:00–0:05.925 | DEVFEST AI4FUN / AGENDA opens the show without a giant central cabinet; the fullscreen retro-gaming shader starts at 0:04.3 and clears at the physical panel crossing, 0:05.925, revealing the corridor |
 | 0:05–0:31 | Fixed pixel-art decals, scenery and small luminous pixels stay flat against the T's side walls. The six larger reactive light panels are mounted just in front of the wall surface at height 15, above the grounded Kenney cabinets, not floating in front of their screens |
-| 0:17–0:31 | Anne-Flore's cyan gateway; the violin and bow are 25% larger and fade in with exactly the same 17.25–19.05-s envelope as her name, including bloom. Their cubes still collapse with Havok at 0:22 |
+| 0:17–0:31 | Anne-Flore's cyan gateway; the violin and bow are 25% larger and fade in with exactly the same 17.25–19.05-s envelope as her name, including bloom. Nearby Pong paddles rally from 17.4 s; the final shot physically hits the violin near 22 s, releasing its voxel cubes into a Havok fall |
 | 0:27–0:34.5 | The already-present `GET /pain-au-chocolat` panel is discovered closer to Anne-Flore, square across the corridor; its text switches to `301 Moved Permanently / Location: /chocolatine` exactly at 0:29; no falling bonus tokens |
 | 0:34.5–0:41 | The FINAL BOSS announces LEGACY CODE before its translucent Havok wall appears and collapses at 0:38 |
 | 0:41–0:49 | `$ git rebase --continue` announces EXIT UNLOCKED, then the T door opens |
 | 0:46–0:52 | The original giant clapperboard is already present during the approach, below LEVEL COMPLETE, and snaps shut in 0.18 seconds from 0:50.85. The fullscreen CRT transition holds a green phosphor line from 0:51.135 to 0:51.38, then reopens on CINEMA and clears by 0:52.18; no black plane |
 | 0:51–1:06 | A symmetrical cinema cathedral with eight full curved CRT screens: MS-DOS, CONFIG.SYS, AUTOEXEC.BAT, Windows 95, blue-screen jokes, floppy installation and a Toulouse BBS; all briefly flash DEVFEST at 0:59.4 |
+| After the last TV | A continuous floor-to-ceiling Matrix mural behind the snack machine runs from the black floor/ceiling strip to the right wall edge; larger `DEVFEST / TOULOUSE` glyphs remain readable within the animated rain |
 | 1:06–1:23 | David Rousset is introduced **once**, as a movie premiere projected onto a world-space cinema screen with his configured demo title |
-| 1:17–1:24 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; two raised striped buckets, left and right, tip inward at 1:17.55 and spill 72 Havok kernels from 1:18.1. The camera keeps looking forward towards the lens: half the rain is aimed ahead for visibility and half still passes overhead |
-| 1:16.8–1:35.6 | The lens is only about 3.4 route units behind David's card. Entering it starts a cyan/violet demoscene vortex with spiraling energy bands and particles; the center stays open enough to preserve the reels/popcorn. The cinema set remains until 1:27.6, projector at 1:28.8 and space warp at 1:30.6; the vortex clears after digital re-entry at 1:35.6 |
-| 1:35–1:56 | Eric Mittelette's gateway and converging data streams, without the obsolete `agent.observe()` / `agent.plan()` panels |
+| 1:17–1:20 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; two raised buckets tip inward at 1:17.55 and spill 72 Havok kernels from 1:18.1. The initial cascade remains visible before the rush; its physics continues behind the transition |
+| 1:20–1:34.2 | At **80.000 s** the camera accelerates into the already-previewed lens at 80.45 s. The enclosed 3D tunnel keeps its cyan/violet design, calmer beat-driven flight and physical final 90-degree right turn. The actual opening at its end reveals the D while the tube walls remain around it; the camera passes through this mouth at **94.200 s exactly**, without an intervening iris or full-screen cut |
+| 1:34.2–1:56 | Return to the D, then Eric Mittelette's gateway and converging data streams, without the obsolete `agent.observe()` / `agent.plan()` panels |
 | 1:47–1:56.7 | A transparent buffer tank faces the incoming camera, perpendicular to the right wall. 32 cubes progressively fill the same volume; a 33rd cube arrives at 1:50.7, making shader water ripple and spill over the lip. Only then does `BUFFER OVERFLOW / console.log('just one more...')` appear |
-| After the buffer | The original astronaut now stands facing the passage in the next corner; no duplicate remains in the old space crossing |
+| After the buffer | The original astronaut faces the passage in the next corner. At 1:56.2–1:58.4 he grows proportionally from his normal 6.5-unit height to 10.4, feet fixed, while the adjacent existing data arch rises. No new arch or duplicate astronaut |
 | 1:57–2:05 | A simulated terminal types `$ npm install cassoulet`, downloads 4.8 GB with a progress bar and blinking cursor, and prints installation completion at 2:04.4 |
 | 2:04.4–2:14 | Exactly when installation reaches 4.80 GB, 64 real NVIDIA beans cans start falling, colliding and accumulating into a mountain; no `CASSOULET POWER` panel |
 | 1:54–2:12 | A traveling architectural pulse progressively raises six symmetrical data gates, shifting cyan to gold; it continues behind the cassoulet gag and hands off to Mitsuru without an empty corridor |
@@ -161,9 +162,42 @@ instruments, licensing and rehearsal diagnostics.
 | 2:39–2:53 | Faster backward/upward pullback exposes the complete title and the force-field floor connecting the T and D at corridor level; at 2:48–2:52.5 its two spans rise like drawbridges and telescope into the T exit and lower D doorway |
 | 2:50–3:00 | World-space **AI4Fun** signature and subtle anniversary marks; title settled by 2:53, seven-second final hold |
 
-During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok simulates the violin/bow cubes and 48 labeled legacy-code blocks; bonus tokens have been removed in favor of the chocolatine gag. The cinema adds two synchronized popcorn cascades totaling 72 kernels with seat ledge collisions. The 64-can mountain is simulated once with the same Havok engine at 60 fixed steps per second, including basket, floor, walls and can-to-can collisions; recorded poses are sampled during playback for exact pause/seek/replay, with no new live rigid bodies. The buffer tank instead uses deterministic cube filling and lightweight water-surface/overflow shaders, not a fluid simulation. Physics debris cannot block the camera, and temporary bodies are cleaned up. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
+During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok simulates the violin/bow cubes and 48 labeled legacy-code blocks; bonus tokens have been removed in favor of the chocolatine gag. The cinema adds two synchronized popcorn cascades totaling 72 kernels with seat ledge collisions. Both the final Pong-ball/violin collision and the 64-can mountain are simulated once with the same Havok engine at 60 fixed steps per second; recorded poses are sampled during playback for exact pause/seek/replay, with no new live rigid bodies. The violin's gravity is activated by measured ball contact, not a timed fallback. The can pile includes basket, floor, walls and can-to-can collisions. The buffer tank instead uses deterministic cube filling and lightweight water-surface/overflow shaders, not a fluid simulation. Physics debris cannot block the camera, and temporary bodies are cleaned up. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
 
 The cinema's seats, CRTs, screen support, both popcorn buckets, film/reels and giant camera are preloaded and visible from entry at 51.18 seconds, not enabled one prop at a time. Their narrative actions still occur later: David's name fades in, the buckets tip and spill, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows. The drawbridges stay closed throughout the final hold and reset when seeking backward.
+
+The tunnel's four speaker trails are driven by the existing Web Audio FFT:
+cyan **40–180 Hz** (bass/kick), coral **180–700 Hz** (viola fundamentals),
+violet **700–2400 Hz** (upper mids/harmonics), and gold **4–14 kHz**
+(percussion/air). Band energy changes their width, glow and waviness, without
+integrating audio into the flight clock. The physical tunnel is rendered on
+an isolated layer of the existing scene, shared by the lens preview and the
+transition; its extra render pass stops at 94.2 s. Only 80–94.2 s of camera travel
+is locally remapped; the route before/after, MP3 and final reveal are preserved.
+The original Strudel score retains its existing musical phrases independently
+of the new visual rush.
+
+The calmer flight averages about **67.5 world units/s**, down from 87.3.
+Vertical travel spans about **22 units** instead of 50, with banking limited
+to about **13 degrees**. Its speed profile analytically integrates the measured
+Journey kick attacks, then normalizes the travelled distance over 80.45–94.2 s.
+This adds smooth musical acceleration without frame-rate drift, while keeping
+the exit cue exact on pause, seek and replay. The tunnel's surface shaders,
+ribs, palette and four FFT trails are unchanged. The former metallic iris is
+removed: the finite tube renders into a transparent target, and the D is visible
+only through its real opening. This keeps both environments on screen together,
+with the room prepared before it becomes visible and a matching exit-camera gaze.
+
+The supplied animated T-800 walks toward the camera in the left-turn passage
+at the D entrance, beside rather than across the main camera lane. Its original
+**The Chase** skeletal clip and translation are sampled by timeline time
+(60.5–69.5 s), including pause, rewind and replay; no autonomous animation timer.
+It is now **three times its original height**: 21.6 rather than 7.2 world units,
+with its walk animation preserved. Its straight lane now stays inside the
+front corridor rather than drifting diagonally through a wall. A restrained
+camera glance keeps it nearer the viewing axis before David takes over; the
+animated silhouette is tested against walls, floor, ceiling and actual scenery
+occlusion, not just its static model bounds.
 
 Both film reels rotate continuously in opposite directions at 0.55 rad/s on the
 effect clock. Their angle does not depend on instantaneous bass amplitude,
@@ -180,7 +214,9 @@ it is discovered naturally behind the TVs rather than popping in at 61.35 s.
 Only its `404: HEALTHY SNACK NOT FOUND` caption and snack-drop interaction
 occur in the short passage before David. The machine remains opaque until the
 cinema ends at 87.6 s; it leaves the frame naturally as the camera turns.
-Pong retains its paddles and ball without a `PONG / HUMAN vs AI` sign.
+Pong retains its paddles and ball without a `PONG / HUMAN vs AI` sign, now
+beside Anne-Flore and sharing the final ball trajectory with the violin's
+recorded physical impact.
 The arm is preloaded and physically present from the digital entry at 95 s,
 like the rocket itself, with no reveal/fade at 139.5 s. It reaches toward the rocket and retracts
 at liftoff. The camera spline, music, televisions and speaker cards are unchanged;
@@ -377,7 +413,8 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [Labyrinth](src/scene/Labyrinth.ts): thin-instanced floors, roofs, boundary walls, panels and light traces.
 - [Camera](src/camera/CameraPath.ts): deterministic T-to-D Catmull–Rom route, lens/warp gaze accents and the original final full-title reveal.
 - [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, staged typography reveal, theme and animated ornaments.
-- [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local preloaded Sketchfab models, giant animated slate and scene handoff, climbing-instanced seats, CRT synchronization, David's premiere, linked film reels, giant lens, procedural projector and short space crossing.
+- [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local preloaded Sketchfab models, animated slate and T-800, CRT synchronization, David's premiere, linked film reels and giant lens.
+- [PhysicalTunnel](src/effects/PhysicalTunnel.ts), [TunnelFlight](src/camera/TunnelFlight.ts): enclosed 3D serpentine course, calm rhythmic camera, four FFT-driven speaker trails and shared preview render; [LensVortexTransition](src/effects/LensVortexTransition.ts) composites the room through the actual tube opening.
 - [ClapCrtTransition](src/effects/ClapCrtTransition.ts): precompiled fullscreen arcade-to-CRT shader, phosphor-line handoff, deterministic uniforms and no extra render pass outside the transition.
 - [ArcadeEntryTransition](src/effects/ArcadeEntryTransition.ts): precompiled retro-gaming shader, starting at 4.3 s and clearing at the opening AI4FUN / AGENDA panel crossing.
 - [CinemaPopcorn](src/scene/CinemaPopcorn.ts): 36 short-lived Havok kernels with static floor/seat ledge colliders and seek-safe cleanup.
@@ -411,7 +448,7 @@ Only selected models and pixel sprites from the supplied Kenney archives are in 
 
 ### Local cinema and space artwork
 
-Only selected, licensed GLBs from the supplied SketchfabModels directory are in [public/assets/cinema](public/assets/cinema). Eleven staged models preload before SYSTEM READY; the former floating theatre fragment is retained locally but no longer loaded or displayed. Camera ground and director-chair presentation socle are removed from the runtime hierarchy before bounds normalization; seats and director chair use the same physical height. Repeated seats/televisions/spotlights share geometry instances. The single hero camera uses geometry-sharing clones so its entry fade works without Babylon's unsupported instance-visibility warnings. A missing optional model logs an error; the procedural stage and timeline continue. The 1.37-million-triangle, noncommercial-licensed movie projector was deliberately excluded; its in-show substitute is lightweight geometry. See [CREDITS.md](CREDITS.md) for attribution. There are no runtime requests to Sketchfab.
+Only selected, licensed GLBs from the supplied SketchfabModels directory are in [public/assets/cinema](public/assets/cinema). Twelve staged models preload before SYSTEM READY, including the supplied CC-BY-4.0 T-800 and its original walk clip; the former floating theatre fragment is retained locally but no longer loaded or displayed. Camera ground and director-chair presentation socle are removed before bounds normalization; seats and director chair use the same physical height. Repeated seats/televisions/spotlights share geometry instances. The hero camera uses geometry-sharing clones so its entry fade works without unsupported instance-visibility warnings. A missing optional model logs an error; a missing required Terminator walk clip fails preparation explicitly. The 1.37-million-triangle, noncommercial-licensed movie projector was deliberately excluded; its substitute is lightweight geometry. See [CREDITS.md](CREDITS.md) for attribution. There are no runtime requests to Sketchfab.
 
 ## Verify and rehearse
 

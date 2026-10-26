@@ -159,7 +159,6 @@ export class DevFestScene {
         const color = material.emissiveColor;
         const opacity = mesh.name.startsWith("FX/Cinema /") || mesh.name.startsWith("FX/Rocket /")
           || mesh.name.startsWith("FX/Pixel to voxel")
-          || mesh.name.startsWith("FX/Digital / astronaut ascending arch")
           ? material.alpha * mesh.visibility : 1;
         result.set(color.r * opacity, color.g * opacity, color.b * opacity, 1);
       } else {
@@ -187,6 +186,7 @@ export class DevFestScene {
     this.entryTransition = new ArcadeEntryTransition(this.camera, this.pipeline);
     this.clapTransition = new ClapCrtTransition(this.camera, this.pipeline);
     this.lensVortex = new LensVortexTransition(this.camera, this.pipeline);
+    this.cinema.tunnelPreview.setTunnel(this.lensVortex.tunnel.texture);
     this.update(0);
   }
 
@@ -202,8 +202,9 @@ export class DevFestScene {
     plugin.setVelocityLimits(32, 12);
     this.scene.physicsEnabled = false;
     this.simready.initializePhysics();
-    this.arcadePhysics.initialize(plugin);
     this.demoscene.initialize(plugin);
+    if (this.demoscene.impact) this.simready.setPongImpact(this.demoscene.impact);
+    this.arcadePhysics.initialize(plugin);
     this.popcorn.initialize(plugin);
     await this.branding.ready;
     await this.scene.whenReadyAsync();
@@ -218,7 +219,7 @@ export class DevFestScene {
       await compile(gag.meshes);
     }
     this.update(ASTRONAUT_CORNER.riseEnd, SILENCE);
-    await compile(this.cinema.astronautArch.getChildMeshes());
+    await compile(this.cinema.astronautRoot.getChildMeshes());
     this.update(0, SILENCE);
   }
 
@@ -244,12 +245,12 @@ export class DevFestScene {
     this.camera.fov = pose.fov;
     this.entryTransition.update(cameraTime);
     this.clapTransition.update(time);
-    this.lensVortex.update(time);
+    this.lensVortex.update(cameraTime, audio);
     this.headlight.position.copyFrom(pose.position);
     const wake = smoothstep(time / 35);
     const reveal = smoothstep((time - 159) / 10);
     const calm = 1 - smoothstep((time - 153) / 18);
-    const cinema = time >= CINEMA.clapperStart && time < CINEMA.digital;
+    const cinema = time >= CINEMA.clapperStart && time < CINEMA.tunnelRoomReady;
     const paletteTime = time < 155 && section ? PHASES.find((phase) => phase.name === section)!.time + 6 : time;
     let index = 0;
     for (let i = 1; i < PHASES.length; i++) if (paletteTime >= PHASES[i].time) index = i;
@@ -261,9 +262,7 @@ export class DevFestScene {
     this.pipeline.bloomWeight = .2 + calm * (audio.violaEnergy * .08 + audio.drop * .1) + voice * .05;
     this.camera.minZ = .15 + reveal * 8;
     this.scene.fogDensity = showFogDensity(time, audio.violaEnergy)
-      + cueEnvelope(time, 46, CINEMA.clapperStart, .7) * .012
-      + cueEnvelope(time, CINEMA.lens - .65, CINEMA.lens + .5, .25) * .08
-      + cueEnvelope(time, CINEMA.digital - .4, CINEMA.digital + .8, .3) * .06;
+      + cueEnvelope(time, 46, CINEMA.clapperStart, .7) * .012;
     this.scene.fogColor.set(.022 + this.tint.r * .008, .033 + this.tint.g * .022, .04 + this.tint.b * .03);
     this.fill.intensity = .35 + wake * .3 + reveal * .55;
     this.sun.intensity = .5 + wake * .5 + reveal * 1.2;
@@ -279,7 +278,7 @@ export class DevFestScene {
     this.labyrinth.roof.emissiveColor.set(.008 + reveal * .067, .018 + reveal * .15, .023 + reveal * .17);
     this.labyrinth.bridge.update(time);
     this.labyrinth.meshes.forEach((mesh) => {
-      mesh.setEnabled(time < CINEMA.lens - .15 || time >= CINEMA.digital);
+      mesh.setEnabled(cameraTime < CINEMA.lens - .15 || cameraTime >= CINEMA.tunnelRoomReady);
     });
     this.atmosphere.dust.position.y = Math.sin(time * .13) * DUST.drift;
     this.caption.visibility = smoothstep((time - 170) / 3);
@@ -294,7 +293,7 @@ export class DevFestScene {
     this.pixelWorld.update(time, audio);
     this.cathedral.update(time, audio);
     this.demoscene.update(time, audio, speed);
-    this.cinema.update(time, audio);
+    this.cinema.update(time, audio, cameraTime);
     this.simready.update(time, audio);
     this.popcorn.update(time, audio, speed);
     this.digitalMoments.update(time, audio);

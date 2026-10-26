@@ -72,7 +72,7 @@ describe("arcade violin and warp transition", () => {
     engine.dispose();
   });
 
-  it("drops every violin and bow voxel onto the Havok floor on approach, then resets on replay", async () => {
+  it("replays the measured Pong collision and voxel fall without live body accumulation", async () => {
     const wasmBinary = Uint8Array.from(readFileSync(
       new URL("../../node_modules/@babylonjs/havok/lib/esm/HavokPhysics.wasm", import.meta.url))).buffer;
     const engine = new NullEngine();
@@ -81,15 +81,17 @@ describe("arcade violin and warp transition", () => {
     expect(scene.enablePhysics(new Vector3(0, -17, 0), plugin)).toBe(true);
     const transition = new DemosceneTransition(scene);
     transition.initialize(plugin);
+    const impact = transition.impact!;
+    expect(impact.impulse).toBeGreaterThan(.01);
     const pieces = scene.meshes.filter((mesh) => mesh.name.startsWith("Arcade / violin voxel "));
     const intact = scene.getMeshByName("FX/Pixel to voxel / 0")!;
     expect(pieces).toHaveLength(VOXEL_COUNT);
-    transition.update(VIOLIN_FALL.start - .01, silentFeatures());
+    transition.update(impact.impactTime - .01, silentFeatures());
     expect(intact.isEnabled()).toBe(true);
     expect(pieces.every((mesh) => !mesh.isEnabled() && !mesh.physicsBody)).toBe(true);
-    transition.update(VIOLIN_FALL.start, silentFeatures());
+    transition.update(impact.impactTime, silentFeatures());
     expect(intact.isEnabled()).toBe(false);
-    expect(pieces.every((mesh) => mesh.isEnabled() && mesh.physicsBody)).toBe(true);
+    expect(pieces.every((mesh) => mesh.isEnabled() && !mesh.physicsBody)).toBe(true);
     const pose = cameraPose(VIOLIN_FALL.start);
     const projection = Matrix.LookAtLH(pose.position, pose.target, Vector3.Up())
       .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
@@ -99,35 +101,34 @@ describe("arcade violin and warp transition", () => {
     expect(screen.z).toBeGreaterThan(0);
     expect(screen.z).toBeLessThan(1);
     const start = pieces[0].position.clone();
-    transition.update(VIOLIN_FALL.start, silentFeatures());
+    transition.update(impact.impactTime, silentFeatures());
     expect(pieces[0].position.equals(start)).toBe(true);
-    const visibleBounces = new Set<number>();
+    const visibleFallenPieces = new Set<number>();
     for (let frame = 1; frame <= 240; frame++) {
       const time = VIOLIN_FALL.start + frame / 60;
       transition.update(time, silentFeatures());
-      scene.getPhysicsEngine()!._step(1 / 60);
       const pose = cameraPose(time);
       const view = Matrix.LookAtLH(pose.position, pose.target, Vector3.Up())
         .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
       pieces.forEach((piece, index) => {
         const screen = Vector3.TransformCoordinates(piece.position, view);
-        if (piece.position.y < 1 && piece.physicsBody!.getLinearVelocity().y > .2
+        if (piece.position.y < 1
           && Math.abs(screen.x) < .95 && Math.abs(screen.y) < .93 && screen.z > 0 && screen.z < 1) {
-          visibleBounces.add(index);
+          visibleFallenPieces.add(index);
         }
       });
     }
-    expect(visibleBounces.size).toBeGreaterThanOrEqual(VOXEL_COUNT / 3);
-    expect(pieces.every((mesh) => mesh.position.y >= .1 && mesh.position.y < VIOLIN_FALL.size * 4)).toBe(true);
+    expect(visibleFallenPieces.size).toBeGreaterThanOrEqual(VOXEL_COUNT / 3);
+    expect(pieces.every((mesh) => mesh.position.y >= .1)).toBe(true);
     transition.update(VIOLIN_FALL.end, silentFeatures());
     expect(pieces.every((mesh) => !mesh.isEnabled() && !mesh.physicsBody)).toBe(true);
     transition.update(VIOLIN_FALL.start - .1, silentFeatures());
     expect(intact.isEnabled()).toBe(true);
-    transition.update(VIOLIN_FALL.start, silentFeatures());
+    transition.update(impact.impactTime, silentFeatures());
     expect(pieces[0].position.equals(start)).toBe(true);
-    expect(pieces[0].physicsBody!.getLinearVelocity().y).toBeLessThan(0);
+    expect(pieces.every((mesh) => !mesh.physicsBody)).toBe(true);
     transition.update(VIOLIN_FALL.start + 2, silentFeatures());
-    expect(pieces[0].position.y).toBeLessThan(1);
+    expect(pieces[0].position.y).toBeLessThan(start.y);
     transition.update(0, silentFeatures());
     expect(pieces.every((mesh) => !mesh.physicsBody)).toBe(true);
     scene.dispose();

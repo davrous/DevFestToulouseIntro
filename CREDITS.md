@@ -31,6 +31,12 @@ The cinema models in `public/assets/cinema/` are local copies of the credited or
 | `movie_theatre_environment.glb` | Movie Theatre Environment | mikeyobright | [Sketchfab](https://sketchfab.com/3d-models/movie-theatre-environment-d8f337bc3efb4bf2aaae271962563700) |
 | `vhs_tape.glb` | VHS Tape | Beepo | [Sketchfab](https://sketchfab.com/3d-models/vhs-tape-b420546b370b4be4800d720cadbaeb11) |
 | `directors_chair.glb` | Director's Chair | creativejenna | [Sketchfab](https://sketchfab.com/3d-models/directors-chair-d664c3ed7e1d48f5a0c0ad7f6581477b) |
+| `terminator_t-800_endo-skeleton_damaged.glb` | TERMINATOR: T-800 Endo-Skeleton (Damaged) | CatBYTE Studio | [Sketchfab](https://sketchfab.com/3d-models/terminator-t-800-endo-skeleton-damaged-dd9b3744c30e4bf58aa6f57da00c1eb0) |
+
+The user-supplied T-800 includes the original **The Chase** skeletal clip.
+Its embedded metadata declares CC-BY-4.0. The show samples this clip by absolute
+timeline time, scales the model and stages its walk toward the D entrance;
+the original GLB and skeleton are unchanged.
 
 The high-poly *Cinema Movie Projector AP5* source was **not used or redistributed**. The in-show projector is original procedural geometry instead.
 

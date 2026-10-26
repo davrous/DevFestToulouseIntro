@@ -4,7 +4,7 @@ import type { AudioFeatures } from "./AudioAnalyzer";
 export const TRIGGERS = ["kick", "snare", "hat", "drop", "viola", "beat"] as const;
 export type Trigger = typeof TRIGGERS[number];
 export type Section = typeof PHASES[number]["name"];
-export const CHANNELS = ["kick", "bass", "mid", "treble", "energy", "beat", "violaEnergy", "snare", "drop"] as const;
+export const CHANNELS = ["kick", "bass", "mid", "lowMid", "highMid", "treble", "energy", "beat", "violaEnergy", "snare", "drop"] as const;
 
 export type ShowMessage =
   | { type: "trigger"; event: Trigger; velocity?: number }

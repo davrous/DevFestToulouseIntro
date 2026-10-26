@@ -97,7 +97,7 @@ describe("original three-minute keynote score", () => {
     const cues = events.filter((event) => !["kick", "snare", "hat", "impact"].includes(event.event));
     expect(cues).toHaveLength(15);
     for (const [name, seconds] of [["cinema-cut", CINEMA.clap], ["cinema", CINEMA.start],
-      ["popcorn", CINEMA.popcorn], ["warp", 93], ["reveal", 173]] as const) {
+      ["popcorn", CINEMA.popcorn], ["warp", CINEMA.space], ["reveal", 173]] as const) {
       expect(cues.filter((event) => event.event === name)).toHaveLength(1);
       expect(cues.find((event) => event.event === name)!.cycle).toBeCloseTo(seconds * .625, 7);
     }
@@ -222,14 +222,14 @@ describe("original three-minute keynote score", () => {
     const count = (from: number, to: number, sound: string) =>
       during(from, to).filter((hap) => controls(hap).s === sound).length;
     expect(level(66, 76.8, 1)).toBeGreaterThan(level(76.8, 80, 1));
-    expect(level(76.8, 80, 1)).toBeGreaterThan(level(80, 83.2, 1));
-    expect(level(80, 83.2, 1)).toBeGreaterThan(level(83.2, 96, 1) * 1.9);
+    expect(level(76.8, 80, 1)).toBeGreaterThan(level(80, 83.7, 1));
+    expect(level(80, 83.7, 1)).toBeGreaterThan(level(83.7, 96, 1) * 1.9);
     expect(count(66, 76.8, "bd") / 10.8).toBeGreaterThan(count(76.8, 80, "bd") / 3.2 - 1e-7);
-    expect(count(76.8, 80, "bd")).toBeGreaterThan(count(80, 83.2, "bd"));
-    expect(count(80, 83.2, "bd")).toBeGreaterThan(0);
+    expect(count(76.8, 80, "bd")).toBeGreaterThan(count(80, 83.7, "bd"));
+    expect(count(80, 83.7, "bd")).toBeGreaterThan(0);
     expect(count(80, 96, "hh")).toBe(0);
-    expect(count(83.2, 96, "bd")).toBe(0);
-    const cutoffs = during(76.8, 83.2).map(controls).filter((value) => value.scoreVoice === 1)
+    expect(count(83.7, 96, "bd")).toBe(0);
+    const cutoffs = during(76.8, 83.7).map(controls).filter((value) => value.scoreVoice === 1)
       .map((value) => Number(value.cutoff));
     expect(cutoffs[0]).toBeGreaterThan(cutoffs[cutoffs.length - 1]);
     for (const value of during(76, 96).map(controls).filter((entry) => [1, 2].includes(Number(entry.scoreVoice)))) {

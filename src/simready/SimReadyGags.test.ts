@@ -8,6 +8,7 @@ import { CASSOULET_INSTALL, CASSOULET_PILE, CASSOULET_SIGN, CINEMA, DEPLOY_ROCKE
 import { routeAnchor } from "../camera/CameraPath";
 import { createSimReadyConfig, SIMREADY_GAGS, VENDING_WALL, validateGagSettings } from "./config";
 import { launchArmPose, pongPose, SimReadyGags, snackDropPose } from "./SimReadyGags";
+import { PONG_VOLLEY } from "../content/violin";
 
 vi.mock("../scene/WorldText", () => ({
   createWorldText: (scene: Scene, options: { name: string }) =>
@@ -106,16 +107,16 @@ describe("configured NVIDIA art direction", () => {
 
   it("keeps the Pong paddles and moving ball without creating the human-vs-AI caption", async () => {
     const { engine, scene, gags } = await setup();
-    gags.update(8, silentFeatures());
+    gags.update(18.5, silentFeatures());
     const pong = gags.groups.get("pong")!;
     expect(pong.root.isEnabled()).toBe(true);
     expect(pong.nodes).toHaveLength(3);
     expect(pong.label).toBeUndefined();
     expect(scene.meshes.some((mesh) => /PONG.*HUMAN/i.test(mesh.name))).toBe(false);
     const before = pong.nodes[2].position.clone();
-    gags.update(8.15, silentFeatures());
+    gags.update(18.65, silentFeatures());
     expect(pong.nodes[2].position.equals(before)).toBe(false);
-    gags.update(8, silentFeatures());
+    gags.update(18.5, silentFeatures());
     expect(pong.nodes[2].position.asArray()).toEqual(before.asArray());
     scene.dispose();
     engine.dispose();
@@ -188,10 +189,10 @@ describe("configured NVIDIA art direction", () => {
     gags.config.enableSnackVendingMachine = false;
     gags.update(61.8, silentFeatures());
     expect(gags.groups.get("vending")!.root.isEnabled()).toBe(false);
-    gags.update(8, silentFeatures());
+    gags.update(18.5, silentFeatures());
     expect(gags.groups.get("pong")!.root.isEnabled()).toBe(true);
     gags.config.enabled = false;
-    gags.update(8, silentFeatures());
+    gags.update(18.5, silentFeatures());
     expect([...gags.groups.values()].every((gag) => !gag.root.isEnabled())).toBe(true);
     expect(() => gags.update(NaN, silentFeatures())).toThrow();
     scene.dispose();
@@ -207,7 +208,7 @@ describe("configured NVIDIA art direction", () => {
     const pose = snackDropPose(61.8, settings);
     snackDropPose(180, settings);
     expect(snackDropPose(61.8, settings)).toEqual(pose);
-    for (let time = 7; time < 14.7; time += .01) {
+    for (let time = PONG_VOLLEY.start; time < PONG_VOLLEY.end; time += .01) {
       expect(Object.values(pongPose(time, config.gags.pong)).every(Number.isFinite)).toBe(true);
     }
     settings.scale = -1;

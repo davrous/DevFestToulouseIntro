@@ -8,7 +8,7 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 import type { Scene } from "@babylonjs/core/scene";
-import type { AudioFeatures } from "../engine/AudioAnalyzer";
+import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import { routeAnchor } from "../camera/CameraPath";
 import { ASTRONAUT_CORNER, CINEMA } from "../content/showBeats";
 import { SPEAKERS, type SpeakerConfig } from "../content/speakers";
@@ -20,21 +20,15 @@ import { createCrtMaterial, fitCrtScreen } from "./CinemaCRT";
 import { createWorldText } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { CINEMA_FLOOR_TOP, POPCORN_SOURCES, popcornTilt } from "./CinemaPopcorn";
+import { astronautRiseState } from "../content/astronaut";
+import { LensTunnelPreview } from "../effects/TunnelRendering";
+import { TerminatorWalk } from "./TerminatorWalk";
+export { astronautRiseState } from "../content/astronaut";
 
 export const SEAT_ROWS = [-25, -15, -5, 5, 15, 25] as const;
 export const SEAT_HEIGHT = 4.2;
 export const DIRECTOR_CHAIR_HEIGHT = 4.2;
 export const FOYER_ROWS = [-8, 0, 8, 16, 24, 32, 40] as const;
-
-export function astronautRiseState(time: number): { progress: number; scale: number; centerY: number; archY: number } {
-  if (!Number.isFinite(time)) throw new RangeError("Astronaut entrance time must be finite.");
-  const progress = smoothstep((time - ASTRONAUT_CORNER.riseStart) / (ASTRONAUT_CORNER.riseEnd - ASTRONAUT_CORNER.riseStart));
-  const scale = Math.max(.02, progress);
-  return {
-    progress, scale, centerY: ASTRONAUT_CORNER.height * scale / 2,
-    archY: .02 - ASTRONAUT_CORNER.archHeight * (1 - progress),
-  };
-}
 
 function at(scene: Scene, name: string, time: number): TransformNode {
   const anchor = routeAnchor(time);
@@ -57,8 +51,7 @@ export class CinemaWorld {
   readonly davidRoot: TransformNode;
   readonly davidConfig: SpeakerConfig;
   readonly astronautRoot: TransformNode;
-  readonly astronautArch: TransformNode;
-  private readonly astronautArchMaterial: StandardMaterial;
+  readonly terminator: TerminatorWalk;
   private astronautLoaded = false;
   private readonly clapperRoot: TransformNode;
   private readonly architecture: TransformNode;
@@ -74,6 +67,7 @@ export class CinemaWorld {
   private readonly spotBeams: Mesh[] = [];
   private readonly optical: Mesh[] = [];
   private readonly cameraRim: Mesh;
+  readonly tunnelPreview: LensTunnelPreview;
   private readonly crtSupports: TransformNode[] = [];
   private readonly spaceProps: { node: TransformNode; yaw: number; speed: number }[] = [];
   private readonly buckets: { node: TransformNode; side: number }[] = [];
@@ -91,6 +85,7 @@ export class CinemaWorld {
 
   constructor(scene: Scene) {
     this.assets = new CinemaAssets(scene);
+    this.terminator = new TerminatorWalk(scene);
     this.clapperRoot = at(scene, "Cinema / clapperboard transition", CINEMA.clapperAnchor);
     const clapperAnchor = routeAnchor(CINEMA.clapperAnchor);
     this.clapperRoot.position.y = clapperAnchor.position.y;
@@ -304,13 +299,14 @@ export class CinemaWorld {
     film.parent = this.reelsRoot;
 
     this.lensRoot = new TransformNode("Cinema / camera iris to projector", scene);
-    const lensAnchor = routeAnchor(CINEMA.lens);
+    const lensAnchor = routeAnchor(CINEMA.lensAnchor);
     this.cameraRim = MeshBuilder.CreateTorus("Cinema / frontal camera lens rim",
       { diameter: 13.6, thickness: .24, tessellation: 64 }, scene);
     this.cameraRim.parent = this.lensRoot;
     this.cameraRim.position.copyFrom(lensAnchor.position);
     this.cameraRim.rotation.set(Math.PI / 2, lensAnchor.yaw, 0);
     this.cameraRim.material = emissive(scene, "Cinema / physical lens rim", "#c0b7a4", .8);
+    this.tunnelPreview = new LensTunnelPreview(scene, this.lensRoot, lensAnchor.position, lensAnchor.yaw);
     for (const side of [-1, 1]) {
       const position = lensAnchor.position.add(new Vector3(side * 14, 10, -8));
       const light = new SpotLight(`Cinema / camera hero key ${side}`, position,
@@ -391,24 +387,14 @@ export class CinemaWorld {
     this.astronautRoot.position.set(astronaut.position.x, ASTRONAUT_CORNER.height / 2, astronaut.position.z);
     const approach = routeAnchor(ASTRONAUT_CORNER.anchor - 3).position;
     this.astronautRoot.rotation.y = Math.atan2(astronaut.position.x - approach.x, astronaut.position.z - approach.z) + Math.PI;
-    this.astronautArch = new TransformNode("Digital / astronaut rising arch", scene);
-    this.astronautArch.position.set(astronaut.position.x, 0, astronaut.position.z + ASTRONAUT_CORNER.archOffset);
-    this.astronautArch.rotation.y = this.astronautRoot.rotation.y;
-    this.astronautArchMaterial = emissive(scene, "Digital / astronaut arch ions", "#80f4e3", 1.4);
-    const arch = new BoxBatch("FX/Digital / astronaut ascending arch", this.astronautArchMaterial);
-    const archHeight = ASTRONAUT_CORNER.archHeight;
-    for (const side of [-1, 1]) arch.add(side * 2.8, archHeight / 2, 0, .3, archHeight, .42);
-    arch.add(0, archHeight, 0, 5.9, .35, .42);
-    const archMesh = arch.build(scene);
-    archMesh.unfreezeWorldMatrix();
-    archMesh.parent = this.astronautArch;
-    this.update(0, { energy: 0, bass: 0, mid: 0, treble: 0, kick: 0, snare: 0, drop: 0, beat: 0, violaEnergy: 0 });
+    this.update(0, silentFeatures());
   }
 
   private readonly syncMaterial: StandardMaterial;
 
   async prepare(): Promise<void> {
     await this.assets.prepare();
+    this.terminator.prepare(this.assets);
     this.clapper = this.assets.takeClapper(this.clapperRoot, 22);
     for (const [root, rows, levels] of [
       [this.foyer, FOYER_ROWS, 3], [this.auditorium, SEAT_ROWS, 3],
@@ -482,7 +468,7 @@ export class CinemaWorld {
     }
     this.cameraModel = this.assets.create("camera", this.lensRoot, "Cinema / giant camera pointing at viewer", 40);
     if (this.cameraModel) {
-      const anchor = routeAnchor(CINEMA.lens);
+      const anchor = routeAnchor(CINEMA.lensAnchor);
       this.cameraModel.rotation.y = anchor.yaw + Math.PI;
       const lens = this.cameraModel.getChildMeshes().find((mesh) => mesh.parent?.name.includes("lenses_low_40"));
       if (!lens) throw new Error("The cinema camera asset needs its front lens landmark to align the fly-through.");
@@ -512,10 +498,11 @@ export class CinemaWorld {
         `Cinema / tipping popcorn bucket ${source.side}`, source.size, "height");
       if (bucket) this.buckets.push({ node: bucket, side: source.side });
     }
-    this.update(0, { energy: 0, bass: 0, mid: 0, treble: 0, kick: 0, snare: 0, drop: 0, beat: 0, violaEnergy: 0 });
+    this.update(0, silentFeatures());
   }
 
-  update(time: number, audio: AudioFeatures): void {
+  update(time: number, audio: AudioFeatures, cameraTime = time): void {
+    this.terminator.update(cameraTime);
     this.clapperRoot.setEnabled(time < CINEMA.start);
     if (this.clapper?.animation) {
       const group = this.clapper.animation;
@@ -558,20 +545,21 @@ export class CinemaWorld {
     });
     this.spotlightMaterial.alpha = .035 + audio.kick * .015;
     this.lensRoot.setEnabled(time >= CINEMA.start && time < 99);
-    this.cameraModel?.setEnabled(time < CINEMA.lens);
+    this.cameraModel?.setEnabled(cameraTime < CINEMA.lens);
     this.cameraModel?.getChildMeshes().forEach((mesh) => {
-      mesh.visibility = 1 - smoothstep((time - CINEMA.lens + .55) / .45);
+      mesh.visibility = 1 - smoothstep((cameraTime - CINEMA.lens + .08) / .08);
     });
     this.cameraLights.forEach((light) => {
       light.intensity = 900 * cueEnvelope(time, CINEMA.start, CINEMA.lens, .5);
     });
-    this.cameraRim.setEnabled(time < CINEMA.lens + .15);
+    this.cameraRim.setEnabled(cameraTime < CINEMA.lens + .15);
+    this.tunnelPreview.update(cameraTime);
     this.optical.forEach((ring) => {
       ring.setEnabled(time >= CINEMA.lens - .15 && time < CINEMA.projector + 1);
     });
-    this.projectorRoot.setEnabled(time >= CINEMA.projector && time < 99);
+    this.projectorRoot.setEnabled(time >= CINEMA.projector && time < CINEMA.tunnelRoomReady);
     this.projectorBeam.visibility = .6 * cueEnvelope(time, CINEMA.projector, 99, .7);
-    this.spaceRoot.setEnabled(time >= CINEMA.space && time < 99);
+    this.spaceRoot.setEnabled(time >= CINEMA.space && time < CINEMA.tunnelRoomReady);
     this.spaceProps.forEach(({ node, yaw, speed }) => {
       node.rotation.y = yaw + (time - CINEMA.space) * speed;
     });
@@ -580,8 +568,5 @@ export class CinemaWorld {
     this.astronautRoot.setEnabled(astronautActive);
     this.astronautRoot.scaling.setAll(rise.scale);
     this.astronautRoot.position.y = rise.centerY;
-    this.astronautArch.setEnabled(astronautActive);
-    this.astronautArch.position.y = rise.archY;
-    this.astronautArchMaterial.alpha = rise.progress;
   }
 }

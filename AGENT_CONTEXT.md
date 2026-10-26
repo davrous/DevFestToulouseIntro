@@ -8,7 +8,7 @@
 >
 > Le lobby sélectionne par défaut **MP3 soundtrack / Viola's Journey**, sans lecture automatique. Le panneau d'entrée affiche **DEVFEST AI4FUN / AGENDA** ; le shader rétro-gaming commence à **4.3 s** et disparaît à la traversée à **5.925 s** pour dégager le couloir. Le panneau HTTP est déjà présent, perpendiculaire aux murs latéraux et rapproché d'Anne-Flore (ancre 32.75 s, yaw 0) ; sa réponse est à 29 s.
 >
-> **Dernière mise en scène :** le violon et son archet sont agrandis de **25 %** et utilisent le même fondu **17.25–19.05 s** que le nom d'Anne-Flore (alpha et bloom cohérents). L'objectif est maintenant à **76.8 s**, environ **3.4 unités** derrière le panneau de David ; son entrée déclenche un vortex démo-scène jusqu'à 95.6 s, sans supprimer bobines/popcorn (décor cinéma conservé jusqu'à 87.6 s). L'astronaute existant n'est plus dans l'ancien passage spatial : il est face au passage dans le coin après le buffer (ancre 121.75, latéral -8). Le mur près du distributeur porte une pluie de glyphes avec fragments discrets de DEVFEST TOULOUSE. Le terminal npm tape la commande et progresse jusqu'à 4.80 GB ; la fin à **124.4 s** est l'unique cue de départ des boîtes.
+> **Dernière mise en scène :** le violon est agrandi de **25 %**, fondu avec Anne-Flore à **17.25–19.05 s**, puis impact Pong Havok vers **21.98 s**. Rush à **80.000 s**, objectif à **80.45 s** (ancre spatiale 86.3), vol 3D plus doux et **23 % plus lent**, mêmes shaders/palette/quatre traces FFT. La vitesse suit les attaques Journey par intégration analytique normalisée. **L'iris métallique est supprimé** : le tube se termine réellement au point atteint à **94.200 s**, son render target transparent laisse voir le D dans cette ouverture tandis que ses parois restent visibles autour. Le D est prêt dès 90 s et le regard de sortie anticipe le couloir pour éviter un raccord sur un mur. Aucun recalage musical ne doit déplacer la sortie. Le T-800 reste à **21.6 unités (x3)** mais suit désormais une ligne droite sûre dans la cellule (0,6), X=-563 à -559 / Z=46.5, plutôt que l'ancienne diagonale qui traversait le mur. Marche **The Chase** à 60.5–69.5 s, léger regard caméra jusqu'à 67.8 s. Valider les limites de toutes les poses et sa visibilité **avec occlusion réelle**. Astronaute x1.6 à 116.2–118.4 s avec l'arceau existant 122 s ; mur Matrix continu ; fin du terminal et départ des boîtes à **124.4 s**.
 >
 > **SimReady, direction révisée :** voir [docs/simready-integration.md](docs/simready-integration.md). Neuf modèles NVIDIA convertis/licenciés restent inspectables, mais seuls Pong, les références pâtisserie/cassoulet, le distributeur et le bras d'assistance au lancement jouent dans l'intro. **Pas de donut, petit robot ou collision de chariot dans le parcours.** Le distributeur est aligné sans yaw contre la partie gauche du mur frontal du D et reste présent/opaque de 51.18 à 87.6 s ; seuls le texte et l'interaction jouent vers 61.35–65 s, sans apparition brusque du modèle. Pong ne porte plus de panneau « HUMAN vs AI ». Le bras, pré-stagé de 95 à 159 s, reste à côté de la fusée et se rétracte à son lancement existant. Le panneau power-up cassoulet est supprimé : **64 boîtes physiques** tombent à la fin de l'installation simulée, de 124.4 à 134 s, et forment une montagne. Havok calcule ces collisions au chargement à pas fixe, puis les poses sont rejouées exactement. Aucun changement des TV, du texte de David, du spline caméra ou de la musique.
 
@@ -83,7 +83,7 @@ Configuration : [src/content/speakers.ts](src/content/speakers.ts).
 
 `gateTime` sert aussi d'**ancre spatiale sur la trajectoire**, pas seulement de timestamp. Changer ce nombre déplace le panneau et modifie son angle d'approche. `endTime` n'est pas une garantie que le panneau soit encore dans le champ : la caméra peut déjà l'avoir dépassé.
 
-David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son support physique est visible dès **51.18 s**, comme les autres props cinéma, jusqu'à la fin du décor cinéma à 87.6 s. Le trajet passe sous sa fiche à 76 s puis dans l'objectif à 76.8 s. Son nom garde son fondu à partir de **67 s** et l'enveloppe de présentation **66–83 s**. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
+David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son support physique est visible dès **51.18 s** jusqu'à la fin du décor cinéma à 87.6 s. Le trajet passe sous sa fiche à 76 s, regarde le mécanisme et la première cascade de popcorn, accélère à 80 s puis entre dans l'objectif à 80.45 s. Son nom garde son fondu à partir de **67 s** et l'enveloppe de présentation **66–83 s**. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22`.
 
 Les constantes cinéma de [src/content/showBeats.ts](src/content/showBeats.ts) reprennent certains timings de David : conserver leur cohérence avec la configuration des speakers.
 
@@ -95,7 +95,7 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | --- | --- |
 | 0–5.925 | DEVFEST AI4FUN / AGENDA, avec les bornes latérales ; shader rétro-gaming plein écran de 4.3 à 5.925 s, terminé au passage du panneau |
 | 5–14 | Bornes et pixel art ; plus de panneau chocolatine avant Anne-Flore. Les petits pixels lumineux restent fixes aux murs. Les six grandes plaques lumineuses réactives sont plaquées à 0.01 unité de la surface intérieure des murs, à y = 15 au-dessus des bornes, et non devant leurs écrans |
-| 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; cubes dynamiques Havok à 22, suffisamment tôt pour voir leurs rebonds au sol, puis nettoyés à 38 |
+| 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; échange Pong à côté d'elle, dernier tir physique vers 22, chute des voxels déclenchée par le choc Havok puis rejouée exactement, nettoyage à 38 |
 | 27–34.5 | `GET /pain-au-chocolat` déjà présent avant l'approche, face au couloir près d'Anne-Flore ; `301 / Location: /chocolatine` dès 29 s. Aucune pièce bonus |
 | 34.5–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 (38.105 en temps musical Journey) |
 | 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture de la porte vers 42.6 |
@@ -105,13 +105,14 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 51.18–66 | Décor cinéma entier visible dès l'entrée : sièges, CRT rétro, support de David, bobines / pellicule, deux seaux et caméra |
 | 59.4–59.7 | Les CRT affichent DEVFEST simultanément |
 | 66–77, à l'écran | Première de David : lumière avant le fondu du nom, écran physique supporté, zone plus calme |
-| 77–84.5 | Bobines frontales reliées par une pellicule animée ; deux seaux à y = 18, bascule vers l'allée à 77.55, pluie de 72 grains à partir de 78.1, encore devant la caméra avant de passer au-dessus |
-| 74–76.8 | Passage de David puis entrée presque immédiate dans l'objectif fixé derrière sa fiche |
-| 76.8–99 | Vortex cyan/violet jusqu'à 95.6 ; bobines/popcorn préservés jusqu'à 87.6, projecteur à 88.8, espace à 90.6, retour de l'architecture digitale inchangé vers 95 |
+| 60.5–69.5 | Le T-800 x3 marche sur une ligne droite sûre devant la caméra, avec léger accompagnement du regard ; aucune pose ne doit traverser les murs |
+| 77–80 | Bobines frontales et pellicule animée ; bascule des seaux à 77.55, première pluie de popcorn dès 78.1 |
+| 80–80.45 | Accélération brutale exacte à 80 s, plus de dix fois la vitesse du couloir à la fin du rush, traversée de l'objectif prévisualisant le vrai tunnel |
+| 80.45–94.2 | Vol 3D doux, vitesse rythmique, design et quatre traces FFT conservés ; virage final à droite puis traversée de l'ouverture réelle du tube, avec ses parois et le D visibles ensemble, sans iris ni changement de plan |
 | 99–116 | Eric, premier chapitre du D digital, avec flux de données convergents |
 | 107–116.7 | Bac transparent à droite, yaw pi, perpendiculaire au mur droit. 32 cubes remplissent les mêmes cases ; un 33e cube arrive à 110.7 et déclenche l'eau débordante en shader, puis seulement le texte BUFFER OVERFLOW, terminé à 114.3 |
 | 114–132 | Six structures de données s'élèvent progressivement, pulse mobile et transition cyan → or |
-| Après le buffer | Astronaute dans le coin suivant, face à notre arrivée, sans doublon dans l'ancien passage spatial |
+| Après le buffer | Astronaute dans le coin suivant, face à notre arrivée, taille normale puis croissance proportionnelle x1.6 à 116.2–118.4 ; montée de l'arceau existant 122 s, sans nouvel arceau ni doublon |
 | 117–125 | Vrai aspect terminal : frappe de `$ npm install cassoulet`, curseur, barre de progression des 4.8 GB, fin de l'installation à 124.4 s |
 | 124.4–134 | 64 boîtes de cassoulet tombent à l'instant exact de la fin du terminal ; panier de livraison pour une vraie montagne, aucun panneau power-up |
 | 128–146 | Mitsuru : nom orbital, énergie dorée plus intense, vumètre derrière |
@@ -162,14 +163,16 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Speakers, fenêtres d'effets, transitions et boutons de répétition | [speakers.ts](src/content/speakers.ts), [cues.ts](src/content/cues.ts), [showBeats.ts](src/content/showBeats.ts) |
 | Bornes, écran d'ouverture, LEVEL COMPLETE / NEXT LEVEL | [ArcadeCathedral.ts](src/scene/ArcadeCathedral.ts) |
 | Porte et éléments narratifs du T ; pixel art | [ArcadeT.ts](src/scene/ArcadeT.ts), [PixelWorld.ts](src/scene/PixelWorld.ts) |
-| Violon voxel et traînées de vitesse | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts) |
+| Violon voxel, dernier échange Pong et collision Havok enregistrée | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts), [ViolinPongImpact.ts](src/scene/ViolinPongImpact.ts), [violin.ts](src/content/violin.ts) |
 | Mur de dette technique, Havok / seek / cleanup ; pièces supprimées | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
 | Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
 | Transition plein écran arcade → ligne de phosphore → CRT, pause / rewind / pipeline | [ClapCrtTransition.ts](src/effects/ClapCrtTransition.ts), [showBeats.ts](src/content/showBeats.ts) |
 | Traversée rétro-gaming du panneau d'entrée, cycle de vie partagé des shaders de transition | [ArcadeEntryTransition.ts](src/effects/ArcadeEntryTransition.ts), [TimedPostProcess.ts](src/effects/TimedPostProcess.ts) |
-| Vortex après l'objectif, sans masquer entièrement bobines et popcorn | [LensVortexTransition.ts](src/effects/LensVortexTransition.ts) |
+| Vol physique 3D, vitesse rythmique et ouverture réelle sur le D à 94.2 s | [PhysicalTunnel.ts](src/effects/PhysicalTunnel.ts), [TunnelFlight.ts](src/camera/TunnelFlight.ts), [LensVortexTransition.ts](src/effects/LensVortexTransition.ts), [TunnelRendering.ts](src/effects/TunnelRendering.ts) |
+| Marche du T-800 original, clip The Chase conservé | [TerminatorWalk.ts](src/scene/TerminatorWalk.ts), [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
 | Terminal npm animé et cue partagé avec la pluie de boîtes | [NpmCassouletTerminal.ts](src/scene/NpmCassouletTerminal.ts), [showBeats.ts](src/content/showBeats.ts) |
-| Mur Matrix, atlas de glyphes et signature dissimulée | [MatrixRainWall.ts](src/effects/MatrixRainWall.ts), racine du distributeur dans [SimReadyGags.ts](src/simready/SimReadyGags.ts) |
+| Mur Matrix continu et signature lisible, atlas de glyphes partagé | [MatrixRainWall.ts](src/effects/MatrixRainWall.ts), racine du distributeur dans [SimReadyGags.ts](src/simready/SimReadyGags.ts) |
+| Croissance proportionnelle de l'astronaute et montée de l'arceau existant | [astronaut.ts](src/content/astronaut.ts), [DigitalMoments.ts](src/scene/DigitalMoments.ts) |
 | Textures rétro et couverture exacte de la surface courbe des CRT | [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Chargement local, normalisation, instances, clone de caméra et animation du clap | [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
 | Deux seaux / sources, 72 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
@@ -235,7 +238,7 @@ Le shader est compilé avant SYSTEM READY ; une erreur de compilation remonte à
 - Les racines glTF peuvent avoir une **échelle Z négative** liée au changement de repère. La préserver : la remplacer arbitrairement par une échelle uniforme inverse certains modèles.
 - Les répétitions utilisent des instances partageant la géométrie. La caméra héroïque utilise des **clones partageant la géométrie** : modifier `visibility` sur un `InstancedMesh` ne fonctionne pas et produit des warnings à chaque frame.
 - CRT : conserver le yaw local **-π/2**, recopier la surface courbe **`Object_8`** dans le repère du support, puis refaire les UV 0–1. Cacher les surfaces originales `Object_6` / `Object_8`, pas le boîtier. La conversion glTF rend les rotations intuitives trompeuses : vérifier les coordonnées réelles.
-- La caméra géante est normalisée à 40 ; son objectif est aligné sur l'ancre **76.8 s** via **`lenses_low_40`**, pas via le centre global du modèle. Il est à environ 3.4 unités derrière la fiche de David et pointe vers nous avec le yaw de route + π. La fin du décor reste séparée (`auditoriumEnd = 87.6`) pour garder les bobines et popcorn pendant le vortex.
+- La caméra géante est normalisée à 40 ; l'objectif reste à l'ancre **86.3**, traversée à **80.45 s**. Le disque de rayon **6.66** partage la texture du tube 3D, couche **0x10000000** dans la même scène. `tunnelTravelProgress` garde la fin exacte à **94.2 s**. Le tube maillé s'arrête à `TUNNEL_EXIT_INDEX`, exactement au point atteint à cette fin ; le chemin continue uniquement pour calculer un regard stable. Le target est transparent hors des parois (AA x4 si disponible), et son alpha est le véritable masque géométrique de la sortie. Composer en prémultiplié, sans iris ni mélange plein écran. Le D est prêt à 90 s ; le render target est retiré à 94.2 s.
 - Remplacer un GLB impose de revoir ses landmarks, ses axes, sa licence et ses bounds, pas seulement son nom de fichier.
 - Un `BoxBatch` fige sa matrice monde. Si on le parente ensuite à une racine transformée, utiliser le pattern existant d'`unfreezeWorldMatrix()`.
 

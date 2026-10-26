@@ -56,7 +56,7 @@ beside the existing rocket instead of participating in a collision.
 
 | Moment | Effect-time window | Placement / interaction |
 | --- | --- | --- |
-| Retro Pong | 7–14.7 s | Ahead of the arcade camera; analytical bounces use measured Journey attacks; paddles/ball only, no caption |
+| Retro Pong | 17.4–23.5 s | Beside Anne-Flore; measured Journey attacks drive the rally, then the final ball physically hits the voxel violin near 22 s; no caption |
 | Pastry reference | 27–31.5 s | A real croissant collectible accompanies the HTTP gag; chocolatine response at 29 s |
 | Developer snack machine | Model: 51.18–87.6 s; caption: 61.35–65 s | Left side of the D's front wall; back surface aligned 0.02 units in front of the wall, with no yaw; no timed model pop-in |
 | Cassoulet mountain | 124.4–134 s | 64 real beans-can models start exactly at the terminal's 4.80-GB completion; Havok cylinder collisions produce a pile. No power-up caption |
@@ -117,30 +117,64 @@ Only the articulation is timed to the launch preparation.
 - The opening violin and bow are 25% larger. Their material alpha follows the
   same `speakerReveal` envelope as Anne-Flore's name, starting at 17.25 s rather
   than abruptly appearing at 19 s. The glow pass respects that alpha; the
-  physical cubes keep the enlarged geometry when they fall at the unchanged
-  22-s cue.
+  physical cubes keep the enlarged geometry when struck by the final Pong ball.
+  `ViolinPongImpact` records a real Havok sphere/voxel contact at about 21.98 s
+  and only then enables gravity on the violin. The ball and all voxel poses
+  share the same 60-Hz recording. A missed shot fails preparation explicitly;
+  there is no timer that silently substitutes a collapse.
 - `NpmCassouletTerminal` draws a simulated local shell with typing, cursor,
   progress bar and downloaded gigabytes. Uploads are capped at 10 Hz and all
   state is derived from show time. `CASSOULET_INSTALL.complete = 124.4` is also
   the exact start of the Havok can recording. No actual command runs and no
   packages or gigabytes are downloaded.
-- The camera lens is about 3.4 route units behind David's card, crossed at
-  76.8 s. Its measured Journey effect cue is 76.827 s. A precompiled
-  `LensVortexTransition` adds cyan/violet spirals, moving depth rings, sparks
-  and restrained refraction until 95.6 s. The center remains open and the
-  cinema scene continues until 87.6 s, preserving reels and popcorn at their
-  established times. Projector, digital entrance, total duration and final
-  camera are unchanged.
+- At exactly 80 s the camera accelerates after the initial popcorn cascade,
+  crossing the lens at 80.45 s while retaining its spatial anchor at 86.3.
+  `PhysicalTunnel` now renders a real continuous, ribbed 3D tube with an
+  arc-length-driven camera, rising/falling serpentine bends, banking and a
+  final physical 90-degree right turn. Its isolated layer/render target stays
+  in the existing Babylon scene, shared with the coaxial radius-6.66 preview
+  disc. The four speaker paths react to actual FFT bands: 40–180, 180–700,
+  700–2400 and 4000–14000 Hz, controlling glow, width and waviness.
+  The former metallic iris is removed. The tube now has a real open end at
+  the camera's exact 94.2-s destination. Its antialiased transparent render
+  target composites the real D only through this opening, preserving the
+  tunnel walls around the room throughout the approach. The D is prepared
+  at 90 s, and its exit gaze points into the corridor rather than into a wall.
+  The extra render pass is
+  removed at 94.2 s. The local camera rush intentionally changes only 80–94.2 s;
+  the surrounding route, MP3, 180-s duration and final reveal are unchanged.
+  The flight is now about 23% slower, with vertical travel reduced from 50
+  to 22 units and banking limited to about 13 degrees. Analytically integrated
+  measured Journey kick attacks gently modulate speed, normalized to preserve
+  the exact exit deadline. Surface shaders, ribs, palette and FFT trails are
+  unchanged; only the terminal geometry and composition change.
+- The user-supplied, CC-BY-4.0 T-800 is part of the existing cinema asset loader,
+  not the nine-model NVIDIA registry. Its original `The Chase` skeletal clip
+  is sampled by absolute timeline time while it advances toward the viewer
+  during the D-entry left turn, 60.5–69.5 s. It stays beside the camera lane.
+  Its height is now 21.6 units, exactly three times its former 7.2 units,
+  with its original clip preserved. Its lane is now straight inside cell
+  (0,6), X=-563 to -559 and Z=46.5, with a little extra floor clearance.
+  A restrained camera glance improves its framing before David's introduction.
+  Validation measures every sampled skeletal pose and a rendered silhouette
+  mask, including actual wall/seat occlusions, rather than accepting a
+  projected bounding box that might be hidden behind the scenery.
+  Attribution is recorded in
+  [CREDITS.md](../CREDITS.md).
 - The existing cinema astronaut is instantiated once in the corner after
   the buffer (`anchor = 121.75`, `lateral = -8`), facing the incoming viewer.
-  It is not duplicated in the old space crossing.
+  It is not duplicated in the old space crossing. Between 116.2 and 118.4 s
+  it grows uniformly from its normal 6.5-unit height to 10.4, with feet fixed
+  on the floor. The adjacent **existing** progression gate at 122 s rises
+  another 3.2 units on the same envelope. No separate arch is constructed.
 - `MatrixRainWall` uses a single 512×512 glyph atlas and a GPU rain shader,
-  not per-frame canvas text drawing or an external texture/video. Its 30×32
-  grid has independent column speeds and fading trails. Fragments of
-  `DEVFESTTOULOUSE` occupy two staggered rows but retain normal trail
-  brightness, avoiding a conspicuous headline. The surface is in front of
-  the existing inset panels beside the snack machine. It inherits that
-  machine's visibility and feature flag.
+  not per-frame canvas text drawing or an external texture/video. Its 88×42
+  grid has independent column speeds and fading trails. Larger, brighter
+  `DEVFEST` and `TOULOUSE` rows remain legible among the rain. A single
+  continuous plane covers the wall behind the machine from the black strip
+  at X=-532 to the right wall edge at X=-462.75, Y=0.05–32.85.
+  It sits in front of the existing inset panels and inherits the machine's
+  visibility and feature flag.
 
 New motion is absolute-time driven, either analytical or sampled from the
 fixed-step Havok bake. No additional physics engine, persistent live rigid
@@ -217,31 +251,28 @@ alpha-blended PBR instead of adding expensive transmission render targets.
 
 ### Measured production validation
 
-The production build was exercised in headless Edge at **1920 × 1080** with
-the real MP3 for the complete **180-second** presentation. Startup to SYSTEM
-READY took **3.70 s** in the latest run, including the Havok can-pile bake,
-glyph atlas, simulated terminal and precompiled water/vortex shaders. All new effects were off at the final hold.
+The latest production build was exercised in headless Edge at **1920 × 1080**
+with real MP3 playback through the tunnel passage, 78.5–94.2 s, plus scripted
+checkpoints through the final 180-s hold. Startup to SYSTEM
+READY took **4.87 s**, including both Havok recordings,
+the animated T-800, glyph atlas, simulated terminal and physical tunnel.
+The tunnel render pass and all new effects were off at the final hold.
 The scripted walk through the entire timeline preserved the exact camera
 positions, rotations and FOV with effects enabled or disabled. Repeated seeks
 and replay did not accumulate meshes, transforms, materials or lights.
 
 | Probe | NVIDIA effects | FPS | Median frame | 95th percentile | Draw calls |
 | --- | --- | ---: | ---: | ---: | ---: |
-| Vending / Matrix wall, 61.8 s | Off | 60.04 | 16.7 ms | 17.7 ms | 296 |
-| Vending / Matrix wall, 61.8 s | On | 59.97 | 16.6 ms | 18.1 ms | 488 |
-| Lens vortex, 78.5 s | Off | 60.00 | 16.7 ms | 17.9 ms | 103 |
-| Lens vortex, 78.5 s | On | 60.02 | 16.7 ms | 17.6 ms | 103 |
-| Water overflow, 111 s | Off | 59.99 | 16.7 ms | 17.9 ms | 211 |
-| Water overflow, 111 s | On | 60.00 | 16.7 ms | 17.7 ms | 301 |
-| Astronaut / terminal, 118 s | Off | 60.00 | 16.8 ms | 17.8 ms | 67 |
-| Astronaut / terminal, 118 s | On | 59.99 | 16.7 ms | 18.1 ms | 67 |
-| Falling cans, 128 s | Off | 60.02 | 16.7 ms | 17.5 ms | 139 |
-| Falling cans, 128 s | On | 60.02 | 16.7 ms | 17.7 ms | 387 |
-| Launch support, 143.5 s | Off | 60.00 | 16.7 ms | 18.2 ms | 97 |
-| Launch support, 143.5 s | On | 60.02 | 16.7 ms | 18.2 ms | 187 |
+| T-800 / Matrix wall, 63.25 s | Off | 60.00 | 16.7 ms | 17.0 ms | 327 |
+| T-800 / Matrix wall, 63.25 s | On | 60.01 | 16.7 ms | 17.0 ms | 519 |
+| Physical tunnel, 84 s | Off | 60.00 | 16.8 ms | 17.8 ms | 28 |
+| Physical tunnel, 84 s | On | 59.99 | 16.7 ms | 17.8 ms | 28 |
+| Physical room exit, 93.5 s | Off | 60.09 | 16.7 ms | 17.7 ms | 71 |
+| Physical room exit, 93.5 s | On | 60.00 | 16.7 ms | 17.8 ms | 71 |
 
-Here, On/Off toggles the NVIDIA additions. The core water-buffer, lens vortex,
-astronaut and simulated terminal remain enabled in both cases.
+Here, On/Off toggles the NVIDIA additions. The T-800, physical tunnel,
+water-buffer, astronaut and simulated terminal remain enabled in both cases.
+The full report also retains the rush, right-turn, can-pile and launch probes.
 
 These are measurements of that browser/machine, not a guarantee for every
 projector or GPU. The inspector's nine-asset gallery, wireframe, bounding boxes
@@ -251,13 +282,31 @@ external network requests**. Raw reproducible results are in
 [simready-validation.json](simready-validation.json).
 
 The latest browser probes also verify the revised 4.3–5.925-s entry shader,
-the pre-existing HTTP panel with yaw 0 and the 29-s redirect, the closer lens
-crossing immediately behind David, the fully opaque launch arm before
+the pre-existing HTTP panel with yaw 0 and the 29-s redirect, the accelerated lens
+crossing at 80.45 s, the fully opaque launch arm before
 the approach, the physical can mountain starting only at terminal completion, the
 absence of both removed captions, and water/title activation only after the
 33rd cube. Instanced-visibility warnings are treated as failures.
 
-The latest run additionally checks the matching violin/name opacity, terminal
-completion and first can at exactly 124.4 s, preserved reels inside the vortex,
-its disappearance before Eric, the real GPU Matrix shader, and the astronaut's
-single relocated instance. **112 targeted tests** and the production build pass.
+Browser probes additionally check matching violin/name opacity, a positive
+Pong/voxel contact impulse and identical ball/debris replay, terminal completion
+and first can at exactly 124.4 s, the initial reels/popcorn before the 80-s rush, the shared
+GPU lens preview, full mural bounds, and uniform astronaut growth with exactly
+24 existing arch instances. A pixel comparison with all scenery hidden proves
+that the tunnel interior is opaque; repeating it during the exit verifies that
+the opening reveals the real scene. This revision passes **56 focused
+tests**, TypeScript checks and the production build. Browser probes additionally
+require the tunnel pass to remain active at 94.199 s and stop at exactly
+94.2 s, and verify the T-800's actual 21.6-unit height. A temporary rendered
+silhouette mask measures **6.5 seconds of actual visibility**, including **4.5
+seconds near the image axis**. Skeletal bounds remain clear of the corridor
+walls, floor and ceiling, with at least **2.2 units** of camera clearance.
+Alpha readback proves tube walls and room coexist during the exit; at 94 s
+about 53% of the image still contains tunnel walls and 47% reveals the room.
+Frame-to-frame RGB checks around the exit remain below 4.6% average change,
+including removal of the transition at 94.2 s, with no intermediate metal shot.
+During actual MP3 playback, **826 rendered frames**
+verified all four varying FFT bands reached the tunnel material with **zero
+routing error**. Their measured peak levels were 0.876 / 0.709 / 0.609 / 0.451.
+The original Strudel composition keeps its musical lens/rest sections fixed;
+retiming the visual rush does not accidentally rewrite its arrangement.

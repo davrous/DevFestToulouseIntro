@@ -11,13 +11,16 @@ import type { AudioFeatures } from "../engine/AudioAnalyzer";
 import { cueEnvelope } from "../content/cues";
 import { CASSOULET_PILE, DEPLOY_ROCKET } from "../content/showBeats";
 import { createWorldText } from "../scene/WorldText";
-import journey from "../audio/violasJourney.json";
 import { SimReadyAssets } from "./SimReadyAssets";
 import { createSimReadyConfig, isSimReadyGagId, SIMREADY_GAGS, VENDING_WALL, validateGagSettings, type GagSettings, type SimReadyGagId } from "./config";
 import type { SimReadyAssetId } from "./registry";
 import { CassouletPile } from "./CassouletPile";
 import { BoxBatch } from "../scene/Instances";
 import { MatrixRainWall } from "../effects/MatrixRainWall";
+import { PONG_VOLLEY, pongRallyPosition } from "../content/violin";
+import { samplePhysicsBake } from "../scene/PhysicsBake";
+import type { ViolinPongImpact } from "../scene/ViolinPongImpact";
+import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 
 interface Gag {
   root: TransformNode;
@@ -31,21 +34,9 @@ interface Gag {
   matrix?: MatrixRainWall;
 }
 
-const PONG_BEATS = [7, ...journey.beats.map(([time]) => time).filter((time) => time > 7 && time < 13.7), 13.7]
-  .filter((time, index, beats) => index === 0 || time - beats[index - 1] >= .25);
-
-export function pongPose(time: number, settings: GagSettings): { x: number; y: number; miss: number } {
-  const beat = PONG_BEATS.findIndex((next) => next > time);
-  const index = beat < 0 ? PONG_BEATS.length - 2 : Math.max(0, beat - 1);
-  const start = PONG_BEATS[index], end = PONG_BEATS[index + 1];
-  const phase = clamp((time - start) / (end - start));
-  const side = index % 2 ? 1 : -1;
-  const miss = Math.max(0, time - settings.animation.interaction);
-  return {
-    x: miss > 0 ? 5.4 + miss * 12 : side * 5.4 * (1 - 2 * phase),
-    y: Math.sin((index + phase) * 1.2) * 2.1 - miss * miss * 3,
-    miss,
-  };
+export function pongPose(time: number, settings: GagSettings): { x: number; y: number; z: number; miss: number } {
+  const position = pongRallyPosition(Math.min(time, PONG_VOLLEY.shot));
+  return { x: position.x, y: position.y, z: position.z, miss: Math.max(0, time - settings.animation.interaction) };
 }
 
 export function snackDropPose(time: number, settings: GagSettings): { y: number; z: number; flicker: number } {
@@ -74,6 +65,9 @@ export class SimReadyGags {
   readonly groups = new Map<SimReadyGagId, Gag>();
   readonly errors: string[] = [];
   private preparing?: Promise<void>;
+  private pongImpact?: ViolinPongImpact;
+  private readonly ballPosition = Vector3.Zero();
+  private readonly ballRotation = Quaternion.Identity();
 
   constructor(private readonly scene: Scene, enabled = true) {
     this.config = createSimReadyConfig(enabled);
@@ -134,6 +128,8 @@ export class SimReadyGags {
       gag.pile.initialize();
     }
   }
+
+  setPongImpact(impact: ViolinPongImpact): void { this.pongImpact = impact; }
 
   private label(gag: Gag, text: string, width: number, y: number, z = -.5): void {
     gag.label = createWorldText(this.scene, {
@@ -239,9 +235,15 @@ export class SimReadyGags {
       const local = time - settings.start;
       if (id === "pong") {
         const pose = pongPose(time, settings);
-        gag.nodes[0].position.y = Math.sin(local * 1.3) * 2;
-        gag.nodes[1].position.y = pose.miss > 0 ? -3 : Math.sin(local * 1.3 + 1.1) * 2;
-        gag.nodes[2].position.set(pose.x, pose.y, -pose.miss * 3);
+        gag.nodes[0].position.set(-6, pose.y, PONG_VOLLEY.planeZ);
+        gag.nodes[1].position.set(6, pose.y, PONG_VOLLEY.planeZ);
+        if (this.pongImpact && time >= PONG_VOLLEY.shot) {
+          samplePhysicsBake(this.pongImpact.bake, this.pongImpact.ballIndex, time - PONG_VOLLEY.shot,
+            this.ballPosition, this.ballRotation);
+          gag.nodes[2].position.set(this.ballPosition.x, this.ballPosition.y - PONG_VOLLEY.centerY, this.ballPosition.z);
+          gag.nodes[2].rotationQuaternion ??= Quaternion.Identity();
+          gag.nodes[2].rotationQuaternion.copyFrom(this.ballRotation);
+        } else gag.nodes[2].position.set(pose.x, pose.y, pose.z);
       } else if (id === "pastry") {
         const item = gag.nodes[0];
         const collected = smoothstep((time - settings.animation.interaction) / .55);

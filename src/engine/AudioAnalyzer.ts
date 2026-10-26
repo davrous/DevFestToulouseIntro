@@ -4,6 +4,8 @@ export interface AudioFeatures {
   kick: number;
   bass: number;
   mid: number;
+  lowMid: number;
+  highMid: number;
   treble: number;
   energy: number;
   beat: number;
@@ -12,8 +14,11 @@ export interface AudioFeatures {
   drop: number;
 }
 
+export const TUNNEL_AUDIO_BANDS = [[40, 180], [180, 700], [700, 2400], [4000, 14000]] as const;
+
 export const silentFeatures = (): AudioFeatures => ({
   kick: 0, bass: 0, mid: 0, treble: 0, energy: 0, beat: 0, violaEnergy: 0, snare: 0, drop: 0,
+  lowMid: 0, highMid: 0,
 });
 
 export function frequencyBand(data: Uint8Array, sampleRate: number, fftSize: number, low: number, high: number): number {
@@ -212,6 +217,8 @@ export class AudioAnalyzer {
     this.features.bass = bass;
     this.features.mid = mid;
     this.features.treble = treble;
+    this.features.lowMid = frequencyBand(this.frequency, context.sampleRate, analyser.fftSize, ...TUNNEL_AUDIO_BANDS[1]);
+    this.features.highMid = frequencyBand(this.frequency, context.sampleRate, analyser.fftSize, ...TUNNEL_AUDIO_BANDS[2]);
     this.features.energy = energy;
     this.features.beat = this.features.kick;
     this.features.snare = Math.max(clamp((mid - this.previousMid - .06) * 6), this.features.snare * .8);

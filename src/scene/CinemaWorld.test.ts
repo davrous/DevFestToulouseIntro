@@ -36,18 +36,23 @@ vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
   },
 }));
 
+vi.mock("./TerminatorWalk", () => ({
+  TerminatorWalk: class { prepare() {} update() {} },
+}));
+
 describe("cinematic show choreography", () => {
-  it("places lens entry after David, the reel mechanism and the complete popcorn cascade", () => {
+  it("rushes into the lens after David and the initial popcorn fall, returning to the D at 94.2s", () => {
     expect(CINEMA.davidGate).toBe(76);
     expect(CINEMA.davidStart).toBe(66);
     expect(CINEMA.popcornEnd).toBeLessThan(CINEMA.auditoriumEnd);
-    expect(CINEMA.lens).toBeGreaterThan(CINEMA.popcornEnd + 1);
-    expect(CINEMA.camera).toBeGreaterThanOrEqual(CINEMA.popcornEnd);
-    expect(CINEMA.lens).toBe(86.3);
+    expect(CINEMA.lens).toBeGreaterThan(CINEMA.popcorn + 2);
+    expect(CINEMA.camera).toBe(80);
+    expect(CINEMA.lens).toBe(80.45);
+    expect(CINEMA.lensAnchor).toBe(86.3);
     expect(CINEMA.auditoriumEnd).toBe(87.6);
     expect(CINEMA.projector).toBe(88.8);
     expect(CINEMA.space).toBe(90.6);
-    expect(CINEMA.digital).toBe(95);
+    expect(CINEMA.digital).toBe(94.2);
   });
 
   it("grows the astronaut uniformly from its feet while its adjacent arch rises at the same rate", () => {
@@ -55,13 +60,13 @@ describe("cinematic show choreography", () => {
     const middle = astronautRiseState((ASTRONAUT_CORNER.riseStart + ASTRONAUT_CORNER.riseEnd) / 2);
     const done = astronautRiseState(ASTRONAUT_CORNER.riseEnd);
     expect(before.progress).toBe(0);
-    expect(before.scale).toBe(.02);
+    expect(before.scale).toBe(1);
     expect(middle.progress).toBeCloseTo(.5);
-    expect(middle.scale).toBeCloseTo(.5);
-    expect(done.scale).toBe(1);
-    expect(done.archY).toBeCloseTo(.02);
+    expect(middle.scale).toBeCloseTo(1.3);
+    expect(done.scale).toBe(1.6);
+    expect(done.archY).toBeCloseTo(3.2);
     expect(middle.centerY - ASTRONAUT_CORNER.height * middle.scale / 2).toBeCloseTo(0);
-    expect(middle.archY + ASTRONAUT_CORNER.archHeight).toBeCloseTo(.02 + ASTRONAUT_CORNER.archHeight * middle.progress);
+    expect(middle.archY).toBeCloseTo(ASTRONAUT_CORNER.gateLift * middle.progress);
     astronautRiseState(180); astronautRiseState(0);
     expect(astronautRiseState((ASTRONAUT_CORNER.riseStart + ASTRONAUT_CORNER.riseEnd) / 2)).toEqual(middle);
     expect(() => astronautRiseState(NaN)).toThrow();
@@ -195,12 +200,10 @@ describe("cinematic show choreography", () => {
     const growing = astronautRiseState(116.8);
     expect(cinema.astronautRoot.scaling.asArray()).toEqual([growing.scale, growing.scale, growing.scale]);
     expect(cinema.astronautRoot.position.y).toBe(growing.centerY);
-    expect(cinema.astronautArch.position.z).toBe(cinema.astronautRoot.position.z + ASTRONAUT_CORNER.archOffset);
-    expect(cinema.astronautArch.position.y).toBe(growing.archY);
-    expect(cinema.astronautArch.isEnabled()).toBe(true);
+    expect(scene.getTransformNodeByName("Digital / astronaut rising arch")).toBeNull();
     cinema.update(ASTRONAUT_CORNER.riseEnd, silentFeatures());
-    expect(cinema.astronautRoot.scaling.asArray()).toEqual([1, 1, 1]);
-    expect(cinema.astronautRoot.position.y).toBe(ASTRONAUT_CORNER.height / 2);
+    expect(cinema.astronautRoot.scaling.asArray()).toEqual([1.6, 1.6, 1.6]);
+    expect(cinema.astronautRoot.position.y).toBe(ASTRONAUT_CORNER.height * 1.6 / 2);
     cinema.update(98, silentFeatures());
     expect(cinema.astronautRoot.isEnabled()).toBe(true);
     cinema.update(125, silentFeatures());
@@ -256,8 +259,10 @@ describe("cinematic show choreography", () => {
     expect(scene.getTransformNodeByName("Cinema / projector emerging after lens")?.isEnabled()).toBe(false);
     cinema.update(CINEMA.lens, silence);
     expect(scene.getMeshByName("FX/Cinema / optical element 0")?.isEnabled()).toBe(true);
-    cinema.update(96, silence);
-    expect(space.isEnabled()).toBe(true);
+    cinema.update(91, silence);
+    expect(space.isEnabled()).toBe(false);
+    cinema.update(94, silence);
+    expect(space.isEnabled()).toBe(false);
     cinema.update(175, silence);
     expect(space.isEnabled()).toBe(false);
     expect(cinema.davidRoot.isEnabled()).toBe(false);

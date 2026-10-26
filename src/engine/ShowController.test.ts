@@ -118,6 +118,20 @@ describe("independent music-reactive layer", () => {
     expect(controller.sample(100)).toMatchObject({ energy: .7, bass: .6, mid: .4, violaEnergy: .8 });
   });
 
+  it("preserves all four live FFT trail bands through the controller, including intensity and disabling", () => {
+    const controller = new ShowController(new Timeline(), vi.fn());
+    vi.spyOn(controller.soundtrack, "sample").mockReturnValue({
+      ...silentFeatures(), bass: .1, lowMid: .2, highMid: .3, treble: .4,
+    });
+    vi.spyOn(controller.audio, "sample").mockReturnValue({ ...silentFeatures(), lowMid: .6 });
+    controller.intensity = 1.5;
+    const sample = controller.sample();
+    [sample.bass, sample.lowMid, sample.highMid, sample.treble].forEach((value, index) => {
+      expect(value).toBeCloseTo([.15, .9, .45, .6][index], 8);
+    });
+    controller.enabled = false;
+    expect(controller.sample()).toEqual(silentFeatures());
+  });
   it("uses measured attacks from the media clock only for Journey and preserves live viola", () => {
     const timeline = new Timeline();
     timeline.play();

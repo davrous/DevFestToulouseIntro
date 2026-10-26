@@ -11,7 +11,7 @@ import { smoothstep } from "../engine/Timeline";
 import { createWorldText, routeAnchor } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { BoxBatch } from "./Instances";
-import type { AudioFeatures } from "../engine/AudioAnalyzer";
+import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import { PortalLasers, laserReach, laserStrength, speakerReveal } from "../effects/ShowLighting";
 
 export class SpeakerPortal {
@@ -113,7 +113,7 @@ export class SpeakerPortal {
     this.decoration.isPickable = false;
     this.decoration.thinInstanceSetBuffer("matrix", this.modules, 16, false);
     this.lasers = new PortalLasers(scene, this.root, config);
-    this.update(0, { kick: 0, bass: 0, mid: 0, treble: 0, energy: 0, beat: 0, violaEnergy: 0, snare: 0, drop: 0 });
+    this.update(0, silentFeatures());
   }
 
   update(time: number, audio: AudioFeatures): void {

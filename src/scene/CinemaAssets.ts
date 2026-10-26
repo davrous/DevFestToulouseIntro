@@ -22,6 +22,7 @@ const FILENAMES = {
   satellite: "low_poly_satellite.glb",
   vhs: "vhs_tape.glb",
   chair: "directors_chair.glb",
+  terminator: "terminator_t-800_endo-skeleton_damaged.glb",
 } as const;
 
 export type CinemaAsset = keyof typeof FILENAMES;
@@ -102,6 +103,22 @@ export class CinemaAssets {
       template.animation.start(false);
       template.animation.pause();
     }
+    return { node: pivot, animation: template.animation };
+  }
+
+  takeAnimated(name: CinemaAsset, parent: TransformNode, label: string, height: number):
+    { node: TransformNode; animation?: AnimationGroup } | undefined {
+    const template = this.templates.get(name);
+    if (!template) return undefined;
+    const pivot = new TransformNode(label, this.scene);
+    pivot.parent = parent;
+    template.root.parent = pivot;
+    const factor = height / template.size.y;
+    template.root.scaling.scaleInPlace(factor);
+    template.root.position.subtractInPlace(template.center.scale(factor));
+    template.root.setEnabled(true);
+    template.animation?.start(true);
+    template.animation?.pause();
     return { node: pivot, animation: template.animation };
   }
 }

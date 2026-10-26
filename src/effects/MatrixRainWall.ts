@@ -5,17 +5,25 @@ import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import type { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { CELL, HEIGHT, ROOF_THICKNESS, cellPosition } from "../content/title";
 
 export const MATRIX_GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%&*+-=/<>[]{}:;?!";
 export const MATRIX_SIGNATURE = "DEVFESTTOULOUSE";
-export const MATRIX_WALL = { width: 12, height: 20, offsetX: 14.4, centerY: 11, columns: 30, rows: 32, inset: 2.2 } as const;
+const left = cellPosition(1, 6).x;
+const right = cellPosition(3, 6).x + CELL / 2 - .75;
+const floor = .05;
+const ceiling = HEIGHT - ROOF_THICKNESS / 2;
+export const MATRIX_WALL = {
+  left, right, floor, ceiling, width: right - left, height: ceiling - floor,
+  offsetX: (left + right) / 2 - (cellPosition(2, 6).x - CELL * .3),
+  centerY: (floor + ceiling) / 2 - .28, columns: 88, rows: 42, inset: 2.2,
+} as const;
 
 const signatureShader = [...MATRIX_SIGNATURE].map((letter, index) =>
   `if (letter < ${index + .5}) return ${MATRIX_GLYPHS.indexOf(letter)}.0;`).join("\n");
 
 export class MatrixRainWall {
   readonly mesh;
-  readonly leftMesh;
   readonly material: ShaderMaterial;
 
   constructor(scene: Scene, parent: TransformNode, depth: number) {
@@ -66,27 +74,28 @@ export class MatrixRainWall {
           float distance = mod(cell.y - head + grid.y, grid.y);
           float rain = (1.0 - smoothstep(0.0, 11.0, distance)) * (.35 + seed * .65);
           float glyph = floor(hash(cell + vec2(0.0, floor(time * 7.0))) * ${MATRIX_GLYPHS.length}.0);
-          bool firstWord = cell.y == 14.0 && cell.x >= 5.0 && cell.x < 12.0;
-          bool secondWord = cell.y == 10.0 && cell.x >= 16.0 && cell.x < 24.0;
-          if (firstWord) glyph = signatureGlyph(cell.x - 5.0);
-          if (secondWord) glyph = signatureGlyph(7.0 + cell.x - 16.0);
+          vec2 first = (vUV * grid - vec2(24.0, 31.0)) / 2.0;
+          vec2 second = (vUV * grid - vec2(23.0, 27.0)) / 2.0;
+          bool firstWord = first.y >= 0.0 && first.y < 1.0 && first.x >= 0.0 && first.x < 7.0;
+          bool secondWord = second.y >= 0.0 && second.y < 1.0 && second.x >= 0.0 && second.x < 8.0;
+          float signature = 0.0;
+          if (firstWord) { glyph = signatureGlyph(floor(first.x)); local = fract(first); signature = 1.0; }
+          if (secondWord) { glyph = signatureGlyph(7.0 + floor(second.x)); local = fract(second); signature = 1.0; }
           vec2 tile = vec2(mod(glyph, 8.0), floor(glyph / 8.0));
           vec2 atlasUV = vec2((tile.x + local.x) / 8.0, 1.0 - (tile.y + 1.0 - local.y) / 8.0);
           float ink = texture2D(glyphAtlas, atlasUV).a;
           float leader = 1.0 - smoothstep(0.0, 1.4, distance);
           vec3 color = mix(vec3(.03, .9, .32), vec3(.74, 1.0, .86), leader);
           float edge = smoothstep(0.0, .04, vUV.x) * (1.0 - smoothstep(.96, 1.0, vUV.x));
-          color = vec3(.004, .018, .012) + color * ink * (.035 + rain * 1.2) * edge;
+          float titleLight = .55 + .3 * (.5 + .5 * sin(time * .7 + cell.x * .15));
+          float brightness = mix(.035 + rain * 1.2, titleLight + rain * .4, signature);
+          color = vec3(.004, .018, .012) + color * ink * brightness * edge;
           gl_FragColor = vec4(color, 1.0);
         }`,
     }, { attributes: ["position", "uv"], uniforms: ["worldViewProjection", "time"], samplers: ["glyphAtlas"] });
     this.material.setTexture("glyphAtlas", atlas);
     this.material.setFloat("time", 0);
     this.mesh.material = this.material;
-    const left = this.mesh.clone("FX/Matrix / snack wall code rain left", parent);
-    if (!left) throw new Error("Could not create the second Matrix wall.");
-    left.position.x = -MATRIX_WALL.offsetX;
-    this.leftMesh = left;
   }
 
   update(time: number): void {

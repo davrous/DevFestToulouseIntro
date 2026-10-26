@@ -7,6 +7,7 @@ interface TransitionOptions {
   name: string;
   shader: string;
   uniforms: string[];
+  samplers?: string[];
   compileError: string;
 }
 
@@ -19,7 +20,7 @@ export class TimedPostProcess {
     const scene = camera.getScene();
     this.postProcess = new PostProcess(options.name, options.shader, {
       engine: scene.getEngine(), size: 1, samplingMode: Constants.TEXTURE_BILINEAR_SAMPLINGMODE,
-      uniforms: options.uniforms, blockCompilation: true,
+      uniforms: options.uniforms, samplers: options.samplers, blockCompilation: true,
     });
     const observer = pipeline.onBuildObservable.add(() => {
       if (!this.attached) return;

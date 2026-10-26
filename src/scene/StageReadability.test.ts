@@ -74,9 +74,10 @@ describe("readable arcade jokes at projector aspect", () => {
     }
   });
 
-  it("leaves time for the cinema mechanisms and centers the lens for the final approach", () => {
-    const anchor = routeAnchor(CINEMA.lens);
-    expect(CINEMA.lens).toBeGreaterThan(CINEMA.popcornEnd);
+  it("centers the lens throughout the sudden rush after the initial popcorn fall", () => {
+    const anchor = routeAnchor(CINEMA.lensAnchor);
+    expect(CINEMA.camera).toBe(80);
+    expect(CINEMA.lens).toBeGreaterThan(CINEMA.popcorn + 2);
     for (let time = CINEMA.camera; time < CINEMA.lens - .05; time += .05) {
       const pose = cameraPose(time);
       const transform = Matrix.LookAtLH(pose.position, pose.target, Vector3.Up())
