@@ -6,7 +6,7 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { cellPosition } from "../content/title";
-import { chocolatineStage, cueEnvelope } from "../content/cues";
+import { CHOCOLATINE, chocolatineStage, cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { createWorldText, routeAnchor } from "./WorldText";
 import { emissive } from "./Labyrinth";
@@ -16,7 +16,7 @@ import { ORBIT_LINK } from "../content/showBeats";
 export { DEPLOY_ROCKET, ORBIT_LINK } from "../content/showBeats";
 
 export const T_SIGN_ANCHORS = {
-  chocolatine: { time: 15.5, height: 12.5, width: 20 },
+  chocolatine: { time: CHOCOLATINE.anchor, height: CHOCOLATINE.height, width: CHOCOLATINE.width },
 } as const;
 export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, height: 14, width: 14, lateral: 0 } as const;
 
@@ -123,7 +123,7 @@ export class EasterEggs {
   }
 
   update(time: number): void {
-    this.chocolatine.setEnabled(cueEnvelope(time, 5, 14, .4) > 0);
+    this.chocolatine.setEnabled(time >= CHOCOLATINE.start && time < CHOCOLATINE.end);
     this.chocolateStages.forEach((mesh, index) => mesh.setEnabled(index === chocolatineStage(time)));
     this.npm.setEnabled(cueEnvelope(time, CASSOULET_SIGN.start, CASSOULET_SIGN.end, .5) > 0);
     this.satellite.setEnabled(cueEnvelope(time, ORBIT_LINK.start, ORBIT_LINK.end, 1) > 0);

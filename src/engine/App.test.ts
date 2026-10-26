@@ -84,6 +84,14 @@ async function setup() {
 }
 
 describe("synchronized launch from the other tab", () => {
+  it("selects Viola's Journey by default without starting audio before a gesture", async () => {
+    const { app } = await setup();
+    expect(doc.getElementById("soundtrack")!.value).toBe("violas-journey");
+    expect(doc.getElementById("soundtrack-player")!.paused).toBe(true);
+    expect(doc.getElementById("soundtrack-player")!.src).toBe("");
+    expect(app.timeline.playing).toBe(false);
+  });
+
   it.each(["violas-journey", "viola-trance"])("plays the selected %s MP3 and keeps it aligned across transport controls", async (soundtrack) => {
     const { app } = await setup();
     doc.getElementById("music-source")!.value = "mp3";
@@ -96,15 +104,21 @@ describe("synchronized launch from the other tab", () => {
     const player = doc.getElementById("soundtrack-player")!;
     expect(player.src).toBe(`./assets/music/${soundtrack}.mp3`);
     expect(player.paused).toBe(false);
+    expect(app.showController.soundtrackId).toBe(soundtrack);
     app.togglePlayback();
     expect(player.paused).toBe(true);
     app.togglePlayback();
     expect(player.paused).toBe(false);
     app.seek(42);
     expect(player.currentTime).toBe(42);
+    const update = vi.spyOn(app.world, "update");
+    app.seek(50.876);
+    expect(update).toHaveBeenLastCalledWith(50.876, expect.anything(), null, 1, 0,
+      soundtrack === "violas-journey" ? 51.03 : 50.876);
     app.returnToLobby();
     expect(player.paused).toBe(true);
     expect(player.currentTime).toBe(0);
+    expect(app.showController.soundtrackId).toBeNull();
   });
 
   it("loads the bundled keynote in the hidden performance frame without starting visuals early", async () => {

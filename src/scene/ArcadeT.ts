@@ -6,8 +6,8 @@ import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { routeAnchor } from "../camera/CameraPath";
-import { cellPosition } from "../content/title";
-import { cueEnvelope } from "../content/cues";
+import { CELL, cellPosition } from "../content/title";
+import { CHOCOLATINE, cueEnvelope } from "../content/cues";
 import { CINEMA } from "../content/showBeats";
 import { smoothstep } from "../engine/Timeline";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
@@ -17,17 +17,15 @@ export function arcadeDoorOpen(time: number): number {
   return smoothstep((time - 42.6) / 4);
 }
 
+export const ARCADE_WALL_PIXELS = { offset: CELL / 2 - .9, size: .82, depth: .12, count: 12 } as const;
+
 export class ArcadeT {
   private readonly root: TransformNode;
   private readonly door: Mesh[] = [];
   private readonly gateText: Mesh;
   private readonly boss: Mesh[];
   private readonly health: Mesh[] = [];
-  private readonly pixels: { mesh: Mesh; matrices: Float32Array; color: number }[] = [];
-  private readonly transform = Matrix.Identity();
-  private readonly scale = new Vector3(.82, .82, .3);
-  private readonly position = Vector3.Zero();
-  private readonly rotation = Quaternion.Identity();
+  private readonly pixels: { mesh: Mesh; material: StandardMaterial; tint: Color3 }[] = [];
 
   constructor(scene: Scene) {
     this.root = new TransformNode("Arcade T / level geometry", scene);
@@ -86,15 +84,24 @@ export class ArcadeT {
     for (const [index, hex] of ["#baff8f", "#7dffe2"].entries()) {
       const material = new StandardMaterial(`FX/Arcade pixel ${index}`, scene);
       material.disableLighting = true;
-      material.emissiveColor = Color3.FromHexString(hex).scale(1.6);
+      const tint = Color3.FromHexString(hex);
+      material.emissiveColor = tint.scale(1.2);
       material.diffuseColor = Color3.Black();
       const mesh = MeshBuilder.CreateBox(`FX/Arcade bit sprites ${index}`, { size: 1 }, scene);
       mesh.parent = this.root;
       mesh.material = material;
       mesh.isPickable = false;
-      const matrices = new Float32Array(12 * 16);
-      mesh.thinInstanceSetBuffer("matrix", matrices, 16, false);
-      this.pixels.push({ mesh, matrices, color: index });
+      const matrices = new Float32Array(ARCADE_WALL_PIXELS.count * 16);
+      for (let pixel = 0; pixel < ARCADE_WALL_PIXELS.count; pixel++) {
+        const side = pixel % 2 ? 1 : -1;
+        const { x, z } = cellPosition(-1, 14.4 - Math.floor(pixel / 2) * .7);
+        Matrix.Compose(new Vector3(ARCADE_WALL_PIXELS.size, ARCADE_WALL_PIXELS.size, ARCADE_WALL_PIXELS.depth),
+          Quaternion.RotationYawPitchRoll(side * Math.PI / 2, 0, 0),
+          new Vector3(x + side * ARCADE_WALL_PIXELS.offset, 15.5 + pixel % 3 * 2.8, z + index * 1.3))
+          .copyToArray(matrices, pixel * 16);
+      }
+      mesh.thinInstanceSetBuffer("matrix", matrices, 16, true);
+      this.pixels.push({ mesh, material, tint });
     }
   }
 
@@ -109,29 +116,17 @@ export class ArcadeT {
       half.visibility = 1 - smoothstep((time - 52) / 5);
     });
     this.gateText.visibility = cueEnvelope(time, 41.2, 45.7, .4);
-    const warning = cueEnvelope(time, 33, 41, .5);
+    const warning = cueEnvelope(time, CHOCOLATINE.end, 41, .5);
     this.boss.forEach((mesh, index) => {
-      const start = [33, 36.1, 38.7][index];
+      const start = [CHOCOLATINE.end, 36.1, 38.7][index];
       const end = [36.1, 38.7, 41][index];
       mesh.visibility = cueEnvelope(time, start, end, .2);
     });
     this.health.forEach((mesh, index) =>
       mesh.setEnabled(warning > 0 && (time < 38.2 || index < 10 - Math.floor((time - 38.2) * 7))));
-    for (const { mesh, matrices, color } of this.pixels) {
+    for (const { mesh, material, tint } of this.pixels) {
       mesh.setEnabled(time < 48);
-      if (!mesh.isEnabled()) continue;
-      for (let index = 0; index < 12; index++) {
-        const row = 10 + Math.floor(index / 3);
-        const { x, z } = cellPosition(-1, row);
-        const side = index % 2 ? 1 : -1;
-        const phase = time * 1.4 + index * .81 + color * 2;
-        this.position.set(x + side * 12.2, 8 + index % 6 * 2.9
-          + Math.sin(phase) * (1 + audio.violaEnergy * .3), z + Math.cos(phase * .6) * 4);
-        this.scale.set(.82 + audio.kick * .08, .82 + audio.energy * .1, .3);
-        Matrix.ComposeToRef(this.scale, this.rotation, this.position, this.transform);
-        this.transform.copyToArray(matrices, index * 16);
-      }
-      mesh.thinInstanceBufferUpdated("matrix");
+      material.emissiveColor.copyFrom(tint).scaleInPlace(1.2 + audio.kick * .45 + audio.energy * .2);
     }
   }
 }

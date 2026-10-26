@@ -3,6 +3,10 @@
 > Lire ce document avant d'explorer le code. Il décrit le spectacle existant et les décisions déjà validées, pas un nouveau backlog à implémenter.
 >
 > Historique visuel documenté le **7 octobre 2026**, complété le **8 octobre** par le lecteur Strudel allégé et le regard caméra droit devant aux popcorns. L'horloge audio native fonctionne de nouveau ; les répétitions musicales historiques ne valident pas automatiquement les trois nouveaux scores. Voir section 11 et vérifier le worktree : les fichiers source restent la référence.
+>
+> **26 octobre 2026 :** les musiques intégrées utilisent les MP3 320 kbit/s. Viola's Journey possède désormais une carte d'attaques mesurées et un profil de recalage local des effets (< 200 ms), sans décaler l'horloge caméra ni le reveal final. Voir la section de synchronisation du [README](README.md). Le gag chocolatine remplace les pièces en fin de présentation d'Anne-Flore : requête à **27 s**, réponse à **30 s**, fin à 34.5 s ; les carrés lumineux du T sont immobiles et plaqués aux murs latéraux.
+>
+> Le lobby sélectionne par défaut **MP3 soundtrack / Viola's Journey**, sans lecture automatique. Le panneau d'entrée affiche **DEVFEST AI4FUN / AGENDA** ; sa traversée déclenche un shader rétro-gaming plein écran de **4.8 à 6.4 s**, précompilé, déterministe en pause/seek et désactivé hors de cette fenêtre.
 
 Dépôt : [davrous/DevFestToulouseIntro](https://github.com/davrous/DevFestToulouseIntro).
 
@@ -85,11 +89,11 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 
 | Temps, en secondes | Ce que doit comprendre le public |
 | --- | --- |
-| 0–6 | DEVFEST ARCADE / PRESS ANY KEY, avec les bornes latérales, sans énorme borne centrale |
-| 5–14 | La requête `GET /pain-au-chocolat` devient une redirection vers `/chocolatine`, avant Anne-Flore |
+| 0–6.4 | DEVFEST AI4FUN / AGENDA, avec les bornes latérales ; shader rétro-gaming plein écran de 4.8 à 6.4 s au passage du panneau, sans énorme borne centrale |
+| 5–14 | Bornes et pixel art ; plus de panneau chocolatine avant Anne-Flore. Les petits pixels lumineux restent fixes aux murs. Les six grandes plaques lumineuses réactives sont plaquées à 0.01 unité de la surface intérieure des murs, à y = 15 au-dessus des bornes, et non devant leurs écrans |
 | 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; cubes dynamiques Havok à 22, suffisamment tôt pour voir leurs rebonds au sol, puis nettoyés à 38 |
-| 30.5 et suivantes | Les pièces bonus tombent juste après le violon |
-| 33–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 |
+| 27–34.5 | `GET /pain-au-chocolat` dès 27 s, puis `301 / Location: /chocolatine` dès 30 s, soit 3 s plus tard. Aucune pièce bonus |
+| 34.5–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 (38.105 en temps musical Journey) |
 | 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture de la porte vers 42.6 |
 | 46.3–51.03 | LEVEL COMPLETE au-dessus du clap à y = 26, encore visible pendant son approche |
 | Approche jusqu'à 51.03 | Clap original déjà présent dès le chargement, sans panneau DEVFEST / SCENE 02 ajouté, ancré à 59 s ; fermeture de 50.85 à 51.03, approche sans quasi-arrêt |
@@ -153,9 +157,10 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Bornes, écran d'ouverture, LEVEL COMPLETE / NEXT LEVEL | [ArcadeCathedral.ts](src/scene/ArcadeCathedral.ts) |
 | Porte et éléments narratifs du T ; pixel art | [ArcadeT.ts](src/scene/ArcadeT.ts), [PixelWorld.ts](src/scene/PixelWorld.ts) |
 | Violon voxel et traînées de vitesse | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts) |
-| Pièces et mur de dette technique, Havok / seek / cleanup | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
+| Mur de dette technique, Havok / seek / cleanup ; pièces supprimées | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
 | Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
 | Transition plein écran arcade → ligne de phosphore → CRT, pause / rewind / pipeline | [ClapCrtTransition.ts](src/effects/ClapCrtTransition.ts), [showBeats.ts](src/content/showBeats.ts) |
+| Traversée rétro-gaming du panneau d'entrée, cycle de vie partagé des shaders de transition | [ArcadeEntryTransition.ts](src/effects/ArcadeEntryTransition.ts), [TimedPostProcess.ts](src/effects/TimedPostProcess.ts) |
 | Textures rétro et couverture exacte de la surface courbe des CRT | [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Chargement local, normalisation, instances, clone de caméra et animation du clap | [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
 | Deux seaux / sources, 72 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
@@ -166,6 +171,7 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Fusée, pad fixe, décollage et explosion déterministes | [DeployRocket.ts](src/scene/DeployRocket.ts), configuration / déplacement dans [showBeats.ts](src/content/showBeats.ts) |
 | Lasers au sol, vrais spotlights, spectres au sol et aux murs | [ShowLighting.ts](src/effects/ShowLighting.ts), [WallMeters.ts](src/effects/WallMeters.ts) |
 | Particules et rubans réactifs ; entrées audio / événementielles | [MusicReactive.ts](src/effects/MusicReactive.ts), [AudioAnalyzer.ts](src/engine/AudioAnalyzer.ts), [ShowController.ts](src/engine/ShowController.ts), [protocol.ts](src/engine/protocol.ts) |
+| Carte d'attaques Journey, profil de transitions, régénération FFmpeg et empreinte du MP3 | [violasJourney.ts](src/audio/violasJourney.ts), [violasJourney.json](src/audio/violasJourney.json), [analyze-journey.mjs](scripts/analyze-journey.mjs) |
 | Texte sur meshes, boîtes instanciées, habillage de l'événement / fond | [WorldText.ts](src/scene/WorldText.ts), [Instances.ts](src/scene/Instances.ts), [EventBranding.ts](src/scene/EventBranding.ts), [Atmosphere.ts](src/scene/Atmosphere.ts) |
 | Interface de répétition et diagnostics | [DebugPanel.ts](src/debug/DebugPanel.ts), [index.html](index.html) |
 

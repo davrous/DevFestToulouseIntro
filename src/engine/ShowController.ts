@@ -4,6 +4,7 @@ import { Timeline } from "./Timeline";
 import { CUE_WINDOWS, isShowCue, type AVEvent, type AVEventName, type ShowCue } from "./avProtocol";
 import { MusicEventBus, type EventOutcome } from "./MusicEventBus";
 import { StrudelEventTransport } from "./StrudelEventTransport";
+import { journeyAccents, journeyEffectTime, journeyRevealAccent } from "../audio/violasJourney";
 
 export class ShowController {
   readonly audio: AudioAnalyzer;
@@ -12,6 +13,7 @@ export class ShowController {
   readonly musicEvents: MusicEventBus;
   readonly strudelEvents: StrudelEventTransport;
   revealAccent = 0;
+  soundtrackId: string | null = null;
   enabled = true;
   private reactiveIntensity = 1;
   section: Section | null = null;
@@ -27,6 +29,7 @@ export class ShowController {
   private retryTimer = 0;
   private readonly accentedCues = new Set<ShowCue>();
   private revealPulse?: { value: number; time: number };
+  private readonly journey = silentFeatures();
 
   constructor(
     readonly timeline: Timeline,
@@ -43,6 +46,10 @@ export class ShowController {
 
   get intensity(): number { return this.reactiveIntensity; }
   set intensity(value: number) { this.reactiveIntensity = unitValue(value / 2, "half intensity") * 2; }
+
+  effectTime(time: number): number {
+    return this.soundtrackId === "violas-journey" ? journeyEffectTime(time) : time;
+  }
 
   trigger(event: Trigger, velocity = 1): void { this.dispatch({ type: "trigger", event, velocity }); }
   triggerEvent(event: AVEventName, velocity = 1): void { this.musicEvents.manual(event, velocity); }
@@ -81,9 +88,18 @@ export class ShowController {
     this.revealAccent = this.enabled && this.revealPulse
       ? this.revealPulse.value * Math.exp(-Math.max(0, now - this.revealPulse.time) / 300) : 0;
     if (!this.enabled) return this.features;
+    const playbackTime = this.soundtrack.playbackTime;
+    const guided = this.soundtrackId === "violas-journey" && this.timeline.playing
+      && this.soundtrack.connected && playbackTime !== undefined;
+    if (guided) {
+      journeyAccents(playbackTime, this.journey);
+      this.revealAccent = Math.max(this.revealAccent, journeyRevealAccent(playbackTime) * this.reactiveIntensity);
+    }
     const decay = Math.exp(-Math.max(0, now - this.levelsAt - 250) / 500);
     for (const key of CHANNELS) {
-      this.features[key] = Math.max(audio[key], soundtrack[key], (this.levels[key] ?? 0) * decay);
+      const percussive = key === "kick" || key === "snare" || key === "beat" || key === "drop";
+      this.features[key] = Math.max(audio[key], guided && percussive ? this.journey[key] : soundtrack[key],
+        (this.levels[key] ?? 0) * decay);
     }
     for (const [event, pulse] of this.pulses) {
       const lifetime = event === "viola" ? 1800 : event === "drop" ? 1000 : event === "snare" ? 200 : 130;

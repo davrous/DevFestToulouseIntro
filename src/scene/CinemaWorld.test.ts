@@ -36,6 +36,46 @@ vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
 }));
 
 describe("cinematic show choreography", () => {
+  it("spins both reels continuously in opposite directions despite bass changes, pauses and seeks", async () => {
+    const engine = new NullEngine();
+    const scene = new Scene(engine);
+    new FreeCamera("Cinematic camera", Vector3.Zero(), scene);
+    const cinema = new CinemaWorld(scene);
+    vi.spyOn(cinema.assets, "prepare").mockResolvedValue();
+    vi.spyOn(cinema.assets, "takeClapper").mockReturnValue(undefined);
+    vi.spyOn(cinema.assets, "create").mockImplementation((asset, parent, name) => {
+      if (asset !== "reel") return undefined;
+      const reel = new TransformNode(name, scene);
+      reel.parent = parent;
+      return reel;
+    });
+    await cinema.prepare();
+    const left = scene.getTransformNodeByName("Cinema / giant reel -1")!;
+    const right = scene.getTransformNodeByName("Cinema / giant reel 1")!;
+    expect(left).toBeInstanceOf(TransformNode);
+    expect(right).toBeInstanceOf(TransformNode);
+    let previousTime = 77;
+    cinema.update(previousTime, silentFeatures());
+    let previousAngle = left.rotation.y;
+    for (const [time, bass] of [[77.016, 1], [77.032, 0], [79, 1], [79, 0], [80.5, .2], [78, 1], [83, 0]]) {
+      cinema.update(time, { ...silentFeatures(), bass });
+      expect(left.rotation.y - previousAngle).toBeCloseTo((time - previousTime) * .55, 8);
+      expect(right.rotation.y).toBeCloseTo(-left.rotation.y, 8);
+      previousTime = time;
+      previousAngle = left.rotation.y;
+    }
+    cinema.update(79, silentFeatures());
+    const angle = left.rotation.y;
+    const spokes = scene.getMeshByName("Cinema / rotating reel spokes -1")!;
+    expect(spokes.parent).toBe(left);
+    const matrix = Array.from(spokes.computeWorldMatrix(true).asArray());
+    cinema.update(79, { ...silentFeatures(), bass: 1 });
+    expect(left.rotation.y).toBe(angle);
+    expect(Array.from(spokes.computeWorldMatrix(true).asArray())).toEqual(matrix);
+    scene.dispose();
+    engine.dispose();
+  });
+
   it("preserves CRT color and applies a non-accumulating 18-percent snare accent", () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);

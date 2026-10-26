@@ -2,7 +2,7 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { CELL, cellPosition } from "../content/title";
 import { clamp, smootherstep, smoothstep } from "../engine/Timeline";
 import { SPEAKERS } from "../content/speakers";
-import { cueEnvelope } from "../content/cues";
+import { CHOCOLATINE, cueEnvelope } from "../content/cues";
 import { CINEMA, DEPLOY_ROCKET, ORBIT_LINK, rocketLift } from "../content/showBeats";
 
 interface Keyframe { time: number; col: number; row: number; y: number }
@@ -49,7 +49,8 @@ export const EXIT = points[points.length - 1].clone();
 export const TITLE_TARGET = new Vector3(0, 12, 0);
 
 const attentionCues = [
-  { start: 4, end: 13, anchor: 16, height: 15 },
+  { start: CHOCOLATINE.start - .5, end: Math.min(CHOCOLATINE.end, CHOCOLATINE.anchor - 1.5),
+    anchor: CHOCOLATINE.anchor, height: CHOCOLATINE.height, weight: .85 },
   { start: 41, end: 46, anchor: 47, height: 16 },
   { start: 44.8, end: CINEMA.clap, anchor: CINEMA.clapperAnchor, height: 14.5, fade: 3, fadeOut: 1.2, weight: 1 },
   { start: CINEMA.camera, end: CINEMA.lens - .4, anchor: CINEMA.lens, height: 12.5 },

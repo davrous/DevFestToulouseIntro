@@ -99,7 +99,9 @@ export class App {
     element("loading-fill").style.width = "45%";
     element("load-status").textContent = "Loading local event artwork and compiling the cinematic pipeline...";
     await this.world.prepare();
-    this.world.update(this.inLobby ? 0 : this.timeline.time, this.visualAudio, this.showController.section);
+    const time = this.inLobby ? 0 : this.timeline.time;
+    this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent,
+      this.showController.effectTime(time));
     this.world.scene.render();
     element("loading-fill").style.width = "85%";
     await this.world.scene.whenReadyAsync();
@@ -114,10 +116,11 @@ export class App {
         Object.assign(this.visualAudio, audio);
         this.visualRevealAccent = this.showController.revealAccent;
       }
-      this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent);
+      const effectTime = this.showController.effectTime(time);
+      this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent, effectTime);
       this.world.scene.physicsEnabled = !!this.world.scene.getPhysicsEngine()
         && !this.inLobby && this.timeline.playing
-        && (time < 44 || (time >= POPCORN_START && time < POPCORN_END) || overflowPhysicsActive(time));
+        && (effectTime < 44 || (effectTime >= POPCORN_START && effectTime < POPCORN_END) || overflowPhysicsActive(effectTime));
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {
@@ -159,9 +162,11 @@ export class App {
   }
 
   async startFromGesture(time = 0): Promise<void> {
+    this.showController.soundtrackId = null;
     const musicSource = element<HTMLSelectElement>("music-source").value;
     if (time === 0 && musicSource === "strudel") {
       this.soundtrackActive = false;
+      this.showController.soundtrackId = null;
       await this.startWithStrudel();
       return;
     }
@@ -195,6 +200,7 @@ export class App {
       return;
     }
     this.soundtrackActive = false;
+    this.showController.soundtrackId = null;
     this.soundtrackPlayer.pause();
     const frame = element<HTMLIFrameElement>("strudel-performance");
     const score = getScore(element<HTMLSelectElement>("strudel-score").value);
@@ -236,7 +242,8 @@ export class App {
     this.showController.resetTransient();
     Object.assign(this.visualAudio, silentFeatures());
     this.visualRevealAccent = 0;
-    this.world.update(this.timeline.time, this.visualAudio, this.showController.section, this.timeline.speed);
+    this.world.update(this.timeline.time, this.visualAudio, this.showController.section, this.timeline.speed, 0,
+      this.showController.effectTime(this.timeline.time));
   }
 
   returnToLobby(): void {
@@ -245,6 +252,7 @@ export class App {
     this.soundtrackPlayer.pause();
     this.soundtrackPlayer.currentTime = 0;
     this.soundtrackActive = false;
+    this.showController.soundtrackId = null;
     this.inLobby = true;
     this.lobby.hidden = false;
     this.debug.setVisible(false);
@@ -412,6 +420,7 @@ export class App {
     }
     this.soundtrackPlayer.currentTime = time;
     await this.soundtrackPlayer.play();
+    this.showController.soundtrackId = soundtrack.id;
   }
 
   private async resumeSoundtrack(): Promise<void> {
@@ -421,6 +430,7 @@ export class App {
     } catch (error) {
       console.error("MP3 soundtrack resume failed", error);
       this.soundtrackActive = false;
+      this.showController.soundtrackId = null;
       this.showNotice(`MP3 soundtrack could not resume: ${error instanceof Error ? error.message : String(error)}.`, true);
     }
   }

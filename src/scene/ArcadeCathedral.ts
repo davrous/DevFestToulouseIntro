@@ -10,14 +10,15 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import { routeAnchor } from "../camera/CameraPath";
-import { cellPosition } from "../content/title";
+import { CELL, cellPosition } from "../content/title";
 import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { createWorldText } from "./WorldText";
-import { CINEMA, LEVEL_COMPLETE } from "../content/showBeats";
+import { ARCADE_ENTRY, CINEMA, LEVEL_COMPLETE } from "../content/showBeats";
 
 const ROOT = "/assets/kenney/arcade/";
 export const CABINET_COUNT = 6;
+export const ARCADE_WALL_PANELS = { offset: CELL / 2 - .76, height: 15 } as const;
 
 export class ArcadeCathedral {
   private readonly cabinets: TransformNode[] = [];
@@ -31,7 +32,7 @@ export class ArcadeCathedral {
   private readonly next;
 
   constructor(private readonly scene: Scene) {
-    this.screenMaterial = new StandardMaterial("Arcade / reactive cabinet screens", scene);
+    this.screenMaterial = new StandardMaterial("Arcade / reactive wall panels", scene);
     this.screenMaterial.disableLighting = true;
     this.screenMaterial.emissiveColor = Color3.FromHexString("#82ffde");
     this.screenMaterial.diffuseColor = Color3.Black();
@@ -40,8 +41,8 @@ export class ArcadeCathedral {
     this.heroScreen = createWorldText(scene, {
       name: "Arcade / hero portal screen", width: 13, height: 9.5,
       background: "#09131f", border: "#9bffe9",
-      lines: [{ text: "DEVFEST ARCADE", color: "#b8ffe4" },
-        { text: "PRESS ANY KEY", color: "#ffbad9" }],
+      lines: [{ text: "DEVFEST AI4FUN", color: "#b8ffe4" },
+        { text: "AGENDA", color: "#ffbad9" }],
     });
     this.heroScreen.position.set(hero.x, 12.5, hero.z - 8.3);
     this.scanlines = MeshBuilder.CreatePlane("FX/Arcade portal CRT scanlines",
@@ -132,10 +133,10 @@ export class ArcadeCathedral {
         0, cellPosition(-1, row).z);
       cabinet.rotation.y = side * Math.PI / 2;
       this.cabinets.push(cabinet);
-      const screen = MeshBuilder.CreatePlane(`FX/Arcade screen / ${index}`,
+      const screen = MeshBuilder.CreatePlane(`FX/Arcade wall panel / ${index}`,
         { width: 2.5, height: 2.8 }, this.scene);
-      screen.position.set(cabinet.position.x - side * 2.2,
-        size * .53, cabinet.position.z);
+      screen.position.set(cellPosition(-1, row).x + side * ARCADE_WALL_PANELS.offset,
+        ARCADE_WALL_PANELS.height, cabinet.position.z);
       screen.rotation.y = side * Math.PI / 2;
       screen.material = this.screenMaterial;
       screen.isPickable = false;
@@ -153,14 +154,14 @@ export class ArcadeCathedral {
     }
     this.screenMaterial.emissiveColor.set(
       .24 + audio.snare * .8, .8 + audio.energy * .35, .7 + audio.kick * .3);
-    const portal = 1 - smoothstep((time - 5) / .8);
-    const cross = 1 - smoothstep((time - 5.1) / .7);
-    this.heroScreen.visibility = portal * cross;
-    this.scanlines.setEnabled(portal * cross > 0);
+    const portal = 1 - smoothstep((time - ARCADE_ENTRY.panelFadeStart)
+      / (ARCADE_ENTRY.panelFadeEnd - ARCADE_ENTRY.panelFadeStart));
+    this.heroScreen.visibility = portal;
+    this.scanlines.setEnabled(portal > 0);
     this.scanlineMaterial.setFloat("time", time);
-    this.scanlineMaterial.setFloat("flash", audio.snare + audio.kick * .5 + (1 - cross) * .45);
-    this.scanlineMaterial.setFloat("interference", 1 - cross + audio.treble * .5);
-    this.light.intensity = (350 + audio.kick * 500 + audio.snare * 360) * portal * cross;
+    this.scanlineMaterial.setFloat("flash", audio.snare + audio.kick * .5 + (1 - portal) * .45);
+    this.scanlineMaterial.setFloat("interference", 1 - portal + audio.treble * .5);
+    this.light.intensity = (350 + audio.kick * 500 + audio.snare * 360) * portal;
     this.complete.visibility = cueEnvelope(time, LEVEL_COMPLETE.start, LEVEL_COMPLETE.end, .25);
     this.next.visibility = cueEnvelope(time, 55.1, 59.5, .45);
   }

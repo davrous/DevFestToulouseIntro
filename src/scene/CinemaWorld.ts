@@ -519,7 +519,7 @@ export class CinemaWorld {
     this.filmTexture.uOffset = -time * .2;
     this.buckets.forEach(({ node, side }) => { node.rotation.z = popcornTilt(time, side); });
     this.reelNodes.forEach((reel, index) => {
-      reel.rotation.y = (index ? -1 : 1) * time * (.55 + audio.bass * .05);
+      reel.rotation.y = (index ? -1 : 1) * time * .55;
     });
     this.televisions.forEach(({ screen, material, tint }) => {
       screen.material = time >= CINEMA.crtSync && time < CINEMA.crtSyncEnd ? this.syncMaterial : material;

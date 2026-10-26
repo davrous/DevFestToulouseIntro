@@ -11,6 +11,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
+    "analyze:journey": "node scripts/analyze-journey.mjs",
     "verify:av": "node scripts/verify-av.mjs",
     "bridge": "node scripts/bridge.mjs"
   },

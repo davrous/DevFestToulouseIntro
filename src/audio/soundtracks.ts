@@ -4,6 +4,8 @@ export interface Soundtrack {
   url: string;
 }
 
+export const DEFAULT_SOUNDTRACK_ID = "violas-journey";
+
 export const SOUNDTRACKS: readonly Soundtrack[] = [
   {
     id: "violas-journey",
@@ -24,6 +26,7 @@ export function fillSoundtrackSelector(select: HTMLSelectElement): void {
     option.textContent = soundtrack.label;
     return option;
   }));
+  select.value = DEFAULT_SOUNDTRACK_ID;
 }
 
 export function getSoundtrack(id: string): Soundtrack {

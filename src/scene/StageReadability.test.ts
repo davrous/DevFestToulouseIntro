@@ -8,6 +8,7 @@ import { CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 import { POPCORN_SOURCES } from "./CinemaPopcorn";
+import { CHOCOLATINE } from "../content/cues";
 
 function longestReadableInterval(start: number, end: number, world: Matrix, width: number, height: number, lateral = 0): number {
   let best = 0;
@@ -110,13 +111,19 @@ describe("readable arcade jokes at projector aspect", () => {
     expect(SCENERY_COUNT).toBeLessThanOrEqual(6);
   });
 
-  it("finishes both HTTP stages before Anne-Flore's arrival", () => {
+  it("frames the HTTP request from 27 seconds and the redirect from 30 seconds before the legacy boss", () => {
     const http = T_SIGN_ANCHORS.chocolatine;
     const httpAnchor = routeAnchor(http.time);
     const httpWorld = Matrix.RotationY(httpAnchor.yaw)
       .multiply(Matrix.Translation(httpAnchor.position.x, http.height, httpAnchor.position.z));
-    expect(longestReadableInterval(5, 9.5, httpWorld, http.width, 4.5)).toBeGreaterThanOrEqual(2.5);
-    expect(longestReadableInterval(9.5, 14, httpWorld, http.width, 4.5)).toBeGreaterThanOrEqual(2.5);
+    expect(CHOCOLATINE.start).toBe(27);
+    expect(CHOCOLATINE.redirect).toBe(30);
+    expect(longestReadableInterval(27, 27.25, httpWorld, http.width, 4.5)).toBe(.25);
+    expect(longestReadableInterval(30, 30.25, httpWorld, http.width, 4.5)).toBe(.25);
+    expect(longestReadableInterval(CHOCOLATINE.start, CHOCOLATINE.redirect, httpWorld, http.width, 4.5))
+      .toBeGreaterThanOrEqual(3);
+    expect(longestReadableInterval(CHOCOLATINE.redirect, CHOCOLATINE.end, httpWorld, http.width, 4.5))
+      .toBeGreaterThanOrEqual(1.5);
   });
 
   it("shows the cassoulet gag after Eric and before Mitsuru", () => {

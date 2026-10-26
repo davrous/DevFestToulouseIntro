@@ -1,5 +1,10 @@
 import { HEIGHT, ROOF_THICKNESS } from "./title";
 
+export const ARCADE_ENTRY = {
+  start: 4.8, cross: 5.925, end: 6.4,
+  panelFadeStart: 4.6, panelFadeEnd: 5.35,
+} as const;
+
 export const DEPLOY_ROCKET = {
   time: 148.5, lateral: -6, yaw: Math.PI, height: 18, width: 7,
   lookStart: 140, lookEnd: 151, launch: 144.6, impact: 146.8, end: 149.4,

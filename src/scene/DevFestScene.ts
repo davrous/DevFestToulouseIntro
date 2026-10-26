@@ -35,6 +35,7 @@ import { CINEMA } from "../content/showBeats";
 import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
 import { ClapCrtTransition } from "../effects/ClapCrtTransition";
+import { ArcadeEntryTransition } from "../effects/ArcadeEntryTransition";
 import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
 import { CinemaPopcorn } from "./CinemaPopcorn";
@@ -69,6 +70,7 @@ export class DevFestScene {
   private readonly digitalMoments: DigitalMoments;
   private readonly overflow: DigitalOverflow;
   private readonly clapTransition: ClapCrtTransition;
+  private readonly entryTransition: ArcadeEntryTransition;
   private readonly tint = new Color3();
   private readonly labyrinth;
   private readonly interior;
@@ -175,13 +177,14 @@ export class DevFestScene {
     image.vignetteWeight = 1.5;
     image.vignetteStretch = .4;
     image.vignetteColor = new Color4(.015, .035, .04, 1);
+    this.entryTransition = new ArcadeEntryTransition(this.camera, this.pipeline);
     this.clapTransition = new ClapCrtTransition(this.camera, this.pipeline);
     this.update(0);
   }
 
   async prepare(): Promise<void> {
     await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare(),
-      this.clapTransition.prepare()]);
+      this.entryTransition.prepare(), this.clapTransition.prepare()]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
     const plugin = new HavokPlugin(true, havok);
     if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
@@ -212,17 +215,20 @@ export class DevFestScene {
     this.glow.isEnabled = enabled;
   }
 
-  update(time: number, audio: AudioFeatures = SILENCE, section: Section | null = null, speed = 1, revealAccent = 0): void {
+  update(cameraTime: number, audio: AudioFeatures = SILENCE, section: Section | null = null, speed = 1,
+    revealAccent = 0, effectTime = cameraTime): void {
+    const time = effectTime;
     if (this.physicsSpeed !== speed) {
       this.scene.getPhysicsEngine()?.setGravity(new Vector3(0, -17 * speed * speed, 0));
       this.physicsPlugin?.setVelocityLimits(32 * speed, 12 * speed);
       this.physicsSpeed = speed;
     }
     const aspect = this.engine.getRenderWidth() / this.engine.getRenderHeight();
-    const pose = cameraPose(time, aspect);
+    const pose = cameraPose(cameraTime, aspect);
     this.camera.position.copyFrom(pose.position);
     this.camera.setTarget(pose.target);
     this.camera.fov = pose.fov;
+    this.entryTransition.update(cameraTime);
     this.clapTransition.update(time);
     this.headlight.position.copyFrom(pose.position);
     const wake = smoothstep(time / 35);

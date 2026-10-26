@@ -4,6 +4,8 @@ import { Timeline } from "./Timeline";
 import { parseMessage } from "./protocol";
 import { AudioAnalyzer, frequencyBand, rmsLevel, silentFeatures } from "./AudioAnalyzer";
 import { cameraPose } from "../camera/CameraPath";
+import map from "../audio/violasJourney.json";
+import { JOURNEY_REVEAL } from "../audio/violasJourney";
 
 describe("Strudel protocol", () => {
   it("accepts supported triggers, energy, section and explicit viola levels", () => {
@@ -114,6 +116,32 @@ describe("independent music-reactive layer", () => {
     vi.spyOn(controller.audio, "sample").mockReturnValue({ ...silentFeatures(), violaEnergy: .8, mid: .4 });
     vi.spyOn(controller.soundtrack, "sample").mockReturnValue({ ...silentFeatures(), energy: .7, bass: .6, mid: .2 });
     expect(controller.sample(100)).toMatchObject({ energy: .7, bass: .6, mid: .4, violaEnergy: .8 });
+  });
+
+  it("uses measured attacks from the media clock only for Journey and preserves live viola", () => {
+    const timeline = new Timeline();
+    timeline.play();
+    const controller = new ShowController(timeline, vi.fn(), () => 100);
+    controller.soundtrackId = "violas-journey";
+    const [onset, velocity] = map.kicks[0];
+    vi.spyOn(controller.soundtrack, "connected", "get").mockReturnValue(true);
+    const time = vi.spyOn(controller.soundtrack, "playbackTime", "get").mockReturnValue(onset);
+    vi.spyOn(controller.soundtrack, "sample").mockReturnValue({ ...silentFeatures(), kick: 1, energy: .7 });
+    vi.spyOn(controller.audio, "sample").mockReturnValue({ ...silentFeatures(), violaEnergy: .8, mid: .4 });
+    expect(controller.sample()).toMatchObject({ kick: velocity, energy: .7, violaEnergy: .8, mid: .4 });
+    time.mockReturnValue(JOURNEY_REVEAL);
+    controller.sample();
+    expect(controller.revealAccent).toBe(.65);
+    controller.enabled = false;
+    expect(controller.sample()).toEqual(silentFeatures());
+    expect(controller.revealAccent).toBe(0);
+    controller.enabled = true;
+    controller.soundtrackId = "viola-trance";
+    expect(controller.sample().kick).toBe(1);
+    expect(controller.revealAccent).toBe(0);
+    expect(controller.effectTime(50.876)).toBe(50.876);
+    controller.soundtrackId = null;
+    expect(controller.sample().kick).toBe(1);
   });
 
   it("detects quiet float waveforms below byte-analyser precision", () => {

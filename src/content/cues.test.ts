@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { SPEAKERS, activeSpeaker } from "./speakers";
-import { activeCues, chocolatineStage, cueEnvelope } from "./cues";
+import { CHOCOLATINE, activeCues, chocolatineStage, cueEnvelope } from "./cues";
 import { arcadeDoorOpen } from "../scene/ArcadeT";
 
 describe("show content", () => {
@@ -26,10 +26,16 @@ describe("show content", () => {
   });
 
   it("replays joke states exactly when seeking backward", () => {
-    expect(chocolatineStage(8)).toBe(0);
-    expect(chocolatineStage(11)).toBe(1);
-    expect(activeCues(11)).toContain("HTTP 301 / CHOCOLATINE");
+    expect(chocolatineStage(28)).toBe(0);
+    expect(chocolatineStage(31)).toBe(1);
+    expect(chocolatineStage(28)).toBe(0);
+    expect(activeCues(11)).not.toContain("HTTP 301 / CHOCOLATINE");
     expect(activeCues(16)).not.toContain("HTTP 301 / CHOCOLATINE");
+    expect(activeCues(31)).toContain("HTTP 301 / CHOCOLATINE");
+    expect(activeCues(33)).toContain("HTTP 301 / CHOCOLATINE");
+    expect(activeCues(35)).not.toContain("HTTP 301 / CHOCOLATINE");
+    expect(activeCues(33)).not.toContain("LEGACY CODE / BUILD FAILED");
+    expect(activeCues(35)).toContain("LEGACY CODE / BUILD FAILED");
     expect(activeCues(20)).not.toContain("CANAL DU MIDI");
     expect(activeCues(31)).not.toContain("npm install cassoulet");
     expect(activeCues(93)).not.toContain("npm install cassoulet");
@@ -41,6 +47,18 @@ describe("show content", () => {
     expect(arcadeDoorOpen(40)).toBe(0);
     expect(arcadeDoorOpen(44)).toBeGreaterThan(0);
     expect(arcadeDoorOpen(47)).toBe(1);
+  });
+
+  it("starts the HTTP request at 27 seconds and switches to chocolatine exactly at 30 seconds", () => {
+    expect(CHOCOLATINE.start).toBe(27);
+    expect(CHOCOLATINE.redirect).toBe(30);
+    expect(CHOCOLATINE.redirect - CHOCOLATINE.start).toBe(3);
+    expect(activeCues(26.999)).not.toContain("HTTP 301 / CHOCOLATINE");
+    expect(activeCues(27)).toContain("HTTP 301 / CHOCOLATINE");
+    expect(chocolatineStage(27)).toBe(0);
+    expect(chocolatineStage(29.999)).toBe(0);
+    expect(chocolatineStage(30)).toBe(1);
+    expect(CHOCOLATINE.end - CHOCOLATINE.redirect).toBeGreaterThanOrEqual(1.5);
   });
 
   it("fades cues without leaving visible objects before or after their windows", () => {

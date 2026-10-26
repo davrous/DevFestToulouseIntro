@@ -69,6 +69,7 @@ export class AudioAnalyzer {
   }
   get inputDb(): number { return this.levelDb; }
   get inputLevel(): number { return clamp((this.levelDb + 60) / 60); }
+  get playbackTime(): number | undefined { return this.mediaElement?.currentTime; }
   get connected(): boolean {
     return this.mediaElement
       ? !this.mediaElement.paused && !this.mediaElement.ended

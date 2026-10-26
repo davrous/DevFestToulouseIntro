@@ -24,8 +24,10 @@ npm run preview
 
 Open http://127.0.0.1:4173 and keep the local server running. After installation/build, no Internet is needed. Do not open the HTML using `file://`.
 
-**Music is optional.** Choose **No bundled music**, **Strudel keynote**, or
-**MP3 soundtrack** on the home page. The bundled `Viola's Journey` MP3 is played
+**Music is optional.** The home page defaults to **MP3 soundtrack** and
+**Viola's Journey**. Music starts only after **PLAY SEQUENCE** or **Space**, never
+on page load. Choose **No bundled music** for silent playback or **Strudel keynote**
+for the live score instead. The bundled `Viola's Journey` MP3 is played
 locally and analyzed in real time to drive the same bass, mid, treble, transient,
 and energy reactions as the other music inputs. Visuals also work without music,
 audio input, or the optional event bridge.
@@ -49,6 +51,52 @@ the demo plays only the MP3 versions.
 Additional MP3 files can be added under `public/assets/music/` and registered in
 the `SOUNDTRACKS` list in `src/audio/soundtracks.ts`; the home-page selector is
 populated from that catalog.
+
+### Viola's Journey synchronization
+
+`Viola's Journey` is the reference soundtrack for a dedicated measured accent
+map, not the Strudel score's fixed 150 BPM grid. The MP3 decodes to **177.6 s**;
+its clearest pulsed sections have periodicity around **134–137 BPM** (also
+detectable at half-time), with weaker or less regular passages elsewhere.
+
+The checked-in [audio map](src/audio/violasJourney.json) contains 274 low-register
+accents, 150 cross-band bass attacks and 235 mid/high attacks. It is generated
+from the actual MP3 using 22.05-kHz mono analysis, a 1024-sample Hann window,
+roughly 10-ms hops, three-band positive spectral flux and adaptive local peak
+picking. The file's SHA-256 is tested so replacing the soundtrack cannot
+silently leave an obsolete map. With FFmpeg installed, regenerate it using:
+
+```sh
+npm run analyze:journey
+```
+
+[Journey timing](src/audio/violasJourney.ts) samples these accents against the
+audio element's playback clock, without timers or a synthetic constant beat.
+Live viola remains layered over the soundtrack. Local, continuous effect-clock
+adjustments synchronize the violin fall, legacy wall, clap/CRT, popcorn, lens,
+digital entrance, overflow and rocket to measured attacks:
+
+| Moment | Baseline effect time | Journey onset |
+| --- | ---: | ---: |
+| Violin fall | 22.000 s | 22.141 s |
+| Legacy wall | 38.200 s | 38.105 s |
+| Clapperboard contact | 51.030 s | 50.876 s |
+| Synchronized CRTs | 59.400 s | 59.346 s |
+| Popcorn spill | 78.100 s | 78.154 s |
+| Lens passage | 90.000 s | 90.017 s |
+| Digital entrance | 95.000 s | 94.985 s |
+| Buffer overflow | 113.200 s | 113.344 s |
+| Rocket launch | 144.600 s | 144.643 s |
+| Ceiling impact | 146.800 s | 146.618 s |
+| Exit accent | 159.000 s | 158.850 s |
+
+These shifts stay below 200 ms, affect scene effects rather than the camera
+clock, and return to ordinary show time outside each local window. From 160 s
+onward, structural timing is unchanged: the bridge still closes at 168–172.5 s
+and the title settles at 173 s. A restrained light accent follows the measured
+172.569-s attack without changing the final camera pose. Pause, seek and replay
+recompute the score directly. `Viola & Trance`, Strudel and silent playback keep
+their original musical timing.
 
 Integrated playback uses the Strudel core scheduler without creating a hidden
 CodeMirror editor or its drawing/highlighting loop. The normal editor remains
@@ -85,10 +133,11 @@ instruments, licensing and rehearsal diagnostics.
 
 | Time | Scene |
 | --- | --- |
-| 0:00–0:06 | DEVFEST ARCADE / PRESS ANY KEY opens the show without a giant central cabinet; the camera discovers the arcade corridor |
-| 0:05–0:31 | Fixed pixel-art decals and scenery stay against the T's side walls, above six grounded Kenney cabinets; bass never changes their character, position or scale; `GET /pain-au-chocolat` redirects to `/chocolatine` before Anne-Flore |
+| 0:00–0:06.4 | DEVFEST AI4FUN / AGENDA opens the show without a giant central cabinet; crossing its screen triggers a 1.6-second fullscreen retro-gaming shader at 0:04.8–0:06.4 |
+| 0:05–0:31 | Fixed pixel-art decals, scenery and small luminous pixels stay flat against the T's side walls. The six larger reactive light panels are mounted just in front of the wall surface at height 15, above the grounded Kenney cabinets, not floating in front of their screens |
 | 0:17–0:31 | Anne-Flore's cyan gateway, with a voxel violin and bow centered directly below her card; their cubes collapse with Havok at 0:22, early enough to see the floor bounces before the camera passes |
-| 0:30–0:41 | Bonus tokens fall just beyond the violin; the FINAL BOSS announces LEGACY CODE before its translucent Havok wall appears and collapses at 0:38 |
+| 0:27–0:34.5 | At the end of Anne-Flore's presentation, `GET /pain-au-chocolat` appears at 0:27 and switches to `301 Moved Permanently / Location: /chocolatine` exactly at 0:30; no falling bonus tokens |
+| 0:34.5–0:41 | The FINAL BOSS announces LEGACY CODE before its translucent Havok wall appears and collapses at 0:38 |
 | 0:41–0:49 | `$ git rebase --continue` announces EXIT UNLOCKED, then the T door opens |
 | 0:46–0:52 | The original giant clapperboard is already present during the approach, below LEVEL COMPLETE, and snaps shut in 0.18 seconds from 0:50.85. The fullscreen CRT transition holds a green phosphor line from 0:51.135 to 0:51.38, then reopens on CINEMA and clears by 0:52.18; no black plane |
 | 0:51–1:06 | A symmetrical cinema cathedral with eight full curved CRT screens: MS-DOS, CONFIG.SYS, AUTOEXEC.BAT, Windows 95, blue-screen jokes, floppy installation and a Toulouse BBS; all briefly flash DEVFEST at 0:59.4 |
@@ -106,11 +155,28 @@ instruments, licensing and rehearsal diagnostics.
 | 2:39–2:53 | Faster backward/upward pullback exposes the complete title and the force-field floor connecting the T and D at corridor level; at 2:48–2:52.5 its two spans rise like drawbridges and telescope into the T exit and lower D doorway |
 | 2:50–3:00 | World-space **AI4Fun** signature and subtle anniversary marks; title settled by 2:53, seven-second final hold |
 
-During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok instead simulates the violin/bow cubes, 26 arcade tokens and 48 labeled legacy-code blocks; the cinema adds two synchronized popcorn cascades totaling 72 kernels with seat ledge collisions. Physics debris cannot block the camera, and temporary bodies are cleaned up and recreated on a backward seek. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
+During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok simulates the violin/bow cubes and 48 labeled legacy-code blocks; bonus tokens have been removed in favor of the chocolatine gag. The cinema adds two synchronized popcorn cascades totaling 72 kernels with seat ledge collisions. Physics debris cannot block the camera, and temporary bodies are cleaned up and recreated on a backward seek. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
 
 The cinema's seats, CRTs, screen support, both popcorn buckets, film/reels and giant camera are preloaded and visible from entry at 51.18 seconds, not enabled one prop at a time. Their narrative actions still occur later: David's name fades in, the buckets tip and spill, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows. The drawbridges stay closed throughout the final hold and reset when seeking backward.
 
-The clap's original [CRT transition shader](src/effects/ClapCrtTransition.ts) combines square arcade pixels, restrained RGB separation and row interference, a soft green phosphor shutdown line, then a curved CRT reopening with raster scanlines and an RGB shadow mask. Its [timing](src/content/showBeats.ts) spans 50.65–52.18 seconds: the scene still swaps at 51.18, hidden behind a 245-ms phosphor hold, and the image starts reopening at 51.38. The shader is compiled before SYSTEM READY, follows absolute show time for pause/seek/replay, and is detached outside this window. As a narrative transition it remains active when optional Bloom/FXAA is disabled, just as the former physical shutter did.
+Both film reels rotate continuously in opposite directions at 0.55 rad/s on the
+effect clock. Their angle does not depend on instantaneous bass amplitude,
+avoiding phase jumps and apparent stalls; pause and rehearsal seeks reproduce
+the same reel and sprocket positions.
+
+The clap's original [CRT transition shader](src/effects/ClapCrtTransition.ts) combines square arcade pixels, restrained RGB separation and row interference, a soft green phosphor shutdown line, then a curved CRT reopening with raster scanlines and an RGB shadow mask. Its baseline [timing](src/content/showBeats.ts) spans 50.65–52.18 seconds: the scene swaps at effect time 51.18, hidden behind a 245-ms phosphor hold, and the image starts reopening at effect time 51.38. The Journey profile re-times the entire effect window together, keeping the scene handoff behind the closed tube. The shader is compiled before SYSTEM READY, follows the deterministic effect clock for pause/seek/replay, and is detached outside this window. As a narrative transition it remains active when optional Bloom/FXAA is disabled, just as the former physical shutter did.
+
+The opening [retro-gaming entry shader](src/effects/ArcadeEntryTransition.ts)
+uses chunky pixels, a limited-color dithered palette, RGB separation, subtle
+row glitches and CRT scanlines from **4.8 to 6.4 s**. Its strongest pixel burst
+lands on the physical screen crossing at approximately **5.925 s**. The
+`DEVFEST AI4FUN / AGENDA` panel fades out before the camera reaches its plane,
+avoiding oversized clipped lettering. The shader is precompiled before
+SYSTEM READY, remains available with optional post-processing disabled, and
+follows camera/show time exactly for pause and seek. It adds no rendering pass
+outside those 1.6 seconds. Both transition shaders share the
+[timed post-process lifecycle](src/effects/TimedPostProcess.ts), including
+pipeline-rebuild ordering and cleanup.
 
 For the local keynote score, **Start show + music** on `/strudel/` launches both clocks from the scheduled audible cycle-zero onset, including when Babylon is in another tab of the same window. Switch to the Babylon tab after clicking: its clock catches up to the music even if background rendering was suspended. Synchronized playback keeps time across tab switches; ordinary playback still auto-pauses when hidden. A loading or already-playing show explicitly rejects the launch. Normal Evaluate, pause and seek remain independent. The one-shot Strudel gesture descends three octaves with increasingly spaced, lower drum pulses, leaves the phosphor hold quiet, and resumes the score at 51.38. Reload the keynote to update an existing saved draft; no draft is overwritten automatically.
 
@@ -264,12 +330,13 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, staged typography reveal, theme and animated ornaments.
 - [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local preloaded Sketchfab models, giant animated slate and scene handoff, climbing-instanced seats, CRT synchronization, David's premiere, linked film reels, giant lens, procedural projector and short space crossing.
 - [ClapCrtTransition](src/effects/ClapCrtTransition.ts): precompiled fullscreen arcade-to-CRT shader, phosphor-line handoff, deterministic uniforms and no extra render pass outside the transition.
+- [ArcadeEntryTransition](src/effects/ArcadeEntryTransition.ts): precompiled 1.6-second retro-gaming shader for crossing the opening AI4FUN / AGENDA panel.
 - [CinemaPopcorn](src/scene/CinemaPopcorn.ts): 36 short-lived Havok kernels with static floor/seat ledge colliders and seek-safe cleanup.
 - [DigitalMoments](src/scene/DigitalMoments.ts): two different thin-instanced data-stream passages for Eric and Mitsuru, intensified by the music without moving the camera.
 - [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
 - [PixelWorld](src/scene/PixelWorld.ts), [ArcadeCathedral](src/scene/ArcadeCathedral.ts), [ArcadeT](src/scene/ArcadeT.ts): local Kenney pixel parallax, grounded cabinets visible along the corridor, opening screen portal, arcade HUD and the door.
 - [DemosceneTransition](src/scene/DemosceneTransition.ts): thin-instanced 2D-to-voxel transformation and speed lines over the bridge.
-- [ArcadePhysics](src/scene/ArcadePhysics.ts): bounded Havok token cascade and destructible technical-debt wall, with cleanup and seek recovery.
+- [ArcadePhysics](src/scene/ArcadePhysics.ts): destructible technical-debt wall, with cleanup and seek recovery; no bonus-token cascade.
 - [MusicReactive](src/effects/MusicReactive.ts): seeded GPU-animated particles and shader-based MIDI ribbons.
 - [ShowLighting](src/effects/ShowLighting.ts): ground-mounted portal laser beams and dynamic spotlights, scanning lights and GPU floor circuit traces with thin-instanced spectrum bars.
 - [WallMeters](src/effects/WallMeters.ts): three-band LED columns in five groups, including behind Mitsuru and before the exit, driven by bass, viola/body and high-frequency signals.

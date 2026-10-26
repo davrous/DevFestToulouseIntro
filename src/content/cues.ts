@@ -1,10 +1,12 @@
 import { smoothstep } from "../engine/Timeline";
 
+export const CHOCOLATINE = { start: 27, redirect: 30, end: 34.5, anchor: 33.5, height: 14, width: 16 } as const;
+
 export const EASTER_EGGS = [
   { id: "arcade", start: 0, end: 48, label: "LEVEL T / 8-BIT BUILD" },
-  { id: "chocolatine", start: 5, end: 14, label: "HTTP 301 / CHOCOLATINE" },
+  { id: "chocolatine", start: CHOCOLATINE.start, end: CHOCOLATINE.end, label: "HTTP 301 / CHOCOLATINE" },
   { id: "npm", start: 117, end: 125, label: "npm install cassoulet" },
-  { id: "legacy", start: 33, end: 41, label: "LEGACY CODE / BUILD FAILED" },
+  { id: "legacy", start: CHOCOLATINE.end, end: 41, label: "LEGACY CODE / BUILD FAILED" },
   { id: "orbit", start: 143, end: 166, label: "TOULOUSE / ORBITAL LINK" },
 ] as const;
 
@@ -17,5 +19,5 @@ export function activeCues(time: number): string[] {
 }
 
 export function chocolatineStage(time: number): number {
-  return time < 9.5 ? 0 : 1;
+  return time < CHOCOLATINE.redirect ? 0 : 1;
 }

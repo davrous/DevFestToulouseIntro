@@ -7,7 +7,7 @@ import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
 import "@babylonjs/core/Physics/joinedPhysicsEngineComponent";
 import HavokPhysics from "@babylonjs/havok";
 import { silentFeatures } from "../engine/AudioAnalyzer";
-import { ArcadePhysics, TOKEN_TIME, WALL_TIME, arcadePropVisible } from "./ArcadePhysics";
+import { ArcadePhysics, WALL_TIME, arcadeWallVisible } from "./ArcadePhysics";
 
 vi.mock("./WorldText", async () => {
   const { Mesh } = await import("@babylonjs/core/Meshes/mesh");
@@ -16,19 +16,13 @@ vi.mock("./WorldText", async () => {
 
 describe("arcade story physics", () => {
   it("shows only event props, not camera-following balls", () => {
-    expect(arcadePropVisible(0, "wall")).toBe(false);
-    expect(arcadePropVisible(34, "wall")).toBe(false);
-    expect(arcadePropVisible(35, "wall")).toBe(true);
-    expect(arcadePropVisible(44, "wall")).toBe(false);
-    expect(TOKEN_TIME).toBeGreaterThan(29);
-    expect(TOKEN_TIME).toBeLessThan(31);
-    expect(arcadePropVisible(30, "token")).toBe(false);
-    expect(arcadePropVisible(TOKEN_TIME, "token")).toBe(true);
-    expect(arcadePropVisible(32, "token")).toBe(true);
-    expect(arcadePropVisible(40, "token")).toBe(false);
+    expect(arcadeWallVisible(0)).toBe(false);
+    expect(arcadeWallVisible(34)).toBe(false);
+    expect(arcadeWallVisible(35)).toBe(true);
+    expect(arcadeWallVisible(44)).toBe(false);
   });
 
-  it("breaks technical debt and scatters tokens with Havok, then cleans up and resets on seek", async () => {
+  it("removes bonus tokens and breaks technical debt with Havok, then cleans up and resets on seek", async () => {
     const wasmBinary = Uint8Array.from(readFileSync(
       new URL("../../node_modules/@babylonjs/havok/lib/esm/HavokPhysics.wasm", import.meta.url))).buffer;
     const havok = await HavokPhysics({ wasmBinary });
@@ -41,17 +35,10 @@ describe("arcade story physics", () => {
     arcade.initialize(plugin);
     const silence = silentFeatures();
     const voxel = scene.getMeshByName("Arcade / legacy voxel 0");
-    const token = scene.getMeshByName("Arcade / bonus token 0");
-    if (!voxel || !token) throw new Error("Arcade physics props were not created.");
-    arcade.update(TOKEN_TIME, silence);
-    expect(token.isEnabled()).toBe(true);
-    expect(token.physicsBody).toBeDefined();
-    const tokenStart = token.position.clone();
-    for (let index = 0; index < 35; index++) {
-      arcade.update(TOKEN_TIME + (index + 1) / 60, silence);
-      scene.getPhysicsEngine()!._step(1 / 60);
-    }
-    expect(Vector3.Distance(token.position, tokenStart)).toBeGreaterThan(.3);
+    if (!voxel) throw new Error("Arcade physics wall was not created.");
+    expect(scene.meshes.some((mesh) => mesh.name.includes("bonus token"))).toBe(false);
+    arcade.update(31, silence);
+    expect(voxel.isEnabled()).toBe(false);
     arcade.update(35, silence);
     expect(voxel.isEnabled()).toBe(true);
     expect(voxel.physicsBody).toBeDefined();
@@ -64,9 +51,7 @@ describe("arcade story physics", () => {
     expect(Vector3.Distance(voxel.position, wallStart)).toBeGreaterThan(.4);
     arcade.update(44, silence);
     expect(voxel.isEnabled()).toBe(false);
-    expect(token.isEnabled()).toBe(false);
     expect(voxel.physicsBody).toBeNull();
-    expect(token.physicsBody).toBeNull();
     arcade.update(40, silence);
     expect(Vector3.Distance(voxel.position, wallStart)).toBeGreaterThan(5);
     arcade.update(35, silence);

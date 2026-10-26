@@ -1,11 +1,10 @@
-import { PostProcess } from "@babylonjs/core/PostProcesses/postProcess";
 import { Effect } from "@babylonjs/core/Materials/effect";
-import { Constants } from "@babylonjs/core/Engines/constants";
 import type { Camera } from "@babylonjs/core/Cameras/camera";
 import type { DefaultRenderingPipeline } from "@babylonjs/core/PostProcesses/RenderPipeline/Pipelines/defaultRenderingPipeline";
 import { CLAP_CRT } from "../content/showBeats";
 import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
+import { TimedPostProcess } from "./TimedPostProcess";
 
 export interface ClapCrtState {
   active: boolean;
@@ -104,17 +103,14 @@ void main() {
   gl_FragColor = vec4(clamp(color, 0.0, 1.0), 1.0);
 }`;
 
-export class ClapCrtTransition {
-  readonly postProcess: PostProcess;
+export class ClapCrtTransition extends TimedPostProcess {
   private state = clapCrtState(0);
-  private attached = false;
 
-  constructor(private readonly camera: Camera, pipeline: DefaultRenderingPipeline) {
-    const scene = camera.getScene();
-    this.postProcess = new PostProcess("CRT / clap signal transition", "clapCrt", {
-      engine: scene.getEngine(), size: 1, samplingMode: Constants.TEXTURE_BILINEAR_SAMPLINGMODE,
+  constructor(camera: Camera, pipeline: DefaultRenderingPipeline) {
+    super(camera, pipeline, {
+      name: "CRT / clap signal transition", shader: "clapCrt",
       uniforms: ["resolution", "elapsed", "signalHeight", "pixelation", "distortion", "scanlines"],
-      blockCompilation: true,
+      compileError: "CRT transition shader failed to compile",
     });
     this.postProcess.onApply = (effect) => {
       effect.setFloat2("resolution", Math.max(1, this.postProcess.width), Math.max(1, this.postProcess.height));
@@ -124,30 +120,10 @@ export class ClapCrtTransition {
       effect.setFloat("distortion", this.state.distortion);
       effect.setFloat("scanlines", this.state.scanlines);
     };
-    const observer = pipeline.onBuildObservable.add(() => {
-      if (!this.attached) return;
-      // Pipeline rebuilds must not put bloom or tone mapping after the phosphor line.
-      camera.detachPostProcess(this.postProcess);
-      camera.attachPostProcess(this.postProcess);
-    });
-    scene.onDisposeObservable.addOnce(() => {
-      pipeline.onBuildObservable.remove(observer);
-      this.postProcess.dispose(camera);
-    });
-  }
-
-  prepare(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.postProcess.updateEffect(undefined, undefined, undefined, undefined,
-        () => resolve(), (_effect, errors) => reject(new Error(`CRT transition shader failed to compile: ${errors}`)));
-    });
   }
 
   update(time: number): void {
     this.state = clapCrtState(time);
-    if (this.state.active === this.attached) return;
-    if (this.state.active) this.camera.attachPostProcess(this.postProcess);
-    else this.camera.detachPostProcess(this.postProcess);
-    this.attached = this.state.active;
+    this.setActive(this.state.active);
   }
 }
