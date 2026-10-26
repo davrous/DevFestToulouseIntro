@@ -31,7 +31,7 @@ import { PixelWorld } from "./PixelWorld";
 import { ArcadeCathedral } from "./ArcadeCathedral";
 import { DemosceneTransition } from "./DemosceneTransition";
 import { MusicReactive } from "../effects/MusicReactive";
-import { CINEMA } from "../content/showBeats";
+import { ASTRONAUT_CORNER, CINEMA } from "../content/showBeats";
 import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
 import { ClapCrtTransition } from "../effects/ClapCrtTransition";
@@ -159,6 +159,7 @@ export class DevFestScene {
         const color = material.emissiveColor;
         const opacity = mesh.name.startsWith("FX/Cinema /") || mesh.name.startsWith("FX/Rocket /")
           || mesh.name.startsWith("FX/Pixel to voxel")
+          || mesh.name.startsWith("FX/Digital / astronaut ascending arch")
           ? material.alpha * mesh.visibility : 1;
         result.set(color.r * opacity, color.g * opacity, color.b * opacity, 1);
       } else {
@@ -216,6 +217,8 @@ export class DevFestScene {
       this.update(this.simready.config.gags[id].animation.interaction, SILENCE);
       await compile(gag.meshes);
     }
+    this.update(ASTRONAUT_CORNER.riseEnd, SILENCE);
+    await compile(this.cinema.astronautArch.getChildMeshes());
     this.update(0, SILENCE);
   }
 

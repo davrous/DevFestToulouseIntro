@@ -26,6 +26,16 @@ export const SEAT_HEIGHT = 4.2;
 export const DIRECTOR_CHAIR_HEIGHT = 4.2;
 export const FOYER_ROWS = [-8, 0, 8, 16, 24, 32, 40] as const;
 
+export function astronautRiseState(time: number): { progress: number; scale: number; centerY: number; archY: number } {
+  if (!Number.isFinite(time)) throw new RangeError("Astronaut entrance time must be finite.");
+  const progress = smoothstep((time - ASTRONAUT_CORNER.riseStart) / (ASTRONAUT_CORNER.riseEnd - ASTRONAUT_CORNER.riseStart));
+  const scale = Math.max(.02, progress);
+  return {
+    progress, scale, centerY: ASTRONAUT_CORNER.height * scale / 2,
+    archY: .02 - ASTRONAUT_CORNER.archHeight * (1 - progress),
+  };
+}
+
 function at(scene: Scene, name: string, time: number): TransformNode {
   const anchor = routeAnchor(time);
   const node = new TransformNode(name, scene);
@@ -47,6 +57,9 @@ export class CinemaWorld {
   readonly davidRoot: TransformNode;
   readonly davidConfig: SpeakerConfig;
   readonly astronautRoot: TransformNode;
+  readonly astronautArch: TransformNode;
+  private readonly astronautArchMaterial: StandardMaterial;
+  private astronautLoaded = false;
   private readonly clapperRoot: TransformNode;
   private readonly architecture: TransformNode;
   private readonly foyer: TransformNode;
@@ -378,6 +391,17 @@ export class CinemaWorld {
     this.astronautRoot.position.set(astronaut.position.x, ASTRONAUT_CORNER.height / 2, astronaut.position.z);
     const approach = routeAnchor(ASTRONAUT_CORNER.anchor - 3).position;
     this.astronautRoot.rotation.y = Math.atan2(astronaut.position.x - approach.x, astronaut.position.z - approach.z) + Math.PI;
+    this.astronautArch = new TransformNode("Digital / astronaut rising arch", scene);
+    this.astronautArch.position.set(astronaut.position.x, 0, astronaut.position.z + ASTRONAUT_CORNER.archOffset);
+    this.astronautArch.rotation.y = this.astronautRoot.rotation.y;
+    this.astronautArchMaterial = emissive(scene, "Digital / astronaut arch ions", "#80f4e3", 1.4);
+    const arch = new BoxBatch("FX/Digital / astronaut ascending arch", this.astronautArchMaterial);
+    const archHeight = ASTRONAUT_CORNER.archHeight;
+    for (const side of [-1, 1]) arch.add(side * 2.8, archHeight / 2, 0, .3, archHeight, .42);
+    arch.add(0, archHeight, 0, 5.9, .35, .42);
+    const archMesh = arch.build(scene);
+    archMesh.unfreezeWorldMatrix();
+    archMesh.parent = this.astronautArch;
     this.update(0, { energy: 0, bass: 0, mid: 0, treble: 0, kick: 0, snare: 0, drop: 0, beat: 0, violaEnergy: 0 });
   }
 
@@ -477,7 +501,7 @@ export class CinemaWorld {
       prop.rotation.y = anchor.yaw;
       this.spaceProps.push({ node: prop, yaw: anchor.yaw, speed: .5 });
     }
-    this.assets.create("astronaut", this.astronautRoot, "Digital / corner astronaut", ASTRONAUT_CORNER.height, "height");
+    this.astronautLoaded = !!this.assets.create("astronaut", this.astronautRoot, "Digital / corner astronaut", ASTRONAUT_CORNER.height, "height");
     for (const source of POPCORN_SOURCES) {
       const anchor = routeAnchor(source.time, source.lateral);
       const pivot = new TransformNode(`Cinema / popcorn support ${source.side}`, this.reelsRoot.getScene());
@@ -551,6 +575,13 @@ export class CinemaWorld {
     this.spaceProps.forEach(({ node, yaw, speed }) => {
       node.rotation.y = yaw + (time - CINEMA.space) * speed;
     });
-    this.astronautRoot.setEnabled(time >= ASTRONAUT_CORNER.start && time < ASTRONAUT_CORNER.end);
+    const astronautActive = this.astronautLoaded && time >= ASTRONAUT_CORNER.start && time < ASTRONAUT_CORNER.end;
+    const rise = astronautRiseState(time);
+    this.astronautRoot.setEnabled(astronautActive);
+    this.astronautRoot.scaling.setAll(rise.scale);
+    this.astronautRoot.position.y = rise.centerY;
+    this.astronautArch.setEnabled(astronautActive);
+    this.astronautArch.position.y = rise.archY;
+    this.astronautArchMaterial.alpha = rise.progress;
   }
 }

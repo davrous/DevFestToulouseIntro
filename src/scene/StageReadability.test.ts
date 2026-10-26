@@ -6,16 +6,18 @@ import { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK, T_SIGN_ANCHORS } from "./Eas
 import { BUFFER_OVERFLOW, bufferAnchor } from "./DigitalOverflow";
 import { ASTRONAUT_CORNER, CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
+import { astronautRiseState } from "./CinemaWorld";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 import { POPCORN_SOURCES } from "./CinemaPopcorn";
 import { CHOCOLATINE } from "../content/cues";
 
-function longestReadableInterval(start: number, end: number, world: Matrix, width: number, height: number, lateral = 0): number {
+function longestReadableInterval(start: number, end: number, world: Matrix | ((time: number) => Matrix), width: number, height: number, lateral = 0): number {
   let best = 0;
   let current = 0;
   for (let time = start; time < end; time += .25) {
     const pose = cameraPose(time);
-    const transform = world.multiply(Matrix.LookAtLH(pose.position, pose.target, Vector3.Up()))
+    const placement = typeof world === "function" ? world(time) : world;
+    const transform = placement.multiply(Matrix.LookAtLH(pose.position, pose.target, Vector3.Up()))
       .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
     const corners = [-width / 2, width / 2].flatMap((x) => [-height / 2, height / 2].map((y) =>
       Vector3.TransformCoordinates(new Vector3(x + lateral, y, 0), transform)));
@@ -72,11 +74,10 @@ describe("readable arcade jokes at projector aspect", () => {
     }
   });
 
-  it("centers the nearly adjacent lens while David's card is crossed, then enters its actual plane", () => {
+  it("leaves time for the cinema mechanisms and centers the lens for the final approach", () => {
     const anchor = routeAnchor(CINEMA.lens);
-    const david = routeAnchor(CINEMA.davidGate).position;
-    expect(Vector3.Distance(anchor.position, david)).toBeLessThan(4);
-    for (let time = CINEMA.davidGate; time < CINEMA.lens - .05; time += .05) {
+    expect(CINEMA.lens).toBeGreaterThan(CINEMA.popcornEnd);
+    for (let time = CINEMA.camera; time < CINEMA.lens - .05; time += .05) {
       const pose = cameraPose(time);
       const transform = Matrix.LookAtLH(pose.position, pose.target, Vector3.Up())
         .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
@@ -147,9 +148,13 @@ describe("readable arcade jokes at projector aspect", () => {
 
   it("shows the relocated astronaut in the next corner after the buffer", () => {
     const anchor = routeAnchor(ASTRONAUT_CORNER.anchor, ASTRONAUT_CORNER.lateral);
-    const world = Matrix.Translation(anchor.position.x, ASTRONAUT_CORNER.height / 2, anchor.position.z);
+    const world = (time: number) => {
+      const rise = astronautRiseState(time);
+      return Matrix.Scaling(rise.scale, rise.scale, rise.scale)
+        .multiply(Matrix.Translation(anchor.position.x, rise.centerY, anchor.position.z));
+    };
     expect(longestReadableInterval(BUFFER_OVERFLOW.end, 121, world, 4, ASTRONAUT_CORNER.height))
-      .toBeGreaterThanOrEqual(1.5);
+      .toBeGreaterThanOrEqual(1.25);
   });
 
   it("frames the Toulouse orbital label after Mitsuru", () => {

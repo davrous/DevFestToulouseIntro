@@ -9,7 +9,7 @@ import { silentFeatures } from "../engine/AudioAnalyzer";
 import { ASTRONAUT_CORNER, CINEMA, CLAP_CRT, REHEARSAL_STOPS } from "../content/showBeats";
 import { clapCrtState } from "../effects/ClapCrtTransition";
 import { SPEAKERS } from "../content/speakers";
-import { CinemaWorld } from "./CinemaWorld";
+import { astronautRiseState, CinemaWorld } from "./CinemaWorld";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 
@@ -37,18 +37,34 @@ vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
 }));
 
 describe("cinematic show choreography", () => {
-  it("places the lens just behind David and preserves the reels/popcorn inside the vortex", () => {
-    const david = routeAnchor(CINEMA.davidGate).position;
-    expect(Vector3.Distance(routeAnchor(CINEMA.lens).position, david))
-      .toBeLessThan(4);
+  it("places lens entry after David, the reel mechanism and the complete popcorn cascade", () => {
     expect(CINEMA.davidGate).toBe(76);
     expect(CINEMA.davidStart).toBe(66);
     expect(CINEMA.popcornEnd).toBeLessThan(CINEMA.auditoriumEnd);
-    expect(CINEMA.lens).toBe(76.8);
+    expect(CINEMA.lens).toBeGreaterThan(CINEMA.popcornEnd + 1);
+    expect(CINEMA.camera).toBeGreaterThanOrEqual(CINEMA.popcornEnd);
+    expect(CINEMA.lens).toBe(86.3);
     expect(CINEMA.auditoriumEnd).toBe(87.6);
     expect(CINEMA.projector).toBe(88.8);
     expect(CINEMA.space).toBe(90.6);
     expect(CINEMA.digital).toBe(95);
+  });
+
+  it("grows the astronaut uniformly from its feet while its adjacent arch rises at the same rate", () => {
+    const before = astronautRiseState(ASTRONAUT_CORNER.riseStart);
+    const middle = astronautRiseState((ASTRONAUT_CORNER.riseStart + ASTRONAUT_CORNER.riseEnd) / 2);
+    const done = astronautRiseState(ASTRONAUT_CORNER.riseEnd);
+    expect(before.progress).toBe(0);
+    expect(before.scale).toBe(.02);
+    expect(middle.progress).toBeCloseTo(.5);
+    expect(middle.scale).toBeCloseTo(.5);
+    expect(done.scale).toBe(1);
+    expect(done.archY).toBeCloseTo(.02);
+    expect(middle.centerY - ASTRONAUT_CORNER.height * middle.scale / 2).toBeCloseTo(0);
+    expect(middle.archY + ASTRONAUT_CORNER.archHeight).toBeCloseTo(.02 + ASTRONAUT_CORNER.archHeight * middle.progress);
+    astronautRiseState(180); astronautRiseState(0);
+    expect(astronautRiseState((ASTRONAUT_CORNER.riseStart + ASTRONAUT_CORNER.riseEnd) / 2)).toEqual(middle);
+    expect(() => astronautRiseState(NaN)).toThrow();
   });
 
   it("spins both reels continuously in opposite directions despite bass changes, pauses and seeks", async () => {
@@ -176,6 +192,15 @@ describe("cinematic show choreography", () => {
     expect(cinema.astronautRoot.position.z).toBe(anchor.position.z);
     cinema.update(116.8, silentFeatures());
     expect(cinema.astronautRoot.isEnabled()).toBe(true);
+    const growing = astronautRiseState(116.8);
+    expect(cinema.astronautRoot.scaling.asArray()).toEqual([growing.scale, growing.scale, growing.scale]);
+    expect(cinema.astronautRoot.position.y).toBe(growing.centerY);
+    expect(cinema.astronautArch.position.z).toBe(cinema.astronautRoot.position.z + ASTRONAUT_CORNER.archOffset);
+    expect(cinema.astronautArch.position.y).toBe(growing.archY);
+    expect(cinema.astronautArch.isEnabled()).toBe(true);
+    cinema.update(ASTRONAUT_CORNER.riseEnd, silentFeatures());
+    expect(cinema.astronautRoot.scaling.asArray()).toEqual([1, 1, 1]);
+    expect(cinema.astronautRoot.position.y).toBe(ASTRONAUT_CORNER.height / 2);
     cinema.update(98, silentFeatures());
     expect(cinema.astronautRoot.isEnabled()).toBe(true);
     cinema.update(125, silentFeatures());

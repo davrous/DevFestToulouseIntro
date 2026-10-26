@@ -80,8 +80,8 @@ describe("title labyrinth choreography", () => {
     }
   });
 
-  it("keeps looking forward inside the vortex during the preserved reels and popcorn", () => {
-    for (let time = CINEMA.reels; time < CINEMA.auditoriumEnd; time += .05) {
+  it("keeps looking forward during the reels and complete popcorn cascade before lens entry", () => {
+    for (let time = CINEMA.reels; time < CINEMA.camera; time += .05) {
       const pose = cameraPose(time);
       const forward = pose.target.subtract(pose.position).normalize();
       const route = interiorPosition(time + 2.4).subtract(pose.position).normalize();

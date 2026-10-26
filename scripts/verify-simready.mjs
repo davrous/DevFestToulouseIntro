@@ -70,7 +70,8 @@ try {
     const before = counts();
     const artDirection = [];
     for (const time of [3.5, 4.299, 4.5, 5.525, 5.925, 6.1, 15, 17.25, 17.5, 18, 19.1, 26.999, 27, 28.999, 29,
-      61.8, 76.8, 76.9, 78.5, 95.6, 108, 110.699, 111, 118, 120, 124.399, 124.4, 125.8, 128, 130, 137, 139.499]) {
+      61.8, 76.8, 78.5, 84.5, 86.3, 86.5, 90, 96.2, 97, 97.8, 108, 110.699, 111,
+      117.2, 118, 118.4, 120, 124.399, 124.4, 125.8, 128, 130, 137, 139.499]) {
       app.seek(time);
       const http = app.world.scene.getTransformNodeByName("Toulouse HTTP redirect");
       const arm = app.world.simready.groups.get("launchArm");
@@ -78,6 +79,9 @@ try {
       const lens = app.world.scene.getMeshByName("Cinema / frontal camera lens rim");
       const bufferLabel = app.world.scene.getMeshByName("Digital / BUFFER OVERFLOW");
       const matrix = app.world.scene.getMeshByName("FX/Matrix / snack wall code rain");
+      const matrixLeft = app.world.scene.getMeshByName("FX/Matrix / snack wall code rain left");
+      const astronaut = app.world.scene.getTransformNodeByName("Digital / astronaut after buffer");
+      const arch = app.world.scene.getTransformNodeByName("Digital / astronaut rising arch");
       const terminal = app.world.easterEggs.npmTerminal;
       artDirection.push({
         time, entryShader: app.world.camera._postProcesses.some((pass) => pass?.name === "Arcade / retro gaming entry"),
@@ -96,8 +100,13 @@ try {
         vortex: app.world.camera._postProcesses.some((pass) => pass?.name === "Cinema / lens demoscene vortex"),
         reelsVisible: app.world.scene.getTransformNodeByName("Cinema / reels and moving film architecture").isEnabled(),
         matrixReady: matrix.material.isReady(matrix),
+        matrixPairReady: matrixLeft.material.isReady(matrixLeft) && matrixLeft.material === matrix.material
+          && matrixLeft.geometry === matrix.geometry && matrixLeft.position.x < 0 && matrix.position.x > 0,
+        vortexTurn: app.world.lensVortex.state.turn, vortexExit: app.world.lensVortex.state.exit,
         terminal: { ...terminal.state },
-        astronautPresent: app.world.scene.getTransformNodeByName("Digital / astronaut after buffer").isEnabled(),
+        astronautPresent: astronaut.isEnabled(), astronautScale: astronaut.scaling.asArray(),
+        astronautFeet: astronaut.position.y - 6.5 * astronaut.scaling.y / 2,
+        archHeight: arch.position.y, archPresent: arch.isEnabled(),
         oldAstronautAbsent: !app.world.scene.getTransformNodeByName("Cinema / passing astronaut"),
       });
     }
@@ -111,7 +120,7 @@ try {
         caption: gag.label.visibility });
     }
     for (const time of [0, 3.5, 5.925, 8, 13.9, 17, 18, 22, 27, 29, 38.1, 50.876, 59.4, 61.35, 61.8,
-      62.2, 64.5, 66, 70, 76.8, 78.5, 90, 93, 99, 107, 110.7, 113.3, 118, 124.4, 125.8, 128, 137, 140, 143.5, 144.6, 145.2, 146.8, 159, 168, 173, 180]) {
+      62.2, 64.5, 66, 70, 78.5, 84.5, 86.3, 90, 97, 97.8, 99, 107, 110.7, 113.3, 117.2, 118.4, 124.4, 125.8, 128, 137, 140, 143.5, 144.6, 145.2, 146.8, 159, 168, 173, 180]) {
       app.world.simready.config.enabled = false;
       app.seek(time);
       const original = [...app.world.camera.position.asArray(), ...app.world.camera.rotation.asArray(), app.world.camera.fov];
@@ -157,17 +166,30 @@ try {
     .every((sample) => sample.httpPresent && sample.httpYaw === 0));
   assert.equal(replay.artDirection.find((sample) => sample.time === 28.999).request, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 29).request, false);
-  assert.ok(replay.artDirection.find((sample) => sample.time === 76.8).lensDistance < .02,
-    "The lens directly behind David must be crossed at 76.8 seconds.");
+  assert.ok(replay.artDirection.find((sample) => sample.time === 86.3).lensDistance < .02,
+    "Lens entry must leave time to see David, the reels and the complete popcorn cascade.");
   assert.ok(replay.artDirection.filter((sample) => [17.25, 17.5, 18, 19.1].includes(sample.time))
     .every((sample) => sample.violinOpacity === sample.anneFloreOpacity), "Violin and name must share their reveal envelope.");
   assert.ok(replay.artDirection.find((sample) => sample.time === 18).violinOpacity > 0);
   assert.equal(replay.artDirection.find((sample) => sample.time === 76.8).vortex, false);
-  assert.equal(replay.artDirection.find((sample) => sample.time === 76.9).vortex, true);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 78.5).vortex, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 84.5).vortex, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 86.5).vortex, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 78.5).reelsVisible, true);
-  assert.equal(replay.artDirection.find((sample) => sample.time === 95.6).vortex, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 97.8).vortex, false);
+  assert.ok(replay.artDirection.find((sample) => sample.time === 97).vortexTurn > .9);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 96.2).vortexExit, 0);
+  assert.ok(Math.abs(replay.artDirection.find((sample) => sample.time === 97).vortexExit - .5) < .01);
   assert.equal(replay.artDirection.find((sample) => sample.time === 61.8).matrixReady, true);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 61.8).matrixPairReady, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 118).astronautPresent, true);
+  const rising = replay.artDirection.find((sample) => sample.time === 117.2);
+  const grown = replay.artDirection.find((sample) => sample.time === 118.4);
+  assert.ok(rising.astronautScale[0] > 0 && rising.astronautScale[0] < 1);
+  assert.deepEqual(grown.astronautScale, [1, 1, 1]);
+  assert.ok([rising, grown].every((sample) => sample.archPresent && Math.abs(sample.astronautFeet) < .001
+    && sample.astronautScale.every((value) => value === sample.astronautScale[0])));
+  assert.ok(rising.archHeight < grown.archHeight);
   assert.ok(replay.artDirection.every((sample) => sample.oldAstronautAbsent));
   assert.ok(replay.artDirection.filter((sample) => [120, 137, 139.499].includes(sample.time))
     .every((sample) => sample.armPresent && sample.armOpaque), "Launch arm must already be present during the approach.");
@@ -196,7 +218,7 @@ try {
   assert.equal(replay.shoulder, true);
 
   const measurements = [];
-  for (const time of [61.8, 78.5, 111, 118, 128, 143.5]) {
+  for (const time of [61.8, 90, 97, 111, 118, 128, 143.5]) {
     for (const enabled of [false, true]) {
       measurements.push(await page.evaluate(({ time, enabled }) => new Promise((resolve, reject) => {
         const app = window.devfest, scene = app.world.scene;

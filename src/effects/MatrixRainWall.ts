@@ -15,6 +15,7 @@ const signatureShader = [...MATRIX_SIGNATURE].map((letter, index) =>
 
 export class MatrixRainWall {
   readonly mesh;
+  readonly leftMesh;
   readonly material: ShaderMaterial;
 
   constructor(scene: Scene, parent: TransformNode, depth: number) {
@@ -82,6 +83,10 @@ export class MatrixRainWall {
     this.material.setTexture("glyphAtlas", atlas);
     this.material.setFloat("time", 0);
     this.mesh.material = this.material;
+    const left = this.mesh.clone("FX/Matrix / snack wall code rain left", parent);
+    if (!left) throw new Error("Could not create the second Matrix wall.");
+    left.position.x = -MATRIX_WALL.offsetX;
+    this.leftMesh = left;
   }
 
   update(time: number): void {
