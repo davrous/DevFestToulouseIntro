@@ -84,14 +84,17 @@ async function setup() {
 }
 
 describe("synchronized launch from the other tab", () => {
-  it("plays the selected WAV and keeps it aligned across transport controls", async () => {
+  it.each(["violas-journey", "viola-trance"])("plays the selected %s MP3 and keeps it aligned across transport controls", async (soundtrack) => {
     const { app } = await setup();
-    doc.getElementById("music-source")!.value = "wav";
-    doc.getElementById("soundtrack")!.value = "viola-trance";
+    doc.getElementById("music-source")!.value = "mp3";
+    doc.getElementById("music-source")!.dispatchEvent(new Event("change"));
+    expect(doc.getElementById("soundtrack-choice")!.hidden).toBe(false);
+    expect(doc.getElementById("strudel-score-choice")!.hidden).toBe(true);
+    doc.getElementById("soundtrack")!.value = soundtrack;
     vi.spyOn(app.showController.soundtrack, "connectMediaElement").mockResolvedValue();
     await app.startFromGesture();
     const player = doc.getElementById("soundtrack-player")!;
-    expect(player.src).toBe("./assets/music/viola-trance.wav");
+    expect(player.src).toBe(`./assets/music/${soundtrack}.mp3`);
     expect(player.paused).toBe(false);
     app.togglePlayback();
     expect(player.paused).toBe(true);

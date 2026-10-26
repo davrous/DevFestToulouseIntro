@@ -25,7 +25,7 @@ npm run preview
 Open http://127.0.0.1:4173 and keep the local server running. After installation/build, no Internet is needed. Do not open the HTML using `file://`.
 
 **Music is optional.** Choose **No bundled music**, **Strudel keynote**, or
-**WAV soundtrack** on the home page. The bundled `Viola's Journey` WAV is played
+**MP3 soundtrack** on the home page. The bundled `Viola's Journey` MP3 is played
 locally and analyzed in real time to drive the same bass, mid, treble, transient,
 and energy reactions as the other music inputs. Visuals also work without music,
 audio input, or the optional event bridge.
@@ -35,14 +35,18 @@ For one-click Strudel playback, choose **Strudel keynote** and a
 frame preloads local audio and starts both clocks through the confirmed
 synchronized onset, without switching tabs or replacing the saved Strudel draft.
 
-For WAV playback, choose **WAV soundtrack**, then select `Viola's Journey` or
+For MP3 playback, choose **MP3 soundtrack**, then select `Viola's Journey` or
 `Viola & Trance`. Playback, pause, resume, and rehearsal seeks follow the visual timeline. The live input can
-remain connected at the same time: the WAV drives the complete scene while
+remain connected at the same time: the MP3 drives the complete scene while
 Anne-Flore's viola microphone adds its detected energy over the soundtrack. The
 microphone is analyzed locally and is never monitored through the speakers; no
 permission is requested automatically.
 
-Additional WAV files can be added under `public/assets/music/` and registered in
+Both bundled soundtracks use 320 kbit/s CBR MP3, preserving the original 48 kHz
+stereo format. The original WAV files are retained alongside them for re-encoding;
+the demo plays only the MP3 versions.
+
+Additional MP3 files can be added under `public/assets/music/` and registered in
 the `SOUNDTRACKS` list in `src/audio/soundtracks.ts`; the home-page selector is
 populated from that catalog.
 

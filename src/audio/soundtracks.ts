@@ -8,12 +8,12 @@ export const SOUNDTRACKS: readonly Soundtrack[] = [
   {
     id: "violas-journey",
     label: "Viola's Journey",
-    url: "./assets/music/violas-journey.wav",
+    url: "./assets/music/violas-journey.mp3",
   },
   {
     id: "viola-trance",
     label: "Viola & Trance",
-    url: "./assets/music/viola-trance.wav",
+    url: "./assets/music/viola-trance.mp3",
   },
 ];
 

@@ -109,7 +109,7 @@ describe("independent music-reactive layer", () => {
     expect(soundtrack).toHaveBeenCalledWith(500);
   });
 
-  it("layers live viola input over the WAV soundtrack", () => {
+  it("layers live viola input over the MP3 soundtrack", () => {
     const controller = new ShowController(new Timeline(), vi.fn());
     vi.spyOn(controller.audio, "sample").mockReturnValue({ ...silentFeatures(), violaEnergy: .8, mid: .4 });
     vi.spyOn(controller.soundtrack, "sample").mockReturnValue({ ...silentFeatures(), energy: .7, bass: .6, mid: .2 });

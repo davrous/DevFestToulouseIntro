@@ -35,9 +35,9 @@
         <div class="loading-track" id="loading-track"><div id="loading-fill"></div></div>
         <p id="load-status" role="status">Initializing local renderer...</p>
         <label class="fullscreen-option"><input id="fullscreen" type="checkbox" checked /> Enter fullscreen on play <span>SPACE to start</span></label>
-        <label class="score-choice">Music source <select id="music-source" aria-label="Music source"><option value="none">No bundled music</option><option value="strudel">Strudel keynote</option><option value="wav">WAV soundtrack</option></select></label>
+        <label class="score-choice">Music source <select id="music-source" aria-label="Music source"><option value="none">No bundled music</option><option value="strudel">Strudel keynote</option><option value="mp3">MP3 soundtrack</option></select></label>
         <label id="strudel-score-choice" class="score-choice" hidden>Strudel version <select id="strudel-score" aria-label="Strudel music version"></select></label>
-        <label id="soundtrack-choice" class="score-choice" hidden>WAV file <select id="soundtrack" aria-label="WAV soundtrack"></select></label>
+        <label id="soundtrack-choice" class="score-choice" hidden>MP3 file <select id="soundtrack" aria-label="MP3 soundtrack"></select></label>
         <details class="audio-setup">
           <summary>Live viola input <span>OPTIONAL / LAYERED OVER THE MUSIC</span></summary>
           <div class="audio-inputs">
@@ -48,7 +48,7 @@
           <div class="input-meter"><span>LIVE INPUT</span><meter data-input-meter min="0" max="1" value="0" aria-label="Microphone input level"></meter><output data-input-db>-- dBFS</output></div>
           <label class="input-gain">Input gain <input data-audio-gain type="range" min="-12" max="30" step="1" value="12" aria-label="Audio input gain" /><output data-gain-label>+12 dB</output></label>
           <p data-input-hint>Connect an input, then speak to test the signal.</p>
-          <p>The WAV drives the full scene. Anne-Flore's viola microphone adds live energy over it without being routed to the speakers. The camera never follows audio.</p>
+          <p>The MP3 drives the full scene. Anne-Flore's viola microphone adds live energy over it without being routed to the speakers. The camera never follows audio.</p>
           <p>Inputs are analyzed locally, never recorded or sent anywhere. No monitoring is routed to speakers.</p>
         </details>
       </section>

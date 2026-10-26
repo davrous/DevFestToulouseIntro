@@ -165,7 +165,7 @@ export class App {
       await this.startWithStrudel();
       return;
     }
-    this.soundtrackActive = musicSource === "wav";
+    this.soundtrackActive = musicSource === "mp3";
     const activation = this.showController.audio.activate().catch((error: unknown) => {
       console.warn("Audio activation failed", error);
       this.showNotice("Audio could not be activated. The visual show continues without audio analysis.");
@@ -174,9 +174,9 @@ export class App {
       try {
         await this.playSoundtrack(time);
       } catch (error) {
-        console.error("WAV soundtrack playback failed", error);
+        console.error("MP3 soundtrack playback failed", error);
         this.soundtrackActive = false;
-        this.showNotice(`WAV soundtrack unavailable: ${error instanceof Error ? error.message : String(error)}. The visual show will continue.`, true);
+        this.showNotice(`MP3 soundtrack unavailable: ${error instanceof Error ? error.message : String(error)}. The visual show will continue.`, true);
       }
     }
     this.start(time);
@@ -332,7 +332,7 @@ export class App {
     const musicSource = element<HTMLSelectElement>("music-source");
     const updateMusicChoices = () => {
       element("strudel-score-choice").hidden = musicSource.value !== "strudel";
-      element("soundtrack-choice").hidden = musicSource.value !== "wav";
+      element("soundtrack-choice").hidden = musicSource.value !== "mp3";
     };
     musicSource.addEventListener("change", updateMusicChoices);
     updateMusicChoices();
@@ -419,9 +419,9 @@ export class App {
       this.soundtrackPlayer.currentTime = this.timeline.time;
       await this.soundtrackPlayer.play();
     } catch (error) {
-      console.error("WAV soundtrack resume failed", error);
+      console.error("MP3 soundtrack resume failed", error);
       this.soundtrackActive = false;
-      this.showNotice(`WAV soundtrack could not resume: ${error instanceof Error ? error.message : String(error)}.`, true);
+      this.showNotice(`MP3 soundtrack could not resume: ${error instanceof Error ? error.message : String(error)}.`, true);
     }
   }
 }
