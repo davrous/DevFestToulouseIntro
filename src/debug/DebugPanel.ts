@@ -6,6 +6,7 @@ import { REHEARSAL_STOPS } from "../content/showBeats";
 import { epochNow, MUSICAL_EVENTS, SHOW_CUES } from "../engine/avProtocol";
 import { SceneInstrumentation } from "@babylonjs/core/Instrumentation/sceneInstrumentation";
 import type { Scene } from "@babylonjs/core/scene";
+import { SimReadyDebug } from "../simready/SimReadyDebug";
 
 function get<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id);
@@ -44,6 +45,7 @@ export class DebugPanel {
     this.root.querySelectorAll<HTMLButtonElement>("[data-time]").forEach((button) => {
       button.addEventListener("click", () => app.seek(Number(button.dataset.time)));
     });
+    new SimReadyDebug(app, this.root);
     get<HTMLSelectElement>("speed").addEventListener("change", (event) => {
       app.timeline.speed = Number((event.target as HTMLSelectElement).value);
     });

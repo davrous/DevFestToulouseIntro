@@ -1,0 +1,16 @@
+{
+  "repoId": "nvidia/simready-assets",
+  "repoType": "dataset",
+  "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+  "assets": [
+    { "id": "pongPaddle", "source": "misc_toy_pongPaddle_bat_a01" },
+    { "id": "pongBall", "source": "misc_toy_pongPaddle_ball_a01" },
+    { "id": "croissant", "source": "food_prepared_croissant_a01" },
+    { "id": "cassouletCan", "source": "food_canned_beans_a01" },
+    { "id": "donut", "source": "food_prepared_donut_a01" },
+    { "id": "smallRobot", "source": "robotics_small_bot_a01" },
+    { "id": "forklift", "source": "vehicle_forklift_orange_a01" },
+    { "id": "robotArm", "source": "robotic_system_arm_b01", "textureSize": 512 },
+    { "id": "snackVendingMachine", "source": "machine_vending_snacksDrinks_a01" }
+  ]
+}

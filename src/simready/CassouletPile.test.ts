@@ -1,0 +1,65 @@
+import { readFileSync } from "node:fs";
+import { describe, expect, it } from "vitest";
+import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
+import { Scene } from "@babylonjs/core/scene";
+import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
+import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
+import "@babylonjs/core/Physics/joinedPhysicsEngineComponent";
+import HavokPhysics from "@babylonjs/havok";
+import { CASSOULET_PILE } from "../content/showBeats";
+import { CassouletPile, cassouletRelease } from "./CassouletPile";
+
+describe("Havok cassoulet mountain", () => {
+  it("drops 64 colliding cylinders into a measured pile, then replays the exact fixed-step result on seek", async () => {
+    const wasmBinary = Uint8Array.from(readFileSync(
+      new URL("../../node_modules/@babylonjs/havok/lib/esm/HavokPhysics.wasm", import.meta.url))).buffer;
+    const havok = await HavokPhysics({ wasmBinary });
+    const engine = new NullEngine();
+    const scene = new Scene(engine);
+    const plugin = new HavokPlugin(true, havok);
+    plugin.setVelocityLimits(32, 12);
+    expect(scene.enablePhysics(new Vector3(0, -17, 0), plugin)).toBe(true);
+    scene.physicsEnabled = false;
+    const root = new TransformNode("Cassoulet test stage", scene);
+    root.position.set(-439, .02, 127);
+    root.rotation.y = Math.PI;
+    const cans = Array.from({ length: CASSOULET_PILE.count }, (_, index) => {
+      const can = new TransformNode(`Cassoulet can ${index}`, scene);
+      can.parent = root;
+      return can;
+    });
+    const pile = new CassouletPile(scene, root, cans);
+    const count = scene.transformNodes.length;
+    pile.initialize();
+    expect(scene.transformNodes).toHaveLength(count);
+    expect(scene.physicsEnabled).toBe(false);
+    expect(cans.every((can) => !can.physicsBody)).toBe(true);
+    pile.update(0);
+    expect(cans.filter((can) => can.isEnabled())).toHaveLength(1);
+    expect(cans[0].position.y).toBeCloseTo(CASSOULET_PILE.spawnHeight, 3);
+    pile.update(2);
+    expect(cans.filter((can) => can.isEnabled()).length).toBeGreaterThan(25);
+    expect(cans[0].position.y).toBeLessThan(CASSOULET_PILE.spawnHeight - 2);
+    pile.update(8.5);
+    expect(cans.every((can) => can.isEnabled())).toBe(true);
+    const maxHeight = Math.max(...cans.map((can) => can.position.y));
+    const piled = cans.filter((can) => can.position.y > CASSOULET_PILE.size * 1.1).length;
+    const minimum = Math.min(...cans.map((can) => can.position.y));
+    const spread = Math.max(...cans.flatMap((can) => [Math.abs(can.position.x), Math.abs(can.position.z)]));
+    console.info("Havok cassoulet pile measurements", { maxHeight, piled, minimum, spread });
+    expect(maxHeight, "pile must be a mountain, not a flat row").toBeGreaterThan(5);
+    expect(piled, "many cans must rest on other cans").toBeGreaterThanOrEqual(24);
+    expect(minimum).toBeGreaterThan(.65);
+    expect(spread, "spilled cans must stay on the physical corridor floor").toBeLessThan(30);
+    expect(cans.every((can) => can.position.x > -4.25 && can.position.x < 22.25)).toBe(true);
+    const snapshot = cans.map((can) => [...can.position.asArray(), ...can.rotationQuaternion!.asArray()]);
+    pile.update(1); pile.update(5); pile.update(0); pile.update(8.5);
+    expect(cans.map((can) => [...can.position.asArray(), ...can.rotationQuaternion!.asArray()])).toEqual(snapshot);
+    pile.initialize();
+    expect(scene.transformNodes).toHaveLength(count);
+    expect(cassouletRelease(CASSOULET_PILE.count - 1)).toBeLessThan(4.2);
+    scene.dispose();
+    engine.dispose();
+  });
+});

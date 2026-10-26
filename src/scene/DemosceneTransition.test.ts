@@ -10,8 +10,34 @@ import HavokPhysics from "@babylonjs/havok";
 import { cameraPose } from "../camera/CameraPath";
 import { silentFeatures } from "../engine/AudioAnalyzer";
 import { DemosceneTransition, VIOLIN_FALL, VIOLIN_PATTERN, VOXEL_COUNT } from "./DemosceneTransition";
+import { speakerReveal } from "../effects/ShowLighting";
+import { SPEAKERS } from "../content/speakers";
+import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 
 describe("arcade violin and warp transition", () => {
+  it("fades in with Anne-Flore's name, including bloom, and enlarges both the pattern and physics cubes", () => {
+    const engine = new NullEngine();
+    const scene = new Scene(engine);
+    const transition = new DemosceneTransition(scene);
+    const mesh = scene.getMeshByName("FX/Pixel to voxel / 0");
+    if (!(mesh instanceof Mesh) || !(mesh.material instanceof StandardMaterial)) throw new Error("Violin must use its faded material.");
+    expect(VIOLIN_FALL.size).toBeCloseTo(.34 * 1.25);
+    expect(VIOLIN_FALL.scale).toBe(1.25);
+    for (const time of [17, 17.251, 17.5, 18, 18.5, 19.1, 17.5]) {
+      transition.update(time, silentFeatures());
+      const opacity = speakerReveal(time, SPEAKERS[0]);
+      expect(mesh.isEnabled()).toBe(opacity > 0);
+      expect(mesh.material.alpha).toBeCloseTo(opacity, 8);
+      expect(mesh.material.emissiveColor.g).toBeCloseTo(.7490196078431373 * 1.3, 5);
+    }
+    transition.update(18, silentFeatures());
+    expect(mesh.isEnabled()).toBe(true);
+    expect(mesh.material.alpha).toBeGreaterThan(0);
+    expect(mesh.material.alpha).toBeLessThan(1);
+    scene.dispose();
+    engine.dispose();
+  });
+
   it("draws a pixel violin with strings, curved bouts and a separate bow", () => {
     expect(VIOLIN_PATTERN.every((row) => row.length === VIOLIN_PATTERN[0].length)).toBe(true);
     expect(VIOLIN_PATTERN.some((row) => row.includes("||"))).toBe(true);
@@ -92,7 +118,7 @@ describe("arcade violin and warp transition", () => {
       });
     }
     expect(visibleBounces.size).toBeGreaterThanOrEqual(VOXEL_COUNT / 3);
-    expect(pieces.every((mesh) => mesh.position.y >= .1 && mesh.position.y < 1)).toBe(true);
+    expect(pieces.every((mesh) => mesh.position.y >= .1 && mesh.position.y < VIOLIN_FALL.size * 4)).toBe(true);
     transition.update(VIOLIN_FALL.end, silentFeatures());
     expect(pieces.every((mesh) => !mesh.isEnabled() && !mesh.physicsBody)).toBe(true);
     transition.update(VIOLIN_FALL.start - .1, silentFeatures());

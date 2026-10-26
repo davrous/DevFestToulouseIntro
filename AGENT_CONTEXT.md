@@ -4,9 +4,13 @@
 >
 > Historique visuel documenté le **7 octobre 2026**, complété le **8 octobre** par le lecteur Strudel allégé et le regard caméra droit devant aux popcorns. L'horloge audio native fonctionne de nouveau ; les répétitions musicales historiques ne valident pas automatiquement les trois nouveaux scores. Voir section 11 et vérifier le worktree : les fichiers source restent la référence.
 >
-> **26 octobre 2026 :** les musiques intégrées utilisent les MP3 320 kbit/s. Viola's Journey possède désormais une carte d'attaques mesurées et un profil de recalage local des effets (< 200 ms), sans décaler l'horloge caméra ni le reveal final. Voir la section de synchronisation du [README](README.md). Le gag chocolatine remplace les pièces en fin de présentation d'Anne-Flore : requête à **27 s**, réponse à **30 s**, fin à 34.5 s ; les carrés lumineux du T sont immobiles et plaqués aux murs latéraux.
+> **26 octobre 2026 :** les musiques intégrées utilisent les MP3 320 kbit/s. Viola's Journey possède désormais une carte d'attaques mesurées et un profil de recalage local des effets (< 200 ms), sans décaler l'horloge caméra ni le reveal final. Voir la section de synchronisation du [README](README.md). Le gag chocolatine remplace les pièces en fin de présentation d'Anne-Flore : requête visible à **27 s**, réponse à **29 s**, fin narrative à 34.5 s ; les carrés lumineux du T sont immobiles et plaqués aux murs latéraux.
 >
-> Le lobby sélectionne par défaut **MP3 soundtrack / Viola's Journey**, sans lecture automatique. Le panneau d'entrée affiche **DEVFEST AI4FUN / AGENDA** ; sa traversée déclenche un shader rétro-gaming plein écran de **4.8 à 6.4 s**, précompilé, déterministe en pause/seek et désactivé hors de cette fenêtre.
+> Le lobby sélectionne par défaut **MP3 soundtrack / Viola's Journey**, sans lecture automatique. Le panneau d'entrée affiche **DEVFEST AI4FUN / AGENDA** ; le shader rétro-gaming commence à **4.3 s** et disparaît à la traversée à **5.925 s** pour dégager le couloir. Le panneau HTTP est déjà présent, perpendiculaire aux murs latéraux et rapproché d'Anne-Flore (ancre 32.75 s, yaw 0) ; sa réponse est à 29 s.
+>
+> **Dernière mise en scène :** le violon et son archet sont agrandis de **25 %** et utilisent le même fondu **17.25–19.05 s** que le nom d'Anne-Flore (alpha et bloom cohérents). L'objectif est maintenant à **76.8 s**, environ **3.4 unités** derrière le panneau de David ; son entrée déclenche un vortex démo-scène jusqu'à 95.6 s, sans supprimer bobines/popcorn (décor cinéma conservé jusqu'à 87.6 s). L'astronaute existant n'est plus dans l'ancien passage spatial : il est face au passage dans le coin après le buffer (ancre 121.75, latéral -8). Le mur près du distributeur porte une pluie de glyphes avec fragments discrets de DEVFEST TOULOUSE. Le terminal npm tape la commande et progresse jusqu'à 4.80 GB ; la fin à **124.4 s** est l'unique cue de départ des boîtes.
+>
+> **SimReady, direction révisée :** voir [docs/simready-integration.md](docs/simready-integration.md). Neuf modèles NVIDIA convertis/licenciés restent inspectables, mais seuls Pong, les références pâtisserie/cassoulet, le distributeur et le bras d'assistance au lancement jouent dans l'intro. **Pas de donut, petit robot ou collision de chariot dans le parcours.** Le distributeur est aligné sans yaw contre la partie gauche du mur frontal du D et reste présent/opaque de 51.18 à 87.6 s ; seuls le texte et l'interaction jouent vers 61.35–65 s, sans apparition brusque du modèle. Pong ne porte plus de panneau « HUMAN vs AI ». Le bras, pré-stagé de 95 à 159 s, reste à côté de la fusée et se rétracte à son lancement existant. Le panneau power-up cassoulet est supprimé : **64 boîtes physiques** tombent à la fin de l'installation simulée, de 124.4 à 134 s, et forment une montagne. Havok calcule ces collisions au chargement à pas fixe, puis les poses sont rejouées exactement. Aucun changement des TV, du texte de David, du spline caméra ou de la musique.
 
 Dépôt : [davrous/DevFestToulouseIntro](https://github.com/davrous/DevFestToulouseIntro).
 
@@ -79,7 +83,7 @@ Configuration : [src/content/speakers.ts](src/content/speakers.ts).
 
 `gateTime` sert aussi d'**ancre spatiale sur la trajectoire**, pas seulement de timestamp. Changer ce nombre déplace le panneau et modifie son angle d'approche. `endTime` n'est pas une garantie que le panneau soit encore dans le champ : la caméra peut déjà l'avoir dépassé.
 
-David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son support physique est visible dès **51.18 s**, comme les autres props cinéma, jusqu'à la traversée optique à 90 s. Son nom garde son fondu à partir de **67 s** et l'enveloppe de présentation **66–83 s**. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
+David est rendu par le monde cinéma, pas par un `SpeakerPortal`. Son support physique est visible dès **51.18 s**, comme les autres props cinéma, jusqu'à la fin du décor cinéma à 87.6 s. Le trajet passe sous sa fiche à 76 s puis dans l'objectif à 76.8 s. Son nom garde son fondu à partir de **67 s** et l'enveloppe de présentation **66–83 s**. Mitsuru utilise `lateralOffset = 1.1` et `gateWidth = 22` pour dégager le mur et cadrer son nom.
 
 Les constantes cinéma de [src/content/showBeats.ts](src/content/showBeats.ts) reprennent certains timings de David : conserver leur cohérence avec la configuration des speakers.
 
@@ -89,10 +93,10 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 
 | Temps, en secondes | Ce que doit comprendre le public |
 | --- | --- |
-| 0–6.4 | DEVFEST AI4FUN / AGENDA, avec les bornes latérales ; shader rétro-gaming plein écran de 4.8 à 6.4 s au passage du panneau, sans énorme borne centrale |
+| 0–5.925 | DEVFEST AI4FUN / AGENDA, avec les bornes latérales ; shader rétro-gaming plein écran de 4.3 à 5.925 s, terminé au passage du panneau |
 | 5–14 | Bornes et pixel art ; plus de panneau chocolatine avant Anne-Flore. Les petits pixels lumineux restent fixes aux murs. Les six grandes plaques lumineuses réactives sont plaquées à 0.01 unité de la surface intérieure des murs, à y = 15 au-dessus des bornes, et non devant leurs écrans |
 | 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; cubes dynamiques Havok à 22, suffisamment tôt pour voir leurs rebonds au sol, puis nettoyés à 38 |
-| 27–34.5 | `GET /pain-au-chocolat` dès 27 s, puis `301 / Location: /chocolatine` dès 30 s, soit 3 s plus tard. Aucune pièce bonus |
+| 27–34.5 | `GET /pain-au-chocolat` déjà présent avant l'approche, face au couloir près d'Anne-Flore ; `301 / Location: /chocolatine` dès 29 s. Aucune pièce bonus |
 | 34.5–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 (38.105 en temps musical Journey) |
 | 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture de la porte vers 42.6 |
 | 46.3–51.03 | LEVEL COMPLETE au-dessus du clap à y = 26, encore visible pendant son approche |
@@ -102,12 +106,14 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 59.4–59.7 | Les CRT affichent DEVFEST simultanément |
 | 66–77, à l'écran | Première de David : lumière avant le fondu du nom, écran physique supporté, zone plus calme |
 | 77–84.5 | Bobines frontales reliées par une pellicule animée ; deux seaux à y = 18, bascule vers l'allée à 77.55, pluie de 72 grains à partir de 78.1, encore devant la caméra avant de passer au-dessus |
-| 84–90 | Approche de la caméra géante déjà visible ; objectif centré sur notre trajectoire |
-| 90–99 | Traversée optique, projecteur à 91.2, espace à 93, retour de l'architecture digitale vers 95 |
+| 74–76.8 | Passage de David puis entrée presque immédiate dans l'objectif fixé derrière sa fiche |
+| 76.8–99 | Vortex cyan/violet jusqu'à 95.6 ; bobines/popcorn préservés jusqu'à 87.6, projecteur à 88.8, espace à 90.6, retour de l'architecture digitale inchangé vers 95 |
 | 99–116 | Eric, premier chapitre du D digital, avec flux de données convergents |
-| 109.5–119 | Rack BUFFER OVERFLOW dans le S ; 32 blocs Havok débordent à 113.2 ; texte terminé à 116.8 avant le cassoulet |
+| 107–116.7 | Bac transparent à droite, yaw pi, perpendiculaire au mur droit. 32 cubes remplissent les mêmes cases ; un 33e cube arrive à 110.7 et déclenche l'eau débordante en shader, puis seulement le texte BUFFER OVERFLOW, terminé à 114.3 |
 | 114–132 | Six structures de données s'élèvent progressivement, pulse mobile et transition cyan → or |
-| 117–125 | `npm install cassoulet / package size: 4.8 GB`, **après Eric**, avant Mitsuru |
+| Après le buffer | Astronaute dans le coin suivant, face à notre arrivée, sans doublon dans l'ancien passage spatial |
+| 117–125 | Vrai aspect terminal : frappe de `$ npm install cassoulet`, curseur, barre de progression des 4.8 GB, fin de l'installation à 124.4 s |
+| 124.4–134 | 64 boîtes de cassoulet tombent à l'instant exact de la fin du terminal ; panier de livraison pour une vraie montagne, aucun panneau power-up |
 | 128–146 | Mitsuru : nom orbital, énergie dorée plus intense, vumètre derrière |
 | 140–149.4 | Fusée au **coin suivant**, avant le virage vers Orbital Link : approche lisible, décollage à 144.6, impact au plafond à 146.8, flash / onde / 240 étincelles ; pad immobile |
 | 143–166 | TOULOUSE / ORBITAL LINK, placé en profondeur et conservé pendant le début du zoom-out |
@@ -161,11 +167,15 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
 | Transition plein écran arcade → ligne de phosphore → CRT, pause / rewind / pipeline | [ClapCrtTransition.ts](src/effects/ClapCrtTransition.ts), [showBeats.ts](src/content/showBeats.ts) |
 | Traversée rétro-gaming du panneau d'entrée, cycle de vie partagé des shaders de transition | [ArcadeEntryTransition.ts](src/effects/ArcadeEntryTransition.ts), [TimedPostProcess.ts](src/effects/TimedPostProcess.ts) |
+| Vortex après l'objectif, sans masquer entièrement bobines et popcorn | [LensVortexTransition.ts](src/effects/LensVortexTransition.ts) |
+| Terminal npm animé et cue partagé avec la pluie de boîtes | [NpmCassouletTerminal.ts](src/scene/NpmCassouletTerminal.ts), [showBeats.ts](src/content/showBeats.ts) |
+| Mur Matrix, atlas de glyphes et signature dissimulée | [MatrixRainWall.ts](src/effects/MatrixRainWall.ts), racine du distributeur dans [SimReadyGags.ts](src/simready/SimReadyGags.ts) |
 | Textures rétro et couverture exacte de la surface courbe des CRT | [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Chargement local, normalisation, instances, clone de caméra et animation du clap | [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
 | Deux seaux / sources, 72 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
 | Progression entre Eric et Mitsuru et flux de données distincts | [DigitalMoments.ts](src/scene/DigitalMoments.ts), [Interior.ts](src/scene/Interior.ts) |
-| Rack BUFFER OVERFLOW, vrais blocs Havok, cleanup / replay dans le S | [DigitalOverflow.ts](src/scene/DigitalOverflow.ts), activation physique dans [App.ts](src/engine/App.ts) |
+| Remplissage du bac BUFFER OVERFLOW, cube supplémentaire et shader d'eau | [DigitalOverflow.ts](src/scene/DigitalOverflow.ts), [BufferWater.ts](src/effects/BufferWater.ts) |
+| Montagne de boîtes de cassoulet, collisions Havok calculées à pas fixe et replay exact | [CassouletPile.ts](src/simready/CassouletPile.ts), [PhysicsBake.ts](src/scene/PhysicsBake.ts) |
 | Portails non cinéma, typographie et présentation orbitale de Mitsuru | [SpeakerPortal.ts](src/scene/SpeakerPortal.ts) |
 | Blagues, cassoulet, orchestration de la fusée, satellite et ORBITAL LINK | [EasterEggs.ts](src/scene/EasterEggs.ts) |
 | Fusée, pad fixe, décollage et explosion déterministes | [DeployRocket.ts](src/scene/DeployRocket.ts), configuration / déplacement dans [showBeats.ts](src/content/showBeats.ts) |
@@ -225,7 +235,7 @@ Le shader est compilé avant SYSTEM READY ; une erreur de compilation remonte à
 - Les racines glTF peuvent avoir une **échelle Z négative** liée au changement de repère. La préserver : la remplacer arbitrairement par une échelle uniforme inverse certains modèles.
 - Les répétitions utilisent des instances partageant la géométrie. La caméra héroïque utilise des **clones partageant la géométrie** : modifier `visibility` sur un `InstancedMesh` ne fonctionne pas et produit des warnings à chaque frame.
 - CRT : conserver le yaw local **-π/2**, recopier la surface courbe **`Object_8`** dans le repère du support, puis refaire les UV 0–1. Cacher les surfaces originales `Object_6` / `Object_8`, pas le boîtier. La conversion glTF rend les rotations intuitives trompeuses : vérifier les coordonnées réelles.
-- La caméra géante est normalisée à 40 ; son objectif est aligné sur l'ancre **90 s** via **`lenses_low_40`**, pas via le centre global du modèle. Elle pointe vers nous avec le yaw de route + π.
+- La caméra géante est normalisée à 40 ; son objectif est aligné sur l'ancre **76.8 s** via **`lenses_low_40`**, pas via le centre global du modèle. Il est à environ 3.4 unités derrière la fiche de David et pointe vers nous avec le yaw de route + π. La fin du décor reste séparée (`auditoriumEnd = 87.6`) pour garder les bobines et popcorn pendant le vortex.
 - Remplacer un GLB impose de revoir ses landmarks, ses axes, sa licence et ses bounds, pas seulement son nom de fichier.
 - Un `BoxBatch` fige sa matrice monde. Si on le parente ensuite à une racine transformée, utiliser le pattern existant d'`unfreezeWorldMatrix()`.
 
@@ -242,7 +252,7 @@ Le shader est compilé avant SYSTEM READY ; une erreur de compilation remonte à
 
 ### Havok et pop-corn
 
-Havok simule les cubes du violon / archet de **22 à 38 s**, les pièces / le mur du T, **72 grains** de 78.1 à 84.5 s, puis **32 blocs** du buffer de 113.2 à 119 s. L'application ne fait avancer la physique que pendant la lecture et ces fenêtres. Le violon utilise les thin instances avant la chute, puis des cubes individuels avec collisions au sol, sans dispersion animée vers le plafond. Le rack de données a un sol et un plateau colliders ; ses blocs sont maintenus avant le débordement, puis réellement dynamiques. Nettoyage à la sortie de fenêtre et reconstruction au seek / rewind.
+Havok simule en direct les cubes du violon / archet de **22 à 38 s**, le mur du T et **72 grains** de 78.1 à 84.5 s. L'application ne fait avancer la physique live que pendant ces fenêtres. Le violon utilise les thin instances avant la chute, puis des cubes individuels avec collisions au sol. Les **64 boîtes** du cassoulet sont calculées par le même Havok au chargement, à **60 pas fixes/s**, avec cylindres, panier, sol et murs réels du couloir. Les corps temporaires sont ensuite détruits et seules les poses sont rejouées pour des seeks/restarts exacts. Le bac BUFFER OVERFLOW n'éparpille plus ses cubes : 32 restent dans le même volume, le cube supplémentaire provoque l'eau en shader et le texte seulement à son arrivée. Aucun second moteur physique ni simulation de fluide coûteuse.
 
 Les deux seaux sont ancrés à **80.4 s**, offsets latéraux **-5 / +5**, hauteur **18**, taille verticale **4.8**. Leur inclinaison est symétrique dans le repère de la route, vers l'allée. Le déversement débute une fois la bascule terminée, par vagues de six grains par côté espacées de 0.12 s. Les vitesses initiales visent la future position de la caméra à hauteur de tête ; Havok assure ensuite les collisions et le rebond au sol. Le public doit voir les seaux basculer avant de traverser les grains. Le collider de sol couvre tout l'auditorium et ses parois latérales retiennent les grains du déversement anticipé.
 

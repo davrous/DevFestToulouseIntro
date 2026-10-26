@@ -43,8 +43,9 @@ describe("wall-mounted pixel art", () => {
     expect(cameraPose(ARCADE_ENTRY.cross - .05).position.z).toBeLessThan(screen.position.z);
     expect(cameraPose(ARCADE_ENTRY.cross + .05).position.z).toBeGreaterThan(screen.position.z);
     arcade.update(ARCADE_ENTRY.start, silentFeatures());
-    expect(screen.visibility).toBeGreaterThan(0);
-    expect(screen.visibility).toBeLessThan(1);
+    expect(screen.visibility).toBe(1);
+    arcade.update((ARCADE_ENTRY.panelFadeStart + ARCADE_ENTRY.panelFadeEnd) / 2, silentFeatures());
+    expect(screen.visibility).toBeCloseTo(.5);
     arcade.update(ARCADE_ENTRY.cross, silentFeatures());
     expect(screen.visibility).toBe(0);
     expect(scene.getMeshByName("FX/Arcade portal CRT scanlines")?.isEnabled()).toBe(false);

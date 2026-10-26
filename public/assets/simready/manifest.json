@@ -1,0 +1,573 @@
+{
+  "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+  "assets": [
+    {
+      "id": "croissant",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 1,
+      "min": [
+        -0.03168771415948868,
+        9.30987880565226e-06,
+        -0.07032990455627441
+      ],
+      "max": [
+        0.03518761694431305,
+        0.04330093041062355,
+        0.06971060484647751
+      ],
+      "dimensions": [
+        0.06687533110380173,
+        0.0432916205318179,
+        0.14004050940275192
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 8206,
+      "optimizedTriangles": 8206,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 1,
+      "components": [
+        "sm_food_prepared_croissant_a01_mesh_00.001"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image."
+      ],
+      "portalClearance": null,
+      "bytes": 3538068,
+      "meshes": 1,
+      "materials": 1,
+      "textures": 3,
+      "vertices": 6238,
+      "triangles": 8206,
+      "extensions": [],
+      "source": "food_prepared_croissant_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/food_prepared_croissant_a01",
+      "url": "./assets/simready/croissant.glb",
+      "sha256": "2557642e24d88b373343f0ed1b38e7b42af303f53a6bdbe559ff0be25106c8ad",
+      "signature": "8a22646bba65cdc5abe878407772ff9c504975e2bc10cff57df35f0ab0c36872",
+      "sourceBytes": 13242202,
+      "sourceFiles": 46,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "snackVendingMachine",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 44,
+      "min": [
+        -0.428166925907135,
+        -0.6770265102386475,
+        -0.5190975069999695
+      ],
+      "max": [
+        0.6018441915512085,
+        1.8473014831542969,
+        0.49036791920661926
+      ],
+      "dimensions": [
+        1.0300111174583435,
+        2.5243279933929443,
+        1.0094654262065887
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 994038,
+      "optimizedTriangles": 152085,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 44,
+      "components": [
+        "body_01_mesh_00",
+        "button_01_mesh_00",
+        "button_02_mesh_00",
+        "button_03_mesh_00",
+        "button_04_mesh_00",
+        "door_01_mesh_00",
+        "glass_01_mesh_00",
+        "lid_01_mesh_00",
+        "spring_01_mesh_00",
+        "spring_02_mesh_00",
+        "spring_03_mesh_00",
+        "spring_04_mesh_00",
+        "spring_05_mesh_00",
+        "spring_06_mesh_00",
+        "spring_07_mesh_00",
+        "spring_08_mesh_00",
+        "spring_09_mesh_00",
+        "spring_10_mesh_00",
+        "spring_11_mesh_00",
+        "spring_12_mesh_00",
+        "spring_13_mesh_00",
+        "spring_14_mesh_00",
+        "spring_15_mesh_00",
+        "spring_16_mesh_00",
+        "spring_17_mesh_00",
+        "spring_18_mesh_00",
+        "spring_19_mesh_00",
+        "spring_20_mesh_00",
+        "spring_21_mesh_00",
+        "spring_22_mesh_00",
+        "spring_23_mesh_00",
+        "spring_24_mesh_00",
+        "spring_25_mesh_00",
+        "spring_26_mesh_00",
+        "spring_27_mesh_00",
+        "spring_28_mesh_00",
+        "spring_29_mesh_00",
+        "spring_30_mesh_00",
+        "spring_31_mesh_00",
+        "spring_32_mesh_00",
+        "spring_33_mesh_00",
+        "spring_34_mesh_00",
+        "spring_35_mesh_00",
+        "spring_36_mesh_00"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "Glass converted to inexpensive alpha-blended thin PBR glass instead of runtime transmission.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.",
+        "Runtime-only mesh reduction: 994038 to 152085 triangles across 38 dense meshes; original USDs preserved."
+      ],
+      "portalClearance": null,
+      "bytes": 32190000,
+      "meshes": 44,
+      "materials": 13,
+      "textures": 34,
+      "vertices": 377464,
+      "triangles": 152085,
+      "extensions": [
+        "KHR_materials_emissive_strength",
+        "KHR_texture_transform"
+      ],
+      "source": "machine_vending_snacksDrinks_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/machine_vending_snacksDrinks_a01",
+      "url": "./assets/simready/snackVendingMachine.glb",
+      "sha256": "5b353122ee99e53836b1bcbc52721637f858deabc7df9a4aa49522f01b5c91fd",
+      "signature": "2e82294521d9cedf4aa3d805bce7f00541b957d3419baeb7872e8f0aeeda3bb3",
+      "sourceBytes": 879285041,
+      "sourceFiles": 228,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "pongPaddle",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 1,
+      "min": [
+        -0.1530243158340454,
+        1.870749865781618e-12,
+        -0.07620704174041748
+      ],
+      "max": [
+        0.10875782370567322,
+        0.03112764284014702,
+        0.07620704174041748
+      ],
+      "dimensions": [
+        0.26178213953971863,
+        0.03112764283827627,
+        0.15241408348083496
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 4182,
+      "optimizedTriangles": 4182,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 1,
+      "components": [
+        "body_01_mesh_00"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.",
+        "The active Vertex Color will not be exported, as it is not used in the node tree of the material"
+      ],
+      "portalClearance": null,
+      "bytes": 6157412,
+      "meshes": 1,
+      "materials": 1,
+      "textures": 3,
+      "vertices": 2830,
+      "triangles": 4182,
+      "extensions": [],
+      "source": "misc_toy_pongPaddle_bat_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/misc_toy_pongPaddle_bat_a01",
+      "url": "./assets/simready/pongPaddle.glb",
+      "sha256": "0145f5e6fd9647107246360bda35ad2c86fdbe29433f108bdaee9cb25ed91db6",
+      "signature": "2307ac7bf5936860b5b046cfcf2b83ef50d1620cb6cfb5900749e82e0bb823b2",
+      "sourceBytes": 171801752,
+      "sourceFiles": 46,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "pongBall",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 1,
+      "min": [
+        -0.01906478777527809,
+        0.0,
+        -0.01902969367802143
+      ],
+      "max": [
+        0.01906478777527809,
+        0.03803988918662071,
+        0.01902969367802143
+      ],
+      "dimensions": [
+        0.03812957555055618,
+        0.03803988918662071,
+        0.03805938735604286
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 1620,
+      "optimizedTriangles": 1620,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 1,
+      "components": [
+        "body_01_mesh_00"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.",
+        "The active Vertex Color will not be exported, as it is not used in the node tree of the material"
+      ],
+      "portalClearance": null,
+      "bytes": 6055204,
+      "meshes": 1,
+      "materials": 1,
+      "textures": 3,
+      "vertices": 857,
+      "triangles": 1620,
+      "extensions": [],
+      "source": "misc_toy_pongPaddle_ball_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/misc_toy_pongPaddle_ball_a01",
+      "url": "./assets/simready/pongBall.glb",
+      "sha256": "f32ed97453b9e5a59ddbf702d8613c2f09cc2dbafa268b1fc0227f52da9883d5",
+      "signature": "f77ad6be4da5819768215395d92df7e5d046b8afdf929610b476579b81d838d9",
+      "sourceBytes": 168098230,
+      "sourceFiles": 46,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "cassouletCan",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 1,
+      "min": [
+        -0.03801557794213295,
+        2.609368948469637e-06,
+        -0.038002755492925644
+      ],
+      "max": [
+        0.03799842298030853,
+        0.10202401876449585,
+        0.03801395371556282
+      ],
+      "dimensions": [
+        0.07601400092244148,
+        0.10202140939554738,
+        0.07601670920848846
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 118456,
+      "optimizedTriangles": 20000,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 1,
+      "components": [
+        "body_01_mesh_00"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.",
+        "Runtime-only mesh reduction: 118456 to 20000 triangles across 1 dense meshes; original USDs preserved.",
+        "The active Vertex Color will not be exported, as it is not used in the node tree of the material"
+      ],
+      "portalClearance": null,
+      "bytes": 3133344,
+      "meshes": 1,
+      "materials": 1,
+      "textures": 3,
+      "vertices": 20130,
+      "triangles": 20000,
+      "extensions": [],
+      "source": "food_canned_beans_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/food_canned_beans_a01",
+      "url": "./assets/simready/cassouletCan.glb",
+      "sha256": "21711913217b0aaece0bc922bb45c82db2199c57efdb55e3d5dae2200da5788c",
+      "signature": "2715958db95881c173ad20f22eb79ad04a08a94ed4438a8949676a7c5710bc53",
+      "sourceBytes": 66713185,
+      "sourceFiles": 46,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "donut",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 1,
+      "min": [
+        -0.048168011009693146,
+        0.0,
+        -0.05249999836087227
+      ],
+      "max": [
+        0.048168011009693146,
+        0.04429972544312477,
+        0.05249999836087227
+      ],
+      "dimensions": [
+        0.09633602201938629,
+        0.04429972544312477,
+        0.10499999672174454
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 15544,
+      "optimizedTriangles": 15544,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 1,
+      "components": [
+        "sm_food_prepared_donut_a01_01_mesh_00.001"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image."
+      ],
+      "portalClearance": {
+        "sourceHoleRadius": 0.013852329358133237,
+        "radiusAt18Units": 2.3746851069640256
+      },
+      "bytes": 4867720,
+      "meshes": 1,
+      "materials": 1,
+      "textures": 3,
+      "vertices": 14823,
+      "triangles": 15544,
+      "extensions": [],
+      "source": "food_prepared_donut_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/food_prepared_donut_a01",
+      "url": "./assets/simready/donut.glb",
+      "sha256": "41887cb87671927f17e9cd85b4ab846e57c29a9aa72ef19102fa7f3f31681e7c",
+      "signature": "b7e9dc517ed96b65a3e8902a0ad9f64d0abe78c093b9b1c9b6ea04a6b0d1c53c",
+      "sourceBytes": 37434277,
+      "sourceFiles": 46,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "smallRobot",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 11,
+      "min": [
+        -0.6495493650436401,
+        -0.034854065626859665,
+        -0.6328416466712952
+      ],
+      "max": [
+        0.35513877868652344,
+        0.19498705863952637,
+        0.3440515995025635
+      ],
+      "dimensions": [
+        1.0046881437301636,
+        0.22984112426638603,
+        0.9768932461738586
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 559808,
+      "optimizedTriangles": 101436,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 11,
+      "components": [
+        "body_01_mesh_00",
+        "cylinder_01_mesh_00",
+        "frontWheel_01_mesh_00",
+        "glass_01_mesh_00",
+        "glassCover_01_mesh_00",
+        "led_01_mesh_00",
+        "leftSweep_01_mesh_00",
+        "leftWheel_01_mesh_00",
+        "rightSweep_01_mesh_00",
+        "rightWheel_a01_mesh_00",
+        "sensors_01_mesh_00"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "Glass converted to inexpensive alpha-blended thin PBR glass instead of runtime transmission.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.",
+        "Runtime-only mesh reduction: 559808 to 101436 triangles across 2 dense meshes; original USDs preserved.",
+        "The active Vertex Color will not be exported, as it is not used in the node tree of the material",
+        "Warning: in _EnqueueDependency at line 103 of /Users/jonas/blender-dev/build_darwin/deps_arm64/build/usd/src/external_usd/pxr/usd/usdUtils/assetLocalization.cpp -- Failed to resolve reference @../Textures/t_robotics_small_bot_a01_albedo.<UDIM>.png@ with computed asset path @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/robotics_small_bot_a01/simready_usd/Textures/t_robotics_small_bot_a01_albedo.<UDIM>.png@ found in layer @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/robotics_small_bot_a01/simready_usd/payloads/materials.usda@.",
+        "Warning: in _EnqueueDependency at line 103 of /Users/jonas/blender-dev/build_darwin/deps_arm64/build/usd/src/external_usd/pxr/usd/usdUtils/assetLocalization.cpp -- Failed to resolve reference @../Textures/t_robotics_small_bot_a01_normal.<UDIM>.png@ with computed asset path @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/robotics_small_bot_a01/simready_usd/Textures/t_robotics_small_bot_a01_normal.<UDIM>.png@ found in layer @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/robotics_small_bot_a01/simready_usd/payloads/materials.usda@.",
+        "Warning: in _EnqueueDependency at line 103 of /Users/jonas/blender-dev/build_darwin/deps_arm64/build/usd/src/external_usd/pxr/usd/usdUtils/assetLocalization.cpp -- Failed to resolve reference @../Textures/t_robotics_small_bot_a01_orm.<UDIM>.png@ with computed asset path @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/robotics_small_bot_a01/simready_usd/Textures/t_robotics_small_bot_a01_orm.<UDIM>.png@ found in layer @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/robotics_small_bot_a01/simready_usd/payloads/materials.usda@."
+      ],
+      "portalClearance": null,
+      "bytes": 5848552,
+      "meshes": 11,
+      "materials": 4,
+      "textures": 6,
+      "vertices": 179301,
+      "triangles": 77546,
+      "extensions": [],
+      "source": "robotics_small_bot_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/robotics_small_bot_a01",
+      "url": "./assets/simready/smallRobot.glb",
+      "sha256": "f5192f6c9e3117cfe5afa8104cd8992515dc35d266fa0be1aa2c9e493875e376",
+      "signature": "ae7342ce2e6b9b32ef33076ebd06c1c32d9f49ec6092867df755ec05366395c1",
+      "sourceBytes": 622621555,
+      "sourceFiles": 102,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "forklift",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 15,
+      "min": [
+        -0.4103080630302429,
+        -0.5714811682701111,
+        -0.3401886820793152
+      ],
+      "max": [
+        0.4106474220752716,
+        1.9612435102462769,
+        1.3025959730148315
+      ],
+      "dimensions": [
+        0.8209554851055145,
+        2.532724678516388,
+        1.6427846550941467
+      ],
+      "textureLimit": 1024,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 329976,
+      "optimizedTriangles": 84641,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 15,
+      "components": [
+        "sm_body_a01_mesh_00",
+        "sm_button1_a01_mesh_00",
+        "sm_button2_a01_mesh_00",
+        "sm_button3_a01_mesh_00",
+        "sm_fork_a01_mesh_00",
+        "sm_forkwheels1_a01_mesh_00",
+        "sm_forkwheels2_a01_mesh_00",
+        "sm_glass_a01_mesh_00",
+        "sm_handle_a01_mesh_00",
+        "sm_ruddebase_a01_mesh_00",
+        "sm_rudder_a01_mesh_00",
+        "sm_wheel1_a01_mesh_00",
+        "sm_wheel2_a01_mesh_00",
+        "sm_wheel3_a01_mesh_00",
+        "sm_wheel4_a01_mesh_00"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "Glass converted to inexpensive alpha-blended thin PBR glass instead of runtime transmission.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.",
+        "Runtime-only mesh reduction: 329976 to 84641 triangles across 3 dense meshes; original USDs preserved.",
+        "The active Vertex Color will not be exported, as it is not used in the node tree of the material",
+        "Warning: in _EnqueueDependency at line 103 of /Users/jonas/blender-dev/build_darwin/deps_arm64/build/usd/src/external_usd/pxr/usd/usdUtils/assetLocalization.cpp -- Failed to resolve reference @../Textures/T_Forklift_A1_Albedo.<UDIM>.png@ with computed asset path @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/vehicle_forklift_orange_a01/simready_usd/Textures/T_Forklift_A1_Albedo.<UDIM>.png@ found in layer @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/vehicle_forklift_orange_a01/simready_usd/payloads/materials.usda@.",
+        "Warning: in _EnqueueDependency at line 103 of /Users/jonas/blender-dev/build_darwin/deps_arm64/build/usd/src/external_usd/pxr/usd/usdUtils/assetLocalization.cpp -- Failed to resolve reference @../Textures/T_Forklift_A1_Normal.<UDIM>.png@ with computed asset path @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/vehicle_forklift_orange_a01/simready_usd/Textures/T_Forklift_A1_Normal.<UDIM>.png@ found in layer @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/vehicle_forklift_orange_a01/simready_usd/payloads/materials.usda@.",
+        "Warning: in _EnqueueDependency at line 103 of /Users/jonas/blender-dev/build_darwin/deps_arm64/build/usd/src/external_usd/pxr/usd/usdUtils/assetLocalization.cpp -- Failed to resolve reference @../Textures/T_Forklift_A1_ORM.<UDIM>.png@ with computed asset path @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/vehicle_forklift_orange_a01/simready_usd/Textures/T_Forklift_A1_ORM.<UDIM>.png@ found in layer @/Users/davrous/Dev/DevFestToulouseIntro/assets/simready/source/vehicle_forklift_orange_a01/simready_usd/payloads/materials.usda@."
+      ],
+      "portalClearance": null,
+      "bytes": 3589916,
+      "meshes": 15,
+      "materials": 4,
+      "textures": 1,
+      "vertices": 217715,
+      "triangles": 58646,
+      "extensions": [],
+      "source": "vehicle_forklift_orange_a01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/vehicle_forklift_orange_a01",
+      "url": "./assets/simready/forklift.glb",
+      "sha256": "6da5ceb167b8eb4ed6344265bc5667d46428391e919bef478017506003520e96",
+      "signature": "24b00cc039221ec0dd4d85128f48efd8d5de63ac2ff4c53d6e206f376de12f57",
+      "sourceBytes": 41597778,
+      "sourceFiles": 94,
+      "status": "converted-reimported"
+    },
+    {
+      "id": "robotArm",
+      "blenderVersion": "4.5.4 LTS",
+      "usdRenderMeshes": 15,
+      "min": [
+        -0.18998277187347412,
+        -0.06625126302242279,
+        -0.18997284770011902
+      ],
+      "max": [
+        0.5681975483894348,
+        0.807466447353363,
+        0.19073952734470367
+      ],
+      "dimensions": [
+        0.7581803202629089,
+        0.8737177103757858,
+        0.3807123750448227
+      ],
+      "textureLimit": 512,
+      "sourceUnits": 1.0,
+      "sourceTriangles": 785902,
+      "optimizedTriangles": 247139,
+      "sourceUpAxis": "Z",
+      "reimportedMeshes": 15,
+      "components": [
+        "armBase_01_mesh_00",
+        "armheight_01_mesh_00",
+        "armShoulder_01_mesh_00",
+        "armShoulder_02_mesh_00",
+        "armShoulder_03_mesh_00",
+        "armShoulder_04_mesh_00",
+        "body_01_mesh_00",
+        "wheel_01_mesh_00",
+        "wheel_02_mesh_00",
+        "wheel_03_mesh_00",
+        "wheel_04_mesh_00",
+        "wheelBase_01_mesh_00",
+        "wheelBase_02_mesh_00",
+        "wheelBase_03_mesh_00",
+        "wheelBase_04_mesh_00"
+      ],
+      "warnings": [
+        "Explicit tangents omitted: Babylon derives tangent frames from preserved UVs/normals, avoiding zero-length tangents on degenerate source UV faces.",
+        "More than one shader node tex image used for a texture. The resulting glTF sampler will behave like the first shader node tex image.",
+        "Runtime-only mesh reduction: 785902 to 247139 triangles across 7 dense meshes; original USDs preserved."
+      ],
+      "portalClearance": null,
+      "bytes": 17646144,
+      "meshes": 15,
+      "materials": 12,
+      "textures": 34,
+      "vertices": 507065,
+      "triangles": 247139,
+      "extensions": [
+        "KHR_materials_emissive_strength",
+        "KHR_texture_transform"
+      ],
+      "source": "robotic_system_arm_b01",
+      "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+      "license": "CC-BY-4.0",
+      "sourceUrl": "https://huggingface.co/datasets/nvidia/simready-assets/tree/524747d9b5e1f21b5b18b56041788c01d745f1a1/robotic_system_arm_b01",
+      "url": "./assets/simready/robotArm.glb",
+      "sha256": "dad2b613416609cbca9ee78bb3bba0de37447b34da6f0fdd8379b5dabbb4ca30",
+      "signature": "7c95fdb342213ef7ac149743b362cbfbc24af5e434985dc1fb59ba1e7c6f0dbf",
+      "sourceBytes": 1449598006,
+      "sourceFiles": 208,
+      "status": "converted-reimported"
+    }
+  ]
+}

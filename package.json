@@ -12,6 +12,8 @@
     "preview": "vite preview --host 127.0.0.1",
     "test": "vitest run",
     "analyze:journey": "node scripts/analyze-journey.mjs",
+    "simready:validate": "node scripts/validate-simready.mjs",
+    "verify:simready": "npm run build && node scripts/verify-simready.mjs",
     "verify:av": "node scripts/verify-av.mjs",
     "bridge": "node scripts/bridge.mjs"
   },
@@ -29,6 +31,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.6.3",
+    "gltf-validator": "2.0.0-dev.3.10",
     "playwright": "1.63.0",
     "typescript": "~5.9.3",
     "vite": "^7.1.7",

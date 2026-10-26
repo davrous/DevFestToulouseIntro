@@ -1,16 +1,16 @@
 import map from "./violasJourney.json";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
-import { CINEMA, DEPLOY_ROCKET } from "../content/showBeats";
+import { BUFFER_OVERFLOW, CINEMA, DEPLOY_ROCKET } from "../content/showBeats";
 
 export const JOURNEY_TRANSITIONS = [
   { event: "violin", time: 22, onset: 22.141 },
   { event: "legacy", time: 38.2, onset: 38.105 },
   { event: "clap", time: CINEMA.clap, onset: 50.876 },
   { event: "crt", time: CINEMA.crtSync, onset: 59.346 },
+  { event: "lens", time: CINEMA.lens, onset: 76.827 },
   { event: "popcorn", time: CINEMA.popcorn, onset: 78.154 },
-  { event: "lens", time: CINEMA.lens, onset: 90.017 },
   { event: "digital", time: CINEMA.digital, onset: 94.985 },
-  { event: "overflow", time: 113.2, onset: 113.344 },
+  { event: "overflow", time: BUFFER_OVERFLOW.spill, onset: 110.7 },
   { event: "launch", time: DEPLOY_ROCKET.launch, onset: 144.643 },
   { event: "impact", time: DEPLOY_ROCKET.impact, onset: 146.618 },
   { event: "exit", time: 159, onset: 158.85 },
@@ -18,11 +18,16 @@ export const JOURNEY_TRANSITIONS = [
 
 export const JOURNEY_REVEAL = 172.569;
 const WINDOW = .75;
+const transitionWindows = JOURNEY_TRANSITIONS.map((cue, index, cues) => ({
+  ...cue,
+  radius: Math.min(WINDOW, index ? (cue.onset - cues[index - 1].onset) / 2 : WINDOW,
+    index + 1 < cues.length ? (cues[index + 1].onset - cue.onset) / 2 : WINDOW),
+}));
 
 export function journeyEffectTime(time: number): number {
   if (!Number.isFinite(time)) throw new RangeError("Journey effect time must be finite.");
-  for (const cue of JOURNEY_TRANSITIONS) {
-    const weight = 1 - Math.abs(time - cue.onset) / WINDOW;
+  for (const cue of transitionWindows) {
+    const weight = 1 - Math.abs(time - cue.onset) / cue.radius;
     if (weight > 0) return time + (cue.time - cue.onset) * weight;
   }
   return time;

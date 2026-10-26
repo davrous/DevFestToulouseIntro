@@ -17,7 +17,7 @@ export function arcadeEntryState(time: number): ArcadeEntryState {
   const active = time > ARCADE_ENTRY.start && time < ARCADE_ENTRY.end;
   if (!active) return { active: false, elapsed: 0, strength: 0, burst: 0 };
   const strength = cueEnvelope(time, ARCADE_ENTRY.start, ARCADE_ENTRY.end, .3, .4);
-  const distance = (time - ARCADE_ENTRY.cross) / .18;
+  const distance = (time - (ARCADE_ENTRY.cross - .4)) / .18;
   return {
     active, elapsed: time - ARCADE_ENTRY.start, strength,
     burst: strength * Math.exp(-distance * distance),

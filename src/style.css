@@ -10,6 +10,18 @@
 }
 * { box-sizing: border-box; }
 body { margin: 0; overflow: hidden; }
+.simready-viewer { position: fixed; top: 16px; right: 16px; bottom: 16px; width: 330px; padding: 20px; overflow: auto; background: #07151ef2; border: 1px solid #8cf0d244; color: #ddf6ed; font: 12px/1.5 Consolas, monospace; }
+.simready-viewer h2 { font-size: 15px; }
+.simready-viewer a { color: #8cf0d2; }
+.simready-viewer select { display: block; width: 100%; margin: 18px 0; padding: 8px; }
+.simready-viewer label { display: flex; gap: 10px; align-items: center; margin: 10px 0; }
+.simready-viewer pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 10px; }
+.simready-debug { margin: 18px 0; padding-top: 12px; border-top: 1px solid #4d6b6d; }
+.simready-debug summary { color: #9bffe3; cursor: pointer; margin-bottom: 12px; }
+.simready-debug select, .simready-debug > a, .simready-debug > button { display: block; width: 100%; margin: 10px 0; }
+.simready-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 12px; }
+.simready-settings label { display: flex; flex-direction: column; font-size: 10px; }
+.simready-settings input { width: 100%; padding: 3px; }
 button, input, select { font: inherit; }
 button, a, input, select { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }

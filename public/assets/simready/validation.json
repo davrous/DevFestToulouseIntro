@@ -1,0 +1,3301 @@
+{
+  "revision": "524747d9b5e1f21b5b18b56041788c01d745f1a1",
+  "reports": [
+    {
+      "id": "croissant",
+      "uri": "croissant.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.047Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 1,
+        "numInfos": 3,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/0/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/5"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/6"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 3535768
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 6238,
+        "totalTriangleCount": 8206,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "id": "snackVendingMachine",
+      "uri": "snackVendingMachine.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.186Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 91,
+        "numInfos": 47,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/2/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/3/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/4/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/5/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/6/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/7/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/8/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/9/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/10/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/2/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/3/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/4/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/1/material"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/7/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/7/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/8/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/8/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/9/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/9/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/10/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/10/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/11/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/11/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/12/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/12/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/13/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/13/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/14/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/14/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/15/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/15/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/16/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/16/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/17/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/17/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/18/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/18/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/19/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/19/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/20/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/20/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/21/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/21/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/22/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/22/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/23/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/23/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/24/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/24/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/25/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/25/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/26/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/26/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/27/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/27/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/28/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/28/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/29/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/29/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/30/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/30/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/31/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/31/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/32/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/32/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/33/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/33/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/34/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/34/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/35/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/35/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/36/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/36/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/37/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/37/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/38/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/38/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/39/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/39/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/40/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/40/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/41/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/41/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/42/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/42/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/43/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/43/primitives/1/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/4"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/7"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/10"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/13"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/16"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/19"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/22"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/25"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/28"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/31"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/34"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/37"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/40"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/43"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/46"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/49"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/52"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/55"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/58"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/61"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/64"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/67"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/70"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/73"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/76"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/79"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/82"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/85"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/88"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/91"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/94"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/97"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/100"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/103"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/106"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/109"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/112"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/115"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/118"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/121"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/124"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/127"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/130"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/133"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/134"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "extensionsUsed": [
+          "KHR_materials_emissive_strength",
+          "KHR_texture_transform"
+        ],
+        "extensionsRequired": [
+          "KHR_texture_transform"
+        ],
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 32124080
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/3",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/4",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/5",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/6",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/7",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/8",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/9",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/10",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/11",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/12",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/13",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/14",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/15",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/16",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/17",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/18",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/19",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/20",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/21",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/22",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/23",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/24",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/25",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/26",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/27",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/28",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/29",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/30",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/31",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/32",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 13,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 92,
+        "totalVertexCount": 377464,
+        "totalTriangleCount": 152085,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "id": "pongPaddle",
+      "uri": "pongPaddle.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.204Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 1,
+        "numInfos": 3,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/0/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/4"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/5"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 6154920
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 2830,
+        "totalTriangleCount": 4182,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "id": "pongBall",
+      "uri": "pongBall.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.219Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 1,
+        "numInfos": 3,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/0/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/4"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/5"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 6052736
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 857,
+        "totalTriangleCount": 1620,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "id": "cassouletCan",
+      "uri": "cassouletCan.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.241Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 2,
+        "numInfos": 3,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/1/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/4"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/5"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 3130624
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 2,
+        "totalVertexCount": 20130,
+        "totalTriangleCount": 20000,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "id": "donut",
+      "uri": "donut.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.270Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 1,
+        "numInfos": 3,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/0/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/5"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/6"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 4865416
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 1,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 1,
+        "totalVertexCount": 14823,
+        "totalTriangleCount": 15544,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    },
+    {
+      "id": "smallRobot",
+      "uri": "smallRobot.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.327Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 2,
+        "numInfos": 33,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/0/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/0/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/1/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/1/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/2/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/2/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/3/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/4/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/0/material"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/6/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/6/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/7/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/7/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/8/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/8/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/8/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/9/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/9/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/10/primitives/0/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/4"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/7"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/10"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/13"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/16"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/19"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/22"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/25"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/28"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/31"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/34"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/35"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 5829480
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 4,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 22,
+        "totalVertexCount": 179301,
+        "totalTriangleCount": 77546,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "id": "forklift",
+      "uri": "forklift.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.397Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 0,
+        "numInfos": 49,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/0/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/0/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/0/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/1/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/2/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/3/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/3/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/4/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/4/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/4/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/5/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/5/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/6/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/6/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/7/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/8/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/8/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/8/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/9/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/9/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/9/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/10/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/10/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/10/primitives/2/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/11/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/11/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/12/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/12/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/13/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/13/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/14/primitives/0/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "UNUSED_OBJECT",
+            "message": "This object may be unused.",
+            "severity": 2,
+            "pointer": "/meshes/14/primitives/1/attributes/TEXCOORD_0"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/4"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/7"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/10"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/13"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/16"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/19"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/22"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/25"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/28"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/31"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/34"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/37"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/40"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/43"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/46"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/47"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 3563984
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 1024,
+              "height": 1024,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 4,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 34,
+        "totalVertexCount": 217715,
+        "totalTriangleCount": 58646,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 5
+      }
+    },
+    {
+      "id": "robotArm",
+      "uri": "robotArm.glb",
+      "mimeType": "model/gltf-binary",
+      "validatorVersion": "2.0.0-dev.3.10",
+      "validatedAt": "2026-10-26T12:30:30.541Z",
+      "issues": {
+        "numErrors": 0,
+        "numWarnings": 45,
+        "numInfos": 17,
+        "numHints": 0,
+        "messages": [
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/0/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/2/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/3/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/4/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/5/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/6/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/1/primitives/7/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/2/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/2/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/2/primitives/2/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/3/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/3/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/4/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/4/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/2/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/3/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/5/primitives/4/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/2/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/3/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/4/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/5/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/6/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/6/primitives/7/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/7/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/7/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/8/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/8/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/9/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/9/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/10/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/10/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/11/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/11/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/12/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/12/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/13/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/13/primitives/1/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/14/primitives/0/material"
+          },
+          {
+            "code": "MESH_PRIMITIVE_GENERATED_TANGENT_SPACE",
+            "message": "Material requires a tangent space but the mesh primitive does not provide it. Runtime-generated tangent space may be non-portable across implementations.",
+            "severity": 1,
+            "pointer": "/meshes/14/primitives/1/material"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/1"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/4"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/7"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/10"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/13"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/16"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/19"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/22"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/25"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/28"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/31"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/34"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/37"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/40"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/43"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/46"
+          },
+          {
+            "code": "NODE_EMPTY",
+            "message": "Empty node encountered.",
+            "severity": 2,
+            "pointer": "/nodes/47"
+          }
+        ],
+        "truncated": false
+      },
+      "info": {
+        "version": "2.0",
+        "generator": "Khronos glTF Blender I/O v4.5.49",
+        "extensionsUsed": [
+          "KHR_materials_emissive_strength",
+          "KHR_texture_transform"
+        ],
+        "extensionsRequired": [
+          "KHR_texture_transform"
+        ],
+        "resources": [
+          {
+            "pointer": "/buffers/0",
+            "mimeType": "application/gltf-buffer",
+            "storage": "glb",
+            "byteLength": 17615316
+          },
+          {
+            "pointer": "/images/0",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/1",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/2",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/3",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/4",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/5",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/6",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/7",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/8",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/9",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/10",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/11",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/12",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/13",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/14",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/15",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/16",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/17",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/18",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/19",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/20",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/21",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/22",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgba",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/23",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 16
+            }
+          },
+          {
+            "pointer": "/images/24",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/25",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/26",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/27",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/28",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/29",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/30",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          },
+          {
+            "pointer": "/images/31",
+            "mimeType": "image/png",
+            "storage": "buffer-view",
+            "image": {
+              "width": 512,
+              "height": 512,
+              "format": "rgb",
+              "primaries": "srgb",
+              "transfer": "srgb",
+              "bits": 8
+            }
+          }
+        ],
+        "animationCount": 0,
+        "materialCount": 12,
+        "hasMorphTargets": false,
+        "hasSkins": false,
+        "hasTextures": true,
+        "hasDefaultScene": true,
+        "drawCallCount": 45,
+        "totalVertexCount": 507065,
+        "totalTriangleCount": 247139,
+        "maxUVs": 1,
+        "maxInfluences": 0,
+        "maxAttributes": 3
+      }
+    }
+  ]
+}

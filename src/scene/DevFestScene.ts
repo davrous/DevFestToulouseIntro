@@ -36,11 +36,13 @@ import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
 import { ClapCrtTransition } from "../effects/ClapCrtTransition";
 import { ArcadeEntryTransition } from "../effects/ArcadeEntryTransition";
+import { LensVortexTransition } from "../effects/LensVortexTransition";
 import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
 import { CinemaPopcorn } from "./CinemaPopcorn";
 import { DigitalMoments } from "./DigitalMoments";
 import { DigitalOverflow } from "./DigitalOverflow";
+import { SimReadyGags } from "../simready/SimReadyGags";
 import HavokPhysics from "@babylonjs/havok";
 import havokWasm from "@babylonjs/havok/lib/esm/HavokPhysics.wasm?url";
 import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
@@ -55,6 +57,7 @@ export class DevFestScene {
   readonly pipeline: DefaultRenderingPipeline;
   readonly glow: GlowLayer;
   readonly portals: SpeakerPortal[];
+  readonly simready: SimReadyGags;
   private readonly easterEggs: EasterEggs;
   private readonly arcade: ArcadeT;
   private readonly arcadePhysics: ArcadePhysics;
@@ -71,6 +74,7 @@ export class DevFestScene {
   private readonly overflow: DigitalOverflow;
   private readonly clapTransition: ClapCrtTransition;
   private readonly entryTransition: ArcadeEntryTransition;
+  private readonly lensVortex: LensVortexTransition;
   private readonly tint = new Color3();
   private readonly labyrinth;
   private readonly interior;
@@ -140,6 +144,7 @@ export class DevFestScene {
     this.popcorn = new CinemaPopcorn(scene);
     this.digitalMoments = new DigitalMoments(scene);
     this.overflow = new DigitalOverflow(scene);
+    this.simready = new SimReadyGags(scene, new URLSearchParams(location.search).get("simready") !== "0");
     this.branding = new EventBranding(scene);
     this.music = new MusicReactive(scene);
     this.floorEqualizer = new FloorEqualizer(scene);
@@ -153,6 +158,7 @@ export class DevFestScene {
         && /FX\/|light traces|running lights|data banks|computational core|Core orbit|Depth gates/.test(mesh.name)) {
         const color = material.emissiveColor;
         const opacity = mesh.name.startsWith("FX/Cinema /") || mesh.name.startsWith("FX/Rocket /")
+          || mesh.name.startsWith("FX/Pixel to voxel")
           ? material.alpha * mesh.visibility : 1;
         result.set(color.r * opacity, color.g * opacity, color.b * opacity, 1);
       } else {
@@ -179,12 +185,13 @@ export class DevFestScene {
     image.vignetteColor = new Color4(.015, .035, .04, 1);
     this.entryTransition = new ArcadeEntryTransition(this.camera, this.pipeline);
     this.clapTransition = new ClapCrtTransition(this.camera, this.pipeline);
+    this.lensVortex = new LensVortexTransition(this.camera, this.pipeline);
     this.update(0);
   }
 
-  async prepare(): Promise<void> {
+  async prepare(progress: (message: string) => void = () => {}): Promise<void> {
     await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare(),
-      this.entryTransition.prepare(), this.clapTransition.prepare()]);
+      this.entryTransition.prepare(), this.clapTransition.prepare(), this.lensVortex.prepare(), this.simready.prepare(progress)]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
     const plugin = new HavokPlugin(true, havok);
     if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
@@ -193,18 +200,22 @@ export class DevFestScene {
     this.physicsPlugin = plugin;
     plugin.setVelocityLimits(32, 12);
     this.scene.physicsEnabled = false;
+    this.simready.initializePhysics();
     this.arcadePhysics.initialize(plugin);
     this.demoscene.initialize(plugin);
     this.popcorn.initialize(plugin);
-    this.overflow.initialize(plugin);
     await this.branding.ready;
     await this.scene.whenReadyAsync();
-    const compile = () => Promise.all(this.scene.meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
+    const compile = (meshes = this.scene.meshes) => Promise.all(meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
       useInstances: mesh instanceof Mesh && mesh.hasThinInstances,
     })));
     await compile();
     this.update(SPEAKERS[0].startTime + 3, SILENCE);
     await compile();
+    for (const [id, gag] of this.simready.groups) {
+      this.update(this.simready.config.gags[id].animation.interaction, SILENCE);
+      await compile(gag.meshes);
+    }
     this.update(0, SILENCE);
   }
 
@@ -230,6 +241,7 @@ export class DevFestScene {
     this.camera.fov = pose.fov;
     this.entryTransition.update(cameraTime);
     this.clapTransition.update(time);
+    this.lensVortex.update(time);
     this.headlight.position.copyFrom(pose.position);
     const wake = smoothstep(time / 35);
     const reveal = smoothstep((time - 159) / 10);
@@ -280,9 +292,10 @@ export class DevFestScene {
     this.cathedral.update(time, audio);
     this.demoscene.update(time, audio, speed);
     this.cinema.update(time, audio);
+    this.simready.update(time, audio);
     this.popcorn.update(time, audio, speed);
     this.digitalMoments.update(time, audio);
-    this.overflow.update(time, speed);
+    this.overflow.update(time);
     this.arcadePhysics.update(time, audio);
     this.music.update(time, audio, cinema);
     this.floorEqualizer.update(time, audio);

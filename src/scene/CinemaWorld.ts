@@ -10,7 +10,7 @@ import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 import type { Scene } from "@babylonjs/core/scene";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
 import { routeAnchor } from "../camera/CameraPath";
-import { CINEMA } from "../content/showBeats";
+import { ASTRONAUT_CORNER, CINEMA } from "../content/showBeats";
 import { SPEAKERS, type SpeakerConfig } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
@@ -46,6 +46,7 @@ export class CinemaWorld {
   readonly assets: CinemaAssets;
   readonly davidRoot: TransformNode;
   readonly davidConfig: SpeakerConfig;
+  readonly astronautRoot: TransformNode;
   private readonly clapperRoot: TransformNode;
   private readonly architecture: TransformNode;
   private readonly foyer: TransformNode;
@@ -320,7 +321,7 @@ export class CinemaWorld {
     }
     this.projectorRoot = new TransformNode("Cinema / projector emerging after lens", scene);
     this.projectorRoot.parent = this.lensRoot;
-    const projectorAnchor = routeAnchor(93, 7);
+    const projectorAnchor = routeAnchor(CINEMA.space, 7);
     const projector = MeshBuilder.CreateBox("Cinema / procedural projector body",
       { width: 5, height: 5, depth: 8 }, scene);
     projector.parent = this.projectorRoot;
@@ -372,6 +373,11 @@ export class CinemaWorld {
     const warp = trails.build(scene);
     warp.unfreezeWorldMatrix();
     warp.parent = this.spaceRoot;
+    const astronaut = routeAnchor(ASTRONAUT_CORNER.anchor, ASTRONAUT_CORNER.lateral);
+    this.astronautRoot = new TransformNode("Digital / astronaut after buffer", scene);
+    this.astronautRoot.position.set(astronaut.position.x, ASTRONAUT_CORNER.height / 2, astronaut.position.z);
+    const approach = routeAnchor(ASTRONAUT_CORNER.anchor - 3).position;
+    this.astronautRoot.rotation.y = Math.atan2(astronaut.position.x - approach.x, astronaut.position.z - approach.z) + Math.PI;
     this.update(0, { energy: 0, bass: 0, mid: 0, treble: 0, kick: 0, snare: 0, drop: 0, beat: 0, violaEnergy: 0 });
   }
 
@@ -462,15 +468,16 @@ export class CinemaWorld {
       this.cameraLights.forEach((light) => { light.includedOnlyMeshes = cameraMeshes; });
     }
     for (const [name, time, side, size] of [
-      ["satellite", 96, -7, 7], ["astronaut", 98, 6, 5],
+      ["satellite", 96, -7, 7],
     ] as const) {
       const prop = this.assets.create(name, this.spaceRoot, `Cinema / passing ${name}`, size);
       if (!prop) continue;
       const anchor = routeAnchor(time, side);
-      prop.position.set(anchor.position.x, name === "astronaut" ? 12 : 15, anchor.position.z);
+      prop.position.set(anchor.position.x, 15, anchor.position.z);
       prop.rotation.y = anchor.yaw;
-      this.spaceProps.push({ node: prop, yaw: anchor.yaw, speed: name === "astronaut" ? .2 : .5 });
+      this.spaceProps.push({ node: prop, yaw: anchor.yaw, speed: .5 });
     }
+    this.assets.create("astronaut", this.astronautRoot, "Digital / corner astronaut", ASTRONAUT_CORNER.height, "height");
     for (const source of POPCORN_SOURCES) {
       const anchor = routeAnchor(source.time, source.lateral);
       const pivot = new TransformNode(`Cinema / popcorn support ${source.side}`, this.reelsRoot.getScene());
@@ -494,8 +501,8 @@ export class CinemaWorld {
       this.clapperRoot.rotation.z = -smoothstep(
         (time - CINEMA.clapperClose) / (CINEMA.clap - CINEMA.clapperClose)) * .16;
     }
-    this.architecture.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
-    this.davidRoot.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
+    this.architecture.setEnabled(time >= CINEMA.start && time < CINEMA.auditoriumEnd);
+    this.davidRoot.setEnabled(time >= CINEMA.start && time < CINEMA.auditoriumEnd);
     const reveal = cueEnvelope(time, this.davidConfig.startTime, this.davidConfig.endTime, 1.2);
     this.screenText.visibility = smoothstep((time - this.davidConfig.startTime - 1) / 1.8) * reveal;
     this.screenLight.intensity = 180 * reveal * (1 + audio.kick * .12);
@@ -515,7 +522,7 @@ export class CinemaWorld {
         path: [spot.position, Vector3.Lerp(spot.position, end, .5), end], instance: beam,
       });
     });
-    this.reelsRoot.setEnabled(time >= CINEMA.start && time < CINEMA.lens);
+    this.reelsRoot.setEnabled(time >= CINEMA.start && time < CINEMA.auditoriumEnd);
     this.filmTexture.uOffset = -time * .2;
     this.buckets.forEach(({ node, side }) => { node.rotation.z = popcornTilt(time, side); });
     this.reelNodes.forEach((reel, index) => {
@@ -544,5 +551,6 @@ export class CinemaWorld {
     this.spaceProps.forEach(({ node, yaw, speed }) => {
       node.rotation.y = yaw + (time - CINEMA.space) * speed;
     });
+    this.astronautRoot.setEnabled(time >= ASTRONAUT_CORNER.start && time < ASTRONAUT_CORNER.end);
   }
 }

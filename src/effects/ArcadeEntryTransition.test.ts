@@ -8,14 +8,14 @@ import { ARCADE_ENTRY, CLAP_CRT } from "../content/showBeats";
 import { ArcadeEntryTransition, arcadeEntryState } from "./ArcadeEntryTransition";
 
 describe("retro-gaming screen entry", () => {
-  it("lasts between one and two seconds and peaks at the physical screen crossing", () => {
-    expect(ARCADE_ENTRY.end - ARCADE_ENTRY.start).toBeGreaterThanOrEqual(1);
-    expect(ARCADE_ENTRY.end - ARCADE_ENTRY.start).toBeLessThanOrEqual(2);
-    expect(ARCADE_ENTRY.panelFadeStart).toBeLessThan(ARCADE_ENTRY.start);
+  it("starts one second later than 3.3s and completely clears when the camera crosses the panel", () => {
+    expect(ARCADE_ENTRY.start).toBeCloseTo(3.3 + 1);
+    expect(ARCADE_ENTRY.end).toBe(ARCADE_ENTRY.cross);
+    expect(ARCADE_ENTRY.panelFadeStart).toBeGreaterThan(ARCADE_ENTRY.start);
     expect(ARCADE_ENTRY.panelFadeEnd).toBeLessThan(ARCADE_ENTRY.cross);
     expect(ARCADE_ENTRY.end).toBeLessThan(CLAP_CRT.start);
-    expect(arcadeEntryState(ARCADE_ENTRY.cross).strength).toBe(1);
-    expect(arcadeEntryState(ARCADE_ENTRY.cross).burst).toBe(1);
+    expect(arcadeEntryState(ARCADE_ENTRY.cross - .4).strength).toBe(1);
+    expect(arcadeEntryState(ARCADE_ENTRY.cross - .4).burst).toBe(1);
     for (const time of [0, ARCADE_ENTRY.start, ARCADE_ENTRY.end, 27, 51.18, 180]) {
       expect(arcadeEntryState(time)).toEqual({ active: false, elapsed: 0, strength: 0, burst: 0 });
     }
@@ -47,8 +47,8 @@ describe("retro-gaming screen entry", () => {
     await transition.prepare();
     expect(transition.postProcess.isReady()).toBe(true);
     expect(camera._postProcesses).not.toContain(transition.postProcess);
-    transition.update(ARCADE_ENTRY.cross);
-    transition.update(ARCADE_ENTRY.cross);
+    transition.update(ARCADE_ENTRY.cross - .4);
+    transition.update(ARCADE_ENTRY.cross - .4);
     expect(camera._postProcesses.filter((pass) => pass === transition.postProcess)).toHaveLength(1);
     pipeline.bloomEnabled = true;
     pipeline.fxaaEnabled = true;
@@ -58,11 +58,11 @@ describe("retro-gaming screen entry", () => {
     expect(camera._postProcesses.filter(Boolean).at(-1)).toBe(transition.postProcess);
     transition.update(ARCADE_ENTRY.end);
     expect(camera._postProcesses).not.toContain(transition.postProcess);
-    transition.update(ARCADE_ENTRY.cross);
+    transition.update(ARCADE_ENTRY.cross - .4);
     expect(camera._postProcesses).toContain(transition.postProcess);
     transition.update(0);
     expect(camera._postProcesses).not.toContain(transition.postProcess);
-    transition.update(ARCADE_ENTRY.cross);
+    transition.update(ARCADE_ENTRY.cross - .4);
     scene.dispose();
     expect(engine.postProcesses).not.toContain(transition.postProcess);
     engine.dispose();

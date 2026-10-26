@@ -1,5 +1,20 @@
 # 3D artwork credits
 
+## NVIDIA SimReady
+
+The nine locally converted NVIDIA SimReady models are published under the
+CC-BY-4.0 license declared independently by each pinned asset package.
+[Asset-by-asset attribution](docs/simready-attribution.md) records the original
+identifiers, immutable dataset revision and source links; each original license
+text is retained beside its runtime GLB under `public/assets/simready/`.
+[Conversion notes](docs/simready-conversion-report.md) document texture resizing,
+runtime geometry reduction and thin-glass adaptation. Source USDs are retained
+separately and are not included in the production bundle.
+
+The croissant and beans can are playful references, not accurate models of a
+chocolatine or cassoulet. The original donut, mobile robot and forklift remain
+available in the local inspection library but are not used in the current show.
+
 The cinema models in `public/assets/cinema/` are local copies of the credited originals. Each is licensed under [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/). The show changes scale, placement, repetition and animation at runtime; the GLB files are not modified. At runtime the cinema camera's presentation ground and the director chair's presentation socle are omitted before scale normalization, and procedural spokes supplement the film reels. The CRT's curved front geometry is reused with remapped UVs and original retro-computing textures, while its original glass/screen layers are hidden. The movie theatre environment is retained locally but no longer staged or preloaded.
 
 | Local file | Original model | Creator | Source |

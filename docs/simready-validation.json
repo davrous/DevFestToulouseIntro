@@ -1,0 +1,1367 @@
+{
+  "browser": "msedge",
+  "viewport": [
+    1920,
+    1080
+  ],
+  "readyMs": 3704,
+  "fullShow": {
+    "time": 180,
+    "playing": false,
+    "camera": [
+      0,
+      1110,
+      -755
+    ],
+    "activeGags": 0,
+    "wallMs": 179798
+  },
+  "groups": [
+    "pong",
+    "pastry",
+    "cassoulet",
+    "launchArm",
+    "vending"
+  ],
+  "replay": {
+    "before": [
+      1352,
+      1615,
+      235,
+      16
+    ],
+    "after": [
+      1352,
+      1615,
+      235,
+      16
+    ],
+    "cameras": [
+      {
+        "time": 0,
+        "unchanged": true
+      },
+      {
+        "time": 3.5,
+        "unchanged": true
+      },
+      {
+        "time": 5.925,
+        "unchanged": true
+      },
+      {
+        "time": 8,
+        "unchanged": true
+      },
+      {
+        "time": 13.9,
+        "unchanged": true
+      },
+      {
+        "time": 17,
+        "unchanged": true
+      },
+      {
+        "time": 18,
+        "unchanged": true
+      },
+      {
+        "time": 22,
+        "unchanged": true
+      },
+      {
+        "time": 27,
+        "unchanged": true
+      },
+      {
+        "time": 29,
+        "unchanged": true
+      },
+      {
+        "time": 38.1,
+        "unchanged": true
+      },
+      {
+        "time": 50.876,
+        "unchanged": true
+      },
+      {
+        "time": 59.4,
+        "unchanged": true
+      },
+      {
+        "time": 61.35,
+        "unchanged": true
+      },
+      {
+        "time": 61.8,
+        "unchanged": true
+      },
+      {
+        "time": 62.2,
+        "unchanged": true
+      },
+      {
+        "time": 64.5,
+        "unchanged": true
+      },
+      {
+        "time": 66,
+        "unchanged": true
+      },
+      {
+        "time": 70,
+        "unchanged": true
+      },
+      {
+        "time": 76.8,
+        "unchanged": true
+      },
+      {
+        "time": 78.5,
+        "unchanged": true
+      },
+      {
+        "time": 90,
+        "unchanged": true
+      },
+      {
+        "time": 93,
+        "unchanged": true
+      },
+      {
+        "time": 99,
+        "unchanged": true
+      },
+      {
+        "time": 107,
+        "unchanged": true
+      },
+      {
+        "time": 110.7,
+        "unchanged": true
+      },
+      {
+        "time": 113.3,
+        "unchanged": true
+      },
+      {
+        "time": 118,
+        "unchanged": true
+      },
+      {
+        "time": 124.4,
+        "unchanged": true
+      },
+      {
+        "time": 125.8,
+        "unchanged": true
+      },
+      {
+        "time": 128,
+        "unchanged": true
+      },
+      {
+        "time": 137,
+        "unchanged": true
+      },
+      {
+        "time": 140,
+        "unchanged": true
+      },
+      {
+        "time": 143.5,
+        "unchanged": true
+      },
+      {
+        "time": 144.6,
+        "unchanged": true
+      },
+      {
+        "time": 145.2,
+        "unchanged": true
+      },
+      {
+        "time": 146.8,
+        "unchanged": true
+      },
+      {
+        "time": 159,
+        "unchanged": true
+      },
+      {
+        "time": 168,
+        "unchanged": true
+      },
+      {
+        "time": 173,
+        "unchanged": true
+      },
+      {
+        "time": 180,
+        "unchanged": true
+      }
+    ],
+    "vendingApproach": [
+      {
+        "time": 51.18,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0
+      },
+      {
+        "time": 55,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0
+      },
+      {
+        "time": 59,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0
+      },
+      {
+        "time": 60.8,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0
+      },
+      {
+        "time": 61.349,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0
+      },
+      {
+        "time": 61.35,
+        "enabled": true,
+        "opaque": true,
+        "caption": 1.051814540294641e-26
+      },
+      {
+        "time": 61.351,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0.0002071759259278989
+      },
+      {
+        "time": 61.8,
+        "enabled": true,
+        "opaque": true,
+        "caption": 1
+      },
+      {
+        "time": 65,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0
+      },
+      {
+        "time": 70,
+        "enabled": true,
+        "opaque": true,
+        "caption": 0
+      }
+    ],
+    "artDirection": [
+      {
+        "time": 3.5,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 289.54080069726837,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 4.21769535963179e-7,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 4.299,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 286.3011789040015,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 4.21769535963179e-7,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 4.5,
+        "entryShader": true,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 285.4554383446547,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 4.21769535963179e-7,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 5.525,
+        "entryShader": true,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 280.9963749430212,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 4.21769535963179e-7,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 5.925,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 279.2067372313551,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 4.21769535963179e-7,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 6.1,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 278.4179475569967,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 4.21769535963179e-7,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 15,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 240.3474837343632,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 0,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 17.25,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 230.8446067562803,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 0,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 17.5,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 229.79736435793677,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0.052512002743484235,
+        "anneFloreOpacity": 0.052512002743484235,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 18,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 227.71119223105583,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0.3761574074074074,
+        "anneFloreOpacity": 0.3761574074074074,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 19.1,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 223.16968523081835,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 1,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 26.999,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 185.5609456302427,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 1,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 27,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 185.55614185552616,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 1,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 28.999,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": true,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 174.00351697426208,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 1,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 29,
+        "entryShader": false,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 173.99654460436642,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 1,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 61.8,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 89.89498322586904,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 76.8,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 0,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 76.9,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 0.44659103958980934,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": true,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 78.5,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 8.17389113830696,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": true,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 95.6,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 120.24539376206442,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 108,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 142.18508191973322,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 110.699,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 140.55379478861298,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 111,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 139.62566178877972,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 1,
+        "waterSpilling": true,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": false,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 118,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 134.21541990698594,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.01538461538461451,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.07
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 120,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 139.7631812507671,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.3230769230769222,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 1.55
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 124.399,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 134.7078022728702,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.9846153846153833,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 4.72
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 124.4,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 134.70510540141458,
+        "canCount": 1,
+        "pileHeight": 13,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 125.8,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 130.72998422189644,
+        "canCount": 22,
+        "pileHeight": 12.956170082092298,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 128,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 124.83355557180633,
+        "canCount": 56,
+        "pileHeight": 13.1722822189331,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 130,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 120.16387737152675,
+        "canCount": 64,
+        "pileHeight": 11.51994800567627,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 137,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 112.60699647462616,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 139.499,
+        "entryShader": false,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 113.10905923192226,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "oldAstronautAbsent": true
+      }
+    ],
+    "pongCaptionAbsent": true,
+    "powerCaptionAbsent": true,
+    "pileReplaySame": true,
+    "replaySame": true,
+    "vendingYaw": 0,
+    "vendingX": -512.4,
+    "vendingBack": 55.22999836904978,
+    "shoulder": true
+  },
+  "measurements": [
+    {
+      "time": 61.8,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.04339270401608,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 17.699999999254942,
+      "drawCalls": 296
+    },
+    {
+      "time": 61.8,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.97077054878563,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 18.100000001490116,
+      "drawCalls": 488
+    },
+    {
+      "time": 78.5,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.004033884653445,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 17.900000002235174,
+      "drawCalls": 103
+    },
+    {
+      "time": 78.5,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.01613879360262,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 17.600000001490116,
+      "drawCalls": 103
+    },
+    {
+      "time": 111,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99495840685657,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 17.900000002235174,
+      "drawCalls": 211
+    },
+    {
+      "time": 111,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.997983260999234,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.699999999254942,
+      "drawCalls": 301
+    },
+    {
+      "time": 118,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.004033884653445,
+      "medianMs": 16.799999997019768,
+      "p95Ms": 17.800000000745058,
+      "drawCalls": 67
+    },
+    {
+      "time": 118,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99193385770018,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 18.099999997764826,
+      "drawCalls": 67
+    },
+    {
+      "time": 128,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.01613879360262,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 17.5,
+      "drawCalls": 139
+    },
+    {
+      "time": 128,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.01613879360262,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 17.699999999254942,
+      "drawCalls": 387
+    },
+    {
+      "time": 143.5,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00100842028705,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 18.199999999254942,
+      "drawCalls": 97
+    },
+    {
+      "time": 143.5,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.01613879360262,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 18.199999999254942,
+      "drawCalls": 187
+    }
+  ],
+  "viewer": {
+    "reports": 9,
+    "errors": [],
+    "normals": 1592
+  },
+  "browserErrors": [],
+  "externalRequests": []
+}

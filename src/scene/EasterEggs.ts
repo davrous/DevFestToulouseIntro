@@ -12,13 +12,13 @@ import { createWorldText, routeAnchor } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { BoxBatch } from "./Instances";
 import { DeployRocket } from "./DeployRocket";
-import { ORBIT_LINK } from "../content/showBeats";
-export { DEPLOY_ROCKET, ORBIT_LINK } from "../content/showBeats";
+import { NpmCassouletTerminal } from "./NpmCassouletTerminal";
+import { CASSOULET_SIGN, CINEMA, ORBIT_LINK } from "../content/showBeats";
+export { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK } from "../content/showBeats";
 
 export const T_SIGN_ANCHORS = {
   chocolatine: { time: CHOCOLATINE.anchor, height: CHOCOLATINE.height, width: CHOCOLATINE.width },
 } as const;
-export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, height: 14, width: 14, lateral: 0 } as const;
 
 function box(scene: Scene, root: TransformNode, name: string, position: Vector3, size: Vector3, material: PBRMaterial): Mesh {
   const mesh = MeshBuilder.CreateBox(name, { width: size.x, height: size.y, depth: size.z }, scene);
@@ -41,7 +41,7 @@ export class EasterEggs {
   private readonly chocolatine: TransformNode;
   private readonly chocolateStages: Mesh[];
   private readonly npm: TransformNode;
-  private readonly npmLabel: Mesh;
+  private readonly npmTerminal: NpmCassouletTerminal;
   private readonly satellite: TransformNode;
   private readonly satelliteYaw: number;
   private readonly orbit: Mesh;
@@ -56,6 +56,7 @@ export class EasterEggs {
     metal.metallic = .55;
     metal.roughness = .4;
     this.chocolatine = cueRoot(scene, "Toulouse HTTP redirect", T_SIGN_ANCHORS.chocolatine.time);
+    this.chocolatine.rotation.y = CHOCOLATINE.yaw;
     const chocolateContent = [
       [{ text: "GET /pain-au-chocolat", color: "#ffdcac" }, { text: "localhost:31000", color: "#79989b" }],
       [{ text: "HTTP/1.1 301 Moved Permanently", color: "#ffcdc3" },
@@ -69,16 +70,7 @@ export class EasterEggs {
     });
 
     this.npm = cueRoot(scene, "Cassoulet / oversized package", CASSOULET_SIGN.time);
-    this.npmLabel = createWorldText(scene, {
-      name: "npm install cassoulet", width: CASSOULET_SIGN.width, height: 5,
-      background: "#151b28", border: "#ffa48a",
-      lines: [
-        { text: "$ npm install cassoulet", color: "#eddfd2" },
-        { text: "package size: 4.8 GB", color: "#ffcf8d" },
-      ],
-    });
-    this.npmLabel.parent = this.npm;
-    this.npmLabel.position.set(CASSOULET_SIGN.lateral, CASSOULET_SIGN.height, 0);
+    this.npmTerminal = new NpmCassouletTerminal(scene, this.npm);
 
     this.satellite = cueRoot(scene, "Toulouse orbital hardware", ORBIT_LINK.time);
     const satelliteAnchor = routeAnchor(ORBIT_LINK.time);
@@ -123,9 +115,10 @@ export class EasterEggs {
   }
 
   update(time: number): void {
-    this.chocolatine.setEnabled(time >= CHOCOLATINE.start && time < CHOCOLATINE.end);
+    this.chocolatine.setEnabled(time >= 0 && time < CINEMA.start);
     this.chocolateStages.forEach((mesh, index) => mesh.setEnabled(index === chocolatineStage(time)));
     this.npm.setEnabled(cueEnvelope(time, CASSOULET_SIGN.start, CASSOULET_SIGN.end, .5) > 0);
+    if (this.npm.isEnabled()) this.npmTerminal.update(time);
     this.satellite.setEnabled(cueEnvelope(time, ORBIT_LINK.start, ORBIT_LINK.end, 1) > 0);
     this.satellite.rotation.y = this.satelliteYaw;
     this.rocket.update(time);

@@ -8,6 +8,8 @@ import { SPEAKERS } from "../content/speakers";
 import { silentFeatures } from "../engine/AudioAnalyzer";
 import { SpeakerPortal } from "./SpeakerPortal";
 import { DEPLOY_ROCKET, EasterEggs } from "./EasterEggs";
+import { CHOCOLATINE } from "../content/cues";
+import { CINEMA } from "../content/showBeats";
 
 vi.mock("./WorldText", () => ({
   routeAnchor,
@@ -17,8 +19,40 @@ vi.mock("./WorldText", () => ({
     return mesh;
   },
 }));
+vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
+  DynamicTexture: class {
+    getContext() { return { fillStyle: "", font: "", fillRect() {}, fillText() {} }; }
+    update() {}
+  },
+}));
 
 describe("digital speaker props", () => {
+  it("pre-stages the HTTP panel closer to Anne-Flore, square across the corridor, without a timed pop", () => {
+    const engine = new NullEngine();
+    const scene = new Scene(engine);
+    const props = new EasterEggs(scene);
+    const root = scene.getTransformNodeByName("Toulouse HTTP redirect")!;
+    const request = scene.getMeshByName("Chocolatine compiler stage 0")!;
+    const redirect = scene.getMeshByName("Chocolatine compiler stage 1")!;
+    const anneFlore = routeAnchor(SPEAKERS[0].gateTime).position;
+    expect(root.rotation.y).toBe(0);
+    expect(CHOCOLATINE.anchor).toBeLessThan(33.5);
+    const horizontalDistance = (point: typeof anneFlore) => Math.hypot(point.x - anneFlore.x, point.z - anneFlore.z);
+    expect(horizontalDistance(root.position)).toBeLessThan(horizontalDistance(routeAnchor(33.5).position));
+    const meshes = scene.meshes.length;
+    for (const time of [0, 15, 24, 26.999, 27, 28.999, 29, 32, 36, 27]) {
+      props.update(time);
+      expect(root.isEnabled()).toBe(true);
+      expect(request.isEnabled()).toBe(time < 29);
+      expect(redirect.isEnabled()).toBe(time >= 29);
+    }
+    expect(scene.meshes).toHaveLength(meshes);
+    props.update(CINEMA.start);
+    expect(root.isEnabled()).toBe(false);
+    scene.dispose();
+    engine.dispose();
+  });
+
   it("removes obsolete agent snippets without changing Eric's speaker card", () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);

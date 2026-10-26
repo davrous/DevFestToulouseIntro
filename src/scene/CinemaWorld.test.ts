@@ -3,9 +3,10 @@ import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import { Scene } from "@babylonjs/core/scene";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { routeAnchor } from "../camera/CameraPath";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { silentFeatures } from "../engine/AudioAnalyzer";
-import { CINEMA, CLAP_CRT, REHEARSAL_STOPS } from "../content/showBeats";
+import { ASTRONAUT_CORNER, CINEMA, CLAP_CRT, REHEARSAL_STOPS } from "../content/showBeats";
 import { clapCrtState } from "../effects/ClapCrtTransition";
 import { SPEAKERS } from "../content/speakers";
 import { CinemaWorld } from "./CinemaWorld";
@@ -36,6 +37,20 @@ vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
 }));
 
 describe("cinematic show choreography", () => {
+  it("places the lens just behind David and preserves the reels/popcorn inside the vortex", () => {
+    const david = routeAnchor(CINEMA.davidGate).position;
+    expect(Vector3.Distance(routeAnchor(CINEMA.lens).position, david))
+      .toBeLessThan(4);
+    expect(CINEMA.davidGate).toBe(76);
+    expect(CINEMA.davidStart).toBe(66);
+    expect(CINEMA.popcornEnd).toBeLessThan(CINEMA.auditoriumEnd);
+    expect(CINEMA.lens).toBe(76.8);
+    expect(CINEMA.auditoriumEnd).toBe(87.6);
+    expect(CINEMA.projector).toBe(88.8);
+    expect(CINEMA.space).toBe(90.6);
+    expect(CINEMA.digital).toBe(95);
+  });
+
   it("spins both reels continuously in opposite directions despite bass changes, pauses and seeks", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
@@ -134,8 +149,37 @@ describe("cinematic show choreography", () => {
     cinema.update(CINEMA.popcornTip - .1, silentFeatures());
     expect(left.rotation.z).toBeCloseTo(-.1);
     expect(right.rotation.z).toBeCloseTo(.1);
-    cinema.update(CINEMA.lens, silentFeatures());
+    cinema.update(CINEMA.auditoriumEnd, silentFeatures());
     expect(left.isEnabled() || right.isEnabled()).toBe(false);
+    scene.dispose();
+    engine.dispose();
+  });
+
+  it("moves the existing astronaut to the corner after the buffer without retaining a space duplicate", async () => {
+    const engine = new NullEngine();
+    const scene = new Scene(engine);
+    new FreeCamera("Cinematic camera", Vector3.Zero(), scene);
+    const cinema = new CinemaWorld(scene);
+    vi.spyOn(cinema.assets, "prepare").mockResolvedValue();
+    vi.spyOn(cinema.assets, "takeClapper").mockReturnValue(undefined);
+    const create = vi.spyOn(cinema.assets, "create").mockImplementation((asset, parent, name) => {
+      if (asset !== "astronaut") return undefined;
+      const node = new TransformNode(name, scene);
+      node.parent = parent;
+      return node;
+    });
+    await cinema.prepare();
+    expect(create.mock.calls.filter(([asset]) => asset === "astronaut")).toHaveLength(1);
+    expect(scene.getTransformNodeByName("Cinema / passing astronaut")).toBeNull();
+    const anchor = routeAnchor(ASTRONAUT_CORNER.anchor, ASTRONAUT_CORNER.lateral);
+    expect(cinema.astronautRoot.position.x).toBe(anchor.position.x);
+    expect(cinema.astronautRoot.position.z).toBe(anchor.position.z);
+    cinema.update(116.8, silentFeatures());
+    expect(cinema.astronautRoot.isEnabled()).toBe(true);
+    cinema.update(98, silentFeatures());
+    expect(cinema.astronautRoot.isEnabled()).toBe(true);
+    cinema.update(125, silentFeatures());
+    expect(cinema.astronautRoot.isEnabled()).toBe(false);
     scene.dispose();
     engine.dispose();
   });
@@ -181,7 +225,7 @@ describe("cinematic show choreography", () => {
     expect(crt.material?.name).toBe("Cinema / CRT content 0");
     cinema.update(79, silence);
     expect(reels.isEnabled()).toBe(true);
-    cinema.update(87, silence);
+    cinema.update(CINEMA.lens - .2, silence);
     expect(lens.isEnabled()).toBe(true);
     expect(scene.getMeshByName("FX/Cinema / optical element 0")?.isEnabled()).toBe(false);
     expect(scene.getTransformNodeByName("Cinema / projector emerging after lens")?.isEnabled()).toBe(false);

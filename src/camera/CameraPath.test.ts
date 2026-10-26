@@ -80,15 +80,12 @@ describe("title labyrinth choreography", () => {
     }
   });
 
-  it("keeps looking forward towards the lens through the popcorn approach", () => {
-    const lens = routeAnchor(CINEMA.lens).position;
-    for (let time = CINEMA.reels - 1; time < CINEMA.camera; time += .05) {
+  it("keeps looking forward inside the vortex during the preserved reels and popcorn", () => {
+    for (let time = CINEMA.reels; time < CINEMA.auditoriumEnd; time += .05) {
       const pose = cameraPose(time);
       const forward = pose.target.subtract(pose.position).normalize();
       const route = interiorPosition(time + 2.4).subtract(pose.position).normalize();
-      const towardsLens = lens.subtract(pose.position).normalize();
       expect(Vector3.Dot(forward, route), `route heading at ${time}`).toBeCloseTo(1, 8);
-      expect(Vector3.Dot(forward, towardsLens), `lens heading at ${time}`).toBeGreaterThan(.99);
       const pitch = Math.atan2(forward.y, Math.hypot(forward.x, forward.z)) * 180 / Math.PI;
       expect(Math.abs(pitch), `pitch at ${time}`).toBeLessThan(8);
     }

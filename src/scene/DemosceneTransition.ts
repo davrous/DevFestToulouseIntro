@@ -14,6 +14,7 @@ import { SPEAKERS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
 import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import { CINEMA } from "../content/showBeats";
+import { speakerReveal } from "../effects/ShowLighting";
 
 const VIOLIN = [
   "......oo.........",
@@ -47,7 +48,13 @@ const bits: Bit[] = VIOLIN.flatMap((line, row) => [...line].flatMap((pixel, col)
 
 export const VOXEL_COUNT = bits.length;
 export const VIOLIN_PATTERN = VIOLIN;
-export const VIOLIN_FALL = { start: 22, end: 38, size: .34 } as const;
+export const VIOLIN_FALL = { start: 22, end: 38, size: .425, scale: 1.25 } as const;
+
+function violinLocalPosition(bit: Bit): Vector3 {
+  const centerY = 8.08;
+  return new Vector3((bit.col - 7.5) * .4 * VIOLIN_FALL.scale,
+    centerY + (11.5 - bit.row * .36 - centerY) * VIOLIN_FALL.scale, 5);
+}
 
 interface Voxel {
   mesh: Mesh;
@@ -65,6 +72,7 @@ export class DemosceneTransition {
   private readonly position = Vector3.Zero();
   private readonly transform = Matrix.Identity();
   private readonly pieces: Voxel[] = [];
+  private readonly voxelMaterials: Array<{ material: StandardMaterial; tint: Color3 }> = [];
   private plugin?: HavokPlugin;
   private previous?: number;
 
@@ -73,7 +81,9 @@ export class DemosceneTransition {
       const material = new StandardMaterial(`Arcade / voxel tint ${color}`, scene);
       material.disableLighting = true;
       material.diffuseColor = Color3.Black();
-      material.emissiveColor = Color3.FromHexString(["#ffbf76", "#fa85ad", "#a7ffec"][color]).scale(1.3);
+      const tint = Color3.FromHexString(["#ffbf76", "#fa85ad", "#a7ffec"][color]);
+      material.emissiveColor = tint.scale(1.3);
+      this.voxelMaterials.push({ material, tint });
       const mesh = MeshBuilder.CreateBox(`FX/Pixel to voxel / ${color}`, { size: 1 }, scene);
       mesh.material = material;
       mesh.isPickable = false;
@@ -91,8 +101,7 @@ export class DemosceneTransition {
       mesh.material = this.voxels[bit.color].material;
       mesh.isPickable = false;
       mesh.rotationQuaternion = Quaternion.RotationYawPitchRoll(anchor.yaw, 0, 0);
-      const home = Vector3.TransformCoordinates(new Vector3(
-        (bit.col - 7.5) * .4, 11.5 - bit.row * .36, 5), world);
+      const home = Vector3.TransformCoordinates(violinLocalPosition(bit), world);
       const velocity = Vector3.TransformNormal(new Vector3(
         (bit.seed - .5) * 2.4, -.4 - bit.seed, .3 + bit.seed * .8), world);
       mesh.position.copyFrom(home);
@@ -135,6 +144,11 @@ export class DemosceneTransition {
     this.previous = time;
     if (seek || time < VIOLIN_FALL.start || time >= VIOLIN_FALL.end) this.clearPieces();
     const falling = time >= VIOLIN_FALL.start && time < VIOLIN_FALL.end;
+    const reveal = falling ? 1 : speakerReveal(time, SPEAKERS[0]);
+    for (const { material, tint } of this.voxelMaterials) {
+      material.alpha = reveal;
+      material.emissiveColor.copyFrom(tint).scaleInPlace(1.3);
+    }
     if (falling && this.plugin) {
       const elapsed = Math.max(0, time - VIOLIN_FALL.start);
       for (const [index, piece] of this.pieces.entries()) {
@@ -153,7 +167,7 @@ export class DemosceneTransition {
         piece.body.body.setAngularVelocity(new Vector3((index % 3 - 1) * 2, .8, 1.2).scale(speed));
       }
     }
-    const voxelsVisible = time >= 19 && time < VIOLIN_FALL.end && (!falling || !this.plugin);
+    const voxelsVisible = reveal > 0 && time < VIOLIN_FALL.end && (!falling || !this.plugin);
     this.voxels.forEach((mesh) => mesh.setEnabled(voxelsVisible));
     if (voxelsVisible) {
       const anchor = routeAnchor(SPEAKERS[0].gateTime);
@@ -162,8 +176,8 @@ export class DemosceneTransition {
         .multiply(Matrix.Translation(anchor.position.x, 0, anchor.position.z));
       const offsets = [0, 0, 0];
       for (const bit of bits) {
-        const { col, row, color } = bit;
-        const from = new Vector3((col - 7.5) * .4, 11.5 - row * .36, 5);
+        const { color } = bit;
+        const from = violinLocalPosition(bit);
         const position = Vector3.TransformCoordinates(from, localToWorld);
         this.position.copyFrom(position);
         this.scale.setAll(VIOLIN_FALL.size);

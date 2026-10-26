@@ -3,8 +3,8 @@ import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { cellPosition } from "../content/title";
 import { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK, T_SIGN_ANCHORS } from "./EasterEggs";
-import { BUFFER_OVERFLOW } from "./DigitalOverflow";
-import { CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
+import { BUFFER_OVERFLOW, bufferAnchor } from "./DigitalOverflow";
+import { ASTRONAUT_CORNER, CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 import { POPCORN_SOURCES } from "./CinemaPopcorn";
@@ -45,10 +45,10 @@ describe("readable arcade jokes at projector aspect", () => {
 
   it("frames the overflow before the cassoulet, and the rocket before the final right turn", () => {
     const buffer = BUFFER_OVERFLOW;
-    const anchor = routeAnchor(buffer.anchor);
+    const anchor = bufferAnchor();
     const world = Matrix.RotationY(anchor.yaw)
       .multiply(Matrix.Translation(anchor.position.x, buffer.height, anchor.position.z));
-    expect(longestReadableInterval(buffer.start, buffer.signEnd, world, buffer.width, 4.4)).toBeGreaterThanOrEqual(3);
+    expect(longestReadableInterval(buffer.spill + .16, buffer.signEnd, world, buffer.width, 4.4, 1.5)).toBeGreaterThanOrEqual(1.5);
     expect(buffer.signEnd).toBeLessThan(CASSOULET_SIGN.start);
     const rocket = routeAnchor(DEPLOY_ROCKET.time, DEPLOY_ROCKET.lateral);
     const rocketWorld = Matrix.RotationY(DEPLOY_ROCKET.yaw)
@@ -72,12 +72,20 @@ describe("readable arcade jokes at projector aspect", () => {
     }
   });
 
-  it("gives the frontal camera lens a readable approach before the optical transition", () => {
+  it("centers the nearly adjacent lens while David's card is crossed, then enters its actual plane", () => {
     const anchor = routeAnchor(CINEMA.lens);
-    const world = Matrix.RotationY(anchor.yaw)
-      .multiply(Matrix.Translation(anchor.position.x, anchor.position.y, anchor.position.z));
-    expect(longestReadableInterval(CINEMA.camera, CINEMA.lens, world, 13.6, 13.6))
-      .toBeGreaterThanOrEqual(2);
+    const david = routeAnchor(CINEMA.davidGate).position;
+    expect(Vector3.Distance(anchor.position, david)).toBeLessThan(4);
+    for (let time = CINEMA.davidGate; time < CINEMA.lens - .05; time += .05) {
+      const pose = cameraPose(time);
+      const transform = Matrix.LookAtLH(pose.position, pose.target, Vector3.Up())
+        .multiply(Matrix.PerspectiveFovLH(pose.fov, 16 / 9, .15, 12000));
+      const center = Vector3.TransformCoordinates(anchor.position, transform);
+      expect(Math.abs(center.x)).toBeLessThan(.3);
+      expect(Math.abs(center.y)).toBeLessThan(.4);
+      expect(center.z).toBeGreaterThan(-1);
+    }
+    expect(Vector3.Distance(cameraPose(CINEMA.lens).position, anchor.position)).toBeLessThan(.001);
   });
   it("keeps both raised buckets visible without steering up before their overhead spill", () => {
     for (const source of POPCORN_SOURCES) {
@@ -111,17 +119,17 @@ describe("readable arcade jokes at projector aspect", () => {
     expect(SCENERY_COUNT).toBeLessThanOrEqual(6);
   });
 
-  it("frames the HTTP request from 27 seconds and the redirect from 30 seconds before the legacy boss", () => {
+  it("frames the HTTP request from 27 seconds and the redirect from 29 seconds before the legacy boss", () => {
     const http = T_SIGN_ANCHORS.chocolatine;
     const httpAnchor = routeAnchor(http.time);
-    const httpWorld = Matrix.RotationY(httpAnchor.yaw)
+    const httpWorld = Matrix.RotationY(CHOCOLATINE.yaw)
       .multiply(Matrix.Translation(httpAnchor.position.x, http.height, httpAnchor.position.z));
     expect(CHOCOLATINE.start).toBe(27);
-    expect(CHOCOLATINE.redirect).toBe(30);
+    expect(CHOCOLATINE.redirect).toBe(29);
     expect(longestReadableInterval(27, 27.25, httpWorld, http.width, 4.5)).toBe(.25);
-    expect(longestReadableInterval(30, 30.25, httpWorld, http.width, 4.5)).toBe(.25);
+    expect(longestReadableInterval(29, 29.25, httpWorld, http.width, 4.5)).toBe(.25);
     expect(longestReadableInterval(CHOCOLATINE.start, CHOCOLATINE.redirect, httpWorld, http.width, 4.5))
-      .toBeGreaterThanOrEqual(3);
+      .toBeGreaterThanOrEqual(2);
     expect(longestReadableInterval(CHOCOLATINE.redirect, CHOCOLATINE.end, httpWorld, http.width, 4.5))
       .toBeGreaterThanOrEqual(1.5);
   });
@@ -131,10 +139,17 @@ describe("readable arcade jokes at projector aspect", () => {
     const anchor = routeAnchor(npm.time);
     const world = Matrix.RotationY(anchor.yaw)
       .multiply(Matrix.Translation(anchor.position.x, npm.height, anchor.position.z));
-    expect(longestReadableInterval(npm.start, npm.end, world, npm.width, 5, npm.lateral))
+    expect(longestReadableInterval(npm.start, npm.end, world, npm.width, 7, npm.lateral))
       .toBeGreaterThanOrEqual(4.5);
     expect(npm.start).toBeGreaterThanOrEqual(115);
     expect(npm.end).toBeLessThanOrEqual(126);
+  });
+
+  it("shows the relocated astronaut in the next corner after the buffer", () => {
+    const anchor = routeAnchor(ASTRONAUT_CORNER.anchor, ASTRONAUT_CORNER.lateral);
+    const world = Matrix.Translation(anchor.position.x, ASTRONAUT_CORNER.height / 2, anchor.position.z);
+    expect(longestReadableInterval(BUFFER_OVERFLOW.end, 121, world, 4, ASTRONAUT_CORNER.height))
+      .toBeGreaterThanOrEqual(1.5);
   });
 
   it("frames the Toulouse orbital label after Mitsuru", () => {

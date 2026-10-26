@@ -48,8 +48,11 @@ describe("measured Viola's Journey score", () => {
     for (const cue of JOURNEY_TRANSITIONS) {
       expect(Math.abs(cue.time - cue.onset)).toBeLessThan(.2);
       expect(journeyEffectTime(cue.onset)).toBeCloseTo(cue.time, 8);
-      expect(journeyEffectTime(cue.onset - .75)).toBeCloseTo(cue.onset - .75, 8);
-      expect(journeyEffectTime(cue.onset + .75)).toBeCloseTo(cue.onset + .75, 8);
+    }
+    for (let index = 1; index < JOURNEY_TRANSITIONS.length; index++) {
+      expect(JOURNEY_TRANSITIONS[index].onset).toBeGreaterThan(JOURNEY_TRANSITIONS[index - 1].onset);
+      const midpoint = (JOURNEY_TRANSITIONS[index].onset + JOURNEY_TRANSITIONS[index - 1].onset) / 2;
+      expect(journeyEffectTime(midpoint)).toBeCloseTo(midpoint, 8);
     }
     let previous = -1;
     for (let index = 0; index <= 18000; index++) {

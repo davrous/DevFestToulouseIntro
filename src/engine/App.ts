@@ -5,7 +5,6 @@ import { DebugPanel } from "../debug/DebugPanel";
 import { ShowController } from "./ShowController";
 import { silentFeatures } from "./AudioAnalyzer";
 import { POPCORN_END, POPCORN_START } from "../scene/CinemaPopcorn";
-import { overflowPhysicsActive } from "../scene/DigitalOverflow";
 import { KEYNOTE_PERFORMANCE_URL, PERFORMANCE_ERROR } from "../strudel/performanceMode";
 import { fillScoreSelector, getScore } from "../strudel/scores";
 import { fillSoundtrackSelector, getSoundtrack } from "../audio/soundtracks";
@@ -98,7 +97,7 @@ export class App {
   async initialize(): Promise<void> {
     element("loading-fill").style.width = "45%";
     element("load-status").textContent = "Loading local event artwork and compiling the cinematic pipeline...";
-    await this.world.prepare();
+    await this.world.prepare((message) => { element("load-status").textContent = message; });
     const time = this.inLobby ? 0 : this.timeline.time;
     this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent,
       this.showController.effectTime(time));
@@ -120,7 +119,7 @@ export class App {
       this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent, effectTime);
       this.world.scene.physicsEnabled = !!this.world.scene.getPhysicsEngine()
         && !this.inLobby && this.timeline.playing
-        && (effectTime < 44 || (effectTime >= POPCORN_START && effectTime < POPCORN_END) || overflowPhysicsActive(effectTime));
+        && (effectTime < 44 || (effectTime >= POPCORN_START && effectTime < POPCORN_END));
       this.world.scene.render();
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {
@@ -136,6 +135,9 @@ export class App {
     element("loading-fill").style.width = "100%";
     element("loading-track").hidden = true;
     element("load-status").textContent = "SYSTEM READY / All assets local / Live audio optional";
+    if (this.world.simready?.errors.length) {
+      this.showNotice(`Optional NVIDIA effects unavailable: ${this.world.simready.errors.join(" ")}`, true);
+    }
   }
 
   start(time = 0): void {

@@ -1,6 +1,6 @@
 import { smoothstep } from "../engine/Timeline";
 
-export const CHOCOLATINE = { start: 27, redirect: 30, end: 34.5, anchor: 33.5, height: 14, width: 16 } as const;
+export const CHOCOLATINE = { start: 27, redirect: 29, end: 34.5, anchor: 32.75, height: 12.5, width: 12, yaw: 0 } as const;
 
 export const EASTER_EGGS = [
   { id: "arcade", start: 0, end: 48, label: "LEVEL T / 8-BIT BUILD" },
