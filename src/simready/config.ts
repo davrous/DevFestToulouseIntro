@@ -1,13 +1,13 @@
 import { routeAnchor } from "../camera/CameraPath";
 import { CELL, cellPosition } from "../content/title";
-import { CASSOULET_PILE, CASSOULET_SIGN, CINEMA, DEPLOY_ROCKET } from "../content/showBeats";
+import { CASSOULET_PILE, CASSOULET_SIGN, CINEMA, DEPLOY_ROCKET, TERMINATOR } from "../content/showBeats";
 import { SPEAKERS } from "../content/speakers";
 import { PONG_VOLLEY } from "../content/violin";
 
 export const SIMREADY_GAGS = {
   pong: { title: "Retro Pong", flag: "enablePongGag", assets: ["pongPaddle", "pongBall"] },
   pastry: { title: "Toulouse pastry", flag: "enableToulouseEasterEggs", assets: ["croissant"] },
-  cassoulet: { title: "Cassoulet can mountain", flag: "enableToulouseEasterEggs", assets: ["cassouletCan"] },
+  cassoulet: { title: "Cassoulet saves the demo", flag: "enableToulouseEasterEggs", assets: ["cassouletCan"] },
   launchArm: { title: "Rocket launch support arm", flag: "enableLaunchArm", assets: ["robotArm"] },
   vending: { title: "Developer snack machine", flag: "enableSnackVendingMachine", assets: ["snackVendingMachine", "croissant"] },
 } as const;
@@ -25,7 +25,7 @@ export interface GagSettings {
   scale: number;
   start: number;
   end: number;
-  animation: { interaction: number; duration: number; bounce: number; flicker: number; displayDuration?: number };
+  animation: { interaction: number; duration: number; bounce: number; flicker: number };
 }
 
 export type SimReadyConfig = Record<SimReadyFlag, boolean> & {
@@ -45,13 +45,16 @@ function placement(anchorTime: number, lateral: number, height: number, start: n
 
 export function createSimReadyConfig(enabled = true): SimReadyConfig {
   const vending = placement(64, 0, .28, CINEMA.start, CINEMA.auditoriumEnd, 61.55, .4);
-  vending.animation.displayDuration = 3.45;
   vending.position = [VENDING_WALL.x - CELL * .3, .28, VENDING_WALL.z - 4 - VENDING_WALL.clearance];
   vending.rotation = [0, 0, 0];
   const rocket = routeAnchor(DEPLOY_ROCKET.time, DEPLOY_ROCKET.lateral);
   const launchArm = placement(DEPLOY_ROCKET.time, 0, .28, CINEMA.digital, 159, DEPLOY_ROCKET.launch, .6);
   launchArm.position = [rocket.position.x - 7, .02, rocket.position.z + 1];
   launchArm.rotation = [0, 0, 0];
+  const cassoulet = placement(CASSOULET_SIGN.time + 4, 0, .02, CASSOULET_PILE.start, CASSOULET_PILE.end, 127.052);
+  const site = cellPosition(TERMINATOR.column, TERMINATOR.row);
+  cassoulet.position = [site.x, .02, site.z];
+  cassoulet.rotation = [0, Math.PI, 0];
   return {
     enabled, boundingBoxes: false,
     enablePongGag: true, enableToulouseEasterEggs: true,
@@ -59,7 +62,7 @@ export function createSimReadyConfig(enabled = true): SimReadyConfig {
     gags: {
       pong: placement(SPEAKERS[0].gateTime, 0, PONG_VOLLEY.centerY, PONG_VOLLEY.start, PONG_VOLLEY.end, PONG_VOLLEY.shot),
       pastry: placement(33.5, 6.5, 8.3, 27, 31.5, 30),
-      cassoulet: placement(CASSOULET_SIGN.time + 4, -8.5, .02, CASSOULET_PILE.start, CASSOULET_PILE.end, 127.052),
+      cassoulet,
       launchArm,
       vending,
     },
@@ -76,10 +79,7 @@ export function validateGagSettings(settings: GagSettings): void {
     || settings.scale <= 0 || settings.start < 0 || settings.end <= settings.start
     || settings.end > 159 || settings.animation.duration <= 0 || settings.animation.bounce < 0
     || settings.animation.flicker < 0 || settings.animation.interaction < settings.start
-    || settings.animation.interaction >= settings.end
-    || (settings.animation.displayDuration !== undefined
-      && (!Number.isFinite(settings.animation.displayDuration) || settings.animation.displayDuration <= 0
-        || settings.animation.interaction + settings.animation.displayDuration > settings.end))) {
+    || settings.animation.interaction >= settings.end) {
     throw new RangeError("Invalid SimReady placement, visibility window or animation settings.");
   }
 }

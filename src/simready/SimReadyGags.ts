@@ -2,7 +2,6 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import type { AbstractMesh } from "@babylonjs/core/Meshes/abstractMesh";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
-import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import type { Scene } from "@babylonjs/core/scene";
@@ -15,7 +14,6 @@ import { SimReadyAssets } from "./SimReadyAssets";
 import { createSimReadyConfig, isSimReadyGagId, SIMREADY_GAGS, VENDING_WALL, validateGagSettings, type GagSettings, type SimReadyGagId } from "./config";
 import type { SimReadyAssetId } from "./registry";
 import { CassouletPile } from "./CassouletPile";
-import { BoxBatch } from "../scene/Instances";
 import { MatrixRainWall } from "../effects/MatrixRainWall";
 import { PONG_VOLLEY, pongRallyPosition } from "../content/violin";
 import { samplePhysicsBake } from "../scene/PhysicsBake";
@@ -131,6 +129,8 @@ export class SimReadyGags {
 
   setPongImpact(impact: ViolinPongImpact): void { this.pongImpact = impact; }
 
+  get cassouletRescue(): CassouletPile | undefined { return this.groups.get("cassoulet")?.pile; }
+
   private label(gag: Gag, text: string, width: number, y: number, z = -.5): void {
     gag.label = createWorldText(this.scene, {
       name: `SimReady caption / ${text}`, width, height: 1.7, background: "#101f2b", border: "#8bf8d9",
@@ -152,26 +152,6 @@ export class SimReadyGags {
         this.model(gag, "cassouletCan", CASSOULET_PILE.size, true, true);
       }
       gag.pile = new CassouletPile(this.scene, gag.root, gag.nodes);
-      const material = new PBRMaterial("Cassoulet / delivery crate", this.scene);
-      material.albedoColor = Color3.FromHexString("#243c48");
-      material.emissiveColor = Color3.FromHexString("#12262c");
-      material.metallic = .3;
-      material.roughness = .8;
-      const crate = new BoxBatch("Cassoulet / retaining delivery crate", material);
-      const width = CASSOULET_PILE.crateWidth, height = CASSOULET_PILE.crateHeight;
-      for (const side of [-1, 1]) {
-        for (let level = .4; level <= height; level += 1.2) {
-          crate.add(side * width / 2, level, 0, .18, .18, width);
-          crate.add(0, level, side * width / 2, width, .18, .18);
-        }
-        for (let offset = -width / 2; offset <= width / 2; offset += 1.2) {
-          crate.add(side * width / 2, height / 2, offset, .18, height, .18);
-          crate.add(offset, height / 2, side * width / 2, .18, height, .18);
-        }
-      }
-      const mesh = crate.build(this.scene);
-      mesh.unfreezeWorldMatrix();
-      mesh.parent = gag.root;
     } else if (id === "launchArm") {
       const arm = this.model(gag, "robotArm", 9, false, true);
       const moving = arm.getChildTransformNodes().filter((node) => /armShoulder_0[1-4]_obj_00$/.test(node.name));
@@ -262,9 +242,7 @@ export class SimReadyGags {
         gag.nodes[1].position.set(-.8, pose.y, pose.z);
         gag.nodes[1].rotation.z = Math.min(.25, Math.max(0, time - settings.animation.interaction) * .3);
         if (gag.light) gag.light.intensity = (100 + audio.beat * 15) * pose.flicker;
-        if (gag.label) gag.label.visibility = pose.flicker * cueEnvelope(time,
-          settings.animation.interaction - settings.animation.flicker,
-          settings.animation.interaction + (settings.animation.displayDuration ?? 3.45), .12, .25);
+        if (gag.label) gag.label.visibility = 1;
       }
     }
   }

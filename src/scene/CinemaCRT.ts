@@ -43,8 +43,15 @@ export const CRT_PROGRAMS = [
   ] },
 ] as const;
 
-export function createCrtMaterial(scene: Scene, index: number): StandardMaterial {
-  const program = CRT_PROGRAMS[index % CRT_PROGRAMS.length];
+export const CRT_LIGHTNING_PROGRAM = {
+  style: "blue", title: "AI UPDATE / 99%", lines: [
+    "Installing intelligence...", "Time remaining: 42 years",
+    "Please do not unplug Toulouse.", "Fallback: more cassoulet.",
+  ],
+} as const;
+
+export function createCrtMaterial(scene: Scene, index: number,
+  program: (typeof CRT_PROGRAMS)[number] | typeof CRT_LIGHTNING_PROGRAM = CRT_PROGRAMS[index % CRT_PROGRAMS.length]): StandardMaterial {
   const texture = new DynamicTexture(`Cinema / retro CRT program ${index}`, { width: 1024, height: 768 }, scene, false);
   const ctx = texture.getContext();
   const desktop = program.style === "desktop";

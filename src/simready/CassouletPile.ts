@@ -5,6 +5,7 @@ import { PhysicsShapeType } from "@babylonjs/core/Physics/v2/IPhysicsEnginePlugi
 import { CASSOULET_PILE } from "../content/showBeats";
 import { CELL, cellPosition } from "../content/title";
 import { bakeRigidBodies, samplePhysicsBake, type BakedColliderRecipe, type PhysicsBake } from "../scene/PhysicsBake";
+import { CassouletRescue } from "./CassouletRescue";
 
 export function cassouletRelease(index: number): number {
   return Math.round(index * CASSOULET_PILE.releaseInterval / CASSOULET_PILE.step) * CASSOULET_PILE.step;
@@ -12,6 +13,9 @@ export function cassouletRelease(index: number): number {
 
 export class CassouletPile {
   private bake?: PhysicsBake;
+  rescue?: CassouletRescue;
+  private readonly localPosition = Vector3.Zero();
+  private readonly localRotation = Quaternion.Identity();
 
   constructor(private readonly scene: Scene, private readonly root: TransformNode,
     private readonly cans: readonly TransformNode[]) {
@@ -31,25 +35,26 @@ export class CassouletPile {
       velocity: new Vector3(Math.sin(index * 2.1) * .12, -1, Math.cos(index * 1.9) * .12),
       angularVelocity: new Vector3(.05 * Math.sin(index), .15 * Math.cos(index), .05 * Math.cos(index)),
     }));
-    const width = CASSOULET_PILE.crateWidth, height = CASSOULET_PILE.crateHeight;
     const colliders: BakedColliderRecipe[] = [
       { position: new Vector3(0, -.2, 0), extents: new Vector3(120, .4, 120), friction: .95 },
     ];
     for (const side of [-1, 1]) {
-      colliders.push(
-        { position: new Vector3(side * width / 2, height / 2, 0), extents: new Vector3(.2, height, width), friction: .9 },
-        { position: new Vector3(0, height / 2, side * width / 2), extents: new Vector3(width, height, .2), friction: .9 },
-      );
       const wall = new Vector3(cellPosition(4, 3).x + side * (CELL / 2 - .75), 17, this.root.position.z);
       const local = Vector3.TransformCoordinates(wall, Matrix.Invert(this.root.computeWorldMatrix(true)));
       colliders.push({ position: local, extents: new Vector3(.3, 34, 120), friction: .75 });
     }
-    this.bake = bakeRigidBodies(this.scene, this.root, recipes, CASSOULET_PILE.end - CASSOULET_PILE.start,
-      CASSOULET_PILE.step, PhysicsShapeType.CYLINDER, {
-        mass: .8, friction: .95, restitution: .04, radius: CASSOULET_PILE.size * .37,
-        pointA: new Vector3(0, -CASSOULET_PILE.size / 2, 0),
-        pointB: new Vector3(0, CASSOULET_PILE.size / 2, 0),
-      }, colliders);
+    const rescue = new CassouletRescue(this.scene, this.root);
+    try {
+      const bake = bakeRigidBodies(this.scene, this.root, recipes, CASSOULET_PILE.end - CASSOULET_PILE.start,
+        CASSOULET_PILE.step, PhysicsShapeType.CYLINDER, {
+          mass: .8, friction: .95, restitution: .04, radius: CASSOULET_PILE.size * .37,
+          pointA: new Vector3(0, -CASSOULET_PILE.size / 2, 0),
+          pointB: new Vector3(0, CASSOULET_PILE.size / 2, 0),
+        }, colliders, rescue.hooks);
+      rescue.verify();
+      this.bake = bake;
+      this.rescue = rescue;
+    } finally { rescue.dispose(); }
   }
 
   update(elapsed: number): void {
@@ -62,5 +67,13 @@ export class CassouletPile {
       can.setEnabled(visible);
       if (visible) samplePhysicsBake(this.bake, index, elapsed, can.position, can.rotationQuaternion!);
     }
+  }
+
+  sampleRescue(track: number, time: number, position: Vector3, rotation: Quaternion): void {
+    if (!this.bake || !this.rescue) throw new Error("Cassoulet rescue must be prepared before sampling.");
+    samplePhysicsBake(this.bake, track, time - CASSOULET_PILE.start, this.localPosition, this.localRotation);
+    const world = this.root.computeWorldMatrix(true);
+    Vector3.TransformCoordinatesToRef(this.localPosition, world, position);
+    rotation.copyFrom(Quaternion.FromRotationMatrix(world).multiply(this.localRotation));
   }
 }

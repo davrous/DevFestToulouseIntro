@@ -81,7 +81,7 @@ digital entrance, overflow and rocket to measured attacks:
 | Violin fall | 22.000 s | 22.141 s |
 | Legacy wall | 38.200 s | 38.105 s |
 | Clapperboard contact | 51.030 s | 50.876 s |
-| Synchronized CRTs | 59.400 s | 59.346 s |
+| CRT lightning / synchronized joke | 59.200 s | 59.200 s (fixed cinematic cue) |
 | Popcorn spill | 78.100 s | 78.154 s |
 | Lens passage | 80.450 s | 80.450 s (fixed cinematic cue) |
 | Digital entrance | 94.200 s | 94.200 s (fixed cinematic cue) |
@@ -137,23 +137,24 @@ instruments, licensing and rehearsal diagnostics.
 
 | Time | Scene |
 | --- | --- |
-| 0:00–0:05.925 | DEVFEST AI4FUN / AGENDA opens the show without a giant central cabinet; the fullscreen retro-gaming shader starts at 0:04.3 and clears at the physical panel crossing, 0:05.925, revealing the corridor |
+| 0:00–0:05.925 | DEVFEST AI4FUN / AGENDA opens the show without a giant central cabinet; its height is calculated from the camera at 5.925 s so the lens passes through its center. The retro shader still runs from 4.3 s to the crossing |
 | 0:05–0:31 | Fixed pixel-art decals, scenery and small luminous pixels stay flat against the T's side walls. The six larger reactive light panels are mounted just in front of the wall surface at height 15, above the grounded Kenney cabinets, not floating in front of their screens |
 | 0:17–0:31 | Anne-Flore's cyan gateway; the violin and bow are 25% larger and fade in with exactly the same 17.25–19.05-s envelope as her name, including bloom. Nearby Pong paddles rally from 17.4 s; the final shot physically hits the violin near 22 s, releasing its voxel cubes into a Havok fall |
 | 0:27–0:34.5 | The already-present `GET /pain-au-chocolat` panel is discovered closer to Anne-Flore, square across the corridor; its text switches to `301 Moved Permanently / Location: /chocolatine` exactly at 0:29; no falling bonus tokens |
 | 0:34.5–0:41 | The FINAL BOSS announces LEGACY CODE before its translucent Havok wall appears and collapses at 0:38 |
-| 0:41–0:49 | `$ git rebase --continue` announces EXIT UNLOCKED, then the T door opens |
+| 0:41–0:49 | `$ git rebase --continue` announces EXIT UNLOCKED, then a full-height red velvet theatre curtain opens in two deeply folded wings, clearing the T exit before the camera crosses |
 | 0:46–0:52 | The original giant clapperboard is already present during the approach, below LEVEL COMPLETE, and snaps shut in 0.18 seconds from 0:50.85. The fullscreen CRT transition holds a green phosphor line from 0:51.135 to 0:51.38, then reopens on CINEMA and clears by 0:52.18; no black plane |
-| 0:51–1:06 | A symmetrical cinema cathedral with eight full curved CRT screens: MS-DOS, CONFIG.SYS, AUTOEXEC.BAT, Windows 95, blue-screen jokes, floppy installation and a Toulouse BBS; all briefly flash DEVFEST at 0:59.4 |
+| 0:51–1:06 | Eight curved CRTs initially show their retro programs. At **59.200 s exactly**, one strong branching lightning strike links them and all screens switch to `AI UPDATE / 99%`, `Time remaining: 42 years` and `Fallback: more cassoulet`. The joke remains after the single decaying flash |
 | After the last TV | A continuous floor-to-ceiling Matrix mural behind the snack machine runs from the black floor/ceiling strip to the right wall edge; larger `DEVFEST / TOULOUSE` glyphs remain readable within the animated rain |
 | 1:06–1:23 | David Rousset is introduced **once**, as a movie premiere projected onto a world-space cinema screen with his configured demo title |
 | 1:17–1:20 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; two raised buckets tip inward at 1:17.55 and spill 72 Havok kernels from 1:18.1. The initial cascade remains visible before the rush; its physics continues behind the transition |
 | 1:20–1:34.2 | At **80.000 s** the camera accelerates into the already-previewed lens at 80.45 s. The enclosed 3D tunnel keeps its cyan/violet design, calmer beat-driven flight and physical final 90-degree right turn. The actual opening at its end reveals the D while the tube walls remain around it; the camera passes through this mouth at **94.200 s exactly**, without an intervening iris or full-screen cut |
 | 1:34.2–1:56 | Return to the D, then Eric Mittelette's gateway and converging data streams, without the obsolete `agent.observe()` / `agent.plan()` panels |
 | 1:47–1:56.7 | A transparent buffer tank faces the incoming camera, perpendicular to the right wall. 32 cubes progressively fill the same volume; a 33rd cube arrives at 1:50.7, making shader water ripple and spill over the lip. Only then does `BUFFER OVERFLOW / console.log('just one more...')` appear |
-| After the buffer | The original astronaut faces the passage in the next corner. At 1:56.2–1:58.4 he grows proportionally from his normal 6.5-unit height to 10.4, feet fixed, while the adjacent existing data arch rises. No new arch or duplicate astronaut |
-| 1:57–2:05 | A simulated terminal types `$ npm install cassoulet`, downloads 4.8 GB with a progress bar and blinking cursor, and prints installation completion at 2:04.4 |
-| 2:04.4–2:14 | Exactly when installation reaches 4.80 GB, 64 real NVIDIA beans cans start falling, colliding and accumulating into a mountain; no `CASSOULET POWER` panel |
+| After the buffer | The astronaut grows proportionally from 6.5 to **16.64 units**, 80% of his previous final height, at 1:56.2–1:58.4. His feet remain fixed while the adjacent existing arch rises; no new arch or duplicate astronaut |
+| 1:57–2:05 | The centered terminal types `$ npm install cassoulet` and progresses to 4.80 GB. It sits slightly higher to keep the approaching T-800 visible beneath it, then softly clears after completion at 2:04.4 |
+| 1:59.5–2:14 | The T-800 advances beyond the terminal. At 2:04.4 the install releases 64 real cans. Genuine impacts stagger and dissolve the robot; after twelve contacts it becomes **192 curved red rose petals**, tumbling and floating through the corridor. The cassoulet saves the audience, then leaves a colliding heap |
+| After Mitsuru, before the 2:24.6 rocket launch | **The Power Of Cassoulet!** is a persistent wall comic facing the camera at the right turn, with a superhero can and a ridiculous defeated T-800 wearing a cassoulet tin and waving a surrender flag |
 | 1:54–2:12 | A traveling architectural pulse progressively raises six symmetrical data gates, shifting cyan to gold; it continues behind the cassoulet gag and hands off to Mitsuru without an empty corridor |
 | 2:08–2:35 | Mitsuru Furuta / floating orbital name instead of another rectangular card; denser golden data streams and a three-band meter behind him build the D climax |
 | 2:20–2:29 | A procedural deployment rocket waits at the **next corner**, before the right turn toward Orbital Link. After a readable approach, it launches at 2:24.6 and hits the actual ceiling underside at 2:26.8: a brief flash, expanding shockwave and 240 falling sparks. The pad stays grounded; the camera follows the ascent then smoothly hands over to Orbital Link |
@@ -162,7 +163,7 @@ instruments, licensing and rehearsal diagnostics.
 | 2:39–2:53 | Faster backward/upward pullback exposes the complete title and the force-field floor connecting the T and D at corridor level; at 2:48–2:52.5 its two spans rise like drawbridges and telescope into the T exit and lower D doorway |
 | 2:50–3:00 | World-space **AI4Fun** signature and subtle anniversary marks; title settled by 2:53, seven-second final hold |
 
-During the interior flight, circuit-board equalizer lanes run along the floor: quiet time-driven packets remain visible without an audio input, while bass, mids and treble raise short spectrum bars. The former bouncing balls and their physical platforms have been removed. In the T, Havok simulates the violin/bow cubes and 48 labeled legacy-code blocks; bonus tokens have been removed in favor of the chocolatine gag. The cinema adds two synchronized popcorn cascades totaling 72 kernels with seat ledge collisions. Both the final Pong-ball/violin collision and the 64-can mountain are simulated once with the same Havok engine at 60 fixed steps per second; recorded poses are sampled during playback for exact pause/seek/replay, with no new live rigid bodies. The violin's gravity is activated by measured ball contact, not a timed fallback. The can pile includes basket, floor, walls and can-to-can collisions. The buffer tank instead uses deterministic cube filling and lightweight water-surface/overflow shaders, not a fluid simulation. Physics debris cannot block the camera, and temporary bodies are cleaned up. Five wall groups (one in the T and four in the D, including one behind Mitsuru and one before the exit) reuse recessed rectangles as three-column spectra: low frequencies (electro kick), mid frequencies (including viola fundamentals), and high frequencies (electro hats and viola harmonics, with a restrained viola-energy proxy). Their idle bars are visible from the approach to each corridor and respond more strongly to audio.
+During the interior flight, circuit-board equalizer lanes run along the floor, with idle packets and audio-driven spectrum bars. Havok simulates the violin/bow, 48 legacy-code blocks and 72 popcorn kernels. The measured Pong impact, plus the 64-can rescue, robot collision proxy and 192 lightweight petal proxies, use the same engine at 60 fixed steps per second. Recorded poses are sampled for exact pause/seek/replay; no additional live physics world is introduced. Real contacts trigger the violin's gravity and the robot's progressive PBR disintegration, with no timer substituted for a missed impact. The former can basket is removed to keep the robot's walk unobstructed; the barrage collides with the floor, actual corridor walls, robot and petals, then settles into a loose heap. The buffer tank instead uses deterministic cubes and lightweight water shaders, not a fluid simulation. Five wall groups reuse recessed panels as three-column spectra.
 
 The cinema's seats, CRTs, screen support, both popcorn buckets, film/reels and giant camera are preloaded and visible from entry at 51.18 seconds, not enabled one prop at a time. Their narrative actions still occur later: David's name fades in, the buckets tip and spill, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows. The drawbridges stay closed throughout the final hold and reset when seeking backward.
 
@@ -188,16 +189,35 @@ removed: the finite tube renders into a transparent target, and the D is visible
 only through its real opening. This keeps both environments on screen together,
 with the room prepared before it becomes visible and a matching exit-camera gaze.
 
-The supplied animated T-800 walks toward the camera in the left-turn passage
-at the D entrance, beside rather than across the main camera lane. Its original
-**The Chase** skeletal clip and translation are sampled by timeline time
-(60.5–69.5 s), including pause, rewind and replay; no autonomous animation timer.
-It is now **three times its original height**: 21.6 rather than 7.2 world units,
-with its walk animation preserved. Its straight lane now stays inside the
-front corridor rather than drifting diagonally through a wall. A restrained
-camera glance keeps it nearer the viewing axis before David takes over; the
-animated silhouette is tested against walls, floor, ceiling and actual scenery
-occlusion, not just its static model bounds.
+The supplied T-800 is no longer staged at the D entrance. Its original
+**The Chase** clip advances it down the corridor after the npm panel from
+119.5 s, at its retained 21.6-unit height. The terminal is horizontally centered,
+slightly elevated and fully readable; the camera leaves the astronaut's growth
+visible before framing both the terminal and the distant robot. The suspended
+core briefly contracts to clear the drop column. The first measured can hit
+freezes the walk and releases a dynamic
+capsule proxy; its recorded body transform drives the stagger. Twelve distinct
+can contacts drive a red-edged disintegration, followed by 192 curved rose
+petals with recorded wind/damping and shader-driven flutter. One original
+procedural mesh and thin-instance buffer render the cloud; no game assets,
+extra textures or external models are downloaded. The supplied T-800 mesh,
+skeleton and textures are retained;
+this is a collision proxy plus shader destruction, not a joint-by-joint ragdoll.
+Two shadowless, actor-scoped lights reveal the chrome: a cool frontal key and
+a warm red rim follow the recorded body pose. They are precompiled before
+playback and switch off with the defeated or disabled model, without relighting
+the terminal or cans.
+Missing impacts fail preparation explicitly. The paired robot/can gag follows
+the existing Toulouse-effects flag and supports pause, seek and restart.
+
+The manga artwork is drawn once into a preloaded local texture and attached to
+the west wall of D cell (3, 5), facing the camera after Mitsuru's right turn.
+It is armed by the measured destruction, not a timer, and stays fixed on its
+wall rather than covering the screen. A smooth gaze lets the audience read it
+for several seconds before returning to the rocket ahead of liftoff at 144.6 s.
+The original mascot and title are joined by a red-X-eyed, can-helmeted T-800,
+spilled beans and `T-800: 0 / TERROIR: 1`. The rescue flag also disables it.
+No new audio, font download, image dependency or camera-position change is introduced.
 
 Both film reels rotate continuously in opposite directions at 0.55 rad/s on the
 effect clock. Their angle does not depend on instantaneous bass amplitude,
@@ -207,12 +227,13 @@ the same reel and sprocket positions.
 ### Local NVIDIA SimReady additions
 
 The intro now includes real, locally converted NVIDIA assets: retro Pong,
-a pastry collectible, a physical mountain of beans cans, the developer snack machine and a launch-support
+a pastry collectible, the physical cassoulet rescue, the developer snack machine and a launch-support
 arm beside the existing rocket. The snack machine is flush with the left side
 of the front D wall, already present from the cinema's entry at 51.18 s, so
 it is discovered naturally behind the TVs rather than popping in at 61.35 s.
-Only its `404: HEALTHY SNACK NOT FOUND` caption and snack-drop interaction
-occur in the short passage before David. The machine remains opaque until the
+Its `404: HEALTHY SNACK NOT FOUND` board is also preloaded, fully opaque and
+present throughout 51.18–87.6 s; only the light flicker and snack drop are timed.
+The machine remains opaque until the
 cinema ends at 87.6 s; it leaves the frame naturally as the camera turns.
 Pong retains its paddles and ball without a `PONG / HUMAN vs AI` sign, now
 beside Anne-Flore and sharing the final ball trajectory with the violin's
@@ -413,7 +434,12 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [Labyrinth](src/scene/Labyrinth.ts): thin-instanced floors, roofs, boundary walls, panels and light traces.
 - [Camera](src/camera/CameraPath.ts): deterministic T-to-D Catmull–Rom route, lens/warp gaze accents and the original final full-title reveal.
 - [SpeakerPortal](src/scene/SpeakerPortal.ts): reusable physical gate, staged typography reveal, theme and animated ornaments.
-- [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local preloaded Sketchfab models, animated slate and T-800, CRT synchronization, David's premiere, linked film reels and giant lens.
+- [CinemaWorld](src/scene/CinemaWorld.ts), [CinemaAssets](src/scene/CinemaAssets.ts): local cinema models, animated slate, David's premiere, linked film reels and giant lens.
+- [CrtLightningTransition](src/effects/CrtLightningTransition.ts): precompiled single lightning strike at exactly 59.2 s, projected branches to all eight CRTs and simultaneous joke update.
+- [RedVelvetCurtain](src/scene/RedVelvetCurtain.ts): two full-height red wings with GPU-deformed folds, deterministic opening and a brass rail at the T exit.
+- [RosePetals](src/effects/RosePetals.ts): original curved, double-sided red petals, instanced shading and deterministic flutter.
+- [CassouletPowerPoster](src/effects/CassouletPowerPoster.ts): original manga wall comic after Mitsuru, before the rocket launch; no fullscreen overlay.
+- [CassouletRescue](src/simready/CassouletRescue.ts), [TerminatorWalk](src/scene/TerminatorWalk.ts), [TerminatorDestruction](src/effects/TerminatorDestruction.ts): measured can impacts, recorded body/debris physics and progressive destruction of the original animated T-800.
 - [PhysicalTunnel](src/effects/PhysicalTunnel.ts), [TunnelFlight](src/camera/TunnelFlight.ts): enclosed 3D serpentine course, calm rhythmic camera, four FFT-driven speaker trails and shared preview render; [LensVortexTransition](src/effects/LensVortexTransition.ts) composites the room through the actual tube opening.
 - [ClapCrtTransition](src/effects/ClapCrtTransition.ts): precompiled fullscreen arcade-to-CRT shader, phosphor-line handoff, deterministic uniforms and no extra render pass outside the transition.
 - [ArcadeEntryTransition](src/effects/ArcadeEntryTransition.ts): precompiled retro-gaming shader, starting at 4.3 s and clearing at the opening AI4FUN / AGENDA panel crossing.

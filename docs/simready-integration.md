@@ -58,8 +58,8 @@ beside the existing rocket instead of participating in a collision.
 | --- | --- | --- |
 | Retro Pong | 17.4–23.5 s | Beside Anne-Flore; measured Journey attacks drive the rally, then the final ball physically hits the voxel violin near 22 s; no caption |
 | Pastry reference | 27–31.5 s | A real croissant collectible accompanies the HTTP gag; chocolatine response at 29 s |
-| Developer snack machine | Model: 51.18–87.6 s; caption: 61.35–65 s | Left side of the D's front wall; back surface aligned 0.02 units in front of the wall, with no yaw; no timed model pop-in |
-| Cassoulet mountain | 124.4–134 s | 64 real beans-can models start exactly at the terminal's 4.80-GB completion; Havok cylinder collisions produce a pile. No power-up caption |
+| Developer snack machine | Model and 404 board: 51.18–87.6 s | Left side of the D's front wall; model and caption are already opaque during approach; only its light/snack interaction is timed |
+| Cassoulet rescue | Robot: 119.5–134 s; cans: 124.4–134 s | The T-800 approaches beyond the centered terminal. At 4.80 GB, 64 real cans drop from height 28; twelve genuine hits dissolve it into 192 original red rose petals |
 | Launch support arm | Model: 95–159 s; motion: from 139.5 s | Seven units beside the existing rocket, already present during approach, supporting it then withdrawing at its unchanged 144.6-s launch cue |
 
 The vending machine's world X comes from the left third of cell `(2, 6)`.
@@ -74,10 +74,10 @@ The model, its materials and textures are preloaded and compiled before SYSTEM
 READY. Its physical geometry is fully opaque from the cinema's first frame,
 like the existing TV and seat scenery; it does not fade or switch on at the
 interaction time. The camera naturally reveals it during the approach and
-leaves it behind before David becomes the focal point. Only the caption has a
-short visibility envelope. Its duration is separately configurable as
-`animation.displayDuration` (3.45 s after the 61.55-s interaction), so extending
-the physical presence does not extend the joke across David's card.
+leaves it behind before David becomes the focal point. The 404 board is also
+preloaded and stays at opacity 1 for the same physical presence window; it no
+longer flashes on at the interaction. The obsolete `displayDuration` control
+has been removed. Caption visibility follows the machine's start/end settings.
 
 The BUFFER OVERFLOW is now a transparent capacity tank on the right of the
 approach, anchored near route time 116 but with fixed yaw **pi**, making its
@@ -91,17 +91,19 @@ seekable; the water is a lightweight shader effect, not an expensive fluid
 simulation. The ordinary fill cubes remain inside the tank after the extra
 cube arrives.
 
-The cassoulet sequence uses 64 instances of the real converted can model,
-with **cylinder** collision shapes, floor, actual corridor side walls and a
-visible retaining basket. The existing Havok engine calculates the motion at
-60 fixed steps per second before SYSTEM READY. Each pose is recorded, then all
-temporary aggregates, shapes and collider nodes are disposed. Playback
-interpolates those physical results; it does not fake the pile by independently
-placing cans at arbitrary final positions. This makes collisions and the
-resulting mountain exactly reproducible for pause, seek and restart, without
-advancing the shared live physics world during this gag. Unit tests require a
-pile higher than five world units and at least 24 cans resting above the first
-layer, and ensure no can falls through the corridor floor.
+The cassoulet sequence uses 64 real can models and cylinder colliders, the
+actual corridor floor/walls, a temporary humanoid capsule and 192 lightweight
+petal proxies.
+The old basket is removed so the advancing robot cannot clip through it.
+Havok calculates the entire interaction at 60 fixed steps per second before
+SYSTEM READY, then disposes all temporary aggregates and nodes.
+The first genuine can contact releases the animated capsule into dynamic
+motion and freezes the supplied walk pose. Distinct positive-impulse contacts
+drive a PBR disintegration shader; the twelfth contact releases the petals.
+Recorded body, can and petal poses replay exactly on seek, with no extra
+live physics world. Preparation fails if the barrage misses or cannot destroy
+the target; there is no timed-kill fallback. The remaining cans form an open
+colliding heap rather than the former contained mountain.
 
 The arm uses the four actual shoulder transforms from the imported hierarchy,
 reparented under a non-destructive shoulder pivot. Its base stays beside the
@@ -127,6 +129,14 @@ Only the articulation is timed to the launch preparation.
   state is derived from show time. `CASSOULET_INSTALL.complete = 124.4` is also
   the exact start of the Havok can recording. No actual command runs and no
   packages or gigabytes are downloaded.
+- The T exit is now a full-height red velvet curtain with two GPU-folded
+  wings. It uses the existing door-opening clock, 42.6–46.6 s, and clears the
+  unchanged camera path before crossing. Its brass rail remains below the roof.
+- The opening sign and its scanline overlay are vertically centered on the
+  camera's 5.925-s crossing. At exactly 59.2 s, `CrtLightningTransition` adds
+  one strong decaying lightning pulse and switches all eight preloaded CRTs
+  to `AI UPDATE / 99%`, a 42-year ETA and a cassoulet fallback joke. Both use
+  camera time directly, not a beat-shifted clock.
 - At exactly 80 s the camera accelerates after the initial popcorn cascade,
   crossing the lens at 80.45 s while retaining its spatial anchor at 86.3.
   `PhysicalTunnel` now renders a real continuous, ribbed 3D tube with an
@@ -151,20 +161,40 @@ Only the articulation is timed to the launch preparation.
 - The user-supplied, CC-BY-4.0 T-800 is part of the existing cinema asset loader,
   not the nine-model NVIDIA registry. Its original `The Chase` skeletal clip
   is sampled by absolute timeline time while it advances toward the viewer
-  during the D-entry left turn, 60.5–69.5 s. It stays beside the camera lane.
+  after the npm terminal from 119.5 s. It advances straight toward the camera
+  before the installed cassoulet delivers the measured rescue impacts.
   Its height is now 21.6 units, exactly three times its former 7.2 units,
-  with its original clip preserved. Its lane is now straight inside cell
-  (0,6), X=-563 to -559 and Z=46.5, with a little extra floor clearance.
-  A restrained camera glance improves its framing before David's introduction.
+  with its original clip preserved. Its new lane is centered at X=-448 on
+  the east corridor, approaching the barrage at Z=126.
+  The terminal is centered and raised enough to leave the robot visible below;
+  camera framing begins after the astronaut's growth. The suspended core/rings
+  contract to clear the can-drop column.
   Validation measures every sampled skeletal pose and a rendered silhouette
   mask, including actual wall/seat occlusions, rather than accepting a
   projected bounding box that might be hidden behind the scenery.
   Attribution is recorded in
   [CREDITS.md](../CREDITS.md).
+- `CassouletPowerPoster` adds the manga punchline **The Power Of Cassoulet!**
+  on the west wall of D cell (3, 5), facing the post-Mitsuru right turn,
+  before rocket liftoff at 144.6 s. The original canvas illustration
+  features a muscular superhero can, wooden spoon, halftones, speed lines,
+  `K.O.!`, `4.80 GB OF PURE POWER` and a Toulouse-terroir victory footer.
+  A ridiculous defeated T-800 has red X eyes, a tin-can helmet and a white
+  surrender flag. The fixed board becomes available at destruction +0.35 s;
+  it does not pop in, billboard or replace the frame. Camera attention eases
+  across 136.5–144.4 s, preserving liftoff and the later Orbital Link.
+  Artwork is preloaded once and excluded from glow to retain printed detail;
+  no extra image/font requests or wall-clock timers are used. The rescue flag
+  also disables the poster.
+- The original T-800's PBR chrome receives a cool frontal key and red rim,
+  scoped exclusively to its geometry. Both shadowless lights follow the body
+  and switch off on destruction or feature disable. Its lit material variants
+  are precompiled during loading; the terminal and cans are not relit.
 - The existing cinema astronaut is instantiated once in the corner after
   the buffer (`anchor = 121.75`, `lateral = -8`), facing the incoming viewer.
   It is not duplicated in the old space crossing. Between 116.2 and 118.4 s
-  it grows uniformly from its normal 6.5-unit height to 10.4, with feet fixed
+  it grows uniformly from 6.5 to 16.64 units, 80% of the preceding 20.8-unit
+  final height, with feet fixed
   on the floor. The adjacent **existing** progression gate at 122 s rises
   another 3.2 units on the same envelope. No separate arch is constructed.
 - `MatrixRainWall` uses a single 512×512 glyph atlas and a GPU rain shader,
@@ -179,6 +209,19 @@ Only the articulation is timed to the launch preparation.
 New motion is absolute-time driven, either analytical or sampled from the
 fixed-step Havok bake. No additional physics engine, persistent live rigid
 bodies, wall-clock animation timers or sound effects are added.
+
+### Rose-petal rendering research
+
+The reviewed native approaches were Babylon.js
+[thin instances](https://doc.babylonjs.com/features/featuresDeepDive/mesh/copies/thinInstances)
+and [ShaderMaterial](https://doc.babylonjs.com/features/featuresDeepDive/materials/shaders/shaderMaterial).
+A small original curved mesh plus a double-sided crimson shader avoids another
+download, texture dependency or per-petal JavaScript render object.
+The 192 petals share geometry and use stable per-instance seeds; GPU flutter
+is driven by show time. Lightweight Havok proxies use drag, reduced effective
+gravity and deterministic wind, all recorded during preparation. Replay checks
+compare only visible state, not stale matrix buffers of disabled particles.
+This is an original red-petal visual treatment, not extracted game artwork.
 Materials and geometries are cached and shared between geometry-sharing clones,
 so per-object fades work without Babylon's unsupported `InstancedMesh.visibility`
 changes. New material
@@ -251,28 +294,31 @@ alpha-blended PBR instead of adding expensive transmission render targets.
 
 ### Measured production validation
 
-The latest production build was exercised in headless Edge at **1920 × 1080**
-with real MP3 playback through the tunnel passage, 78.5–94.2 s, plus scripted
-checkpoints through the final 180-s hold. Startup to SYSTEM
-READY took **4.87 s**, including both Havok recordings,
+Production checks use headless Edge at **1920 × 1080**. A preceding run covered
+the full **180-second** presentation. The manga revision's focused playback
+checks exercise both the tunnel (78.5–94.2 s) and the pre-launch wall comic
+(136–145 s), with scripted rescue/replay checkpoints through the final hold. Startup to SYSTEM
+READY took approximately **6 s**, including both Havok recordings,
 the animated T-800, glyph atlas, simulated terminal and physical tunnel.
-The tunnel render pass and all new effects were off at the final hold.
+The tunnel render pass and temporary rescue effects were off at the final hold;
+the static poster stays on its interior wall.
 The scripted walk through the entire timeline preserved the exact camera
 positions, rotations and FOV with effects enabled or disabled. Repeated seeks
 and replay did not accumulate meshes, transforms, materials or lights.
 
 | Probe | NVIDIA effects | FPS | Median frame | 95th percentile | Draw calls |
 | --- | --- | ---: | ---: | ---: | ---: |
-| T-800 / Matrix wall, 63.25 s | Off | 60.00 | 16.7 ms | 17.0 ms | 327 |
-| T-800 / Matrix wall, 63.25 s | On | 60.01 | 16.7 ms | 17.0 ms | 519 |
-| Physical tunnel, 84 s | Off | 60.00 | 16.8 ms | 17.8 ms | 28 |
-| Physical tunnel, 84 s | On | 59.99 | 16.7 ms | 17.8 ms | 28 |
-| Physical room exit, 93.5 s | Off | 60.09 | 16.7 ms | 17.7 ms | 71 |
-| Physical room exit, 93.5 s | On | 60.00 | 16.7 ms | 17.8 ms | 71 |
+| Velvet curtain, 44.5 s | On | 60.01 | 16.7 ms | 17.1 ms | 67 |
+| CRT lightning, 59.2 s | On | 60.03 | 16.6 ms | 18.1 ms | 520 |
+| Astronaut, 118.4 s | On | 60.00 | 16.7 ms | 17.1 ms | 67 |
+| Centered terminal / lit robot, 121.5 s | On | 59.99 | 16.7 ms | 17.7 ms | 231 |
+| Measured impacts, 125.8 s | On | 60.03 | 16.7 ms | 17.9 ms | 345 |
+| Red rose petals, 127.2 s | On | 60.01 | 16.7 ms | 17.7 ms | 378 |
+| Pre-launch manga wall, 140.5 s | On | 60.01 | 16.7 ms | 17.4 ms | 176 |
 
-Here, On/Off toggles the NVIDIA additions. The T-800, physical tunnel,
-water-buffer, astronaut and simulated terminal remain enabled in both cases.
-The full report also retains the rush, right-turn, can-pile and launch probes.
+The full report retains both On/Off measurements. Off disables the NVIDIA
+additions, including the paired robot/can rescue. The curtain, CRT lightning,
+physical tunnel, water-buffer, astronaut and terminal remain enabled.
 
 These are measurements of that browser/machine, not a guarantee for every
 projector or GPU. The inspector's nine-asset gallery, wireframe, bounding boxes
@@ -284,7 +330,7 @@ external network requests**. Raw reproducible results are in
 The latest browser probes also verify the revised 4.3–5.925-s entry shader,
 the pre-existing HTTP panel with yaw 0 and the 29-s redirect, the accelerated lens
 crossing at 80.45 s, the fully opaque launch arm before
-the approach, the physical can mountain starting only at terminal completion, the
+the approach, the physical can rescue starting only at terminal completion, the
 absence of both removed captions, and water/title activation only after the
 33rd cube. Instanced-visibility warnings are treated as failures.
 
@@ -294,19 +340,30 @@ and first can at exactly 124.4 s, the initial reels/popcorn before the 80-s rush
 GPU lens preview, full mural bounds, and uniform astronaut growth with exactly
 24 existing arch instances. A pixel comparison with all scenery hidden proves
 that the tunnel interior is opaque; repeating it during the exit verifies that
-the opening reveals the real scene. This revision passes **56 focused
-tests**, TypeScript checks and the production build. Browser probes additionally
+the opening reveals the real scene. This revision passes the complete
+**245-test suite**, TypeScript checks and the production build. Browser probes additionally
 require the tunnel pass to remain active at 94.199 s and stop at exactly
 94.2 s, and verify the T-800's actual 21.6-unit height. A temporary rendered
-silhouette mask measures **6.5 seconds of actual visibility**, including **4.5
+silhouette mask measures **5.75 seconds of actual visibility**, including **5.5
 seconds near the image axis**. Skeletal bounds remain clear of the corridor
-walls, floor and ceiling, with at least **2.2 units** of camera clearance.
+walls, floor and ceiling. The first real can hit occurs at **125.2 s**;
+twelve distinct positive-impulse contacts trigger the 192-petal release at
+**126.25 s**. Model, can and visible-petal replay states are identical after
+rewind. Disabled particle buffers are intentionally excluded from comparisons.
+The wall comic is checked during actual MP3 playback after Mitsuru and before
+144.6 s. Whole-quad projection and an occlusion-aware GPU mask require at least
+four seconds of readability; color readback rejects a blank or washed-out board.
+Its mounting transform remains fixed on the real pre-launch wall, and no
+fullscreen manga postprocess is allowed. Original robot pixels are also
+compared with its dedicated lights on/off, requiring a measurable chrome
+brightness improvement and actor-only light scope. Latest measurements are
+recorded in [simready-validation.json](simready-validation.json).
 Alpha readback proves tube walls and room coexist during the exit; at 94 s
 about 53% of the image still contains tunnel walls and 47% reveals the room.
 Frame-to-frame RGB checks around the exit remain below 4.6% average change,
 including removal of the transition at 94.2 s, with no intermediate metal shot.
-During actual MP3 playback, **826 rendered frames**
+During actual MP3 playback, **824 rendered frames**
 verified all four varying FFT bands reached the tunnel material with **zero
-routing error**. Their measured peak levels were 0.876 / 0.709 / 0.609 / 0.451.
+routing error**. Their measured peak levels were 0.877 / 0.716 / 0.610 / 0.434.
 The original Strudel composition keeps its musical lens/rest sections fixed;
 retiming the visual rush does not accidentally rewrite its arrangement.

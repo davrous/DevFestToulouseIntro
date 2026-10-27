@@ -6,7 +6,7 @@ export const JOURNEY_TRANSITIONS = [
   { event: "violin", time: 22, onset: 22.141 },
   { event: "legacy", time: 38.2, onset: 38.105 },
   { event: "clap", time: CINEMA.clap, onset: 50.876 },
-  { event: "crt", time: CINEMA.crtSync, onset: 59.346 },
+  { event: "crt", time: CINEMA.crtSync, onset: CINEMA.crtSync },
   { event: "popcorn", time: CINEMA.popcorn, onset: 78.154 },
   { event: "lens", time: CINEMA.lens, onset: CINEMA.lens },
   { event: "digital", time: CINEMA.digital, onset: CINEMA.digital },

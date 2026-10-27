@@ -3,7 +3,7 @@ import { CELL, cellPosition } from "../content/title";
 import { clamp, smootherstep, smoothstep } from "../engine/Timeline";
 import { SPEAKERS } from "../content/speakers";
 import { CHOCOLATINE, cueEnvelope } from "../content/cues";
-import { CINEMA, DEPLOY_ROCKET, ORBIT_LINK, TERMINATOR, rocketLift, terminatorPosition } from "../content/showBeats";
+import { ASTRONAUT_CORNER, CASSOULET_SIGN, CASSOULET_WALL_POSTER, CINEMA, DEPLOY_ROCKET, ORBIT_LINK, TERMINATOR, rocketLift, terminatorPosition } from "../content/showBeats";
 
 interface Keyframe { time: number; col: number; row: number; y: number }
 
@@ -145,6 +145,13 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
       focusCamera(local, localTarget, new Vector3(robot.x, 12, robot.z),
         cueEnvelope(time, TERMINATOR.lookStart, TERMINATOR.lookEnd, 1.8, 1.8) * .35);
     }
+    const terminalLookStart = Math.max(CASSOULET_SIGN.start, ASTRONAUT_CORNER.riseEnd + .7);
+    if (time >= terminalLookStart && time < CASSOULET_SIGN.end) {
+      const terminal = routeAnchor(CASSOULET_SIGN.time).position;
+      terminal.y = CASSOULET_SIGN.height - 1;
+      focusCamera(local, localTarget, terminal,
+        cueEnvelope(time, terminalLookStart, CASSOULET_SIGN.end, 1.2, .6) * .45);
+    }
     if (time >= CINEMA.tunnelRoomReady && time < 98) {
       const exitHeading = routeAnchor(100).yaw;
       const intoRoom = local.add(new Vector3(Math.sin(exitHeading), .02, Math.cos(exitHeading)).scale(20));
@@ -157,6 +164,11 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
       focus.y = ORBIT_LINK.height;
       focusCamera(local, localTarget, focus,
         cueEnvelope(time, ORBIT_LINK.lookStart, ORBIT_LINK.lookEnd, 3.5, 5) * .9);
+    }
+    if (time >= CASSOULET_WALL_POSTER.lookStart && time < CASSOULET_WALL_POSTER.lookEnd) {
+      focusCamera(local, localTarget, new Vector3(CASSOULET_WALL_POSTER.x, CASSOULET_WALL_POSTER.y, CASSOULET_WALL_POSTER.z),
+        cueEnvelope(time, CASSOULET_WALL_POSTER.lookStart, CASSOULET_WALL_POSTER.lookEnd,
+          CASSOULET_WALL_POSTER.lookIn, CASSOULET_WALL_POSTER.lookOut));
     }
     const arcadePulse = .06 * cueEnvelope(time, 31, 34, .5);
     const warp = .08 * Math.max(cueEnvelope(time, 46, CINEMA.clapperStart, .7),

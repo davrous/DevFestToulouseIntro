@@ -35,8 +35,20 @@ The cinema models in `public/assets/cinema/` are local copies of the credited or
 
 The user-supplied T-800 includes the original **The Chase** skeletal clip.
 Its embedded metadata declares CC-BY-4.0. The show samples this clip by absolute
-timeline time, scales the model and stages its walk toward the D entrance;
-the original GLB and skeleton are unchanged.
+timeline time and stages the enlarged model after the npm terminal. The
+cassoulet rescue uses a Havok collision proxy, a runtime PBR destruction plugin
+and original procedural red rose petals. The supplied GLB, textures and skeleton
+are unchanged; no pre-authored death animation is claimed.
+
+The curved rose-petal geometry, crimson flutter shader, red velvet curtain and
+**The Power Of Cassoulet!** manga victory illustration are original procedural
+artwork for this intro. The comic mascot, spoon, defeated-robot caricature,
+speed lines and typography
+are drawn locally and do not reproduce an existing manga character or panel.
+No model, texture, animation
+or shader from *Clair Obscur: Expedition 33* is included. Technical references:
+[Babylon.js ShaderMaterial](https://doc.babylonjs.com/features/featuresDeepDive/materials/shaders/shaderMaterial)
+and [thin instances](https://doc.babylonjs.com/features/featuresDeepDive/mesh/copies/thinInstances).
 
 The high-poly *Cinema Movie Projector AP5* source was **not used or redistributed**. The in-show projector is original procedural geometry instead.
 

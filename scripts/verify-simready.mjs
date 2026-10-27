@@ -63,6 +63,30 @@ try {
       });
     });
   });
+  await page.evaluate(() => {
+    const app = window.devfest, scene = app.world.scene;
+    window.wallPosterReadable = () => {
+      const poster = app.world.cassouletPoster, camera = app.world.camera;
+      if (!poster.root.isEnabled() || camera.position.x <= poster.root.position.x) return false;
+      const Vector = camera.position.constructor, width = app.engine.getRenderWidth(), height = app.engine.getRenderHeight();
+      const world = poster.mesh.computeWorldMatrix(true), viewport = camera.viewport.toGlobal(width, height);
+      const corners = poster.mesh.getBoundingInfo().boundingBox.vectors.map((point) =>
+        Vector.Project(point, world, scene.getTransformMatrix(), viewport));
+      return corners.every((point) => point.z > 0 && point.z < 1
+        && point.x >= width * .04 && point.x <= width * .96
+        && point.y >= height * .04 && point.y <= height * .96)
+        && Math.max(...corners.map((point) => point.y)) - Math.min(...corners.map((point) => point.y)) >= height * .1;
+    };
+    const probe = window.cassouletPosterProbe = { frames: 0, first: null, last: null, robotVisibleDuringPoster: false };
+    const observer = scene.onAfterRenderObservable.add(() => {
+      if (app.timeline.time >= 145) { scene.onAfterRenderObservable.remove(observer); return; }
+      if (!app.timeline.playing || app.timeline.time < 136.5 || !window.wallPosterReadable()) return;
+      probe.frames++;
+      probe.first ??= app.timeline.time;
+      probe.last = app.timeline.time;
+      probe.robotVisibleDuringPoster ||= app.world.cinema.terminator.root.isEnabled();
+    });
+  });
   let fullShow;
   if (process.env.SIMREADY_FULL_SHOW === "1") {
     const playbackStarted = Date.now();
@@ -81,6 +105,9 @@ try {
     await page.evaluate(() => window.devfest.seek(78.5));
     await page.waitForFunction(() => window.devfest.timeline.time >= 94.2, null, { timeout: 25000 });
     await page.evaluate(() => window.devfest.togglePlayback());
+    await page.evaluate(() => { window.devfest.seek(136); window.devfest.togglePlayback(); });
+    await page.waitForFunction(() => window.devfest.timeline.time >= 145, null, { timeout: 15000 });
+    await page.evaluate(() => window.devfest.togglePlayback());
   }
   const musicBands = await page.evaluate(() => window.tunnelMusicProbe);
   assert.ok(musicBands.samples > 100, "The four trails must be checked during real MP3 playback.");
@@ -88,6 +115,10 @@ try {
     "Each trail must respond to a varying real Web Audio frequency band.");
   assert.ok(musicBands.maxRoutingError < .00001, "Live FFT bands must reach the tunnel material unchanged.");
   console.log("Live Web Audio trail bands:", musicBands);
+  const posterPlayback = await page.evaluate(() => window.cassouletPosterProbe);
+  assert.ok(posterPlayback.frames >= 180, "The wall comic must remain readable for several seconds during music playback.");
+  assert.ok(posterPlayback.first > 136 && posterPlayback.last < 144.6 && posterPlayback.last - posterPlayback.first >= 4);
+  assert.equal(posterPlayback.robotVisibleDuringPoster, false, "The punchline must follow, not conceal, the robot's destruction.");
 
   const replay = await page.evaluate(async () => {
     const app = window.devfest;
@@ -96,8 +127,8 @@ try {
     const before = counts();
     const artDirection = [];
     for (const time of [3.5, 4.299, 4.5, 5.525, 5.925, 6.1, 15, 17.25, 17.5, 18, 19.1, 26.999, 27, 28.999, 29,
-      61.8, 63.25, 63.5, 76.8, 78.5, 79.999, 80, 80.35, 80.45, 84.5, 90, 91.5, 92.8, 93.5, 94, 94.199, 94.2, 108, 110.699, 111,
-      117.2, 118, 118.4, 120, 124.399, 124.4, 125.8, 128, 130, 137, 139.499]) {
+      41.8, 44.5, 46.5, 59.199, 59.2, 59.35, 59.9, 61.8, 63.25, 76.8, 78.5, 79.999, 80, 80.35, 80.45, 84.5, 90, 91.5, 92.8, 93.5, 94, 94.199, 94.2, 108, 110.699, 111,
+      117.2, 118, 118.4, 119.5, 120, 121.25, 124.399, 124.4, 125.19, 125.3, 125.8, 126.5, 126.65, 126.85, 127.2, 127.7, 128, 130, 137, 139.499]) {
       app.seek(time);
       const http = app.world.scene.getTransformNodeByName("Toulouse HTTP redirect");
       const arm = app.world.simready.groups.get("launchArm");
@@ -115,6 +146,19 @@ try {
       const matrixBounds = matrix.getBoundingInfo().boundingBox;
       artDirection.push({
         time, entryShader: app.world.camera._postProcesses.some((pass) => pass?.name === "Arcade / retro gaming entry"),
+        openingCenterOffset: app.world.scene.getMeshByName("Arcade / hero portal screen").position.y - app.world.camera.position.y,
+        crtStrike: app.world.camera._postProcesses.some((pass) => pass?.name === "Cinema / 59.2s CRT lightning"),
+        crtEnergy: app.world.crtLightning.state.energy,
+        crtJokeScreens: app.world.cinema.crtScreens.filter((screen) => screen.material.name === "Cinema / lightning AI update screen").length,
+        curtainWings: app.world.arcade.curtain.panels.length,
+        curtainVisible: app.world.arcade.curtain.root.isEnabled(),
+        curtainOpening: app.world.arcade.curtain.panels[0].material._floats.opening,
+        npmCentered: terminal.mesh.position.x === 0,
+        petalVertices: app.world.cinema.terminator.debris.getTotalVertices(),
+        petalShader: app.world.cinema.terminator.debris.material.name,
+        mangaPoster: app.world.cassouletPoster.root.isEnabled(),
+        mangaFullscreen: app.world.camera._postProcesses.some((pass) => pass?.name === "Cassoulet / manga victory poster"),
+        mangaOpacity: app.world.cassouletPoster.state.opacity,
         httpPresent: http.isEnabled(), httpYaw: http.rotation.y,
         request: app.world.scene.getMeshByName("Chocolatine compiler stage 0").isEnabled(),
         armPresent: arm.root.isEnabled(),
@@ -146,6 +190,8 @@ try {
         terminatorFrame: app.world.cinema.terminator.animation.animatables[0]?.masterFrame,
         terminatorClip: app.world.cinema.terminator.animation.name,
         terminatorHeight: robotBounds.max.y - robotBounds.min.y,
+        terminatorDamage: app.world.cinema.terminator.destruction[0]?.damage,
+        terminatorDebris: app.world.cinema.terminator.debris.isEnabled(),
         terminal: { ...terminal.state },
         astronautPresent: astronaut.isEnabled(), astronautScale: astronaut.scaling.asArray(),
         astronautFeet: astronaut.position.y - 6.5 * astronaut.scaling.y / 2,
@@ -216,6 +262,24 @@ try {
   assert.ok(replay.cameras.every((sample) => sample.unchanged), "NVIDIA effects must never change the camera.");
   assert.equal(replay.replaySame, true);
   assert.equal(replay.pongCaptionAbsent, true);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 41.8).curtainOpening, 0);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 44.5).curtainWings, 2);
+  assert.ok(replay.artDirection.find((sample) => sample.time === 46.5).curtainOpening > .99);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 59.2).curtainVisible, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 121.25).npmCentered, true);
+  assert.ok(replay.artDirection.find((sample) => sample.time === 127.2).petalVertices > 100);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 127.2).petalShader, "Cassoulet / curved crimson petal flutter");
+  assert.equal(replay.artDirection.find((sample) => sample.time === 126.5).mangaPoster, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 126.85).mangaPoster, true);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 126.85).mangaOpacity, 1);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 127.7).mangaPoster, true);
+  assert.ok(replay.artDirection.every((sample) => !sample.mangaFullscreen), "The comic must never cover the view as a fullscreen cut-in.");
+  assert.ok(Math.abs(replay.artDirection.find((sample) => sample.time === 5.925).openingCenterOffset) < .000001);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 59.199).crtStrike, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 59.199).crtJokeScreens, 0);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 59.2).crtEnergy, 1);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 59.2).crtJokeScreens, 8);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 59.9).crtStrike, false);
   assert.equal(replay.volleyReplaySame, true, "Final Pong ball and struck violin must replay identical recorded poses.");
   assert.ok(replay.violinCollision.time > 21.8 && replay.violinCollision.time < 22.15);
   assert.ok(replay.violinCollision.impulse > .01, "The violin must fall because of a real contact, not a timer.");
@@ -247,13 +311,19 @@ try {
     "The physical tunnel camera must finish facing right, not just distort a screen-space vortex.");
   assert.ok(Math.abs(replay.artDirection.find((sample) => sample.time === 93.5).vortexExit - .5) < .01);
   assert.ok(replay.artDirection.find((sample) => sample.time === 90).physicalTunnelVertices > 29000);
-  const robotA = replay.artDirection.find((sample) => sample.time === 63.25);
-  const robotB = replay.artDirection.find((sample) => sample.time === 63.5);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 63.25).terminator, false);
+  const robotA = replay.artDirection.find((sample) => sample.time === 119.5);
+  const robotB = replay.artDirection.find((sample) => sample.time === 121.25);
   assert.ok(robotA.terminator && robotB.terminator);
   assert.equal(robotA.terminatorClip, "The Chase");
   assert.ok(Math.abs(robotA.terminatorHeight - 21.6) < .01, "The Terminator must be exactly three times its former 7.2-unit height.");
   assert.notEqual(robotA.terminatorFrame, robotB.terminatorFrame);
-  assert.ok(robotB.terminatorPosition[0] > robotA.terminatorPosition[0]);
+  assert.ok(robotB.terminatorPosition[2] > robotA.terminatorPosition[2]);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 125.19).terminatorDamage, 0);
+  assert.ok(replay.artDirection.find((sample) => sample.time === 125.8).terminatorDamage > 0);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 127.2).terminatorDamage, 1);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 127.2).terminator, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 127.2).terminatorDebris, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 61.8).matrixReady, true);
   const mural = replay.artDirection.find((sample) => sample.time === 61.8);
   assert.equal(mural.matrixSingleSurface, true);
@@ -265,8 +335,8 @@ try {
   assert.equal(replay.artDirection.find((sample) => sample.time === 118).astronautPresent, true);
   const rising = replay.artDirection.find((sample) => sample.time === 117.2);
   const grown = replay.artDirection.find((sample) => sample.time === 118.4);
-  assert.ok(rising.astronautScale[0] > 1 && rising.astronautScale[0] < 1.6);
-  assert.deepEqual(grown.astronautScale, [1.6, 1.6, 1.6]);
+  assert.ok(rising.astronautScale[0] > 1 && rising.astronautScale[0] < 2.56);
+  assert.deepEqual(grown.astronautScale, [2.56, 2.56, 2.56]);
   assert.ok([rising, grown].every((sample) => sample.archCount === 24 && sample.addedArchAbsent && Math.abs(sample.astronautFeet) < .001
     && sample.astronautScale.every((value) => value === sample.astronautScale[0])));
   assert.ok(rising.archBottom < grown.archBottom);
@@ -284,15 +354,15 @@ try {
   assert.equal(replay.powerCaptionAbsent, true);
   assert.equal(replay.pileReplaySame, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 130).canCount, 64);
-  assert.ok(replay.artDirection.find((sample) => sample.time === 130).pileHeight > 5, "The can pile must be visibly tall.");
+  assert.ok(replay.artDirection.find((sample) => sample.time === 130).pileHeight > 2.1, "The rescue must leave a real colliding heap.");
   assert.ok(replay.artDirection.filter((sample) => [108, 110.699].includes(sample.time))
     .every((sample) => sample.bufferLabel === 0 && !sample.waterSpilling));
   assert.ok(replay.artDirection.find((sample) => sample.time === 111).bufferLabel > .9);
   assert.equal(replay.artDirection.find((sample) => sample.time === 111).waterSpilling, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 111).bufferYaw, Math.PI);
   assert.ok(replay.vendingApproach.every((sample) => sample.enabled && sample.opaque), "Machine must not pop in at the gag onset.");
-  assert.ok(replay.vendingApproach.filter((sample) => sample.time < 61.35 || sample.time >= 65)
-    .every((sample) => sample.caption === 0), "Only the interaction caption has a short reveal window.");
+  assert.ok(replay.vendingApproach.every((sample) => sample.caption === 1),
+    "The 404 caption must already be present and remain opaque for the entire vending passage.");
   assert.equal(replay.vendingYaw, 0);
   assert.ok(replay.vendingX < -504);
   assert.ok(Math.abs(replay.vendingBack - 55.23) < .01, "Machine must be flush with the D wall.");
@@ -306,12 +376,12 @@ try {
     mask.disableLighting = true;
     mask.diffuseColor.set(0, 0, 0); mask.specularColor.set(0, 0, 0); mask.emissiveColor.set(1, 0, 1);
     const result = { minimum: [Infinity, Infinity, Infinity], maximum: [-Infinity, -Infinity, -Infinity],
-      cameraClearance: Infinity, visibleSeconds: 0, centralSeconds: 0 };
+      cameraClearance: Infinity, visibleSeconds: 0, centralSeconds: 0, lighting: null };
     try {
-      app.seek(63.5);
+      app.seek(121.25);
       meshes.forEach((mesh) => { mesh.material = mask; });
       await Promise.all(meshes.map((mesh) => mask.forceCompilationAsync(mesh)));
-      for (let time = 60.5; time <= 70; time += .25) {
+      for (let time = 119.5; time <= 125; time += .25) {
         app.seek(time);
         meshes.forEach((mesh) => { mesh.skeleton?.prepare(true); mesh.refreshBoundingInfo(true); });
         const { min, max } = root.getHierarchyBoundingVectors(true);
@@ -325,14 +395,33 @@ try {
         const width = app.engine.getRenderWidth(), height = app.engine.getRenderHeight();
         const pixels = await app.engine.readPixels(0, 0, width, height);
         let count = 0, centerX = 0;
+        const silhouette = [];
         for (let index = 0; index < pixels.length; index += 4) {
           if (pixels[index] > 110 && pixels[index + 1] < pixels[index] * .15 && pixels[index + 2] > 110) {
             count++; centerX += (index / 4) % width;
+            if (time === 121.5) silhouette.push(index);
           }
         }
         if (count > 1000) {
           result.visibleSeconds += .25;
           if (Math.abs(centerX / count / width * 2 - 1) < .6) result.centralSeconds += .25;
+        }
+        if (time === 121.5) {
+          meshes.forEach((mesh, index) => { mesh.material = saved[index]; });
+          scene.render();
+          const lit = await app.engine.readPixels(0, 0, width, height);
+          const lights = app.world.cinema.terminator.lights;
+          lights.forEach((light) => { light.intensity = 0; });
+          scene.render();
+          const dark = await app.engine.readPixels(0, 0, width, height);
+          const brightness = (image) => silhouette.reduce((sum, index) =>
+            sum + image[index] * .2126 + image[index + 1] * .7152 + image[index + 2] * .0722, 0) / silhouette.length;
+          result.lighting = { lit: brightness(lit), withoutDedicatedLights: brightness(dark),
+            scoped: lights.length === 2 && lights.every((light) =>
+              light.includedOnlyMeshes.length > 0 && light.includedOnlyMeshes.every((mesh) => meshes.includes(mesh))),
+            materialsReady: saved.filter(Boolean).every((material) => material.maxSimultaneousLights >= 6) };
+          app.seek(time);
+          meshes.forEach((mesh) => { mesh.material = mask; });
         }
       }
       return result;
@@ -341,14 +430,88 @@ try {
       mask.dispose();
     }
   });
-  assert.ok(robotPresentation.visibleSeconds >= 5, "The actual robot silhouette must remain visible despite scenery occlusion.");
-  assert.ok(robotPresentation.centralSeconds >= 4, "The robot must stay near the camera axis for a readable approach.");
-  assert.ok(robotPresentation.minimum[0] > -573.25 && robotPresentation.maximum[0] < -546.75);
-  assert.ok(robotPresentation.minimum[2] > 28.75 && robotPresentation.maximum[2] < 55.25,
+  assert.ok(robotPresentation.visibleSeconds >= 3.5, "The actual robot silhouette must remain visible beyond the npm terminal.");
+  assert.ok(robotPresentation.centralSeconds >= 3, "The robot must advance toward the camera axis before being defeated.");
+  assert.ok(robotPresentation.minimum[0] > -461.25 && robotPresentation.maximum[0] < -434.75);
+  assert.ok(robotPresentation.minimum[2] > 56.75 && robotPresentation.maximum[2] < 195.25,
     "Every sampled skeletal pose must remain inside the actual corridor walls.");
   assert.ok(robotPresentation.minimum[1] >= .1 && robotPresentation.maximum[1] < 32.85);
   assert.ok(robotPresentation.cameraClearance > 1, "The camera must pass beside, not through, the enlarged robot.");
+  assert.equal(robotPresentation.lighting.scoped, true);
+  assert.equal(robotPresentation.lighting.materialsReady, true);
+  assert.ok(robotPresentation.lighting.lit > robotPresentation.lighting.withoutDedicatedLights * 1.4,
+    "Dedicated lighting must measurably reveal the original chrome, not merely add inactive lights.");
   console.log("Robot animated clearance / actual visibility:", robotPresentation);
+
+  const wallPoster = await page.evaluate(async () => {
+    const app = window.devfest, scene = app.world.scene, poster = app.world.cassouletPoster;
+    const original = poster.mesh.material, Standard = original.constructor;
+    const mask = new Standard("Validation / actual wall poster visibility", scene);
+    mask.disableLighting = true;
+    mask.diffuseColor.set(0, 0, 0); mask.specularColor.set(0, 0, 0); mask.emissiveColor.set(1, 0, 1);
+    const result = { position: poster.root.position.asArray(), yaw: poster.root.rotation.y,
+      longestReadableSeconds: 0, coloredArtworkPixels: 0, fixed: true };
+    const fixedMatrix = Array.from(poster.root.computeWorldMatrix(true).asArray());
+    try {
+      app.seek(140.5); scene.render();
+      const width = app.engine.getRenderWidth(), height = app.engine.getRenderHeight();
+      const normal = await app.engine.readPixels(0, 0, width, height);
+      poster.mesh.material = mask;
+      await mask.forceCompilationAsync(poster.mesh);
+      scene.render();
+      const marked = await app.engine.readPixels(0, 0, width, height);
+      for (let index = 0; index < marked.length; index += 4) {
+        if (marked[index] > 110 && marked[index + 1] < marked[index] * .15 && marked[index + 2] > 110
+          && normal[index] > normal[index + 1] + 15 && normal[index] > normal[index + 2] + 25) result.coloredArtworkPixels++;
+      }
+      let consecutive = 0;
+      for (let time = 137; time < 144.6; time += .25) {
+        app.seek(time); scene.render();
+        const pixels = await app.engine.readPixels(0, 0, width, height);
+        let visible = 0;
+        for (let index = 0; index < pixels.length; index += 4) {
+          if (pixels[index] > 110 && pixels[index + 1] < pixels[index] * .15 && pixels[index + 2] > 110) visible++;
+        }
+        consecutive = window.wallPosterReadable() && visible > 2000 ? consecutive + .25 : 0;
+        result.longestReadableSeconds = Math.max(result.longestReadableSeconds, consecutive);
+        result.fixed &&= Array.from(poster.root.computeWorldMatrix(true).asArray()).every((value, index) => value === fixedMatrix[index]);
+      }
+      return result;
+    } finally { poster.mesh.material = original; mask.dispose(); }
+  });
+  assert.deepEqual(wallPoster.position, [-488, 17, 70]);
+  assert.equal(wallPoster.yaw, -Math.PI / 2);
+  assert.equal(wallPoster.fixed, true, "The poster must stay glued to the actual pre-launch wall, not follow the camera.");
+  assert.ok(wallPoster.longestReadableSeconds >= 4, "The whole comic must remain readable and unoccluded before liftoff.");
+  assert.ok(wallPoster.coloredArtworkPixels > 3000, "The GPU must show the colorful comic, not a blank overexposed rectangle.");
+  console.log("Pre-launch wall manga:", wallPoster);
+
+  const cassouletRescue = await page.evaluate(() => {
+    const app = window.devfest, pile = app.world.simready.cassouletRescue, rescue = pile.rescue;
+    const snapshot = (time) => {
+      app.seek(time);
+      const actor = app.world.cinema.terminator;
+      return { position: actor.root.position.asArray(), rotation: actor.root.rotationQuaternion.asArray(),
+        damage: actor.destruction.map((effect) => effect.damage),
+        manga: { ...app.world.cassouletPoster.state },
+        shards: actor.debris.isEnabled() ? Array.from(actor.matrices) : [],
+        modelVisible: actor.root.isEnabled(), debrisVisible: actor.debris.isEnabled() };
+    };
+    const hit = snapshot(rescue.impactTime + .2), destroyed = snapshot(rescue.destroyTime + .4);
+    snapshot(0); snapshot(180);
+    const hitAgain = snapshot(rescue.impactTime + .2), destroyedAgain = snapshot(rescue.destroyTime + .4);
+    return { impactTime: rescue.impactTime, destroyTime: rescue.destroyTime, contacts: rescue.contacts,
+      fragments: app.world.cinema.terminator.debris.thinInstanceCount,
+      deterministic: JSON.stringify([hit, destroyed]) === JSON.stringify([hitAgain, destroyedAgain]),
+      destroyedModelHidden: !destroyed.modelVisible && destroyed.debrisVisible };
+  });
+  assert.ok(cassouletRescue.impactTime > 124.4 && cassouletRescue.impactTime < 126);
+  assert.ok(cassouletRescue.destroyTime > cassouletRescue.impactTime && cassouletRescue.destroyTime < 128);
+  assert.ok(cassouletRescue.contacts.length >= 12 && cassouletRescue.contacts.every((contact) => contact.impulse > .02));
+  assert.equal(cassouletRescue.fragments, 192);
+  assert.equal(cassouletRescue.deterministic, true);
+  assert.equal(cassouletRescue.destroyedModelHidden, true);
+  console.log("Measured cassoulet rescue:", cassouletRescue);
 
   const compareTunnelBackgrounds = async (time) => {
     const prepare = async (hide) => page.evaluate(({ time, hide }) => {
@@ -413,7 +576,7 @@ try {
   console.log("Physical exit / frame continuity:", exitContinuity);
 
   const measurements = [];
-  for (const time of [63.25, 80.35, 84, 91.5, 93.5, 111, 118, 128, 143.5]) {
+  for (const time of [44.5, 59.2, 61.8, 80.35, 84, 91.5, 93.5, 111, 118.4, 121.5, 125.8, 126.85, 127.2, 128, 140.5, 143.5]) {
     for (const enabled of [false, true]) {
       measurements.push(await page.evaluate(({ time, enabled }) => new Promise((resolve, reject) => {
         const app = window.devfest, scene = app.world.scene;
@@ -470,7 +633,8 @@ try {
   assert.deepEqual(external, [], "The performance and viewer must use only local resources.");
   assert.deepEqual(errors, []);
   const report = { browser: process.env.SIMREADY_BROWSER ?? "msedge", viewport: [1920, 1080], readyMs, fullShow,
-    groups: loaded.groups, replay, tunnelIsolation, robotPresentation, exitContinuity, musicBands, measurements, viewer,
+    groups: loaded.groups, replay, tunnelIsolation, robotPresentation, cassouletRescue, posterPlayback, wallPoster,
+    exitContinuity, musicBands, measurements, viewer,
     browserErrors: errors, externalRequests: external };
   await writeFile(new URL("../docs/simready-validation.json", import.meta.url), `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Verified nine models, five presentation moments, unchanged camera, deterministic replay and zero browser errors. Startup ${readyMs} ms.`);

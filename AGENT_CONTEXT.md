@@ -8,11 +8,24 @@
 >
 > Le lobby sélectionne par défaut **MP3 soundtrack / Viola's Journey**, sans lecture automatique. Le panneau d'entrée affiche **DEVFEST AI4FUN / AGENDA** ; le shader rétro-gaming commence à **4.3 s** et disparaît à la traversée à **5.925 s** pour dégager le couloir. Le panneau HTTP est déjà présent, perpendiculaire aux murs latéraux et rapproché d'Anne-Flore (ancre 32.75 s, yaw 0) ; sa réponse est à 29 s.
 >
-> **Dernière mise en scène :** le violon est agrandi de **25 %**, fondu avec Anne-Flore à **17.25–19.05 s**, puis impact Pong Havok vers **21.98 s**. Rush à **80.000 s**, objectif à **80.45 s** (ancre spatiale 86.3), vol 3D plus doux et **23 % plus lent**, mêmes shaders/palette/quatre traces FFT. La vitesse suit les attaques Journey par intégration analytique normalisée. **L'iris métallique est supprimé** : le tube se termine réellement au point atteint à **94.200 s**, son render target transparent laisse voir le D dans cette ouverture tandis que ses parois restent visibles autour. Le D est prêt dès 90 s et le regard de sortie anticipe le couloir pour éviter un raccord sur un mur. Aucun recalage musical ne doit déplacer la sortie. Le T-800 reste à **21.6 unités (x3)** mais suit désormais une ligne droite sûre dans la cellule (0,6), X=-563 à -559 / Z=46.5, plutôt que l'ancienne diagonale qui traversait le mur. Marche **The Chase** à 60.5–69.5 s, léger regard caméra jusqu'à 67.8 s. Valider les limites de toutes les poses et sa visibilité **avec occlusion réelle**. Astronaute x1.6 à 116.2–118.4 s avec l'arceau existant 122 s ; mur Matrix continu ; fin du terminal et départ des boîtes à **124.4 s**.
+> **Dernière mise en scène :** le panneau d'entrée est centré sur la traversée caméra à 5.925 s. La sortie du T est un **grand rideau rouge plissé**, ouvert sur le clock 42.6–46.6 s. À **59.200 s exactement**, un éclair unique relie les huit CRT et les passe sur **AI UPDATE / 99% / 42 ans / fallback cassoulet**. Le panneau 404 reste préchargé et opaque de 51.18 à 87.6 s. Le tunnel garde son vol doux, ses quatre traces FFT et sa sortie géométrique exacte à **94.2 s**. L'astronaute grandit de 6.5 à **16.64 unités** (échelle 2.56, 80 % de la précédente taille finale), pieds fixes, avec l'arceau existant 122 s. Le terminal npm est **recentré**, légèrement relevé ; le regard attend la fin de la croissance de l'astronaute avant de cadrer terminal et robot au fond. Le T-800 n'est plus à l'entrée du D : il avance après le terminal dès 119.5 s, dans l'axe X=-448. À **124.4 s**, la fin des 4.80 GB libère les 64 boîtes. Les vrais contacts Havok figent sa marche et pilotent sa destruction : première frappe vers 125.2 s, douze impacts vers 126.25 s, puis **192 pétales de roses rouges** incurvés, shader original, vent et poses physiques enregistrées. Pas de ressources extraites d'Expedition 33, pas de kill par timer. Le panier est retiré et noyau/rings se contractent pour dégager la chute.
 >
-> **SimReady, direction révisée :** voir [docs/simready-integration.md](docs/simready-integration.md). Neuf modèles NVIDIA convertis/licenciés restent inspectables, mais seuls Pong, les références pâtisserie/cassoulet, le distributeur et le bras d'assistance au lancement jouent dans l'intro. **Pas de donut, petit robot ou collision de chariot dans le parcours.** Le distributeur est aligné sans yaw contre la partie gauche du mur frontal du D et reste présent/opaque de 51.18 à 87.6 s ; seuls le texte et l'interaction jouent vers 61.35–65 s, sans apparition brusque du modèle. Pong ne porte plus de panneau « HUMAN vs AI ». Le bras, pré-stagé de 95 à 159 s, reste à côté de la fusée et se rétracte à son lancement existant. Le panneau power-up cassoulet est supprimé : **64 boîtes physiques** tombent à la fin de l'installation simulée, de 124.4 à 134 s, et forment une montagne. Havok calcule ces collisions au chargement à pas fixe, puis les poses sont rejouées exactement. Aucun changement des TV, du texte de David, du spline caméra ou de la musique.
+> **SimReady, direction révisée :** voir [docs/simready-integration.md](docs/simready-integration.md). Neuf modèles NVIDIA convertis/licenciés restent inspectables. **Pas de donut, petit robot ou collision de chariot dans le parcours.** Le distributeur et son panneau 404 sont présents/opaques de 51.18 à 87.6 s ; seuls lumière et snack jouent vers 61.55 s. Pong reste sans panneau « HUMAN vs AI ». Le bras préchargé assiste la fusée à son lancement existant. Les **64 boîtes physiques** tombent à la fin du terminal pour détruire le T-800, puis retombent en tas. Capsule, boîtes et pétales sont calculés ensemble par Havok à pas fixe au chargement, puis rejoués exactement. La même option Toulouse active ou coupe la paire robot/cassoulet. Musique, texte de David, route générale et reveal final restent conservés.
 
 Dépôt : [davrous/DevFestToulouseIntro](https://github.com/davrous/DevFestToulouseIntro).
+
+**Punchline manga après le sauvetage :** [CassouletPowerPoster.ts](src/effects/CassouletPowerPoster.ts)
+dessine une affiche originale **The Power Of Cassoulet!**, boîte héroïque
+musclée, cuillère en bois, trames, lignes de vitesse, K.O. et rappel des 4.80 GB.
+Elle est collée au mur ouest de la cellule D (3, 5), en (-488, 17, 70),
+orientée vers +X : le mur face caméra au virage à droite après Mitsuru,
+**avant** le décollage à 144.6 s, pas le mur de sortie final.
+Le regard s'adoucit entre 136.5 et 144.4 s, sans déplacement de caméra.
+Le T-800 dessiné est vaincu, yeux en X rouges, boîte sur la tête et drapeau
+blanc. Texture préchargée, présence fixe après le kill +0.35 s,
+aucun cut-in plein écran ni timer. La même option que le sauvetage la désactive.
+Le vrai robot reçoit une clé froide et un liseré rouge, deux lumières sans
+ombres limitées à ses meshes et éteintes quand le corps disparaît.
 
 ## 1. Comprendre le projet en deux minutes
 
@@ -98,23 +111,24 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; échange Pong à côté d'elle, dernier tir physique vers 22, chute des voxels déclenchée par le choc Havok puis rejouée exactement, nettoyage à 38 |
 | 27–34.5 | `GET /pain-au-chocolat` déjà présent avant l'approche, face au couloir près d'Anne-Flore ; `301 / Location: /chocolatine` dès 29 s. Aucune pièce bonus |
 | 34.5–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 (38.105 en temps musical Journey) |
-| 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture de la porte vers 42.6 |
+| 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture du rideau rouge à deux pans de 42.6 à 46.6 |
 | 46.3–51.03 | LEVEL COMPLETE au-dessus du clap à y = 26, encore visible pendant son approche |
 | Approche jusqu'à 51.03 | Clap original déjà présent dès le chargement, sans panneau DEVFEST / SCENE 02 ajouté, ancré à 59 s ; fermeture de 50.85 à 51.03, approche sans quasi-arrêt |
 | 50.65–52.18 | Shader plein écran : arcade pixellisée, fermeture CRT à 51.03, trait vert maintenu de 51.135 à 51.38 pendant le changement de décor à 51.18, puis rallumage cathodique ; aucun plan noir |
 | 51.18–66 | Décor cinéma entier visible dès l'entrée : sièges, CRT rétro, support de David, bobines / pellicule, deux seaux et caméra |
-| 59.4–59.7 | Les CRT affichent DEVFEST simultanément |
+| 59.2–59.9 | Éclair bleu/blanc unique ; les huit TV conservent ensuite le gag AI UPDATE 99 % / 42 ans / fallback cassoulet |
 | 66–77, à l'écran | Première de David : lumière avant le fondu du nom, écran physique supporté, zone plus calme |
-| 60.5–69.5 | Le T-800 x3 marche sur une ligne droite sûre devant la caméra, avec léger accompagnement du regard ; aucune pose ne doit traverser les murs |
 | 77–80 | Bobines frontales et pellicule animée ; bascule des seaux à 77.55, première pluie de popcorn dès 78.1 |
 | 80–80.45 | Accélération brutale exacte à 80 s, plus de dix fois la vitesse du couloir à la fin du rush, traversée de l'objectif prévisualisant le vrai tunnel |
 | 80.45–94.2 | Vol 3D doux, vitesse rythmique, design et quatre traces FFT conservés ; virage final à droite puis traversée de l'ouverture réelle du tube, avec ses parois et le D visibles ensemble, sans iris ni changement de plan |
 | 99–116 | Eric, premier chapitre du D digital, avec flux de données convergents |
 | 107–116.7 | Bac transparent à droite, yaw pi, perpendiculaire au mur droit. 32 cubes remplissent les mêmes cases ; un 33e cube arrive à 110.7 et déclenche l'eau débordante en shader, puis seulement le texte BUFFER OVERFLOW, terminé à 114.3 |
 | 114–132 | Six structures de données s'élèvent progressivement, pulse mobile et transition cyan → or |
-| Après le buffer | Astronaute dans le coin suivant, face à notre arrivée, taille normale puis croissance proportionnelle x1.6 à 116.2–118.4 ; montée de l'arceau existant 122 s, sans nouvel arceau ni doublon |
-| 117–125 | Vrai aspect terminal : frappe de `$ npm install cassoulet`, curseur, barre de progression des 4.8 GB, fin de l'installation à 124.4 s |
-| 124.4–134 | 64 boîtes de cassoulet tombent à l'instant exact de la fin du terminal ; panier de livraison pour une vraie montagne, aucun panneau power-up |
+| Après le buffer | Astronaute dans le coin suivant : taille normale puis croissance x2.56 à 116.2–118.4, pieds fixes et arceau existant 122 s |
+| 117–125 | Terminal recentré : frappe de `$ npm install cassoulet`, progression jusqu'à 4.80 GB à 124.4 s, puis effacement doux ; robot visible dessous |
+| 119.5–134 | Le T-800 de 21.6 unités approche au fond du couloir ; les impacts de boîtes le dissolvent en 192 pétales rouges flottants |
+| Après le virage de Mitsuru, avant 144.6 | Affiche murale The Power Of Cassoulet!, boîte musclée, T-800 ridicule vaincu et K.O., lisible plusieurs secondes avant la fusée |
+| 124.4–134 | 64 boîtes tombent après l'installation : le cassoulet nous sauve. Capsule, boîtes, pétales et tas final simulés puis enregistrés ensemble, sans panier ni panneau power-up |
 | 128–146 | Mitsuru : nom orbital, énergie dorée plus intense, vumètre derrière |
 | 140–149.4 | Fusée au **coin suivant**, avant le virage vers Orbital Link : approche lisible, décollage à 144.6, impact au plafond à 146.8, flash / onde / 240 étincelles ; pad immobile |
 | 143–166 | TOULOUSE / ORBITAL LINK, placé en profondeur et conservé pendant le début du zoom-out |
@@ -164,12 +178,14 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Bornes, écran d'ouverture, LEVEL COMPLETE / NEXT LEVEL | [ArcadeCathedral.ts](src/scene/ArcadeCathedral.ts) |
 | Porte et éléments narratifs du T ; pixel art | [ArcadeT.ts](src/scene/ArcadeT.ts), [PixelWorld.ts](src/scene/PixelWorld.ts) |
 | Violon voxel, dernier échange Pong et collision Havok enregistrée | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts), [ViolinPongImpact.ts](src/scene/ViolinPongImpact.ts), [violin.ts](src/content/violin.ts) |
+| Rideau rouge plissé de la sortie du T | [RedVelvetCurtain.ts](src/scene/RedVelvetCurtain.ts), [ArcadeT.ts](src/scene/ArcadeT.ts) |
 | Mur de dette technique, Havok / seek / cleanup ; pièces supprimées | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
 | Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
 | Transition plein écran arcade → ligne de phosphore → CRT, pause / rewind / pipeline | [ClapCrtTransition.ts](src/effects/ClapCrtTransition.ts), [showBeats.ts](src/content/showBeats.ts) |
 | Traversée rétro-gaming du panneau d'entrée, cycle de vie partagé des shaders de transition | [ArcadeEntryTransition.ts](src/effects/ArcadeEntryTransition.ts), [TimedPostProcess.ts](src/effects/TimedPostProcess.ts) |
 | Vol physique 3D, vitesse rythmique et ouverture réelle sur le D à 94.2 s | [PhysicalTunnel.ts](src/effects/PhysicalTunnel.ts), [TunnelFlight.ts](src/camera/TunnelFlight.ts), [LensVortexTransition.ts](src/effects/LensVortexTransition.ts), [TunnelRendering.ts](src/effects/TunnelRendering.ts) |
-| Marche du T-800 original, clip The Chase conservé | [TerminatorWalk.ts](src/scene/TerminatorWalk.ts), [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
+| Sauvetage cassoulet et destruction en pétales | [CassouletRescue.ts](src/simready/CassouletRescue.ts), [TerminatorWalk.ts](src/scene/TerminatorWalk.ts), [TerminatorDestruction.ts](src/effects/TerminatorDestruction.ts), [RosePetals.ts](src/effects/RosePetals.ts) |
+| Éclair exact 59.2 s et gag sur toutes les TV | [CrtLightningTransition.ts](src/effects/CrtLightningTransition.ts), [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Terminal npm animé et cue partagé avec la pluie de boîtes | [NpmCassouletTerminal.ts](src/scene/NpmCassouletTerminal.ts), [showBeats.ts](src/content/showBeats.ts) |
 | Mur Matrix continu et signature lisible, atlas de glyphes partagé | [MatrixRainWall.ts](src/effects/MatrixRainWall.ts), racine du distributeur dans [SimReadyGags.ts](src/simready/SimReadyGags.ts) |
 | Croissance proportionnelle de l'astronaute et montée de l'arceau existant | [astronaut.ts](src/content/astronaut.ts), [DigitalMoments.ts](src/scene/DigitalMoments.ts) |
@@ -178,7 +194,7 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Deux seaux / sources, 72 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |
 | Progression entre Eric et Mitsuru et flux de données distincts | [DigitalMoments.ts](src/scene/DigitalMoments.ts), [Interior.ts](src/scene/Interior.ts) |
 | Remplissage du bac BUFFER OVERFLOW, cube supplémentaire et shader d'eau | [DigitalOverflow.ts](src/scene/DigitalOverflow.ts), [BufferWater.ts](src/effects/BufferWater.ts) |
-| Montagne de boîtes de cassoulet, collisions Havok calculées à pas fixe et replay exact | [CassouletPile.ts](src/simready/CassouletPile.ts), [PhysicsBake.ts](src/scene/PhysicsBake.ts) |
+| Boîtes, capsule du robot, vent/pétales et replay physique exact | [CassouletPile.ts](src/simready/CassouletPile.ts), [CassouletRescue.ts](src/simready/CassouletRescue.ts), [PhysicsBake.ts](src/scene/PhysicsBake.ts) |
 | Portails non cinéma, typographie et présentation orbitale de Mitsuru | [SpeakerPortal.ts](src/scene/SpeakerPortal.ts) |
 | Blagues, cassoulet, orchestration de la fusée, satellite et ORBITAL LINK | [EasterEggs.ts](src/scene/EasterEggs.ts) |
 | Fusée, pad fixe, décollage et explosion déterministes | [DeployRocket.ts](src/scene/DeployRocket.ts), configuration / déplacement dans [showBeats.ts](src/content/showBeats.ts) |

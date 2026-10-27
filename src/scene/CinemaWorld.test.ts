@@ -62,8 +62,9 @@ describe("cinematic show choreography", () => {
     expect(before.progress).toBe(0);
     expect(before.scale).toBe(1);
     expect(middle.progress).toBeCloseTo(.5);
-    expect(middle.scale).toBeCloseTo(1.3);
-    expect(done.scale).toBe(1.6);
+    expect(middle.scale).toBeCloseTo(1.78);
+    expect(done.scale).toBe(2.56);
+    expect(ASTRONAUT_CORNER.height * done.scale).toBeCloseTo(20.8 * .8, 8);
     expect(done.archY).toBeCloseTo(3.2);
     expect(middle.centerY - ASTRONAUT_CORNER.height * middle.scale / 2).toBeCloseTo(0);
     expect(middle.archY).toBeCloseTo(ASTRONAUT_CORNER.gateLift * middle.progress);
@@ -122,11 +123,11 @@ describe("cinematic show choreography", () => {
     const material = crt.material;
     const base = material.emissiveColor.clone();
     expect(base.asArray()).toEqual([.9, .95, 1]);
-    cinema.update(60, { ...silentFeatures(), snare: 1 });
+    cinema.update(59.1, { ...silentFeatures(), snare: 1 });
     expect(material.emissiveColor.asArray()).toEqual(base.scale(1.18).asArray());
-    cinema.update(60, { ...silentFeatures(), snare: 1 });
+    cinema.update(59.1, { ...silentFeatures(), snare: 1 });
     expect(material.emissiveColor.asArray()).toEqual(base.scale(1.18).asArray());
-    cinema.update(60, silentFeatures());
+    cinema.update(59.1, silentFeatures());
     expect(material.emissiveColor.asArray()).toEqual(base.asArray());
     scene.dispose();
     engine.dispose();
@@ -140,6 +141,22 @@ describe("cinematic show choreography", () => {
     expect(REHEARSAL_STOPS.at(-1)?.label).toBe("FINAL REVEAL");
   });
 
+  it("switches every preloaded CRT on the exact 59.2s camera clock and restores the old programs on rewind", () => {
+    const engine = new NullEngine(), scene = new Scene(engine);
+    new FreeCamera("CRT framing", Vector3.Zero(), scene);
+    const cinema = new CinemaWorld(scene);
+    const original = cinema.crtScreens.map((screen) => screen.material);
+    cinema.update(59.35, silentFeatures(), 59.199);
+    expect(cinema.crtScreens.map((screen) => screen.material)).toEqual(original);
+    cinema.update(59.1, silentFeatures(), 59.2);
+    expect(cinema.crtScreens).toHaveLength(8);
+    expect(cinema.crtScreens.every((screen) => screen.material?.name === "Cinema / lightning AI update screen")).toBe(true);
+    cinema.update(70, silentFeatures());
+    expect(cinema.crtScreens.every((screen) => screen.material?.name === "Cinema / lightning AI update screen")).toBe(true);
+    cinema.update(59.199, silentFeatures());
+    expect(cinema.crtScreens.map((screen) => screen.material)).toEqual(original);
+    scene.dispose(); engine.dispose();
+  });
   it("prepares a raised bucket on each side and mirrors their inward tilt on playback and rewind", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
@@ -202,8 +219,8 @@ describe("cinematic show choreography", () => {
     expect(cinema.astronautRoot.position.y).toBe(growing.centerY);
     expect(scene.getTransformNodeByName("Digital / astronaut rising arch")).toBeNull();
     cinema.update(ASTRONAUT_CORNER.riseEnd, silentFeatures());
-    expect(cinema.astronautRoot.scaling.asArray()).toEqual([1.6, 1.6, 1.6]);
-    expect(cinema.astronautRoot.position.y).toBe(ASTRONAUT_CORNER.height * 1.6 / 2);
+    expect(cinema.astronautRoot.scaling.asArray()).toEqual([2.56, 2.56, 2.56]);
+    expect(cinema.astronautRoot.position.y).toBe(ASTRONAUT_CORNER.height * 2.56 / 2);
     cinema.update(98, silentFeatures());
     expect(cinema.astronautRoot.isEnabled()).toBe(true);
     cinema.update(125, silentFeatures());
@@ -248,9 +265,9 @@ describe("cinematic show choreography", () => {
     expect(clapCrtState(70).active).toBe(false);
     expect(cinema.davidRoot.isEnabled()).toBe(true);
     cinema.update(CINEMA.crtSync + .1, silence);
-    expect(crt.material?.name).toBe("Cinema / synchronized CRT frame test texture");
+    expect(crt.material?.name).toBe("Cinema / lightning AI update screen");
     cinema.update(CINEMA.crtSyncEnd + .1, silence);
-    expect(crt.material?.name).toBe("Cinema / CRT content 0");
+    expect(crt.material?.name).toBe("Cinema / lightning AI update screen");
     cinema.update(79, silence);
     expect(reels.isEnabled()).toBe(true);
     cinema.update(CINEMA.lens - .2, silence);

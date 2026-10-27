@@ -4,7 +4,7 @@ import { Scene } from "@babylonjs/core/scene";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { silentFeatures } from "../engine/AudioAnalyzer";
-import { CASSOULET_INSTALL, CASSOULET_PILE, CASSOULET_SIGN, CINEMA, DEPLOY_ROCKET } from "../content/showBeats";
+import { CASSOULET_INSTALL, CASSOULET_PILE, CINEMA, DEPLOY_ROCKET } from "../content/showBeats";
 import { routeAnchor } from "../camera/CameraPath";
 import { createSimReadyConfig, SIMREADY_GAGS, VENDING_WALL, validateGagSettings } from "./config";
 import { launchArmPose, pongPose, SimReadyGags, snackDropPose } from "./SimReadyGags";
@@ -81,7 +81,7 @@ describe("configured NVIDIA art direction", () => {
     engine.dispose();
   });
 
-  it("keeps the preloaded vending model fully visible through the approach without revealing its caption early", async () => {
+  it("keeps the preloaded vending model and 404 caption fully visible throughout the camera passage", async () => {
     const { engine, scene, gags, prepare, create } = await setup();
     const vending = gags.groups.get("vending")!;
     const meshCount = scene.meshes.length;
@@ -93,7 +93,7 @@ describe("configured NVIDIA art direction", () => {
       gags.update(time, silentFeatures());
       expect(vending.root.isEnabled(), `machine at ${time}s`).toBe(true);
       expect(machineMeshes.every((mesh) => mesh.isEnabled() && mesh.visibility === 1)).toBe(true);
-      if (time < 61.35 || time >= 65) expect(label.visibility).toBe(0);
+      expect(label.visibility).toBe(1);
       if (time === 61.8) expect(label.visibility).toBeGreaterThan(0);
     }
     expect(prepare).toHaveBeenCalledTimes(1);
@@ -152,14 +152,12 @@ describe("configured NVIDIA art direction", () => {
     engine.dispose();
   });
 
-  it("stages a mountain of cassoulet cans after the npm panel without a power-up caption", async () => {
+  it("stages the can barrage on the Terminator's corridor axis after the npm terminal", async () => {
     const { engine, scene, gags } = await setup();
     const settings = gags.config.gags.cassoulet;
     expect(settings.start).toBe(CASSOULET_INSTALL.complete);
     expect(settings.end).toBe(CASSOULET_PILE.end);
-    const next = routeAnchor(CASSOULET_SIGN.time + 4, -8.5).position;
-    expect(settings.position[0]).toBeCloseTo(next.x);
-    expect(settings.position[2]).toBeCloseTo(next.z);
+    expect(settings.position).toEqual([-448, .02, 126]);
     const gag = gags.groups.get("cassoulet")!;
     expect(gag.nodes).toHaveLength(CASSOULET_PILE.count);
     expect(gag.label).toBeUndefined();

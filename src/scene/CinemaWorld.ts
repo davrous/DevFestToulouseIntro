@@ -16,7 +16,7 @@ import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { BoxBatch } from "./Instances";
 import { CinemaAssets, CLAPPER_CLOSE } from "./CinemaAssets";
-import { createCrtMaterial, fitCrtScreen } from "./CinemaCRT";
+import { CRT_LIGHTNING_PROGRAM, createCrtMaterial, fitCrtScreen } from "./CinemaCRT";
 import { createWorldText } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { CINEMA_FLOOR_TOP, POPCORN_SOURCES, popcornTilt } from "./CinemaPopcorn";
@@ -148,13 +148,8 @@ export class CinemaWorld {
 
     this.televisionRoot = at(scene, "Cinema / aligned CRT installation", 58);
     this.televisionRoot.parent = this.architecture;
-    const sync = createWorldText(scene, {
-      name: "Cinema / synchronized CRT frame", width: 5, height: 3.2,
-      background: "#13131f", lines: [{ text: "DEVFEST", color: "#f4e9dd" }],
-    });
-    const syncMaterial = sync.material;
-    if (!(syncMaterial instanceof StandardMaterial)) throw new Error("CRT synchronization requires a StandardMaterial.");
-    sync.setEnabled(false);
+    const syncMaterial = createCrtMaterial(scene, 8, CRT_LIGHTNING_PROGRAM);
+    syncMaterial.name = "Cinema / lightning AI update screen";
     syncMaterial.transparencyMode = StandardMaterial.MATERIAL_OPAQUE;
     for (let i = 0; i < 8; i++) {
       const side = i % 2 ? 1 : -1;
@@ -392,6 +387,8 @@ export class CinemaWorld {
 
   private readonly syncMaterial: StandardMaterial;
 
+  get crtScreens(): readonly Mesh[] { return this.televisions.map(({ screen }) => screen); }
+
   async prepare(): Promise<void> {
     await this.assets.prepare();
     this.terminator.prepare(this.assets);
@@ -502,7 +499,6 @@ export class CinemaWorld {
   }
 
   update(time: number, audio: AudioFeatures, cameraTime = time): void {
-    this.terminator.update(cameraTime);
     this.clapperRoot.setEnabled(time < CINEMA.start);
     if (this.clapper?.animation) {
       const group = this.clapper.animation;
@@ -540,7 +536,7 @@ export class CinemaWorld {
       reel.rotation.y = (index ? -1 : 1) * time * .55;
     });
     this.televisions.forEach(({ screen, material, tint }) => {
-      screen.material = time >= CINEMA.crtSync && time < CINEMA.crtSyncEnd ? this.syncMaterial : material;
+      screen.material = cameraTime >= CINEMA.crtSync ? this.syncMaterial : material;
       material.emissiveColor.copyFrom(tint).scaleInPlace(1 + audio.snare * .18);
     });
     this.spotlightMaterial.alpha = .035 + audio.kick * .015;

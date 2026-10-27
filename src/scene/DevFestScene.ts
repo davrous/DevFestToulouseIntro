@@ -31,12 +31,14 @@ import { PixelWorld } from "./PixelWorld";
 import { ArcadeCathedral } from "./ArcadeCathedral";
 import { DemosceneTransition } from "./DemosceneTransition";
 import { MusicReactive } from "../effects/MusicReactive";
-import { ASTRONAUT_CORNER, CINEMA } from "../content/showBeats";
+import { ASTRONAUT_CORNER, CINEMA, TERMINATOR } from "../content/showBeats";
 import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
 import { ClapCrtTransition } from "../effects/ClapCrtTransition";
 import { ArcadeEntryTransition } from "../effects/ArcadeEntryTransition";
 import { LensVortexTransition } from "../effects/LensVortexTransition";
+import { CrtLightningTransition } from "../effects/CrtLightningTransition";
+import { CassouletPowerPoster } from "../effects/CassouletPowerPoster";
 import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
 import { CinemaPopcorn } from "./CinemaPopcorn";
@@ -75,6 +77,8 @@ export class DevFestScene {
   private readonly clapTransition: ClapCrtTransition;
   private readonly entryTransition: ArcadeEntryTransition;
   private readonly lensVortex: LensVortexTransition;
+  private readonly crtLightning: CrtLightningTransition;
+  private readonly cassouletPoster: CassouletPowerPoster;
   private readonly tint = new Color3();
   private readonly labyrinth;
   private readonly interior;
@@ -186,13 +190,17 @@ export class DevFestScene {
     this.entryTransition = new ArcadeEntryTransition(this.camera, this.pipeline);
     this.clapTransition = new ClapCrtTransition(this.camera, this.pipeline);
     this.lensVortex = new LensVortexTransition(this.camera, this.pipeline);
+    this.crtLightning = new CrtLightningTransition(this.camera, this.pipeline, this.cinema.crtScreens);
+    this.cassouletPoster = new CassouletPowerPoster(scene);
+    this.glow.addExcludedMesh(this.cassouletPoster.mesh);
     this.cinema.tunnelPreview.setTunnel(this.lensVortex.tunnel.texture);
     this.update(0);
   }
 
   async prepare(progress: (message: string) => void = () => {}): Promise<void> {
     await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare(),
-      this.entryTransition.prepare(), this.clapTransition.prepare(), this.lensVortex.prepare(), this.simready.prepare(progress)]);
+      this.entryTransition.prepare(), this.clapTransition.prepare(), this.lensVortex.prepare(),
+      this.crtLightning.prepare(), this.simready.prepare(progress)]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
     const plugin = new HavokPlugin(true, havok);
     if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
@@ -212,12 +220,16 @@ export class DevFestScene {
       useInstances: mesh instanceof Mesh && mesh.hasThinInstances,
     })));
     await compile();
+    this.update(CINEMA.crtSync, SILENCE);
+    await compile([...this.cinema.crtScreens]);
     this.update(SPEAKERS[0].startTime + 3, SILENCE);
     await compile();
     for (const [id, gag] of this.simready.groups) {
       this.update(this.simready.config.gags[id].animation.interaction, SILENCE);
       await compile(gag.meshes);
     }
+    this.update(TERMINATOR.walkStart + 1, SILENCE);
+    await compile(this.cinema.terminator.root.getChildMeshes());
     this.update(ASTRONAUT_CORNER.riseEnd, SILENCE);
     await compile(this.cinema.astronautRoot.getChildMeshes());
     this.update(0, SILENCE);
@@ -246,6 +258,7 @@ export class DevFestScene {
     this.entryTransition.update(cameraTime);
     this.clapTransition.update(time);
     this.lensVortex.update(cameraTime, audio);
+    this.crtLightning.update(cameraTime);
     this.headlight.position.copyFrom(pose.position);
     const wake = smoothstep(time / 35);
     const reveal = smoothstep((time - 159) / 10);
@@ -285,8 +298,11 @@ export class DevFestScene {
     this.branding.update(time);
     updateInterior(this.interior, time);
     this.interior.root.setEnabled(!cinema);
-    this.interior.core.scaling.setAll(1 + audio.bass * calm * .025
-      + audio.drop * cueEnvelope(time, 120, 155, 2) * .18);
+    const rescueSpace = this.simready.config.enabled && this.simready.config.enableToulouseEasterEggs
+      ? 1 - cueEnvelope(time, TERMINATOR.start - .7, TERMINATOR.end, .7, 1) : 1;
+    this.interior.core.scaling.setAll((1 + audio.bass * calm * .025
+      + audio.drop * cueEnvelope(time, 120, 155, 2) * .18) * Math.max(.001, rescueSpace));
+    this.interior.rings.forEach((ring) => ring.scaling.setAll(Math.max(.001, rescueSpace)));
     this.portals.forEach((portal) => portal.update(time, audio));
     this.easterEggs.update(time);
     this.arcade.update(time, audio);
@@ -295,6 +311,10 @@ export class DevFestScene {
     this.demoscene.update(time, audio, speed);
     this.cinema.update(time, audio, cameraTime);
     this.simready.update(time, audio);
+    this.cinema.terminator.update(time, this.simready.cassouletRescue,
+      this.simready.config.enabled && this.simready.config.enableToulouseEasterEggs);
+    this.cassouletPoster.update(time, this.simready.cassouletRescue?.rescue?.destroyTime,
+      this.simready.config.enabled && this.simready.config.enableToulouseEasterEggs);
     this.popcorn.update(time, audio, speed);
     this.digitalMoments.update(time, audio);
     this.overflow.update(time);

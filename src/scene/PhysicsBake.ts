@@ -24,16 +24,23 @@ export interface BakedColliderRecipe {
   friction: number;
 }
 
+export interface PhysicsBakeHooks {
+  additionalNodes?: readonly TransformNode[];
+  beforeStep?: (time: number) => void;
+  onBodyCreated?: (aggregate: PhysicsAggregate, index: number) => void;
+}
+
 export function bakeRigidBodies(scene: Scene, parent: TransformNode, recipes: readonly BakedBodyRecipe[],
   duration: number, step: number, shape: PhysicsShapeType, options: PhysicsAggregateParameters,
-  colliders: readonly BakedColliderRecipe[]): PhysicsBake {
+  colliders: readonly BakedColliderRecipe[], hooks: PhysicsBakeHooks = {}): PhysicsBake {
   const engine = scene.getPhysicsEngine();
   if (!engine) throw new Error("The existing Havok engine must be initialized before baking.");
   if (!Number.isFinite(duration) || duration <= 0 || !Number.isFinite(step) || step <= 0) {
     throw new RangeError("Physics bake duration and step must be positive.");
   }
   const frames = Math.ceil(duration / step) + 1;
-  const tracks = recipes.map(() => new Float32Array(frames * 7));
+  const tracks = Array.from({ length: recipes.length + (hooks.additionalNodes?.length ?? 0) },
+    () => new Float32Array(frames * 7));
   const world = parent.computeWorldMatrix(true).clone();
   const inverse = Matrix.Invert(world);
   const parentRotation = Quaternion.FromRotationMatrix(world);
@@ -51,6 +58,7 @@ export function bakeRigidBodies(scene: Scene, parent: TransformNode, recipes: re
     }
     for (let frame = 0; frame < frames; frame++) {
       const time = frame * step;
+      hooks.beforeStep?.(time);
       for (const [index, recipe] of recipes.entries()) {
         const body = bodies[index];
         if (time + 1e-8 < recipe.release) {
@@ -66,12 +74,18 @@ export function bakeRigidBodies(scene: Scene, parent: TransformNode, recipes: re
           aggregate.body.setAngularVelocity(Vector3.TransformNormal(recipe.angularVelocity, world));
           body.node = node;
           body.aggregate = aggregate;
+          hooks.onBodyCreated?.(aggregate, index);
         }
         const local = Vector3.TransformCoordinates(body.node.position, inverse);
         const rotation = inverseRotation.multiply(body.node.rotationQuaternion!);
         const offset = frame * 7;
         tracks[index].set([local.x, local.y, local.z, rotation.x, rotation.y, rotation.z, rotation.w], offset);
       }
+      hooks.additionalNodes?.forEach((node, index) => {
+        const local = Vector3.TransformCoordinates(node.position, inverse);
+        const rotation = inverseRotation.multiply(node.rotationQuaternion!);
+        tracks[recipes.length + index].set([...local.asArray(), ...rotation.asArray()], frame * 7);
+      });
       if (frame + 1 < frames) engine._step(step);
     }
   } finally {

@@ -117,7 +117,9 @@ export class EasterEggs {
   update(time: number): void {
     this.chocolatine.setEnabled(time >= 0 && time < CINEMA.start);
     this.chocolateStages.forEach((mesh, index) => mesh.setEnabled(index === chocolatineStage(time)));
-    this.npm.setEnabled(cueEnvelope(time, CASSOULET_SIGN.start, CASSOULET_SIGN.end, .5) > 0);
+    const terminalOpacity = cueEnvelope(time, CASSOULET_SIGN.start, CASSOULET_SIGN.end, .5, .4);
+    this.npm.setEnabled(terminalOpacity > 0);
+    this.npmTerminal.mesh.visibility = terminalOpacity;
     if (this.npm.isEnabled()) this.npmTerminal.update(time);
     this.satellite.setEnabled(cueEnvelope(time, ORBIT_LINK.start, ORBIT_LINK.end, 1) > 0);
     this.satellite.rotation.y = this.satelliteYaw;

@@ -79,11 +79,6 @@ export class SimReadyDebug {
         set: (settings, value) => { settings.animation[key] = value; },
       });
     }
-    definitions.push({
-      label: "display duration",
-      get: (settings) => settings.animation.displayDuration ?? 3.45,
-      set: (settings, value) => { settings.animation.displayDuration = value; },
-    });
     for (const field of definitions) {
       const label = document.createElement("label");
       label.textContent = field.label;

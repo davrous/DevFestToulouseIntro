@@ -39,6 +39,8 @@ describe("wall-mounted pixel art", () => {
       lines: [{ text: "DEVFEST AI4FUN", color: "#b8ffe4" }, { text: "AGENDA", color: "#ffbad9" }],
     }));
     const screen = scene.getMeshByName("Arcade / hero portal screen")!;
+    expect(screen.position.y).toBe(cameraPose(ARCADE_ENTRY.cross).position.y);
+    expect(scene.getMeshByName("FX/Arcade portal CRT scanlines")?.position.y).toBe(screen.position.y);
     expect(screen.visibility).toBe(1);
     expect(cameraPose(ARCADE_ENTRY.cross - .05).position.z).toBeLessThan(screen.position.z);
     expect(cameraPose(ARCADE_ENTRY.cross + .05).position.z).toBeGreaterThan(screen.position.z);

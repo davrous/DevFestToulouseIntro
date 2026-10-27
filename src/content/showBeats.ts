@@ -1,4 +1,4 @@
-import { HEIGHT, ROOF_THICKNESS, cellPosition } from "./title";
+import { CELL, HEIGHT, ROOF_THICKNESS, cellPosition } from "./title";
 
 export const ARCADE_ENTRY = {
   start: 4.3, cross: 5.925, end: 5.925,
@@ -29,8 +29,8 @@ export const CINEMA = {
   clapperAnchor: 59,
   clap: 51.03,
   start: 51.18,
-  crtSync: 59.4,
-  crtSyncEnd: 59.7,
+  crtSync: 59.2,
+  crtSyncEnd: 59.9,
   davidStart: 66,
   davidGate: 76,
   davidEnd: 83,
@@ -51,30 +51,37 @@ export const CINEMA = {
 } as const;
 
 export const TERMINATOR = {
-  start: CINEMA.start, end: 72, walkStart: 60.5, walkEnd: 69.5,
-  column: 0, row: 6, offsetX: -3, offsetZ: 4.5, height: 21.6,
-  distance: 4, groundOffset: .65, lookStart: 59.8, lookEnd: 67.8, clip: "The Chase",
+  start: 119.5, end: 134, walkStart: 119.5, walkEnd: 125.5,
+  column: 4, row: 3, offsetX: 0, offsetZ: -16, height: 21.6,
+  distance: 16, groundOffset: .65, lookStart: 120, lookEnd: 127, clip: "The Chase",
+  hitsToDestroy: 12, fragments: 192,
+} as const;
+
+const cassouletPosterWall = cellPosition(3, 5);
+export const CASSOULET_WALL_POSTER = {
+  x: cassouletPosterWall.x - CELL / 2 + 2, y: 17, z: cassouletPosterWall.z,
+  wallX: cassouletPosterWall.x - CELL / 2 + .75, yaw: -Math.PI / 2,
+  width: 20, lookStart: 136.5, lookEnd: 144.4, lookIn: 4, lookOut: 3.8,
 } as const;
 
 export function terminatorPosition(time: number): { x: number; y: number; z: number } {
   const cell = cellPosition(TERMINATOR.column, TERMINATOR.row);
   const progress = Math.max(0, Math.min(1, (time - TERMINATOR.walkStart) / (TERMINATOR.walkEnd - TERMINATOR.walkStart)));
-  return { x: cell.x + TERMINATOR.offsetX + TERMINATOR.distance * progress,
+  return { x: cell.x + TERMINATOR.offsetX,
     y: TERMINATOR.height / 2 + TERMINATOR.groundOffset,
-    z: cell.z + TERMINATOR.offsetZ };
+    z: cell.z + TERMINATOR.offsetZ + TERMINATOR.distance * progress };
 }
 
 export const LEVEL_COMPLETE = { start: 46.3, end: CINEMA.clap, height: 26, width: 18 } as const;
 export const BRIDGE_CLOSE = { start: 168, end: 172.5 } as const;
-export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, height: 14, width: 14, lateral: 0 } as const;
+export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, height: 18, width: 14, lateral: 0 } as const;
 export const CASSOULET_INSTALL = {
   start: CASSOULET_SIGN.start, typingEnd: CASSOULET_SIGN.start + .9,
   complete: CASSOULET_SIGN.end - .6, gigabytes: 4.8,
 } as const;
 export const CASSOULET_PILE = {
   start: CASSOULET_INSTALL.complete, end: 134, count: 64, size: 2.1,
-  releaseInterval: .065, spawnHeight: 13, step: 1 / 60,
-  crateWidth: 6, crateHeight: 7.2,
+  releaseInterval: .065, spawnHeight: 28, step: 1 / 60,
 } as const;
 export const BUFFER_OVERFLOW = {
   anchor: 116, start: 107, spill: 110.7, signEnd: 114.3, end: 116.7,
@@ -83,8 +90,8 @@ export const BUFFER_OVERFLOW = {
   tankX: 4.5, tankFloor: 1.2, tankRim: 6,
 } as const;
 export const ASTRONAUT_CORNER = {
-  anchor: 121.75, lateral: -8, height: 6.5, start: CINEMA.digital, end: 124.5,
-  riseStart: 116.2, riseEnd: 118.4, finalScale: 1.6, gateTime: 122, gateLift: 3.2,
+  anchor: 122, lateral: -8, height: 6.5, start: CINEMA.digital, end: 124.5,
+  riseStart: 116.2, riseEnd: 118.4, finalScale: 2.56, gateTime: 122, gateLift: 3.2,
 } as const;
 export const CLAP_CRT = {
   start: CINEMA.clapperClose - .2,

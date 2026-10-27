@@ -9,7 +9,7 @@ import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
-import { routeAnchor } from "../camera/CameraPath";
+import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { CELL, cellPosition } from "../content/title";
 import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
@@ -38,16 +38,17 @@ export class ArcadeCathedral {
     this.screenMaterial.diffuseColor = Color3.Black();
     this.screenMaterial.backFaceCulling = false;
     const hero = cellPosition(-1, 13.95);
+    const heroHeight = cameraPose(ARCADE_ENTRY.cross).position.y;
     this.heroScreen = createWorldText(scene, {
       name: "Arcade / hero portal screen", width: 13, height: 9.5,
       background: "#09131f", border: "#9bffe9",
       lines: [{ text: "DEVFEST AI4FUN", color: "#b8ffe4" },
         { text: "AGENDA", color: "#ffbad9" }],
     });
-    this.heroScreen.position.set(hero.x, 12.5, hero.z - 8.3);
+    this.heroScreen.position.set(hero.x, heroHeight, hero.z - 8.3);
     this.scanlines = MeshBuilder.CreatePlane("FX/Arcade portal CRT scanlines",
       { width: 13, height: 9.5 }, scene);
-    this.scanlines.position.set(hero.x, 12.5, hero.z - 8.37);
+    this.scanlines.position.set(hero.x, heroHeight, hero.z - 8.37);
     this.scanlines.isPickable = false;
     this.scanlineMaterial = new ShaderMaterial("Arcade / scanlines and screen glitch", scene, {
       vertexSource: `
@@ -77,7 +78,7 @@ export class ArcadeCathedral {
     this.scanlineMaterial.disableDepthWrite = true;
     this.scanlines.material = this.scanlineMaterial;
     this.light = new PointLight("Arcade / one hero screen light",
-      new Vector3(hero.x, 13.5, hero.z - 7), scene);
+      new Vector3(hero.x, heroHeight + 1, hero.z - 7), scene);
     this.light.diffuse = Color3.FromHexString("#7dffe3");
     this.light.range = 30;
     this.light.intensity = 0;

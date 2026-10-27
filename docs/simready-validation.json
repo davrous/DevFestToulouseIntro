@@ -4,7 +4,7 @@
     1920,
     1080
   ],
-  "readyMs": 4868,
+  "readyMs": 5878,
   "groups": [
     "pong",
     "pastry",
@@ -14,16 +14,16 @@
   ],
   "replay": {
     "before": [
-      1370,
-      1717,
-      248,
-      16
+      1372,
+      1719,
+      252,
+      18
     ],
     "after": [
-      1370,
-      1717,
-      248,
-      16
+      1372,
+      1719,
+      252,
+      18
     ],
     "cameras": [
       {
@@ -208,43 +208,43 @@
         "time": 51.18,
         "enabled": true,
         "opaque": true,
-        "caption": 0
+        "caption": 1
       },
       {
         "time": 55,
         "enabled": true,
         "opaque": true,
-        "caption": 0
+        "caption": 1
       },
       {
         "time": 59,
         "enabled": true,
         "opaque": true,
-        "caption": 0
+        "caption": 1
       },
       {
         "time": 60.8,
         "enabled": true,
         "opaque": true,
-        "caption": 0
+        "caption": 1
       },
       {
         "time": 61.349,
         "enabled": true,
         "opaque": true,
-        "caption": 0
+        "caption": 1
       },
       {
         "time": 61.35,
         "enabled": true,
         "opaque": true,
-        "caption": 1.051814540294641e-26
+        "caption": 1
       },
       {
         "time": 61.351,
         "enabled": true,
         "opaque": true,
-        "caption": 0.0002071759259278989
+        "caption": 1
       },
       {
         "time": 61.8,
@@ -256,19 +256,32 @@
         "time": 65,
         "enabled": true,
         "opaque": true,
-        "caption": 0
+        "caption": 1
       },
       {
         "time": 70,
         "enabled": true,
         "opaque": true,
-        "caption": 0
+        "caption": 1
       }
     ],
     "artDirection": [
       {
         "time": 3.5,
         "entryShader": false,
+        "openingCenterOffset": 0.26724333593749705,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -304,20 +317,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -340,6 +355,19 @@
       {
         "time": 4.299,
         "entryShader": false,
+        "openingCenterOffset": 0.18326759738699927,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -375,20 +403,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -411,6 +441,19 @@
       {
         "time": 4.5,
         "entryShader": true,
+        "openingCenterOffset": 0.16136833593749955,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -446,20 +489,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -482,6 +527,19 @@
       {
         "time": 5.525,
         "entryShader": true,
+        "openingCenterOffset": 0.0461266250000012,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -517,20 +575,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -553,6 +613,19 @@
       {
         "time": 5.925,
         "entryShader": false,
+        "openingCenterOffset": 0,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -588,20 +661,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -624,6 +699,19 @@
       {
         "time": 6.1,
         "entryShader": false,
+        "openingCenterOffset": -0.02030366406250117,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -659,20 +747,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -695,6 +785,19 @@
       {
         "time": 15,
         "entryShader": false,
+        "openingCenterOffset": -0.9566941640625011,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -730,20 +833,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -766,6 +871,19 @@
       {
         "time": 17.25,
         "entryShader": false,
+        "openingCenterOffset": -1.1816941640625007,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -801,20 +919,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -837,6 +957,19 @@
       {
         "time": 17.5,
         "entryShader": false,
+        "openingCenterOffset": -1.206694164062501,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -872,20 +1005,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -908,6 +1043,19 @@
       {
         "time": 18,
         "entryShader": false,
+        "openingCenterOffset": -1.2566941640625018,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -943,20 +1091,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -979,6 +1129,19 @@
       {
         "time": 19.1,
         "entryShader": false,
+        "openingCenterOffset": -1.3666941640625012,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -1014,20 +1177,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1050,6 +1215,19 @@
       {
         "time": 26.999,
         "entryShader": false,
+        "openingCenterOffset": -2.3315691640625005,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -1085,20 +1263,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1121,6 +1301,19 @@
       {
         "time": 27,
         "entryShader": false,
+        "openingCenterOffset": -2.331694164062501,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -1156,20 +1349,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1192,6 +1387,19 @@
       {
         "time": 28.999,
         "entryShader": false,
+        "openingCenterOffset": -2.6347474117500003,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": true,
@@ -1227,20 +1435,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1263,6 +1473,19 @@
       {
         "time": 29,
         "entryShader": false,
+        "openingCenterOffset": -2.6349349048032416,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": true,
         "httpYaw": 0,
         "request": false,
@@ -1298,20 +1521,624 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -563,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
         "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.07692307692307693,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.36
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          1,
+          1,
+          1
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 41.8,
+        "entryShader": false,
+        "openingCenterOffset": -2.8819101640625018,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 188.7209628801245,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 0,
+        "vortexExit": 0,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          0,
+          -1400,
+          0
+        ],
+        "physicalFlightHeading": [
+          0.30229005951492127,
+          0,
+          0.9532159880732518
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.07692307692307693,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.36
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          1,
+          1,
+          1
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 44.5,
+        "entryShader": false,
+        "openingCenterOffset": -2.456694164062501,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0.46253124999999945,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 191.04250228629553,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 0,
+        "vortexExit": 0,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          0,
+          -1400,
+          0
+        ],
+        "physicalFlightHeading": [
+          0.30229005951492127,
+          0,
+          0.9532159880732518
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.07692307692307693,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.36
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          1,
+          1,
+          1
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 46.5,
+        "entryShader": false,
+        "openingCenterOffset": -2.456694164062501,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": true,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": true,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 193.863688160339,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 0,
+        "vortexExit": 0,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          0,
+          -1400,
+          0
+        ],
+        "physicalFlightHeading": [
+          0.30229005951492127,
+          0,
+          0.9532159880732518
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.07692307692307693,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.36
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          1,
+          1,
+          1
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 59.199,
+        "entryShader": false,
+        "openingCenterOffset": -3.4927041418310196,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 0,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 161.21970684707415,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": true,
+        "vortexTurn": 0,
+        "vortexExit": 0,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          0,
+          -1400,
+          0
+        ],
+        "physicalFlightHeading": [
+          0.30229005951492127,
+          0,
+          0.9532159880732518
+        ],
+        "tunnelPassActive": true,
+        "terminator": false,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.07692307692307693,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.36
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          1,
+          1,
+          1
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 59.2,
+        "entryShader": false,
+        "openingCenterOffset": -3.4926941640625007,
+        "crtStrike": true,
+        "crtEnergy": 1,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 161.2109011434913,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": true,
+        "vortexTurn": 0,
+        "vortexExit": 0,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          0,
+          -1400,
+          0
+        ],
+        "physicalFlightHeading": [
+          0.30229005951492127,
+          0,
+          0.9532159880732518
+        ],
+        "tunnelPassActive": true,
+        "terminator": false,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.07692307692307693,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.36
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          1,
+          1,
+          1
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 59.35,
+        "entryShader": false,
+        "openingCenterOffset": -3.490725414062501,
+        "crtStrike": true,
+        "crtEnergy": 0.3011942119122055,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 159.88102090482192,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": true,
+        "vortexTurn": 0,
+        "vortexExit": 0,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          0,
+          -1400,
+          0
+        ],
+        "physicalFlightHeading": [
+          0.30229005951492127,
+          0,
+          0.9532159880732518
+        ],
+        "tunnelPassActive": true,
+        "terminator": false,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.07692307692307693,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.36
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          1,
+          1,
+          1
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 59.9,
+        "entryShader": false,
+        "openingCenterOffset": -3.4779812010995386,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": false,
+        "armOpaque": false,
+        "cassoulet": false,
+        "lensDistance": 154.89413793352068,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": true,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": true,
+        "vortexTurn": 0,
+        "vortexExit": 0,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          0,
+          -1400,
+          0
+        ],
+        "physicalFlightHeading": [
+          0.30229005951492127,
+          0,
+          0.9532159880732518
+        ],
+        "tunnelPassActive": true,
+        "terminator": false,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1334,6 +2161,19 @@
       {
         "time": 61.8,
         "entryShader": false,
+        "openingCenterOffset": -3.472694164062501,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1369,20 +2209,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
-        "terminator": true,
+        "terminator": false,
         "terminatorPosition": [
-          -562.4222222222222,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 77.99999999999983,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1405,6 +2247,19 @@
       {
         "time": 63.25,
         "entryShader": false,
+        "openingCenterOffset": -3.525908031250001,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1440,91 +2295,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
-        "terminator": true,
+        "terminator": false,
         "terminatorPosition": [
-          -561.7777777777778,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 64.99980211257935,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
-        "terminal": {
-          "command": "$ npm install cassoulet",
-          "progress": 0.07692307692307693,
-          "complete": false,
-          "cursor": true,
-          "downloadedGB": 0.36
-        },
-        "astronautPresent": false,
-        "astronautScale": [
-          1,
-          1,
-          1
-        ],
-        "astronautFeet": 0,
-        "archBottom": 3.5,
-        "archCount": 24,
-        "addedArchAbsent": true,
-        "oldAstronautAbsent": true
-      },
-      {
-        "time": 63.5,
-        "entryShader": false,
-        "httpPresent": false,
-        "httpYaw": 0,
-        "request": false,
-        "armPresent": false,
-        "armOpaque": false,
-        "cassoulet": false,
-        "lensDistance": 127.22806703143864,
-        "canCount": 0,
-        "pileHeight": 0,
-        "bufferLabel": 0,
-        "waterSpilling": false,
-        "bufferYaw": 3.141592653589793,
-        "violinOpacity": 0,
-        "anneFloreOpacity": 1,
-        "vortex": false,
-        "reelsVisible": true,
-        "matrixReady": true,
-        "matrixBounds": [
-          -532.0000305175781,
-          -462.7500305175781,
-          0.05000076293945099,
-          32.85000076293946
-        ],
-        "matrixSingleSurface": true,
-        "lensPreviewReady": true,
-        "lensPreviewVisible": true,
-        "vortexTurn": 0,
-        "vortexExit": 0,
-        "physicalTunnelVertices": 29965,
-        "physicalFlightPosition": [
-          0,
-          -1400,
-          0
-        ],
-        "physicalFlightHeading": [
-          0.3033300148598039,
-          0,
-          0.9528855661018019
-        ],
-        "tunnelPassActive": true,
-        "terminator": true,
-        "terminatorPosition": [
-          -561.6666666666666,
-          11.450000000000001,
-          46.5
-        ],
-        "terminatorFrame": 79.99980211257935,
-        "terminatorClip": "The Chase",
-        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1547,6 +2333,19 @@
       {
         "time": 76.8,
         "entryShader": false,
+        "openingCenterOffset": -0.6809904603587977,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1582,20 +2381,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1618,6 +2419,19 @@
       {
         "time": 78.5,
         "entryShader": false,
+        "openingCenterOffset": -1.2697728677662035,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1653,20 +2467,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1689,6 +2505,19 @@
       {
         "time": 79.999,
         "entryShader": false,
+        "openingCenterOffset": -1.8267034094374992,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1724,20 +2553,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1760,6 +2591,19 @@
       {
         "time": 80,
         "entryShader": false,
+        "openingCenterOffset": -1.8270645344328713,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1795,20 +2639,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1831,6 +2677,19 @@
       {
         "time": 80.35,
         "entryShader": false,
+        "openingCenterOffset": -2.773093575599926,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1866,20 +2725,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1902,6 +2763,19 @@
       {
         "time": 80.45,
         "entryShader": false,
+        "openingCenterOffset": -3.0439011611470477,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -1937,20 +2811,22 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148598039,
+          0.30229005951492127,
           0,
-          0.9528855661018019
+          0.9532159880732518
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -1973,6 +2849,19 @@
       {
         "time": 84.5,
         "entryShader": false,
+        "openingCenterOffset": -3.488949140641088,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2008,20 +2897,22 @@
           265.3497340420426
         ],
         "physicalFlightHeading": [
-          0.46800946517137576,
-          0.006522331708165034,
-          0.8836993831043969
+          0.466710424237176,
+          0.006527400164796444,
+          0.884386099481128
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2044,6 +2935,19 @@
       {
         "time": 90,
         "entryShader": false,
+        "openingCenterOffset": -4.197259632281231,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2079,20 +2983,22 @@
           635.6771895305718
         ],
         "physicalFlightHeading": [
-          0.9207826262419201,
-          -0.0015529044921676822,
-          0.39007299791022537
+          0.9202524345461047,
+          -0.0015578774667819855,
+          0.3913221559403016
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2115,6 +3021,19 @@
       {
         "time": 91.5,
         "entryShader": false,
+        "openingCenterOffset": -4.489735240419723,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2150,20 +3069,22 @@
           724.012981035941
         ],
         "physicalFlightHeading": [
-          0.9984646356405327,
+          0.9984508844940765,
           0,
-          0.05539288199054414
+          0.05564019458086171
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2186,6 +3107,19 @@
       {
         "time": 92.8,
         "entryShader": false,
+        "openingCenterOffset": -4.816070424232601,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2221,20 +3155,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999999630161,
+          0.999999999962448,
           0,
-          -0.000008600450665294937
+          -0.000008666261551333974
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2257,6 +3193,19 @@
       {
         "time": 93.5,
         "entryShader": false,
+        "openingCenterOffset": -5.018633342310251,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2292,20 +3241,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999998930102,
+          0.999999999890192,
           0,
-          -0.00001462804220205537
+          -0.000014819451518253856
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2328,6 +3279,19 @@
       {
         "time": 94,
         "entryShader": false,
+        "openingCenterOffset": -5.170831365194344,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2363,20 +3327,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999996075228,
+          0.9999999995873594,
           0,
-          -0.000028017035709229942
+          -0.00002872770550937577
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2399,6 +3365,19 @@
       {
         "time": 94.199,
         "entryShader": false,
+        "openingCenterOffset": -5.232090088011706,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2434,20 +3413,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991340045,
+          0.9999999990666714,
           0,
-          -0.00004161719572764459
+          -0.00004320482766474391
         ],
         "tunnelPassActive": true,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2470,6 +3451,19 @@
       {
         "time": 94.2,
         "entryShader": false,
+        "openingCenterOffset": -5.232397867766206,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2505,20 +3499,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2541,6 +3537,19 @@
       {
         "time": 108,
         "entryShader": false,
+        "openingCenterOffset": -2.9668982456951554,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2576,20 +3585,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2612,6 +3623,19 @@
       {
         "time": 110.699,
         "entryShader": false,
+        "openingCenterOffset": -1.6873775251736127,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2647,20 +3671,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2683,6 +3709,19 @@
       {
         "time": 111,
         "entryShader": false,
+        "openingCenterOffset": -1.5678052751736118,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2718,20 +3757,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2754,6 +3795,19 @@
       {
         "time": 117.2,
         "entryShader": false,
+        "openingCenterOffset": -0.13932379369212988,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2789,20 +3843,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm",
           "progress": 0,
@@ -2812,9 +3868,9 @@
         },
         "astronautPresent": true,
         "astronautScale": [
-          1.2592036063110439,
-          1.2592036063110439,
-          1.2592036063110439
+          1.673929376408714,
+          1.673929376408714,
+          1.673929376408714
         ],
         "astronautFeet": 0,
         "archBottom": 1.6824191808700562,
@@ -2825,6 +3881,19 @@
       {
         "time": 118,
         "entryShader": false,
+        "openingCenterOffset": -0.08169416406250107,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2860,20 +3929,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.01538461538461451,
@@ -2883,9 +3954,9 @@
         },
         "astronautPresent": true,
         "astronautScale": [
-          1.547708489857249,
-          1.547708489857249,
-          1.547708489857249
+          2.424042073628847,
+          2.424042073628847,
+          2.424042073628847
         ],
         "astronautFeet": 0,
         "archBottom": 3.221112012863159,
@@ -2896,6 +3967,19 @@
       {
         "time": 118.4,
         "entryShader": false,
+        "openingCenterOffset": -0.07199046035879597,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -2931,20 +4015,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          110
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 0,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.07692307692307693,
@@ -2954,9 +4040,95 @@
         },
         "astronautPresent": true,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 119.5,
+        "entryShader": false,
+        "openingCenterOffset": -0.12856916406250107,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 110.30620112031258,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": true,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          110
+        ],
+        "terminatorFrame": 0,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.24615384615384528,
+          "complete": false,
+          "cursor": false,
+          "downloadedGB": 1.18
+        },
+        "astronautPresent": true,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -2967,6 +4139,19 @@
       {
         "time": 120,
         "entryShader": false,
+        "openingCenterOffset": -0.2020645344328713,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3002,20 +4187,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
-        "terminator": false,
+        "terminator": true,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          111.33333333333333
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 30,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.3230769230769222,
@@ -3025,9 +4212,95 @@
         },
         "astronautPresent": true,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 121.25,
+        "entryShader": false,
+        "openingCenterOffset": -0.5331336684356796,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": false,
+        "lensDistance": 114.47060639392434,
+        "canCount": 0,
+        "pileHeight": 0,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": true,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          114.66666666666667
+        ],
+        "terminatorFrame": 4.999802112579346,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 0.5076923076923072,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 2.43
+        },
+        "astronautPresent": true,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3038,6 +4311,19 @@
       {
         "time": 124.399,
         "entryShader": false,
+        "openingCenterOffset": -2.1419797838934063,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3073,20 +4359,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
-        "terminator": false,
+        "terminator": true,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          123.06400000000001
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 93.93960422515875,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 0.9846153846153833,
@@ -3096,9 +4384,9 @@
         },
         "astronautPresent": true,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3109,6 +4397,19 @@
       {
         "time": 124.4,
         "entryShader": false,
+        "openingCenterOffset": -2.1426183623132324,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3117,7 +4418,7 @@
         "cassoulet": true,
         "lensDistance": 113.81991800038115,
         "canCount": 1,
-        "pileHeight": 13,
+        "pileHeight": 28,
         "bufferLabel": 0,
         "waterSpilling": false,
         "bufferYaw": 3.141592653589793,
@@ -3144,20 +4445,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
-        "terminator": false,
+        "terminator": true,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448,
+          11.449999999552967,
+          123.06666666666668
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 93.99960422515903,
         "terminatorClip": "The Chase",
         "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 1,
@@ -3167,9 +4470,181 @@
         },
         "astronautPresent": true,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 125.19,
+        "entryShader": false,
+        "openingCenterOffset": -2.658066414791362,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 113.13852671684675,
+        "canCount": 13,
+        "pileHeight": 27.99215850830079,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": true,
+        "terminatorPosition": [
+          -448,
+          11.449999999552967,
+          125.17333333333333
+        ],
+        "terminatorFrame": 41.3994063377379,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.59999856506199,
+        "terminatorDamage": 0,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 125.3,
+        "entryShader": false,
+        "openingCenterOffset": -2.7310556800974854,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 113.04373939842012,
+        "canCount": 14,
+        "pileHeight": 27.927211761474624,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": true,
+        "terminatorPosition": [
+          -447.9813232421875,
+          11.219297904521227,
+          125.28689575195312
+        ],
+        "terminatorFrame": 41.99940633773821,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.660464844384546,
+        "terminatorDamage": 0.09259259259258734,
+        "terminatorDebris": false,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3180,6 +4655,19 @@
       {
         "time": 125.8,
         "entryShader": false,
+        "openingCenterOffset": -3.06408775006833,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3188,7 +4676,7 @@
         "cassoulet": true,
         "lensDistance": 112.6301550030512,
         "canCount": 22,
-        "pileHeight": 12.956170082092298,
+        "pileHeight": 27.956171035766612,
         "bufferLabel": 0,
         "waterSpilling": false,
         "bufferYaw": 3.141592653589793,
@@ -3215,20 +4703,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
-        "terminator": false,
+        "terminator": true,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448.0415954589844,
+          11.210496444255114,
+          125.03993225097656
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 41.99940633773821,
         "terminatorClip": "The Chase",
-        "terminatorHeight": 21.59999856506199,
+        "terminatorHeight": 21.752551836281572,
+        "terminatorDamage": 0.7361111111111072,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 1,
@@ -3238,9 +4728,439 @@
         },
         "astronautPresent": false,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 126.5,
+        "entryShader": false,
+        "openingCenterOffset": -3.5273938725173117,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": false,
+        "mangaFullscreen": false,
+        "mangaOpacity": 0,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 112.14109453184422,
+        "canCount": 33,
+        "pileHeight": 27.980489730834968,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
+        ],
+        "terminatorFrame": 41.99940633773821,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 126.65,
+        "entryShader": false,
+        "openingCenterOffset": -3.625224047444428,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 112.05640089303658,
+        "canCount": 35,
+        "pileHeight": 27.956050872802734,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
+        ],
+        "terminatorFrame": 41.99940633773821,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 126.85,
+        "entryShader": false,
+        "openingCenterOffset": -3.754439790884655,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 111.95717557473482,
+        "canCount": 38,
+        "pileHeight": 27.926128387451193,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
+        ],
+        "terminatorFrame": 41.99940633773821,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 127.2,
+        "entryShader": false,
+        "openingCenterOffset": -3.9764142806805793,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 111.82591059641801,
+        "canCount": 43,
+        "pileHeight": 27.891134262084968,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
+        ],
+        "terminatorFrame": 41.99940633773821,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
+        ],
+        "astronautFeet": 0,
+        "archBottom": 3.5,
+        "archCount": 24,
+        "addedArchAbsent": true,
+        "oldAstronautAbsent": true
+      },
+      {
+        "time": 127.7,
+        "entryShader": false,
+        "openingCenterOffset": -4.281749557648508,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
+        "httpPresent": false,
+        "httpYaw": 0,
+        "request": false,
+        "armPresent": true,
+        "armOpaque": true,
+        "cassoulet": true,
+        "lensDistance": 111.74699267596493,
+        "canCount": 51,
+        "pileHeight": 27.92505264282227,
+        "bufferLabel": 0,
+        "waterSpilling": false,
+        "bufferYaw": 3.141592653589793,
+        "violinOpacity": 0,
+        "anneFloreOpacity": 1,
+        "vortex": false,
+        "reelsVisible": false,
+        "matrixReady": true,
+        "matrixBounds": [
+          -532.0000305175781,
+          -462.7500305175781,
+          0.05000076293945099,
+          32.85000076293946
+        ],
+        "matrixSingleSurface": true,
+        "lensPreviewReady": true,
+        "lensPreviewVisible": false,
+        "vortexTurn": 1,
+        "vortexExit": 1,
+        "physicalTunnelVertices": 29965,
+        "physicalFlightPosition": [
+          210,
+          -1400,
+          735.001
+        ],
+        "physicalFlightHeading": [
+          0.9999999990619715,
+          0,
+          -0.00004331347514954277
+        ],
+        "tunnelPassActive": false,
+        "terminator": false,
+        "terminatorPosition": [
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
+        ],
+        "terminatorFrame": 41.99940633773821,
+        "terminatorClip": "The Chase",
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": true,
+        "terminal": {
+          "command": "$ npm install cassoulet",
+          "progress": 1,
+          "complete": true,
+          "cursor": true,
+          "downloadedGB": 4.8
+        },
+        "astronautPresent": false,
+        "astronautScale": [
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3251,6 +5171,19 @@
       {
         "time": 128,
         "entryShader": false,
+        "openingCenterOffset": -4.456694164062501,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3259,7 +5192,7 @@
         "cassoulet": true,
         "lensDistance": 111.76986821745756,
         "canCount": 56,
-        "pileHeight": 13.1722822189331,
+        "pileHeight": 27.980386734008796,
         "bufferLabel": 0,
         "waterSpilling": false,
         "bufferYaw": 3.141592653589793,
@@ -3286,20 +5219,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 41.99940633773821,
         "terminatorClip": "The Chase",
-        "terminatorHeight": 21.59999856506199,
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": true,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 1,
@@ -3309,9 +5244,9 @@
         },
         "astronautPresent": false,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3322,6 +5257,19 @@
       {
         "time": 130,
         "entryShader": false,
+        "openingCenterOffset": -5.716169382721393,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3330,7 +5278,7 @@
         "cassoulet": true,
         "lensDistance": 112.61120975857558,
         "canCount": 64,
-        "pileHeight": 11.51994800567627,
+        "pileHeight": 7.321942806244047,
         "bufferLabel": 0,
         "waterSpilling": false,
         "bufferYaw": 3.141592653589793,
@@ -3357,20 +5305,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 41.99940633773821,
         "terminatorClip": "The Chase",
-        "terminatorHeight": 21.59999856506199,
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": true,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 1,
@@ -3380,9 +5330,9 @@
         },
         "astronautPresent": false,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3393,6 +5343,19 @@
       {
         "time": 137,
         "entryShader": false,
+        "openingCenterOffset": -8.792694164062503,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3428,20 +5391,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 41.99940633773821,
         "terminatorClip": "The Chase",
-        "terminatorHeight": 21.59999856506199,
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 1,
@@ -3451,9 +5416,9 @@
         },
         "astronautPresent": false,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3464,6 +5429,19 @@
       {
         "time": 139.499,
         "entryShader": false,
+        "openingCenterOffset": -8.5153251860505,
+        "crtStrike": false,
+        "crtEnergy": 0,
+        "crtJokeScreens": 8,
+        "curtainWings": 2,
+        "curtainVisible": false,
+        "curtainOpening": 0.99815625,
+        "npmCentered": true,
+        "petalVertices": 117,
+        "petalShader": "Cassoulet / curved crimson petal flutter",
+        "mangaPoster": true,
+        "mangaFullscreen": false,
+        "mangaOpacity": 1,
         "httpPresent": false,
         "httpYaw": 0,
         "request": false,
@@ -3499,20 +5477,22 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298043,
+          0.9999999990619715,
           0,
-          -0.00004171799574769626
+          -0.00004331347514954277
         ],
         "tunnelPassActive": false,
         "terminator": false,
         "terminatorPosition": [
-          -559,
-          11.450000000000001,
-          46.5
+          -448.1940612792969,
+          11.065109748393297,
+          124.23627471923828
         ],
-        "terminatorFrame": 39.99901056289673,
+        "terminatorFrame": 41.99940633773821,
         "terminatorClip": "The Chase",
-        "terminatorHeight": 21.59999856506199,
+        "terminatorHeight": 21.925046009990904,
+        "terminatorDamage": 1,
+        "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
           "progress": 1,
@@ -3522,9 +5502,9 @@
         },
         "astronautPresent": false,
         "astronautScale": [
-          1.6,
-          1.6,
-          1.6
+          2.56,
+          2.56,
+          2.56
         ],
         "astronautFeet": 0,
         "archBottom": 3.5,
@@ -3537,7 +5517,7 @@
     "volleyReplaySame": true,
     "violinCollision": {
       "time": 21.983333333333334,
-      "impulse": 0.8717249035835266,
+      "impulse": 0.8473109602928162,
       "voxel": 58
     },
     "powerCaptionAbsent": true,
@@ -3554,18 +5534,110 @@
   },
   "robotPresentation": {
     "minimum": [
-      -566.6689517421428,
+      -454.58876994024655,
       0.23981067798306754,
-      40.56627401860669
+      107.82309036360266
     ],
     "maximum": [
-      -552.4720614680748,
+      -442.0662740186067,
       21.323413683373474,
-      53.08876994024655
+      130.6941999318948
     ],
-    "cameraClearance": 2.2048608366175566,
-    "visibleSeconds": 6.5,
-    "centralSeconds": 4.5
+    "cameraClearance": 30.81716368361313,
+    "visibleSeconds": 5.75,
+    "centralSeconds": 5.5,
+    "lighting": {
+      "lit": 44.994365668094545,
+      "withoutDedicatedLights": 12.58370645506397,
+      "scoped": true,
+      "materialsReady": true
+    }
+  },
+  "cassouletRescue": {
+    "impactTime": 125.2,
+    "destroyTime": 126.25,
+    "contacts": [
+      {
+        "time": 125.2,
+        "can": 0,
+        "impulse": 6.720878601074219
+      },
+      {
+        "time": 125.26666666666667,
+        "can": 1,
+        "impulse": 0.06440664827823639
+      },
+      {
+        "time": 125.38333333333334,
+        "can": 3,
+        "impulse": 5.137150287628174
+      },
+      {
+        "time": 125.41666666666667,
+        "can": 2,
+        "impulse": 0.12476526200771332
+      },
+      {
+        "time": 125.41666666666667,
+        "can": 4,
+        "impulse": 7.326506614685059
+      },
+      {
+        "time": 125.5,
+        "can": 5,
+        "impulse": 1.0953181982040405
+      },
+      {
+        "time": 125.56666666666668,
+        "can": 6,
+        "impulse": 5.154317855834961
+      },
+      {
+        "time": 125.63333333333334,
+        "can": 7,
+        "impulse": 4.170138835906982
+      },
+      {
+        "time": 125.7,
+        "can": 8,
+        "impulse": 7.043581962585449
+      },
+      {
+        "time": 126,
+        "can": 12,
+        "impulse": 3.7431066036224365
+      },
+      {
+        "time": 126.18333333333334,
+        "can": 15,
+        "impulse": 2.979363203048706
+      },
+      {
+        "time": 126.25,
+        "can": 16,
+        "impulse": 4.955793857574463
+      }
+    ],
+    "fragments": 192,
+    "deterministic": true,
+    "destroyedModelHidden": true
+  },
+  "posterPlayback": {
+    "frames": 243,
+    "first": 138.23410000000146,
+    "last": 142.26749999999979,
+    "robotVisibleDuringPoster": false
+  },
+  "wallPoster": {
+    "position": [
+      -488,
+      17,
+      70
+    ],
+    "yaw": -1.5707963267948966,
+    "longestReadableSeconds": 4.25,
+    "coloredArtworkPixels": 37167,
+    "fixed": true
   },
   "exitContinuity": {
     "samples": [
@@ -3603,50 +5675,90 @@
     "maxFrameChange": 0.04552989590898088
   },
   "musicBands": {
-    "samples": 826,
+    "samples": 824,
     "peaks": [
-      0.8756302521008404,
-      0.7086601307189543,
-      0.6087862993298587,
-      0.4512671305081172
+      0.8829131652661066,
+      0.7222222222222222,
+      0.6146934723256394,
+      0.4483913135146534
     ],
     "lows": [
-      0.7305322128851541,
-      0.4983660130718955,
-      0.46080913378009397,
-      0.24766603415559868
+      0.7299719887955183,
+      0.5080065359477125,
+      0.4607098535616775,
+      0.2514864010120186
     ],
     "maxRoutingError": 0
   },
   "measurements": [
     {
-      "time": 63.25,
+      "time": 44.5,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.001008420174344,
+      "fps": 60.004033884540725,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17,
-      "drawCalls": 327
+      "p95Ms": 17.100000001490116,
+      "drawCalls": 67
     },
     {
-      "time": 63.25,
+      "time": 44.5,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.007059654031856,
+      "fps": 60.001008420174344,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 17.200000002980232,
+      "drawCalls": 67
+    },
+    {
+      "time": 59.2,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.98588567404919,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17,
-      "drawCalls": 519
+      "p95Ms": 17.69999999552965,
+      "drawCalls": 328
+    },
+    {
+      "time": 59.2,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99495840685657,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 18,
+      "drawCalls": 520
+    },
+    {
+      "time": 61.8,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99495840685657,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 17.30000000447035,
+      "drawCalls": 299
+    },
+    {
+      "time": 61.8,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.013112108573004,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.399999998509884,
+      "drawCalls": 491
     },
     {
       "time": 80.35,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.02522068095839,
+      "fps": 60.007059654031856,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17.5,
+      "p95Ms": 17,
       "drawCalls": 118
     },
     {
@@ -3654,9 +5766,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00100842039974,
+      "fps": 59.99798326111193,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17.799999997019768,
+      "p95Ms": 17.100000001490116,
       "drawCalls": 118
     },
     {
@@ -3664,9 +5776,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.004033884540725,
-      "medianMs": 16.799999997019768,
-      "p95Ms": 17.799999997019768,
+      "fps": 60.010085728693895,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.100000001490116,
       "drawCalls": 28
     },
     {
@@ -3674,9 +5786,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.991933857587526,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.799999997019768,
+      "fps": 59.99798326111193,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17,
       "drawCalls": 28
     },
     {
@@ -3684,9 +5796,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.007059654031856,
+      "fps": 59.991933857587526,
       "medianMs": 16.69999999552965,
-      "p95Ms": 18,
+      "p95Ms": 17.099999994039536,
       "drawCalls": 75
     },
     {
@@ -3694,9 +5806,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.007059654031856,
+      "fps": 60.004033884540725,
       "medianMs": 16.600000001490116,
-      "p95Ms": 17.80000000447035,
+      "p95Ms": 17,
       "drawCalls": 75
     },
     {
@@ -3704,9 +5816,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.09190526696919,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.700000002980232,
+      "fps": 59.991933857587526,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17,
       "drawCalls": 71
     },
     {
@@ -3714,9 +5826,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99798326111193,
+      "fps": 59.98588567404919,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17.799999997019768,
+      "p95Ms": 17.099999994039536,
       "drawCalls": 71
     },
     {
@@ -3724,9 +5836,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.991933857587526,
+      "fps": 59.99798326111193,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17.5,
+      "p95Ms": 17.100000001490116,
       "drawCalls": 211
     },
     {
@@ -3735,29 +5847,109 @@
       "width": 1920,
       "height": 1080,
       "fps": 60.001008420174344,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.5,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.099999994039536,
       "drawCalls": 301
     },
     {
-      "time": 118,
+      "time": 118.4,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.98890961325867,
+      "fps": 60.00100842039974,
       "medianMs": 16.69999999552965,
-      "p95Ms": 18.80000000447035,
+      "p95Ms": 17,
       "drawCalls": 67
     },
     {
-      "time": 118,
+      "time": 118.4,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.95566303918717,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.599999994039536,
+      "fps": 59.99798326111193,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17,
       "drawCalls": 67
+    },
+    {
+      "time": 121.5,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99798326111193,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.100000001490116,
+      "drawCalls": 111
+    },
+    {
+      "time": 121.5,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99193385781286,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17,
+      "drawCalls": 231
+    },
+    {
+      "time": 125.8,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.007059654031856,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17,
+      "drawCalls": 137
+    },
+    {
+      "time": 125.8,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99495840685657,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.200000002980232,
+      "drawCalls": 345
+    },
+    {
+      "time": 126.85,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.007059654031856,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17,
+      "drawCalls": 139
+    },
+    {
+      "time": 126.85,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.991933857587526,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.899999998509884,
+      "drawCalls": 378
+    },
+    {
+      "time": 127.2,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.007059654031856,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 18.099999994039536,
+      "drawCalls": 139
+    },
+    {
+      "time": 127.2,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.982862039462354,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 18.100000001490116,
+      "drawCalls": 378
     },
     {
       "time": 128,
@@ -3766,7 +5958,7 @@
       "height": 1080,
       "fps": 60.010085728693895,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17.600000001490116,
+      "p95Ms": 17.700000002980232,
       "drawCalls": 139
     },
     {
@@ -3774,30 +5966,50 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.01613879348986,
+      "fps": 59.98890961325867,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.80000000447035,
+      "drawCalls": 350
+    },
+    {
+      "time": 140.5,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.007059654031856,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 17.899999998509884,
+      "drawCalls": 91
+    },
+    {
+      "time": 140.5,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00403388476615,
       "medianMs": 16.69999999552965,
-      "p95Ms": 17.700000002980232,
-      "drawCalls": 387
+      "p95Ms": 17.5,
+      "drawCalls": 176
     },
     {
       "time": 143.5,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.06157573319487,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.69999999552965,
-      "drawCalls": 97
+      "fps": 60.05854446355582,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.600000001490116,
+      "drawCalls": 99
     },
     {
       "time": 143.5,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.96774843785999,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.5,
-      "drawCalls": 187
+      "fps": 59.99495840685657,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.599999994039536,
+      "drawCalls": 192
     }
   ],
   "viewer": {

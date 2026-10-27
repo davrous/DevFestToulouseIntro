@@ -12,6 +12,7 @@ import { CINEMA } from "../content/showBeats";
 import { smoothstep } from "../engine/Timeline";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
 import { createWorldText } from "./WorldText";
+import { RedVelvetCurtain } from "./RedVelvetCurtain";
 
 export function arcadeDoorOpen(time: number): number {
   return smoothstep((time - 42.6) / 4);
@@ -21,7 +22,7 @@ export const ARCADE_WALL_PIXELS = { offset: CELL / 2 - .9, size: .82, depth: .12
 
 export class ArcadeT {
   private readonly root: TransformNode;
-  private readonly door: Mesh[] = [];
+  readonly curtain: RedVelvetCurtain;
   private readonly gateText: Mesh;
   private readonly boss: Mesh[];
   private readonly health: Mesh[] = [];
@@ -31,19 +32,7 @@ export class ArcadeT {
     this.root = new TransformNode("Arcade T / level geometry", scene);
     const opening = cellPosition(1, 9);
     const doorX = opening.x + 14;
-    const panel = new StandardMaterial("Arcade / pixel gate", scene);
-    panel.disableLighting = true;
-    panel.diffuseColor = Color3.FromHexString("#171826");
-    panel.emissiveColor = Color3.FromHexString("#af487f").scale(.32);
-    for (const side of [-1, 1]) {
-      const half = MeshBuilder.CreateBox(`FX/Arcade sliding gate ${side}`,
-        { width: 1.4, height: 26, depth: 14 }, scene);
-      half.parent = this.root;
-      half.position.set(doorX, 13, opening.z + side * 7);
-      half.material = panel;
-      half.isPickable = false;
-      this.door.push(half);
-    }
+    this.curtain = new RedVelvetCurtain(scene, this.root, doorX, opening.z);
     this.gateText = createWorldText(scene, {
       name: "Arcade door / rebase unlock", width: 18, height: 6,
       background: "#150f25", border: "#b7ff81",
@@ -108,13 +97,8 @@ export class ArcadeT {
   update(time: number, audio: AudioFeatures): void {
     this.root.setEnabled(time < CINEMA.start);
     if (!this.root.isEnabled()) return;
-    const opening = cellPosition(1, 9);
     const open = arcadeDoorOpen(time);
-    this.door.forEach((half, index) => {
-      const side = index ? 1 : -1;
-      half.position.z = opening.z + side * (7 + open * 11);
-      half.visibility = 1 - smoothstep((time - 52) / 5);
-    });
+    this.curtain.update(time, open);
     this.gateText.visibility = cueEnvelope(time, 41.2, 45.7, .4);
     const warning = cueEnvelope(time, CHOCOLATINE.end, 41, .5);
     this.boss.forEach((mesh, index) => {

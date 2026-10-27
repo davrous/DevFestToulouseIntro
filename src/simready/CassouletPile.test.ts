@@ -3,15 +3,15 @@ import { describe, expect, it } from "vitest";
 import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
 import { Scene } from "@babylonjs/core/scene";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
-import { Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
 import "@babylonjs/core/Physics/joinedPhysicsEngineComponent";
 import HavokPhysics from "@babylonjs/havok";
-import { CASSOULET_PILE } from "../content/showBeats";
+import { CASSOULET_PILE, TERMINATOR } from "../content/showBeats";
 import { CassouletPile, cassouletRelease } from "./CassouletPile";
 
-describe("Havok cassoulet mountain", () => {
-  it("drops 64 colliding cylinders into a measured pile, then replays the exact fixed-step result on seek", async () => {
+describe("Havok cassoulet rescue", () => {
+  it("destroys the advancing robot through real can contacts and replays cans, collapse and fragments exactly", async () => {
     const wasmBinary = Uint8Array.from(readFileSync(
       new URL("../../node_modules/@babylonjs/havok/lib/esm/HavokPhysics.wasm", import.meta.url))).buffer;
     const havok = await HavokPhysics({ wasmBinary });
@@ -22,7 +22,7 @@ describe("Havok cassoulet mountain", () => {
     expect(scene.enablePhysics(new Vector3(0, -17, 0), plugin)).toBe(true);
     scene.physicsEnabled = false;
     const root = new TransformNode("Cassoulet test stage", scene);
-    root.position.set(-439, .02, 127);
+    root.position.set(-448, .02, 126);
     root.rotation.y = Math.PI;
     const cans = Array.from({ length: CASSOULET_PILE.count }, (_, index) => {
       const can = new TransformNode(`Cassoulet can ${index}`, scene);
@@ -32,6 +32,21 @@ describe("Havok cassoulet mountain", () => {
     const pile = new CassouletPile(scene, root, cans);
     const count = scene.transformNodes.length;
     pile.initialize();
+    console.info("Cassoulet rescue impacts", { first: pile.rescue?.impactTime, destroyed: pile.rescue?.destroyTime,
+      hits: pile.rescue?.contacts.length, impulse: pile.rescue?.contacts[0]?.impulse });
+    const targetPosition = Vector3.Zero(), targetRotation = Quaternion.Identity();
+    pile.sampleRescue(pile.rescue!.targetTrack, pile.rescue!.destroyTime, targetPosition, targetRotation);
+    const targetUp = Vector3.Up().rotateByQuaternionToRef(targetRotation, Vector3.Zero());
+    console.info("Terminator physical collapse", { position: targetPosition.asArray(), tilt: Math.acos(targetUp.y) * 180 / Math.PI });
+    expect(pile.rescue!.impactTime).toBeGreaterThan(CASSOULET_PILE.start);
+    expect(pile.rescue!.impactTime).toBeLessThan(126);
+    expect(pile.rescue!.destroyTime).toBeGreaterThan(pile.rescue!.impactTime);
+    expect(pile.rescue!.destroyTime).toBeLessThan(128);
+    expect(pile.rescue!.contacts).toHaveLength(TERMINATOR.hitsToDestroy);
+    expect(pile.rescue!.contacts.every((contact) => contact.impulse > .02)).toBe(true);
+    expect(pile.rescue!.damageAt(pile.rescue!.impactTime - .001)).toBe(0);
+    expect(pile.rescue!.damageAt(pile.rescue!.destroyTime + .2)).toBe(1);
+    expect(Math.acos(targetUp.y)).toBeGreaterThan(5 * Math.PI / 180);
     expect(scene.transformNodes).toHaveLength(count);
     expect(scene.physicsEnabled).toBe(false);
     expect(cans.every((can) => !can.physicsBody)).toBe(true);
@@ -48,14 +63,19 @@ describe("Havok cassoulet mountain", () => {
     const minimum = Math.min(...cans.map((can) => can.position.y));
     const spread = Math.max(...cans.flatMap((can) => [Math.abs(can.position.x), Math.abs(can.position.z)]));
     console.info("Havok cassoulet pile measurements", { maxHeight, piled, minimum, spread });
-    expect(maxHeight, "pile must be a mountain, not a flat row").toBeGreaterThan(5);
-    expect(piled, "many cans must rest on other cans").toBeGreaterThanOrEqual(24);
+    expect(maxHeight, "the open-floor barrage must still leave a colliding heap").toBeGreaterThan(CASSOULET_PILE.size);
+    expect(piled, "cans must still collide and rest on other cans").toBeGreaterThanOrEqual(3);
     expect(minimum).toBeGreaterThan(.65);
-    expect(spread, "spilled cans must stay on the physical corridor floor").toBeLessThan(30);
-    expect(cans.every((can) => can.position.x > -4.25 && can.position.x < 22.25)).toBe(true);
+    expect(spread, "spilled cans must stay on the physical corridor floor").toBeLessThan(45);
+    expect(cans.every((can) => can.position.x > -12.5 && can.position.x < 12.5)).toBe(true);
     const snapshot = cans.map((can) => [...can.position.asArray(), ...can.rotationQuaternion!.asArray()]);
     pile.update(1); pile.update(5); pile.update(0); pile.update(8.5);
     expect(cans.map((can) => [...can.position.asArray(), ...can.rotationQuaternion!.asArray()])).toEqual(snapshot);
+    pile.sampleRescue(pile.rescue!.firstFragmentTrack, 128, targetPosition, targetRotation);
+    const fragment = [...targetPosition.asArray(), ...targetRotation.asArray()];
+    pile.sampleRescue(pile.rescue!.targetTrack, 125.3, targetPosition, targetRotation);
+    pile.sampleRescue(pile.rescue!.firstFragmentTrack, 128, targetPosition, targetRotation);
+    expect([...targetPosition.asArray(), ...targetRotation.asArray()]).toEqual(fragment);
     pile.initialize();
     expect(scene.transformNodes).toHaveLength(count);
     expect(cassouletRelease(CASSOULET_PILE.count - 1)).toBeLessThan(4.2);

@@ -4,12 +4,13 @@ import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { cellPosition } from "../content/title";
 import { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK, T_SIGN_ANCHORS } from "./EasterEggs";
 import { BUFFER_OVERFLOW, bufferAnchor } from "./DigitalOverflow";
-import { ASTRONAUT_CORNER, CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
+import { ASTRONAUT_CORNER, CASSOULET_WALL_POSTER, CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
 import { astronautRiseState } from "./CinemaWorld";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 import { POPCORN_SOURCES } from "./CinemaPopcorn";
 import { CHOCOLATINE } from "../content/cues";
+import { SPEAKERS } from "../content/speakers";
 
 function longestReadableInterval(start: number, end: number, world: Matrix | ((time: number) => Matrix), width: number, height: number, lateral = 0): number {
   let best = 0;
@@ -30,6 +31,14 @@ function longestReadableInterval(start: number, end: number, world: Matrix | ((t
 }
 
 describe("readable arcade jokes at projector aspect", () => {
+  it("keeps the wall comic readable after Mitsuru's card and before rocket liftoff", () => {
+    const poster = CASSOULET_WALL_POSTER;
+    expect(poster.lookStart).toBeGreaterThan(SPEAKERS[3].gateTime);
+    expect(poster.lookEnd).toBeLessThan(DEPLOY_ROCKET.launch);
+    const world = Matrix.RotationY(poster.yaw).multiply(Matrix.Translation(poster.x, poster.y, poster.z));
+    expect(longestReadableInterval(poster.lookStart, DEPLOY_ROCKET.launch, world, poster.width, poster.width * 9 / 16))
+      .toBeGreaterThanOrEqual(4);
+  });
   it("frames the unlabelled clap for two seconds and shortens the cut without hitting its plane", () => {
     const anchor = routeAnchor(CINEMA.clapperAnchor);
     const world = Matrix.RotationY(anchor.yaw)
