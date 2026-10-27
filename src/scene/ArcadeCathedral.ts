@@ -15,6 +15,8 @@ import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { createWorldText } from "./WorldText";
 import { ARCADE_ENTRY, CINEMA, LEVEL_COMPLETE } from "../content/showBeats";
+import { createEventDecal, loadEventArtwork } from "./EventBranding";
+import flagUrl from "../assets/event/mascot-flag-green.png";
 
 const ROOT = "/assets/kenney/arcade/";
 export const CABINET_COUNT = 6;
@@ -23,6 +25,7 @@ export const ARCADE_WALL_PANELS = { offset: CELL / 2 - .76, height: 15 } as cons
 export class ArcadeCathedral {
   private readonly cabinets: TransformNode[] = [];
   private readonly heroScreen;
+  private logo?: ReturnType<typeof MeshBuilder.CreatePlane>;
   private readonly scanlines;
   private readonly scanlineMaterial: ShaderMaterial;
   private readonly screenMaterial: StandardMaterial;
@@ -43,7 +46,7 @@ export class ArcadeCathedral {
       name: "Arcade / hero portal screen", width: 13, height: 9.5,
       background: "#09131f", border: "#9bffe9",
       lines: [{ text: "DEVFEST AI4FUN", color: "#b8ffe4" },
-        { text: "AGENDA", color: "#ffbad9" }],
+        { text: "CLOSING KEYNOTE", color: "#ffbad9" }],
     });
     this.heroScreen.position.set(hero.x, heroHeight, hero.z - 8.3);
     this.scanlines = MeshBuilder.CreatePlane("FX/Arcade portal CRT scanlines",
@@ -103,7 +106,7 @@ export class ArcadeCathedral {
 
   async prepare(): Promise<void> {
     const models = ["arcade-machine.glb", "dance-machine.glb", "pinball.glb"];
-    const templates = await Promise.all(models.map(async (file) => {
+    const [templates, logoTexture] = await Promise.all([Promise.all(models.map(async (file) => {
       try {
         const loaded = await SceneLoader.ImportMeshAsync("", ROOT, file, this.scene);
         const root = loaded.meshes[0];
@@ -115,7 +118,11 @@ export class ArcadeCathedral {
         console.error(`Local Kenney arcade model failed to load: ${ROOT}${file}`, error);
         return undefined;
       }
-    }));
+    })), loadEventArtwork(this.scene, flagUrl, "Event mascot / opening keynote flag")]);
+    this.logo = createEventDecal(this.scene, "Arcade / opening DevFest logo", logoTexture, 3.8, 1);
+    this.logo.parent = this.heroScreen;
+    this.logo.position.set(0, 0, -.025);
+    this.logo.visibility = this.heroScreen.visibility;
     const available = templates.filter((root): root is NonNullable<typeof root> => root !== undefined);
     if (!available.length) return;
     for (let index = 0; index < CABINET_COUNT; index++) {
@@ -158,6 +165,7 @@ export class ArcadeCathedral {
     const portal = 1 - smoothstep((time - ARCADE_ENTRY.panelFadeStart)
       / (ARCADE_ENTRY.panelFadeEnd - ARCADE_ENTRY.panelFadeStart));
     this.heroScreen.visibility = portal;
+    if (this.logo) this.logo.visibility = portal;
     this.scanlines.setEnabled(portal > 0);
     this.scanlineMaterial.setFloat("time", time);
     this.scanlineMaterial.setFloat("flash", audio.snare + audio.kick * .5 + (1 - portal) * .45);

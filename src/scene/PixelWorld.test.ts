@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
 import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { MeshBuilder } from "@babylonjs/core/Meshes/meshBuilder";
 import { VertexBuffer } from "@babylonjs/core/Buffers/buffer";
 import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { silentFeatures } from "../engine/AudioAnalyzer";
@@ -22,6 +23,11 @@ vi.mock("@babylonjs/core/Materials/Textures/texture", () => ({
 vi.mock("./WorldText", () => ({
   createWorldText: vi.fn((scene: Scene, options: { name: string }) => new Mesh(options.name, scene)),
 }));
+vi.mock("./EventBranding", () => ({
+  loadEventArtwork: vi.fn(async () => ({})),
+  createEventDecal: vi.fn((scene: Scene, name: string, _texture: unknown, size: number) =>
+    MeshBuilder.CreatePlane(name, { size }, scene)),
+}));
 vi.mock("@babylonjs/core/Loading/sceneLoader", () => ({
   SceneLoader: {
     ImportMeshAsync: async (_meshes: string, _root: string, _file: string, scene: Scene) =>
@@ -30,15 +36,19 @@ vi.mock("@babylonjs/core/Loading/sceneLoader", () => ({
 }));
 
 describe("wall-mounted pixel art", () => {
-  it("labels the opening screen AI4FUN / AGENDA and clears it before the shader's crossing burst", () => {
+  it("labels the opening CLOSING KEYNOTE and fades its DevFest logo with the panel", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
     const arcade = new ArcadeCathedral(scene);
     expect(createWorldText).toHaveBeenCalledWith(scene, expect.objectContaining({
       name: "Arcade / hero portal screen",
-      lines: [{ text: "DEVFEST AI4FUN", color: "#b8ffe4" }, { text: "AGENDA", color: "#ffbad9" }],
+      lines: [{ text: "DEVFEST AI4FUN", color: "#b8ffe4" }, { text: "CLOSING KEYNOTE", color: "#ffbad9" }],
     }));
+    await arcade.prepare();
     const screen = scene.getMeshByName("Arcade / hero portal screen")!;
+    const logo = scene.getMeshByName("Arcade / opening DevFest logo")!;
+    expect(logo.parent).toBe(screen);
+    expect(logo.visibility).toBe(1);
     expect(screen.position.y).toBe(cameraPose(ARCADE_ENTRY.cross).position.y);
     expect(scene.getMeshByName("FX/Arcade portal CRT scanlines")?.position.y).toBe(screen.position.y);
     expect(screen.visibility).toBe(1);
@@ -48,11 +58,14 @@ describe("wall-mounted pixel art", () => {
     expect(screen.visibility).toBe(1);
     arcade.update((ARCADE_ENTRY.panelFadeStart + ARCADE_ENTRY.panelFadeEnd) / 2, silentFeatures());
     expect(screen.visibility).toBeCloseTo(.5);
+    expect(logo.visibility).toBeCloseTo(.5);
     arcade.update(ARCADE_ENTRY.cross, silentFeatures());
     expect(screen.visibility).toBe(0);
+    expect(logo.visibility).toBe(0);
     expect(scene.getMeshByName("FX/Arcade portal CRT scanlines")?.isEnabled()).toBe(false);
     arcade.update(0, silentFeatures());
     expect(screen.visibility).toBe(1);
+    expect(logo.visibility).toBe(1);
     scene.dispose();
     engine.dispose();
   });

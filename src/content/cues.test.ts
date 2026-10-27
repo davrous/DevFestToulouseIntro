@@ -58,15 +58,15 @@ describe("show content", () => {
     expect(arcadeDoorOpen(47)).toBe(1);
   });
 
-  it("starts the HTTP request at 27 seconds and switches to chocolatine exactly at 29 seconds", () => {
+  it("starts the HTTP request at 27 seconds and switches to chocolatine exactly at 28.5 seconds", () => {
     expect(CHOCOLATINE.start).toBe(27);
-    expect(CHOCOLATINE.redirect).toBe(29);
-    expect(CHOCOLATINE.redirect - CHOCOLATINE.start).toBe(2);
+    expect(CHOCOLATINE.redirect).toBe(28.5);
+    expect(CHOCOLATINE.redirect - CHOCOLATINE.start).toBe(1.5);
     expect(activeCues(26.999)).not.toContain("HTTP 301 / CHOCOLATINE");
     expect(activeCues(27)).toContain("HTTP 301 / CHOCOLATINE");
     expect(chocolatineStage(27)).toBe(0);
-    expect(chocolatineStage(28.999)).toBe(0);
-    expect(chocolatineStage(29)).toBe(1);
+    expect(chocolatineStage(28.499)).toBe(0);
+    expect(chocolatineStage(28.5)).toBe(1);
     expect(CHOCOLATINE.end - CHOCOLATINE.redirect).toBeGreaterThanOrEqual(1.5);
   });
 

@@ -1,13 +1,13 @@
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { DevFestScene } from "../scene/DevFestScene";
-import { Timeline } from "./Timeline";
+import { DURATION, Timeline } from "./Timeline";
 import { DebugPanel } from "../debug/DebugPanel";
 import { ShowController } from "./ShowController";
 import { silentFeatures } from "./AudioAnalyzer";
 import { POPCORN_END, POPCORN_START } from "../scene/CinemaPopcorn";
 import { KEYNOTE_PERFORMANCE_URL, PERFORMANCE_ERROR } from "../strudel/performanceMode";
 import { fillScoreSelector, getScore } from "../strudel/scores";
-import { fillSoundtrackSelector, getSoundtrack } from "../audio/soundtracks";
+import { fillSoundtrackSelector, getSoundtrack, soundtrackEndGain } from "../audio/soundtracks";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -109,6 +109,7 @@ export class App {
       const now = performance.now();
       this.beginSynchronizedStart(now);
       const time = this.inLobby ? 0 : this.timeline.tick(now);
+      if (this.soundtrackActive && !this.inLobby) this.updateSoundtrackVolume(time);
       if (this.soundtrackActive && time >= 180 && !this.timeline.playing) this.soundtrackPlayer.pause();
       const audio = this.showController.sample(now);
       if (this.timeline.playing || this.inLobby || !this.showController.enabled) {
@@ -153,6 +154,7 @@ export class App {
     this.timeline.seek(time);
     if (this.soundtrackActive) {
       this.soundtrackPlayer.currentTime = time;
+      this.updateSoundtrackVolume(time, true);
       if (this.soundtrackPlayer.paused) void this.resumeSoundtrack();
     }
     this.showController.resetTransient();
@@ -240,7 +242,10 @@ export class App {
     }
     if (this.inLobby) this.start(time);
     else this.timeline.seek(time);
-    if (this.soundtrackActive) this.soundtrackPlayer.currentTime = time;
+    if (this.soundtrackActive) {
+      this.soundtrackPlayer.currentTime = time;
+      this.updateSoundtrackVolume(time, true);
+    }
     this.showController.resetTransient();
     Object.assign(this.visualAudio, silentFeatures());
     this.visualRevealAccent = 0;
@@ -253,6 +258,7 @@ export class App {
     this.timeline.pause();
     this.soundtrackPlayer.pause();
     this.soundtrackPlayer.currentTime = 0;
+    this.showController.soundtrack.setOutputVolume(1, true);
     this.soundtrackActive = false;
     this.showController.soundtrackId = null;
     this.inLobby = true;
@@ -409,6 +415,14 @@ export class App {
     }
   }
 
+  private updateSoundtrackVolume(time: number, immediate = false): void {
+    const { duration, currentTime, playbackRate } = this.soundtrackPlayer;
+    const trackRemaining = Number.isFinite(duration) && duration > 0
+      ? Math.max(0, duration - currentTime) / playbackRate : Infinity;
+    const showRemaining = Math.max(0, DURATION - time) / this.timeline.speed;
+    this.showController.soundtrack.setOutputVolume(soundtrackEndGain(Math.min(trackRemaining, showRemaining)), immediate);
+  }
+
   private async playSoundtrack(time: number): Promise<void> {
     const soundtrack = getSoundtrack(element<HTMLSelectElement>("soundtrack").value);
     if (!this.soundtrackAttached) {
@@ -421,6 +435,7 @@ export class App {
       this.soundtrackPlayer.load();
     }
     this.soundtrackPlayer.currentTime = time;
+    this.updateSoundtrackVolume(time, true);
     await this.soundtrackPlayer.play();
     this.showController.soundtrackId = soundtrack.id;
   }
@@ -428,6 +443,7 @@ export class App {
   private async resumeSoundtrack(): Promise<void> {
     try {
       this.soundtrackPlayer.currentTime = this.timeline.time;
+      this.updateSoundtrackVolume(this.timeline.time, true);
       await this.soundtrackPlayer.play();
     } catch (error) {
       console.error("MP3 soundtrack resume failed", error);

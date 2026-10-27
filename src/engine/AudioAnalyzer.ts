@@ -43,6 +43,8 @@ export class AudioAnalyzer {
   private context?: AudioContext;
   private analyser?: AnalyserNode;
   private preamp?: GainNode;
+  private outputGain?: GainNode;
+  private playbackVolume = 1;
   private inputGainDb: number;
   private levelDb = -Infinity;
   private source?: AudioNode;
@@ -75,6 +77,17 @@ export class AudioAnalyzer {
   get inputDb(): number { return this.levelDb; }
   get inputLevel(): number { return clamp((this.levelDb + 60) / 60); }
   get playbackTime(): number | undefined { return this.mediaElement?.currentTime; }
+  get outputVolume(): number { return this.playbackVolume; }
+  setOutputVolume(value: number, immediate = false): void {
+    if (!Number.isFinite(value) || value < 0 || value > 1) throw new RangeError("Playback volume must be between zero and one.");
+    const changed = value !== this.playbackVolume;
+    this.playbackVolume = value;
+    if (!this.outputGain || !this.context || (!changed && !immediate)) return;
+    const gain = this.outputGain.gain, now = this.context.currentTime;
+    gain.cancelScheduledValues(now);
+    if (immediate) gain.setValueAtTime(value, now);
+    else gain.setTargetAtTime(value, now, .008);
+  }
   get connected(): boolean {
     return this.mediaElement
       ? !this.mediaElement.paused && !this.mediaElement.ended
@@ -153,7 +166,10 @@ export class AudioAnalyzer {
     if (!this.mediaElement) {
       const source = this.context.createMediaElementSource(element);
       source.connect(this.preamp);
-      this.analyser.connect(this.context.destination);
+      this.outputGain = this.context.createGain();
+      this.outputGain.gain.value = this.playbackVolume;
+      this.analyser.connect(this.outputGain);
+      this.outputGain.connect(this.context.destination);
       this.source = source;
       this.mediaElement = element;
       this.routesToOutput = true;
@@ -171,6 +187,8 @@ export class AudioAnalyzer {
     this.source?.disconnect();
     this.source = undefined;
     if (this.routesToOutput) this.analyser?.disconnect();
+    this.outputGain?.disconnect();
+    this.outputGain = undefined;
     this.mediaElement = undefined;
     this.routesToOutput = false;
     this.cleanupTracks.forEach((cleanup) => cleanup());

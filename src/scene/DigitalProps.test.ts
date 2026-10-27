@@ -40,15 +40,19 @@ describe("digital speaker props", () => {
     const horizontalDistance = (point: typeof anneFlore) => Math.hypot(point.x - anneFlore.x, point.z - anneFlore.z);
     expect(horizontalDistance(root.position)).toBeLessThan(horizontalDistance(routeAnchor(33.5).position));
     const meshes = scene.meshes.length;
-    for (const time of [0, 15, 24, 26.999, 27, 28.999, 29, 31.85, 32.2, 32.55, 32.75, 36, 27]) {
+    for (const time of [0, 15, 24, 26.999, 27, 28.499, 28.5, 31.85, 32.2, 32.55, 32.75, 36, 27]) {
       props.update(time);
       expect(root.isEnabled()).toBe(true);
-      expect(request.isEnabled()).toBe(time < 29 && chocolatineOpacity(time) > 0);
-      expect(redirect.isEnabled()).toBe(time >= 29 && chocolatineOpacity(time) > 0);
+      expect(request.isEnabled()).toBe(time < 28.5 && chocolatineOpacity(time) > 0);
+      expect(redirect.isEnabled()).toBe(time >= 28.5 && chocolatineOpacity(time) > 0);
       expect(redirect.visibility).toBe(chocolatineOpacity(time));
     }
     props.update(32.75, 31.85);
     expect(redirect.visibility).toBe(1);
+    props.update(29.2, 28.499);
+    expect(request.isEnabled()).toBe(true);
+    props.update(27.9, 28.5);
+    expect(redirect.isEnabled()).toBe(true);
     expect(scene.meshes).toHaveLength(meshes);
     props.update(CINEMA.start);
     expect(root.isEnabled()).toBe(false);

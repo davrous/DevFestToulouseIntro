@@ -119,7 +119,7 @@ export class EasterEggs {
     const pastryOpacity = chocolatineOpacity(cameraTime);
     this.chocolateStages.forEach((mesh, index) => {
       mesh.visibility = pastryOpacity;
-      mesh.setEnabled(index === chocolatineStage(time) && pastryOpacity > 0);
+      mesh.setEnabled(index === chocolatineStage(cameraTime) && pastryOpacity > 0);
     });
     const terminalOpacity = cueEnvelope(time, CASSOULET_SIGN.start, CASSOULET_SIGN.end, .5, .4);
     this.npm.setEnabled(terminalOpacity > 0);

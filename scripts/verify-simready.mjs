@@ -46,6 +46,21 @@ try {
   await page.waitForFunction(() => window.showController.soundtrackId === "violas-journey"
     && document.querySelector("#soundtrack-player").currentTime > .25);
   await page.evaluate(() => {
+    const app = window.devfest, scene = app.world.scene, engine = app.engine;
+    const probe = window.speakerEntranceProbe = { frames: [], shaderCompilations: [] };
+    const shaderObserver = engine.onBeforeShaderCompilationObservable.add(() => {
+      if (app.timeline.time >= 13 && app.timeline.time < 20.5) probe.shaderCompilations.push(app.timeline.time);
+    });
+    const observer = scene.onAfterRenderObservable.add(() => {
+      if (app.timeline.time >= 20.5) {
+        scene.onAfterRenderObservable.remove(observer);
+        engine.onBeforeShaderCompilationObservable.remove(shaderObserver);
+        return;
+      }
+      if (app.timeline.playing && app.timeline.time >= 13) probe.frames.push([app.timeline.time, performance.now()]);
+    });
+  });
+  await page.evaluate(() => {
     const probe = window.tunnelMusicProbe = { samples: 0, peaks: [0, 0, 0, 0], lows: [1, 1, 1, 1], maxRoutingError: 0 };
     const scene = window.devfest.world.scene;
     const observer = scene.onAfterRenderObservable.add(() => {
@@ -102,6 +117,8 @@ try {
     assert.equal(fullShow.activeGags, 0);
     console.log("Full three-minute show:", fullShow);
   } else {
+    await page.evaluate(() => window.devfest.seek(12.5));
+    await page.waitForFunction(() => window.devfest.timeline.time >= 20.6, null, { timeout: 15000 });
     await page.evaluate(() => window.devfest.seek(78.5));
     await page.waitForFunction(() => window.devfest.timeline.time >= 94.2, null, { timeout: 25000 });
     await page.evaluate(() => window.devfest.togglePlayback());
@@ -109,6 +126,18 @@ try {
     await page.waitForFunction(() => window.devfest.timeline.time >= 145, null, { timeout: 15000 });
     await page.evaluate(() => window.devfest.togglePlayback());
   }
+  const speakerEntrance = await page.evaluate(() => {
+    const probe = window.speakerEntranceProbe;
+    const intervals = probe.frames.slice(1).map((frame, index) => frame[1] - probe.frames[index][1]).sort((a, b) => a - b);
+    return { frames: probe.frames.length, shaderCompilations: probe.shaderCompilations,
+      maxFrameMs: Math.max(...intervals), p95FrameMs: intervals[Math.floor(intervals.length * .95)],
+      resolution: [window.devfest.engine.getRenderWidth(), window.devfest.engine.getRenderHeight()] };
+  });
+  assert.ok(speakerEntrance.frames > 300, "The first speaker must be measured during cold real-music playback.");
+  assert.deepEqual(speakerEntrance.shaderCompilations, [], "Speaker and bass-deformed frame shaders must compile before SYSTEM READY.");
+  assert.ok(speakerEntrance.maxFrameMs < 50, "Anne-Flore's first appearance must not stall the render loop.");
+  assert.ok(speakerEntrance.p95FrameMs < 22, "The first speaker must retain the normal 60 FPS frame budget.");
+  console.log("Cold first-speaker frame budget:", speakerEntrance);
   const musicBands = await page.evaluate(() => window.tunnelMusicProbe);
   assert.ok(musicBands.samples > 100, "The four trails must be checked during real MP3 playback.");
   assert.ok(musicBands.peaks.every((value, index) => value > .005 && value - musicBands.lows[index] > .005),
@@ -126,7 +155,7 @@ try {
       app.world.scene.materials.length, app.world.scene.lights.length];
     const before = counts();
     const artDirection = [];
-    for (const time of [3.5, 4.299, 4.5, 5.525, 5.925, 6.1, 15, 17.25, 17.5, 18, 19.1, 26.999, 27, 28.999, 29,
+    for (const time of [3.5, 4.299, 4.5, 5.525, 5.925, 6.1, 15, 17.25, 17.5, 18, 19.1, 26.999, 27, 28.499, 28.5,
       41.8, 44.5, 46.5, 59.199, 59.2, 59.35, 59.9, 61.8, 63.25, 76.8, 78.5, 79.999, 80, 80.35, 80.45, 84.5, 90, 91.5, 92.8, 93.5, 94, 94.199, 94.2, 108, 110.699, 111,
       117.2, 118, 118.4, 119.5, 120, 121.25, 124.399, 124.4, 125.19, 125.3, 125.8, 126.5, 126.65, 126.85, 127.2, 127.7, 128, 130, 137, 139.499, 149, 153, 155, 166]) {
       app.seek(time);
@@ -287,10 +316,10 @@ try {
   assert.ok(replay.violinCollision.impulse > .01, "The violin must fall because of a real contact, not a timer.");
   assert.ok(replay.artDirection.filter((sample) => [4.5, 5.525].includes(sample.time)).every((sample) => sample.entryShader));
   assert.ok(replay.artDirection.filter((sample) => [3.5, 4.299, 5.925, 6.1].includes(sample.time)).every((sample) => !sample.entryShader));
-  assert.ok(replay.artDirection.filter((sample) => [15, 26.999, 27, 29].includes(sample.time))
+  assert.ok(replay.artDirection.filter((sample) => [15, 26.999, 27, 28.5].includes(sample.time))
     .every((sample) => sample.httpPresent && sample.httpYaw === 0));
-  assert.equal(replay.artDirection.find((sample) => sample.time === 28.999).request, true);
-  assert.equal(replay.artDirection.find((sample) => sample.time === 29).request, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 28.499).request, true);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 28.5).request, false);
   assert.ok(replay.artDirection.find((sample) => sample.time === 80.45).lensDistance < .02,
     "The 80s acceleration must cross the physical lens within half a second.");
   assert.ok(replay.artDirection.filter((sample) => [17.25, 17.5, 18, 19.1].includes(sample.time))
@@ -615,6 +644,55 @@ try {
       `Significant frame-rate regression at ${measurements[index].time}s.`);
   }
 
+  const soundtrackEndings = [];
+  for (const id of ["violas-journey", "viola-trance"]) {
+    await page.evaluate(() => window.devfest.returnToLobby());
+    await page.locator("#soundtrack").selectOption(id);
+    await page.locator("#play").click();
+    await page.waitForFunction(() => window.devfest.timeline.playing
+      && document.querySelector("#soundtrack-player").duration > 0);
+    await page.evaluate(() => {
+      const app = window.devfest, audio = app.showController.soundtrack;
+      const context = audio.context, gain = audio.outputGain, probe = context.createAnalyser();
+      probe.fftSize = 2048;
+      gain.disconnect(context.destination); gain.connect(probe); probe.connect(context.destination);
+      const media = document.querySelector("#soundtrack-player"), before = new Float32Array(2048), after = new Float32Array(2048);
+      const rms = (values) => Math.sqrt(values.reduce((sum, value) => sum + value * value, 0) / values.length);
+      window.soundtrackEndingSamples = [];
+      const observer = app.world.scene.onAfterRenderObservable.add(() => {
+        audio.analyser.getFloatTimeDomainData(before); probe.getFloatTimeDomainData(after);
+        const input = rms(before), output = rms(after);
+        window.soundtrackEndingSamples.push({ remaining: media.duration - media.currentTime,
+          gain: audio.outputVolume, input, output, ratio: input > .0001 ? output / input : null });
+      });
+      window.stopSoundtrackEndingProbe = () => {
+        app.world.scene.onAfterRenderObservable.remove(observer);
+        gain.disconnect(probe); probe.disconnect(); gain.connect(context.destination);
+      };
+      app.seek(media.duration - 1.8);
+    });
+    await page.waitForFunction(() => document.querySelector("#soundtrack-player").ended, null, { timeout: 6000 });
+    await page.waitForTimeout(100);
+    const ending = await page.evaluate(() => {
+      const app = window.devfest, media = document.querySelector("#soundtrack-player"), samples = window.soundtrackEndingSamples;
+      window.stopSoundtrackEndingProbe(); app.togglePlayback();
+      const result = { duration: media.duration,
+        before: samples.find((sample) => sample.remaining < 1.6 && sample.remaining > 1.3),
+        middle: samples.find((sample) => sample.gain < .55 && sample.gain > .4),
+        late: samples.find((sample) => sample.remaining < .12 && sample.remaining > .04),
+        final: samples.at(-1), samples: samples.length };
+      app.seek(0);
+      return { ...result, rewindVolume: app.showController.soundtrack.outputVolume };
+    });
+    assert.ok(ending.before.ratio > .9 && ending.before.ratio < 1.1, "The fade must not lower normal soundtrack volume.");
+    assert.ok(ending.middle.ratio > .3 && ending.middle.ratio < .75, "Measure the real post-gain audio signal, not only a volume property.");
+    assert.ok(ending.late.ratio < .12, "Sound must approach silence before the actual media ending.");
+    assert.equal(ending.final.gain, 0); assert.ok(ending.final.output < .0001);
+    assert.equal(ending.rewindVolume, 1, "Restart must restore full soundtrack volume.");
+    soundtrackEndings.push({ id, ...ending });
+  }
+  console.log("Measured Web Audio soundtrack endings:", soundtrackEndings);
+
   await page.goto(`${origin}/?asset-viewer=simready`);
   await page.waitForFunction(() => window.simreadyViewer?.ready, null, { timeout: 120000 });
   assert.equal(await page.locator('[aria-label="SimReady asset"] option').count(), 10);
@@ -639,7 +717,7 @@ try {
   assert.deepEqual(errors, []);
   const report = { browser: process.env.SIMREADY_BROWSER ?? "msedge", viewport: [1920, 1080], readyMs, fullShow,
     groups: loaded.groups, replay, tunnelIsolation, robotPresentation, cassouletRescue, posterPlayback, wallPoster,
-    exitContinuity, musicBands, measurements, viewer,
+    exitContinuity, musicBands, speakerEntrance, soundtrackEndings, measurements, viewer,
     browserErrors: errors, externalRequests: external };
   await writeFile(new URL("../docs/simready-validation.json", import.meta.url), `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Verified nine models, five presentation moments, unchanged camera, deterministic replay and zero browser errors. Startup ${readyMs} ms.`);

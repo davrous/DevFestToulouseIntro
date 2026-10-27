@@ -184,19 +184,63 @@ physical rescue, manga wall, local gallery and disabled NVIDIA mode.
 
 | Check | Result |
 | --- | --- |
-| Unit/integration suite | **249 tests passed**, 45 files; TypeScript and production build passed |
+| Unit/integration suite | **259 tests passed**, 47 files; TypeScript and production build passed |
 | Camera regression | **361 samples**, zero position, heading or FOV difference through the original Babylon pipeline |
 | Musical playback | **839 rendered frames**, pause/resume stable; seven native states exactly match direct seeks |
 | Replay resources | 20 loops / 240 seeks; stable 1,403 meshes, 1,720 transforms, 277 materials, 20 lights and 5 unrelated live bodies |
 | Wall physics | 48 real Havok tracks × 181 frames; zero live wall bodies during playback |
 | Camera safety | Conservative minimum near-plane/solid clearance **6.87 units**, including fixed frame, badge, rails and moving plates |
 | FullHD frame rate | **59.97–60.02 FPS**, median 16.7 ms, worst measured 95th percentile 17.7 ms |
-| Startup | **6.30 s** including assets, physics bakes and material prewarming |
+| Startup | Original Legacy run: **6.30 s**; with the first-speaker warmup follow-up: **6.94 s** |
 | Final astronaut | Actual height 16.64, fixed pose, old corner empty; visible silhouette in all 6.25 s of sampled final approach |
 | Browser/network | Zero JavaScript/console errors and zero external requests |
 
 These are measurements on this machine/browser, not a universal GPU guarantee.
 The existing non-blocking Vite large-chunk warning remains unchanged.
+
+### Follow-up: cold freeze before Anne-Flore
+
+The reported freeze was reproduced at the first laser/projector activation,
+around 14 s, before the 17-s speaker cue. Cold playback compiled **17 additional
+GPU programs** across the lighting lead and text/violin fade, with a
+**193–200-ms** frame stall. Replay was smooth. Ordinary material compilation
+had not exercised every render-time lighting, transparency and instancing
+combination; a further thin-instance variant was needed when bass changes the
+frame's X scale (`NONUNIFORMSCALING`).
+
+[RenderWarmup.ts](../src/scene/RenderWarmup.ts) now performs actual offscreen
+draws during loading for the laser lead, partial reveal, title fade, full card
+and bass-deformed frame. Readiness includes render targets. Physics remains
+disabled, the temporary target is disposed and the show is restored to time
+zero before SYSTEM READY. Future shots are never drawn into the lobby canvas.
+No cue, music timing, visual effect or rendering quality is removed.
+
+The final production check recorded **450 real soundtrack frames** over
+13–20.5 s, **zero late shader compilations**, a **24.3-ms maximum** and a
+**17.6-ms 95th percentile**. A separate local cold/replay check peaked at
+18.1 ms with no long tasks. The existing production verifier now rejects
+new shader compilation in this window, stalls above 50 ms or a 95th percentile
+above 22 ms. Three focused unit tests cover output/physics restoration,
+temporary-resource cleanup and explicit failure propagation.
+
+### Follow-up: opening keynote panel and soundtrack ending
+
+The opening now reads **DEVFEST AI4FUN / CLOSING KEYNOTE** with the existing
+transparent green DevFest mascot between the lines. The logo is preloaded,
+mounted on the same board and explicitly shares its original fade; the
+4.3–5.925-s shader and centered camera crossing are unchanged.
+
+Both bundled MP3s use a quick **1.25-s smooth ending**, before whichever arrives
+first: the real media ending or the show limit. Native metadata gives 177.6 s
+for Journey and 178 s for Trance, so fading only near 180 s would be too late.
+A dedicated output `GainNode` sits **after** the analyser, preserving the
+original frequency data and leaving live/Strudel audio untouched. Pause/seek,
+restart and lobby return restore the appropriate gain; interpolation is
+smoothed on the audio thread to avoid stepped volume changes.
+
+Browser verification measures the actual signal after this gain on both
+tracks: normal volume is unchanged, the middle attenuates and the final samples
+reach silence. It also checks that rewinding restores full volume.
 
 | Beat | Before | After |
 | --- | --- | --- |
@@ -222,7 +266,8 @@ at the old buffer corner. Its feet remain grounded and its final bounds stay
 inside the corridor. The old 122-s data-arch animation is preserved independently.
 The terminal's original 119.1-s gaze is decoupled without changing the camera.
 
-The pastry board remains preloaded and fully readable at the 29-s redirect,
+The pastry board remains preloaded and switches to chocolatine at exactly
+28.5 s on camera time, independently of musical effect-time nudging,
 then its entire surface fades **31.85–32.55 s on camera time**, not a
 beat-shifted effect clock. It is fully transparent/disabled before crossing
 at **32.75 s**. Only visibility changes; no replacement black plane is created.
@@ -244,6 +289,19 @@ seek/replay. See [final astronaut](legacy-xor/finale-astronaut.png) and
   correct XOR, pistons, rails, scoped lighting, clearance/replay tests.
 - [CircuitSignal.ts](../src/effects/CircuitSignal.ts): physical copper tubes
   and progressive distance-based electrical shading.
+- [RenderWarmup.ts](../src/scene/RenderWarmup.ts),
+  [RenderWarmup.test.ts](../src/scene/RenderWarmup.test.ts): offscreen preparation
+  of actual first-speaker draw variants, including reactive scaling.
+- [soundtracks.ts](../src/audio/soundtracks.ts),
+  [soundtracks.test.ts](../src/audio/soundtracks.test.ts),
+  [AudioAnalyzer.ts](../src/engine/AudioAnalyzer.ts),
+  [AudioAnalyzer.test.ts](../src/engine/AudioAnalyzer.test.ts),
+  [App.ts](../src/engine/App.ts), [App.test.ts](../src/engine/App.test.ts):
+  native-file-aware ending envelope, post-analysis output gain and transport tests.
+- [ArcadeCathedral.ts](../src/scene/ArcadeCathedral.ts),
+  [EventBranding.ts](../src/scene/EventBranding.ts),
+  [PixelWorld.test.ts](../src/scene/PixelWorld.test.ts): updated keynote title,
+  shared local artwork loading and logo fade.
 - [LegacyXorDebug.ts](../src/debug/LegacyXorDebug.ts): tuning, diagnostic
   geometry, state readouts, safe input and replay controls.
 - [verify-legacy-xor.mjs](../scripts/verify-legacy-xor.mjs): native musical

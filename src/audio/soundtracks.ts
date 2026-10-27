@@ -1,3 +1,14 @@
+import { smoothstep } from "../engine/Timeline";
+
+export const SOUNDTRACK_FADE_SECONDS = 1.25;
+
+export function soundtrackEndGain(remainingSeconds: number): number {
+  if (Number.isNaN(remainingSeconds) || remainingSeconds === -Infinity) {
+    throw new RangeError("Soundtrack remaining time must be finite or positive infinity while metadata loads.");
+  }
+  return smoothstep(remainingSeconds / SOUNDTRACK_FADE_SECONDS);
+}
+
 export interface Soundtrack {
   id: string;
   label: string;

@@ -32,6 +32,13 @@ locally and analyzed in real time to drive the same bass, mid, treble, transient
 and energy reactions as the other music inputs. Visuals also work without music,
 audio input, or the optional event bridge.
 
+Both bundled MP3s fade smoothly over their last **1.25 seconds**, using the
+earlier of the actual file ending or the 180-s show limit. The envelope is
+applied through a dedicated Web Audio output gain after analysis, so live input
+and visual frequency data are unchanged. Pause, seek, restart and lobby return
+restore the appropriate level. Viola's Journey ends at 177.6 s; its fade must
+therefore finish there, not start near 180 s.
+
 For one-click Strudel playback, choose **Strudel keynote** and a
 **Strudel version**, then press **PLAY SEQUENCE** or **Space**. The same-origin
 frame preloads local audio and starts both clocks through the confirmed
@@ -137,10 +144,10 @@ instruments, licensing and rehearsal diagnostics.
 
 | Time | Scene |
 | --- | --- |
-| 0:00–0:05.925 | DEVFEST AI4FUN / AGENDA opens the show without a giant central cabinet; its height is calculated from the camera at 5.925 s so the lens passes through its center. The retro shader still runs from 4.3 s to the crossing |
+| 0:00–0:05.925 | DEVFEST AI4FUN / CLOSING KEYNOTE and the green DevFest mascot open the show; the logo shares the panel's fade. Its height still matches the camera at 5.925 s, and the retro shader runs from 4.3 s to the crossing |
 | 0:05–0:31 | Fixed pixel-art decals, scenery and small luminous pixels stay flat against the T's side walls. The six larger reactive light panels are mounted just in front of the wall surface at height 15, above the grounded Kenney cabinets, not floating in front of their screens |
 | 0:17–0:31 | Anne-Flore's cyan gateway; the violin and bow are 25% larger and fade in with exactly the same 17.25–19.05-s envelope as her name, including bloom. Nearby Pong paddles rally from 17.4 s; the final shot physically hits the violin near 22 s, releasing its voxel cubes into a Havok fall |
-| 0:27–0:34.5 | The preloaded `GET /pain-au-chocolat` panel switches to `301 / Location: /chocolatine` at 0:29. The whole printed panel fades from 31.85 to 32.55 s, before the 32.75-s camera crossing, avoiding a black screen |
+| 0:27–0:34.5 | The preloaded `GET /pain-au-chocolat` panel switches to `301 / Location: /chocolatine` at exactly **0:28.5 on camera time**, without musical cue shifting. The whole printed panel fades from 31.85 to 32.55 s, before the 32.75-s camera crossing, avoiding a black screen |
 | 0:34.4–0:41.2 | The original 48 legacy-code cubes assemble in twelve colorful L/J tetrominoes, lock into their unchanged homes and show `BUILD FAILED`. The 38.2-s impact cue releases a genuine recorded Havok collapse |
 | 0:38.2–0:46.03 | The impact sends a progressive cyan packet through physical copper traces to a four-panel XOR CPU gate. The correct XOR symbol powers up, pins unlock and beveled shutters slide diagonally and fold into side rails. Fully open at 45.7 s, they physically clear the unchanged exit camera |
 | 0:46–0:52 | The original giant clapperboard is already present during the approach, below LEVEL COMPLETE, and snaps shut in 0.18 seconds from 0:50.85. The fullscreen CRT transition holds a green phosphor line from 0:51.135 to 0:51.38, then reopens on CINEMA and clears by 0:52.18; no black plane |
@@ -279,7 +286,7 @@ row glitches and CRT scanlines from **4.3 to 5.925 s**, starting **1 s later**
 than the previous 3.3-s version. Its strongest pixel burst is just before the
 crossing, then the effect fades completely by the physical panel crossing at
 approximately **5.925 s**, leaving the corridor unobscured. The
-`DEVFEST AI4FUN / AGENDA` panel fades out before the camera reaches its plane,
+`DEVFEST AI4FUN / CLOSING KEYNOTE` panel and its DevFest logo fade out before the camera reaches its plane,
 avoiding oversized clipped lettering. The shader is precompiled before
 SYSTEM READY, remains available with optional post-processing disabled, and
 follows camera/show time exactly for pause and seek. It adds no rendering pass
@@ -445,7 +452,7 @@ The bridge is not started or contacted automatically. When explicitly connected,
 - [CassouletRescue](src/simready/CassouletRescue.ts), [TerminatorWalk](src/scene/TerminatorWalk.ts), [TerminatorDestruction](src/effects/TerminatorDestruction.ts): measured can impacts, recorded body/debris physics and progressive destruction of the original animated T-800.
 - [PhysicalTunnel](src/effects/PhysicalTunnel.ts), [TunnelFlight](src/camera/TunnelFlight.ts): enclosed 3D serpentine course, calm rhythmic camera, four FFT-driven speaker trails and shared preview render; [LensVortexTransition](src/effects/LensVortexTransition.ts) composites the room through the actual tube opening.
 - [ClapCrtTransition](src/effects/ClapCrtTransition.ts): precompiled fullscreen arcade-to-CRT shader, phosphor-line handoff, deterministic uniforms and no extra render pass outside the transition.
-- [ArcadeEntryTransition](src/effects/ArcadeEntryTransition.ts): precompiled retro-gaming shader, starting at 4.3 s and clearing at the opening AI4FUN / AGENDA panel crossing.
+- [ArcadeEntryTransition](src/effects/ArcadeEntryTransition.ts): precompiled retro-gaming shader, starting at 4.3 s and clearing at the opening AI4FUN / CLOSING KEYNOTE panel crossing.
 - [CinemaPopcorn](src/scene/CinemaPopcorn.ts): 36 short-lived Havok kernels with static floor/seat ledge colliders and seek-safe cleanup.
 - [DigitalMoments](src/scene/DigitalMoments.ts): two different thin-instanced data-stream passages for Eric and Mitsuru, intensified by the music without moving the camera.
 - [EasterEggs](src/scene/EasterEggs.ts): time-derived scenes; seeking backward restores the correct joke/sculpture state without simulating forward.
@@ -491,6 +498,16 @@ Tests cover clock behavior, malformed inputs, frequency bands, transient decay, 
 Scene-clearance tests additionally keep drifting dust below the camera, the orbiting core clear of walls/roof/camera, and Mitsuru's panel inside the corridor. Interior fog now dissipates during the escape, before the pullback reaches large distances; the solid letters remain visible rather than disappearing behind their glow. The pipeline uses up to 4x MSAA when supported, with FXAA as the fallback.
 
 Browser validation additionally covers physical text readability, synthetic Web Audio input, input disconnection, real events from a separate Node process through the relay, offline asset loading, fullscreen and graphics-context recovery. Vite's large Babylon bundle warning is non-blocking; stage shaders and materials are preloaded instead of fetched during the performance.
+
+The first speaker's laser lead, partial text/violin fades and bass-deformed
+thin-instance frame are also **rendered into a temporary offscreen target during
+loading**. Material compilation alone misses some actual draw variants. The
+[warmup](src/scene/RenderWarmup.ts) waits for render targets, keeps physics
+disabled, restores the initial pose/output and disposes its target before
+SYSTEM READY, without flashing future shots in the lobby. The production
+SimReady verifier measures 13–20.5 s of real soundtrack playback and rejects
+late shader compilations, frame stalls above 50 ms or a 95th percentile above
+22 ms. This fixes the cold first-speaker stall without changing its timing or effects.
 
 Current music revision: **58 targeted tests across five files** and the
 TypeScript/Vite production build pass. Tests cover all three arrangements,

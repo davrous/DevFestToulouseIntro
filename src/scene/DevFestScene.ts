@@ -41,6 +41,8 @@ import { LensVortexTransition } from "../effects/LensVortexTransition";
 import { CrtLightningTransition } from "../effects/CrtLightningTransition";
 import { CassouletPowerPoster } from "../effects/CassouletPowerPoster";
 import { legacyXorSettings } from "./LegacyXorSequence";
+import { prewarmRenderStates } from "./RenderWarmup";
+import { laserLead } from "../effects/ShowLighting";
 import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
 import { CinemaPopcorn } from "./CinemaPopcorn";
@@ -236,6 +238,14 @@ export class DevFestScene {
     this.update(ASTRONAUT_FINALE.start + 1, SILENCE);
     await compile(this.cinema.astronautRoot.getChildMeshes());
     this.update(0, SILENCE);
+    const speaker = SPEAKERS[0];
+    const entranceStates = [
+      speaker.startTime - laserLead(speaker) + .01,
+      speaker.startTime + .6, speaker.startTime + 1.2, speaker.startTime + 3,
+    ].map((time) => () => this.update(time, SILENCE));
+    // Bass introduces a separate NONUNIFORMSCALING shader for the thin-instanced frame.
+    entranceStates.push(() => this.update(speaker.startTime + .6, { ...SILENCE, bass: 1 }));
+    await prewarmRenderStates(this.scene, this.camera, entranceStates, () => this.update(0, SILENCE));
   }
 
   setPostProcessing(enabled: boolean): void {

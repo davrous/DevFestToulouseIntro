@@ -57,7 +57,7 @@ beside the existing rocket instead of participating in a collision.
 | Moment | Effect-time window | Placement / interaction |
 | --- | --- | --- |
 | Retro Pong | 17.4–23.5 s | Beside Anne-Flore; measured Journey attacks drive the rally, then the final ball physically hits the voxel violin near 22 s; no caption |
-| Pastry reference | 27–31.5 s | A real croissant collectible accompanies the HTTP gag; chocolatine response at 29 s |
+| Pastry reference | 27–31.5 s | A real croissant collectible accompanies the HTTP gag; chocolatine text switches at exactly 28.5 s on the camera clock |
 | Developer snack machine | Model and 404 board: 51.18–87.6 s | Left side of the D's front wall; model and caption are already opaque during approach; only its light/snack interaction is timed |
 | Cassoulet rescue | Robot: 119.5–134 s; cans: 124.4–134 s | The T-800 approaches beyond the centered terminal. At 4.80 GB, 64 real cans drop from height 28; twelve genuine hits dissolve it into 192 original red rose petals |
 | Launch support arm | Model: 95–159 s; motion: from 139.5 s | Seven units beside the existing rocket, already present during approach, supporting it then withdrawing at its unchanged 144.6-s launch cue |
@@ -328,7 +328,7 @@ external network requests**. Raw reproducible results are in
 [simready-validation.json](simready-validation.json).
 
 The latest browser probes also verify the revised 4.3–5.925-s entry shader,
-the pre-existing HTTP panel with yaw 0 and the 29-s redirect, the accelerated lens
+the pre-existing HTTP panel with yaw 0 and the exact 28.5-s redirect, the accelerated lens
 crossing at 80.45 s, the fully opaque launch arm before
 the approach, the physical can rescue starting only at terminal completion, the
 absence of both removed captions, and water/title activation only after the

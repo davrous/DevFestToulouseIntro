@@ -27,6 +27,8 @@ class TestElement extends EventTarget {
   checked = false;
   paused = true;
   currentTime = 0;
+  duration = 177.6;
+  playbackRate = 1;
   src = "";
   value = "";
   textContent = "";
@@ -119,6 +121,49 @@ describe("synchronized launch from the other tab", () => {
     expect(player.paused).toBe(true);
     expect(player.currentTime).toBe(0);
     expect(app.showController.soundtrackId).toBeNull();
+  });
+
+  it.each([["violas-journey", 177.6], ["viola-trance", 178]] as const)(
+    "fades %s at the actual file ending, holds on pause and restores sound on rewind",
+    async (soundtrack, duration) => {
+      const { app } = await setup();
+      doc.getElementById("music-source")!.value = "mp3";
+      doc.getElementById("soundtrack")!.value = soundtrack;
+      const player = doc.getElementById("soundtrack-player")!;
+      player.duration = duration;
+      vi.spyOn(app.showController.soundtrack, "connectMediaElement").mockResolvedValue();
+      await app.startFromGesture();
+      expect(app.showController.soundtrack.outputVolume).toBe(1);
+      app.seek(duration - .625);
+      expect(app.showController.soundtrack.outputVolume).toBeCloseTo(.5);
+      app.togglePlayback();
+      vi.advanceTimersByTime(200);
+      renderLoop!();
+      expect(app.showController.soundtrack.outputVolume).toBeCloseTo(.5);
+      app.togglePlayback();
+      expect(app.showController.soundtrack.outputVolume).toBeCloseTo(.5);
+      app.seek(duration);
+      expect(app.showController.soundtrack.outputVolume).toBe(0);
+      app.seek(0);
+      expect(app.showController.soundtrack.outputVolume).toBe(1);
+      app.seek(duration);
+      app.returnToLobby();
+      expect(app.showController.soundtrack.outputVolume).toBe(1);
+    });
+
+  it("also fades before the show stops when the media file is longer, respecting playback speed", async () => {
+    const { app } = await setup();
+    doc.getElementById("music-source")!.value = "mp3";
+    doc.getElementById("soundtrack-player")!.duration = 240;
+    vi.spyOn(app.showController.soundtrack, "connectMediaElement").mockResolvedValue();
+    await app.startFromGesture();
+    app.seek(179.375);
+    expect(app.showController.soundtrack.outputVolume).toBeCloseTo(.5);
+    app.timeline.speed = 2;
+    app.seek(178.75);
+    expect(app.showController.soundtrack.outputVolume).toBeCloseTo(.5);
+    app.seek(180);
+    expect(app.showController.soundtrack.outputVolume).toBe(0);
   });
 
   it("loads the bundled keynote in the hidden performance frame without starting visuals early", async () => {

@@ -9,7 +9,7 @@ import { smoothstep } from "../engine/Timeline";
 import flagUrl from "../assets/event/mascot-flag-green.png";
 import anniversaryUrl from "../assets/event/anniversary-cube-orange.png";
 
-function loadArtwork(scene: Scene, url: string, name: string): Promise<Texture> {
+export function loadEventArtwork(scene: Scene, url: string, name: string): Promise<Texture> {
   return new Promise((resolve, reject) => {
     const texture = new Texture(url, scene, false, true, Texture.TRILINEAR_SAMPLINGMODE,
       () => resolve(texture),
@@ -22,7 +22,7 @@ function loadArtwork(scene: Scene, url: string, name: string): Promise<Texture> 
   });
 }
 
-function decal(scene: Scene, name: string, texture: Texture, size: number, opacity: number): Mesh {
+export function createEventDecal(scene: Scene, name: string, texture: Texture, size: number, opacity: number): Mesh {
   const material = new StandardMaterial(`${name} / printed light`, scene);
   material.disableLighting = true;
   material.diffuseColor = Color3.Black();
@@ -44,8 +44,8 @@ export class EventBranding {
 
   constructor(scene: Scene) {
     this.ready = Promise.all([
-      loadArtwork(scene, flagUrl, "Event mascot / green flag"),
-      loadArtwork(scene, anniversaryUrl, "Event anniversary / orange cube"),
+      loadEventArtwork(scene, flagUrl, "Event mascot / green flag"),
+      loadEventArtwork(scene, anniversaryUrl, "Event anniversary / orange cube"),
     ]).then(([flag, anniversary]) => {
       const bank = cellPosition(.85, 3.5);
       const backplate = MeshBuilder.CreatePlane("Event mascot / server service plate", { width: 5.2, height: 7 }, scene);
@@ -55,14 +55,14 @@ export class EventBranding {
       backplate.material = plateMaterial;
       backplate.position.set(bank.x, 12, bank.z - 4.06);
       backplate.isPickable = false;
-      const serviceMark = decal(scene, "Event mascot / server insignia", flag, 5, .85);
+      const serviceMark = createEventDecal(scene, "Event mascot / server insignia", flag, 5, .85);
       serviceMark.position.set(bank.x, 12, bank.z - 4.1);
 
       for (const [name, texture, x] of [
         ["Event mascot / final signature", flag, -180],
         ["Event anniversary / final signature", anniversary, 180],
       ] as const) {
-        const mark = decal(scene, name, texture, 130, .58);
+        const mark = createEventDecal(scene, name, texture, 130, .58);
         mark.position.set(x, 1.2, -286);
         mark.rotation.x = Math.PI / 2;
         mark.visibility = 0;
