@@ -7,6 +7,7 @@ import { epochNow, MUSICAL_EVENTS, SHOW_CUES } from "../engine/avProtocol";
 import { SceneInstrumentation } from "@babylonjs/core/Instrumentation/sceneInstrumentation";
 import type { Scene } from "@babylonjs/core/scene";
 import { SimReadyDebug } from "../simready/SimReadyDebug";
+import { LegacyXorDebug } from "./LegacyXorDebug";
 
 function get<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id);
@@ -28,6 +29,7 @@ export class DebugPanel {
   private readonly gainLabels = document.querySelectorAll<HTMLOutputElement>("[data-gain-label]");
   private measuredScene: Scene;
   private instrumentation: SceneInstrumentation;
+  private readonly legacyXor: LegacyXorDebug;
 
   constructor(private readonly app: App) {
     this.measuredScene = app.world.scene;
@@ -46,6 +48,7 @@ export class DebugPanel {
       button.addEventListener("click", () => app.seek(Number(button.dataset.time)));
     });
     new SimReadyDebug(app, this.root);
+    this.legacyXor = new LegacyXorDebug(app, this.root);
     get<HTMLSelectElement>("speed").addEventListener("change", (event) => {
       app.timeline.speed = Number((event.target as HTMLSelectElement).value);
     });
@@ -100,10 +103,12 @@ export class DebugPanel {
     this.visible = visible;
     this.root.hidden = !visible;
     document.body.classList.toggle("debug-visible", visible);
+    if (!visible) this.legacyXor.stopLoop();
   }
 
   update(): void {
     const { timeline, engine, world, showController } = this.app;
+    this.legacyXor.update();
     const audio = showController.audio;
     get("audio-setup-status").textContent = audio.status;
     const decibels = Number.isFinite(audio.inputDb) ? `${audio.inputDb.toFixed(0)} dBFS` : "-- dBFS";

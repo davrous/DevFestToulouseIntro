@@ -1,0 +1,54 @@
+{
+  "sourceCommit": "ac010e9",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "nativeFrames": 736,
+  "captures": [
+    {
+      "name": "01-assembly",
+      "time": 35.45040000000597
+    },
+    {
+      "name": "02-complete",
+      "time": 37.88280000000443
+    },
+    {
+      "name": "03-collision",
+      "time": 38.81610000000141
+    },
+    {
+      "name": "04-signal",
+      "time": 40.73299999999987
+    },
+    {
+      "name": "05-partial-gate",
+      "time": 44.28290000000573
+    },
+    {
+      "name": "06-exit",
+      "time": 46.299499999999696
+    }
+  ],
+  "measurements": [
+    {
+      "start": 35,
+      "end": 36.5,
+      "frames": 89,
+      "fps": 60.836501901140686
+    },
+    {
+      "start": 38.3,
+      "end": 39.8,
+      "frames": 90,
+      "fps": 59.989215421886364
+    },
+    {
+      "start": 43,
+      "end": 44.5,
+      "frames": 90,
+      "fps": 59.997303491736815
+    }
+  ]
+}

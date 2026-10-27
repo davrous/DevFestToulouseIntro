@@ -40,7 +40,7 @@ cassoulet rescue uses a Havok collision proxy, a runtime PBR destruction plugin
 and original procedural red rose petals. The supplied GLB, textures and skeleton
 are unchanged; no pre-authored death animation is claimed.
 
-The curved rose-petal geometry, crimson flutter shader, red velvet curtain and
+The curved rose-petal geometry, crimson flutter shader, procedural XOR CPU gate and
 **The Power Of Cassoulet!** manga victory illustration are original procedural
 artwork for this intro. The comic mascot, spoon, defeated-robot caricature,
 speed lines and typography

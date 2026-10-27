@@ -4,12 +4,12 @@ import { Scene } from "@babylonjs/core/scene";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { silentFeatures } from "../engine/AudioAnalyzer";
 import { DIGITAL_PROGRESSION, DigitalMoments } from "./DigitalMoments";
-import { ASTRONAUT_CORNER } from "../content/showBeats";
+import { DATA_ARCH_LIFT } from "../content/showBeats";
 import { smoothstep } from "../engine/Timeline";
 
 describe("two digital speaker chapters", () => {
-  it("raises the existing adjacent arch with the astronaut, without adding a separate arch", () => {
-    const gate = ASTRONAUT_CORNER.gateTime;
+  it("preserves the existing data arch lift independently of the relocated astronaut", () => {
+    const gate = DATA_ARCH_LIFT.gateTime;
     const sample = (time: number) => {
       const engine = new NullEngine();
       const scene = new Scene(engine);
@@ -27,15 +27,15 @@ describe("two digital speaker chapters", () => {
       scene.dispose(); engine.dispose();
       return heights;
     };
-    const initial = sample(ASTRONAUT_CORNER.riseStart);
-    const raised = sample(ASTRONAUT_CORNER.riseEnd);
+    const initial = sample(DATA_ARCH_LIFT.start);
+    const raised = sample(DATA_ARCH_LIFT.end);
     const height = (time: number) => 8 + 20 * smoothstep((time - gate + 6) / 3);
-    const build = height(ASTRONAUT_CORNER.riseEnd) - height(ASTRONAUT_CORNER.riseStart);
+    const build = height(DATA_ARCH_LIFT.end) - height(DATA_ARCH_LIFT.start);
     raised.forEach((value, index) => {
       const originalMotion = index < 2 ? build / 2 : index === 2 ? build : 0;
-      expect(value - initial[index]).toBeCloseTo(originalMotion + ASTRONAUT_CORNER.gateLift, 4);
+      expect(value - initial[index]).toBeCloseTo(originalMotion + DATA_ARCH_LIFT.lift, 4);
     });
-    expect(Math.abs(gate - ASTRONAUT_CORNER.anchor)).toBeLessThan(.5);
+    expect(gate).toBe(122);
   });
 
   it("uses separate instanced streams for Eric and Mitsuru and clears them for the reveal", () => {

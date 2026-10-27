@@ -10,8 +10,8 @@ import { SPEAKERS, THEME_COLORS } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
 import type { AudioFeatures } from "../engine/AudioAnalyzer";
 import { smoothstep } from "../engine/Timeline";
-import { ASTRONAUT_CORNER } from "../content/showBeats";
-import { astronautRiseState } from "../content/astronaut";
+import { DATA_ARCH_LIFT } from "../content/showBeats";
+import { dataArchLift } from "../content/dataArch";
 
 interface Stream {
   mesh: Mesh;
@@ -76,7 +76,7 @@ export class DigitalMoments {
       for (const [index, gate] of DIGITAL_PROGRESSION.gates.entries()) {
         const anchor = routeAnchor(gate);
         const height = 8 + 20 * smoothstep((time - gate + 6) / 3);
-        const lift = gate === ASTRONAUT_CORNER.gateTime ? astronautRiseState(time).archY : 0;
+        const lift = gate === DATA_ARCH_LIFT.gateTime ? dataArchLift(time) : 0;
         const pulse = 1 + Math.exp(-((time - gate + 1) ** 2)) * .7;
         for (let part = 0; part < 4; part++) {
           const side = part === 0 ? -1 : part === 1 ? 1 : 0;

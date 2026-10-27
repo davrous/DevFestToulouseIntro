@@ -128,7 +128,7 @@ try {
     const artDirection = [];
     for (const time of [3.5, 4.299, 4.5, 5.525, 5.925, 6.1, 15, 17.25, 17.5, 18, 19.1, 26.999, 27, 28.999, 29,
       41.8, 44.5, 46.5, 59.199, 59.2, 59.35, 59.9, 61.8, 63.25, 76.8, 78.5, 79.999, 80, 80.35, 80.45, 84.5, 90, 91.5, 92.8, 93.5, 94, 94.199, 94.2, 108, 110.699, 111,
-      117.2, 118, 118.4, 119.5, 120, 121.25, 124.399, 124.4, 125.19, 125.3, 125.8, 126.5, 126.65, 126.85, 127.2, 127.7, 128, 130, 137, 139.499]) {
+      117.2, 118, 118.4, 119.5, 120, 121.25, 124.399, 124.4, 125.19, 125.3, 125.8, 126.5, 126.65, 126.85, 127.2, 127.7, 128, 130, 137, 139.499, 149, 153, 155, 166]) {
       app.seek(time);
       const http = app.world.scene.getTransformNodeByName("Toulouse HTTP redirect");
       const arm = app.world.simready.groups.get("launchArm");
@@ -136,7 +136,8 @@ try {
       const lens = app.world.scene.getMeshByName("Cinema / frontal camera lens rim");
       const bufferLabel = app.world.scene.getMeshByName("Digital / BUFFER OVERFLOW");
       const matrix = app.world.scene.getMeshByName("FX/Matrix / snack wall code rain");
-      const astronaut = app.world.scene.getTransformNodeByName("Digital / astronaut after buffer");
+      const astronaut = app.world.scene.getTransformNodeByName("Digital / astronaut behind Orbital Link");
+      const astronautBounds = astronaut.getHierarchyBoundingVectors(true);
       const arches = app.world.scene.getMeshByName("FX/Digital / evolving data corridor");
       const archMatrices = app.world.digitalMoments.progressionMatrices;
       const preview = app.world.cinema.tunnelPreview;
@@ -150,9 +151,9 @@ try {
         crtStrike: app.world.camera._postProcesses.some((pass) => pass?.name === "Cinema / 59.2s CRT lightning"),
         crtEnergy: app.world.crtLightning.state.energy,
         crtJokeScreens: app.world.cinema.crtScreens.filter((screen) => screen.material.name === "Cinema / lightning AI update screen").length,
-        curtainWings: app.world.arcade.curtain.panels.length,
-        curtainVisible: app.world.arcade.curtain.root.isEnabled(),
-        curtainOpening: app.world.arcade.curtain.panels[0].material._floats.opening,
+        gatePanels: app.world.arcade.gate.panels.length,
+        gateVisible: app.world.arcade.gate.root.isEnabled(),
+        gateOpening: app.world.arcade.gate.state.open,
         npmCentered: terminal.mesh.position.x === 0,
         petalVertices: app.world.cinema.terminator.debris.getTotalVertices(),
         petalShader: app.world.cinema.terminator.debris.material.name,
@@ -194,7 +195,8 @@ try {
         terminatorDebris: app.world.cinema.terminator.debris.isEnabled(),
         terminal: { ...terminal.state },
         astronautPresent: astronaut.isEnabled(), astronautScale: astronaut.scaling.asArray(),
-        astronautFeet: astronaut.position.y - 6.5 * astronaut.scaling.y / 2,
+        astronautFeet: astronaut.position.y - 16.64 * astronaut.scaling.y / 2,
+        astronautHeight: astronautBounds.max.y - astronautBounds.min.y,
         archBottom: archMatrices[(2 * 4 + 3) * 16 + 13],
         archCount: arches.thinInstanceCount,
         addedArchAbsent: !app.world.scene.getTransformNodeByName("Digital / astronaut rising arch"),
@@ -262,10 +264,10 @@ try {
   assert.ok(replay.cameras.every((sample) => sample.unchanged), "NVIDIA effects must never change the camera.");
   assert.equal(replay.replaySame, true);
   assert.equal(replay.pongCaptionAbsent, true);
-  assert.equal(replay.artDirection.find((sample) => sample.time === 41.8).curtainOpening, 0);
-  assert.equal(replay.artDirection.find((sample) => sample.time === 44.5).curtainWings, 2);
-  assert.ok(replay.artDirection.find((sample) => sample.time === 46.5).curtainOpening > .99);
-  assert.equal(replay.artDirection.find((sample) => sample.time === 59.2).curtainVisible, false);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 41.8).gateOpening, 0);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 44.5).gatePanels, 4);
+  assert.ok(replay.artDirection.find((sample) => sample.time === 46.5).gateOpening > .99);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 59.2).gateVisible, false);
   assert.equal(replay.artDirection.find((sample) => sample.time === 121.25).npmCentered, true);
   assert.ok(replay.artDirection.find((sample) => sample.time === 127.2).petalVertices > 100);
   assert.equal(replay.artDirection.find((sample) => sample.time === 127.2).petalShader, "Cassoulet / curved crimson petal flutter");
@@ -332,11 +334,14 @@ try {
   assert.equal(replay.artDirection.find((sample) => sample.time === 78.5).lensPreviewReady, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 78.5).lensPreviewVisible, true);
   assert.equal(replay.artDirection.find((sample) => sample.time === 90).lensPreviewVisible, false);
-  assert.equal(replay.artDirection.find((sample) => sample.time === 118).astronautPresent, true);
+  assert.equal(replay.artDirection.find((sample) => sample.time === 118).astronautPresent, false);
   const rising = replay.artDirection.find((sample) => sample.time === 117.2);
   const grown = replay.artDirection.find((sample) => sample.time === 118.4);
-  assert.ok(rising.astronautScale[0] > 1 && rising.astronautScale[0] < 2.56);
-  assert.deepEqual(grown.astronautScale, [2.56, 2.56, 2.56]);
+  assert.deepEqual(rising.astronautScale, [1, 1, 1]);
+  assert.deepEqual(grown.astronautScale, [1, 1, 1]);
+  assert.ok(replay.artDirection.filter((sample) => [149, 153, 155].includes(sample.time))
+    .every((sample) => sample.astronautPresent && Math.abs(sample.astronautHeight - 16.64) < .001));
+  assert.equal(replay.artDirection.find((sample) => sample.time === 166).astronautPresent, false);
   assert.ok([rising, grown].every((sample) => sample.archCount === 24 && sample.addedArchAbsent && Math.abs(sample.astronautFeet) < .001
     && sample.astronautScale.every((value) => value === sample.astronautScale[0])));
   assert.ok(rising.archBottom < grown.archBottom);

@@ -10,7 +10,7 @@ import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 import type { Scene } from "@babylonjs/core/scene";
 import { silentFeatures, type AudioFeatures } from "../engine/AudioAnalyzer";
 import { routeAnchor } from "../camera/CameraPath";
-import { ASTRONAUT_CORNER, CINEMA } from "../content/showBeats";
+import { ASTRONAUT_FINALE, CINEMA } from "../content/showBeats";
 import { SPEAKERS, type SpeakerConfig } from "../content/speakers";
 import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
@@ -20,10 +20,8 @@ import { CRT_LIGHTNING_PROGRAM, createCrtMaterial, fitCrtScreen } from "./Cinema
 import { createWorldText } from "./WorldText";
 import { emissive } from "./Labyrinth";
 import { CINEMA_FLOOR_TOP, POPCORN_SOURCES, popcornTilt } from "./CinemaPopcorn";
-import { astronautRiseState } from "../content/astronaut";
 import { LensTunnelPreview } from "../effects/TunnelRendering";
 import { TerminatorWalk } from "./TerminatorWalk";
-export { astronautRiseState } from "../content/astronaut";
 
 export const SEAT_ROWS = [-25, -15, -5, 5, 15, 25] as const;
 export const SEAT_HEIGHT = 4.2;
@@ -377,11 +375,13 @@ export class CinemaWorld {
     const warp = trails.build(scene);
     warp.unfreezeWorldMatrix();
     warp.parent = this.spaceRoot;
-    const astronaut = routeAnchor(ASTRONAUT_CORNER.anchor, ASTRONAUT_CORNER.lateral);
-    this.astronautRoot = new TransformNode("Digital / astronaut after buffer", scene);
-    this.astronautRoot.position.set(astronaut.position.x, ASTRONAUT_CORNER.height / 2, astronaut.position.z);
-    const approach = routeAnchor(ASTRONAUT_CORNER.anchor - 3).position;
-    this.astronautRoot.rotation.y = Math.atan2(astronaut.position.x - approach.x, astronaut.position.z - approach.z) + Math.PI;
+    const astronaut = routeAnchor(ASTRONAUT_FINALE.anchor, ASTRONAUT_FINALE.lateral);
+    this.astronautRoot = new TransformNode("Digital / astronaut behind Orbital Link", scene);
+    this.astronautRoot.position.set(astronaut.position.x + Math.sin(astronaut.yaw) * ASTRONAUT_FINALE.depth,
+      ASTRONAUT_FINALE.height / 2, astronaut.position.z + Math.cos(astronaut.yaw) * ASTRONAUT_FINALE.depth);
+    const approach = routeAnchor(ASTRONAUT_FINALE.anchor - 3).position;
+    this.astronautRoot.rotation.y = Math.atan2(this.astronautRoot.position.x - approach.x,
+      this.astronautRoot.position.z - approach.z) + Math.PI;
     this.update(0, silentFeatures());
   }
 
@@ -484,7 +484,7 @@ export class CinemaWorld {
       prop.rotation.y = anchor.yaw;
       this.spaceProps.push({ node: prop, yaw: anchor.yaw, speed: .5 });
     }
-    this.astronautLoaded = !!this.assets.create("astronaut", this.astronautRoot, "Digital / corner astronaut", ASTRONAUT_CORNER.height, "height");
+    this.astronautLoaded = !!this.assets.create("astronaut", this.astronautRoot, "Digital / final orbital astronaut", ASTRONAUT_FINALE.height, "height");
     for (const source of POPCORN_SOURCES) {
       const anchor = routeAnchor(source.time, source.lateral);
       const pivot = new TransformNode(`Cinema / popcorn support ${source.side}`, this.reelsRoot.getScene());
@@ -559,10 +559,7 @@ export class CinemaWorld {
     this.spaceProps.forEach(({ node, yaw, speed }) => {
       node.rotation.y = yaw + (time - CINEMA.space) * speed;
     });
-    const astronautActive = this.astronautLoaded && time >= ASTRONAUT_CORNER.start && time < ASTRONAUT_CORNER.end;
-    const rise = astronautRiseState(time);
+    const astronautActive = this.astronautLoaded && time >= ASTRONAUT_FINALE.start && time < ASTRONAUT_FINALE.end;
     this.astronautRoot.setEnabled(astronautActive);
-    this.astronautRoot.scaling.setAll(rise.scale);
-    this.astronautRoot.position.y = rise.centerY;
   }
 }

@@ -13,6 +13,7 @@ import { Constants } from "@babylonjs/core/Engines/constants";
 import { GlowLayer } from "@babylonjs/core/Layers/glowLayer";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { Mesh } from "@babylonjs/core/Meshes/mesh";
+import { InstancedMesh } from "@babylonjs/core/Meshes/instancedMesh";
 import type { Engine } from "@babylonjs/core/Engines/engine";
 import { cameraPose } from "../camera/CameraPath";
 import { PHASES, smoothstep } from "../engine/Timeline";
@@ -31,7 +32,7 @@ import { PixelWorld } from "./PixelWorld";
 import { ArcadeCathedral } from "./ArcadeCathedral";
 import { DemosceneTransition } from "./DemosceneTransition";
 import { MusicReactive } from "../effects/MusicReactive";
-import { ASTRONAUT_CORNER, CINEMA, TERMINATOR } from "../content/showBeats";
+import { ASTRONAUT_FINALE, CINEMA, TERMINATOR } from "../content/showBeats";
 import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
 import { ClapCrtTransition } from "../effects/ClapCrtTransition";
@@ -39,6 +40,7 @@ import { ArcadeEntryTransition } from "../effects/ArcadeEntryTransition";
 import { LensVortexTransition } from "../effects/LensVortexTransition";
 import { CrtLightningTransition } from "../effects/CrtLightningTransition";
 import { CassouletPowerPoster } from "../effects/CassouletPowerPoster";
+import { legacyXorSettings } from "./LegacyXorSequence";
 import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
 import { CinemaPopcorn } from "./CinemaPopcorn";
@@ -61,8 +63,9 @@ export class DevFestScene {
   readonly portals: SpeakerPortal[];
   readonly simready: SimReadyGags;
   private readonly easterEggs: EasterEggs;
-  private readonly arcade: ArcadeT;
-  private readonly arcadePhysics: ArcadePhysics;
+  readonly arcade: ArcadeT;
+  readonly arcadePhysics: ArcadePhysics;
+  readonly legacyXor = legacyXorSettings();
   private readonly pixelWorld: PixelWorld;
   private readonly cathedral: ArcadeCathedral;
   private readonly demoscene: DemosceneTransition;
@@ -139,8 +142,8 @@ export class DevFestScene {
     this.portals = SPEAKERS.flatMap((speaker, index) =>
       speaker.world === "cinema" ? [] : [new SpeakerPortal(scene, speaker, index)]);
     this.easterEggs = new EasterEggs(scene);
-    this.arcade = new ArcadeT(scene);
-    this.arcadePhysics = new ArcadePhysics(scene);
+    this.arcade = new ArcadeT(scene, this.legacyXor);
+    this.arcadePhysics = new ArcadePhysics(scene, this.legacyXor);
     this.pixelWorld = new PixelWorld(scene);
     this.cathedral = new ArcadeCathedral(scene);
     this.demoscene = new DemosceneTransition(scene);
@@ -217,7 +220,7 @@ export class DevFestScene {
     await this.branding.ready;
     await this.scene.whenReadyAsync();
     const compile = (meshes = this.scene.meshes) => Promise.all(meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
-      useInstances: mesh instanceof Mesh && mesh.hasThinInstances,
+      useInstances: mesh instanceof InstancedMesh || (mesh instanceof Mesh && mesh.hasThinInstances),
     })));
     await compile();
     this.update(CINEMA.crtSync, SILENCE);
@@ -230,7 +233,7 @@ export class DevFestScene {
     }
     this.update(TERMINATOR.walkStart + 1, SILENCE);
     await compile(this.cinema.terminator.root.getChildMeshes());
-    this.update(ASTRONAUT_CORNER.riseEnd, SILENCE);
+    this.update(ASTRONAUT_FINALE.start + 1, SILENCE);
     await compile(this.cinema.astronautRoot.getChildMeshes());
     this.update(0, SILENCE);
   }
@@ -304,7 +307,7 @@ export class DevFestScene {
       + audio.drop * cueEnvelope(time, 120, 155, 2) * .18) * Math.max(.001, rescueSpace));
     this.interior.rings.forEach((ring) => ring.scaling.setAll(Math.max(.001, rescueSpace)));
     this.portals.forEach((portal) => portal.update(time, audio));
-    this.easterEggs.update(time);
+    this.easterEggs.update(time, cameraTime);
     this.arcade.update(time, audio);
     this.pixelWorld.update(time, audio);
     this.cathedral.update(time, audio);

@@ -1,0 +1,297 @@
+# Legacy Code → XOR CPU gate
+
+## Architecture and measured constraints
+
+The supplied Markdown brief and all three PNG references were read before
+implementation. Their art is not used as a runtime texture.
+
+- Babylon.js 9.28, TypeScript, Vite; the existing ACES/image-processing,
+  bloom/glow, blue-hour ambient, directional light and camera bounce remain.
+  Units are the existing 28-unit letter modules, height 34, roof underside 32.85.
+  Existing `BoxBatch`, `emissive`, `createWorldText` and Havok bake utilities
+  are reused. No new dependency, shadow map, music or camera keyframe.
+- The legacy wall has **48 boxes, 8 × 6**, size **2.65 × 3.35 × 2.15**,
+  spacing **2.75 × 3.45**. Its original `routeAnchor(40)` is approximately
+  **(-554.4, 11.848, -41.4624)**, yaw **1.5190026901**. The box centers retain
+  their original authored heights, starting at 1.75.
+- Existing destruction cue: **38.2 s** on the existing effect clock;
+  disappearance **41.2 s**. The camera has no Havok body: the previous
+  implementation released the wall with authored impulses at that cue, before
+  the camera crossed the wall plane around 40 s. This choreography is retained,
+  not misrepresented as a newly measured camera/body contact.
+- Existing body parameters: mass 1.6, friction .55, restitution .32;
+  original world-space linear/angular velocities are retained. The floor is
+  at (-560, -.25, -65), extents (125, .5, 145); the two yawed rails are at
+  ±12.8 from the wall anchor, extents (.5, 24, 25).
+- The actual T exit is the east-facing opening of cell (1, 9), at
+  **X=-518, Z=-42** (the brief's “upper-left” is pictorial, not a reason to
+  move the exit). It spans 28 units; the previous curtain used a 26.4-unit
+  width and 32.1-unit height, opening from 42.6 to 46.6 s.
+- Unmodified camera samples put the crossing at approximately **46.03 s**,
+  position (-518, 11, -42), FOV approximately .991 radians. At 44 s it is at
+  (-532, 11, -42). The gate must clear this trajectory and its near plane
+  before crossing, not disappear to make the test pass.
+- The global duration remains **180 s**. Existing musical effect-time
+  adjustment is reused unchanged. All new transforms depend on absolute
+  timeline time; debug/rehearsal controls use the existing application seek,
+  pause and playback APIs.
+
+## Implemented sequence
+
+| Beat | Effect-clock window | Implementation |
+| --- | --- | --- |
+| Assemble | 34.7–36.81 s | Twelve fixed L/J groups, four original cubes each; 110-ms stagger, 900-ms eased arrival from left, right, above and depth |
+| Lock / fail | 36.81–38.2 s | Crisp final snap, brief emissive lock pulse, exact original box homes; `BUILD FAILED` and `// TODO: remove this wall` are printed on the wall |
+| Break | 38.2–41.2 s | Original canonical impulses, gravity and Havok collisions; small deterministic electrical discharge at the impact |
+| Propagate | 38.2–41.5 s | Copper tubes run from the wall to the nearby side surface, up a relay bend and into the CPU chip; a distance-UV shader moves a cyan head and short trail progressively |
+| Activate | 41.5–42.6 s | Correct OR-like XOR outline plus a separate input arc energizes; `ACCESS GRANTED` appears only after arrival; pins withdraw |
+| Open | 42.6–45.7 s | Four distinct thick carriages translate diagonally, fold into the side rail envelope and expose the existing world beyond |
+| Exit | approximately 46.03 s | The unchanged camera passes through real free space; all shutters remain present and fully retracted |
+
+These are nominal effect-clock times. The existing Journey beat adjustment is
+left intact; it drives the impact, propagation and lock together. There are no
+new music events or wall-clock animation timers.
+
+### Wall geometry and Havok handoff
+
+The render boxes now have real beveled caps, opaque retro colors and six sparse
+code labels: `TODO`, `FIXME`, `deprecated`, `legacy.dll`, `tech debt`,
+`v1_final_FINAL`. Grouping only controls pre-impact visual motion; the 48 final
+centers, quaternions, collider sizes and spacing are not altered.
+
+During assembly the visible meshes have **no live dynamic body**. At loading,
+the existing Havok engine creates the original 48 box bodies at their fully
+assembled homes, applies the original canonical world-space velocities and
+records **181 frames at 60 Hz** over the three-second destruction. Mass 1.6,
+friction .55, restitution .32, floor restitution .35 and rail restitution .3
+are preserved. The temporary bodies and boundaries are disposed in `finally`.
+`PhysicsBake` was extended only with optional per-collider rotation and
+restitution, preserving existing consumers' defaults.
+
+At 38.2 s the animated poses match frame zero of that recording. Subsequent
+poses use interpolated positions and quaternion slerp from actual Havok output,
+not ballistic stand-ins. Pause holds the same sample; direct seek, reverse
+scrubbing and restart sample the same tracks without reconstructing bodies.
+Even hidden boxes evaluate to a fixed home or the final recorded pose, avoiding
+history-dependent parked transforms. No meshes, materials, bodies or listeners
+are created during replay.
+
+The old optional raw-audio early release is intentionally removed: the existing
+authored 38.2-s impact is the deterministic narrative authority. Live audio does
+not randomly release cubes early or change the cached physical result.
+
+### Engineered four-panel gate
+
+The curtain implementation and its exclusive tests are removed; the cinema's
+unrelated burgundy acoustic scenery is untouched. The new gate consists of
+layered graphite/titanium solids, beveled angular armor wings, copper perimeter
+traces, instanced fasteners/heat sinks, four carriage rails and lock pins.
+Two scoped shadowless lights reveal the metal and exposed passage. No opaque
+portal image, cloth, imported concept texture or new shadow target is used.
+
+The four closed carriage centers are:
+
+```text
+upper-left   (-6.075, 23.65, 0)
+upper-right  ( 6.075, 23.65, 0)
+lower-left   (-6.075,  8.55, 0)
+lower-right  ( 6.075,  8.55, 0)
+```
+
+Coordinates are local to the gate at (-518, 0, -42), yaw π/2. For eased opening
+`q`, each center moves by `(side × 3.25q, verticalSide × .65q, 6.2q)`, with
+`side × 78q` degrees of yaw. Top leaves therefore move up/out, bottom leaves
+down/out; all four fold into longitudinal side space rather than pushing through
+the floor, roof or lateral wall. The front bezel stands ahead of the complete
+shutter swing, while guide rails stay outboard of the blades.
+
+The central logic chip rides the upper-right carriage. A short piston extension
+of `3 sin(πq)` keeps it ahead of the opposite moving leaf before returning to
+its final mounted position. The badge therefore does not clip through the left
+shutter or remain as a fixed obstacle in the opening. The green debug wireframe
+shows a conservative **10 × 18** safe aperture, not an imaginary full-frame gap.
+Nothing is hidden or scaled to zero to provide crossing clearance.
+
+## Debug and comparison controls
+
+Open the existing diagnostics with **D**, then expand **LEGACY WALL / XOR CPU
+GATE**. Controls are not visible in the live intro:
+
+- `enableLegacyWallAssembly`, `enableXorCpuGate`;
+- assembly lead, stagger/speed, sparse label mode and wall message;
+- signal offset/duration, cyan/copper colors and emission;
+- gate XYZ, yaw and uniform scale, with deliberately small mounting-safe ranges;
+- panel travel/lift, folding angle, depth travel and opening duration;
+- panel bounding boxes, original camera path, safe aperture and cube collider
+  bounding boxes; recorded-physics state and closed/open transform readouts;
+- approach, impact, signal, activation, opening and exit jumps; sequence replay
+  and a 34.4–48.5-s loop. Closing diagnostics stops the loop.
+
+Invalid timing or placement input is rejected with a notice and the previous
+configuration retained. Opening duration is capped at 3.2 s so full clearance
+precedes the original crossing. Disabling both effects restores the original
+grey wall formation and its Havok destruction, with a guaranteed-clear exit;
+the removed curtain is not resurrected.
+
+## Visual references and deliberate adaptations
+
+1. **Legacy wall:** the supplied colorful concept guided the palette,
+   tetromino grouping, bevels, sparse labels and short compile-failure beat.
+   The actual 8 × 6 collider wall is retained rather than copying the
+   concept's larger irregular pile or fictitious code labels.
+2. **XOR CPU:** dark layered metal, gold/copper routing, cyan charge, the
+   correctly curved XOR, angular armor and engineered motion are genuine
+   geometry. The real 28-unit corridor cannot accommodate the concept's giant
+   planar diagonal translations: depth retraction and substantial folding are
+   the intentional spatial adaptation.
+3. **Storyboard:** all six beats are connected by one impact-clock signal.
+   The existing camera never pauses for a new hero shot, and the original
+   clapperboard and following cinema sequence remain visible through the gate.
+
+The reference artwork's dense industrial background, volumetric rays and
+hundreds of small greebles are not copied. The project keeps its original
+lighting/fog, local resources and real-time rendering budget. The wall destruction
+remains authored-cue Havok, not a newly invented physical camera collider.
+
+## Verification and captures
+
+Run:
+
+```sh
+npm test
+npm run verify:legacy-xor
+node scripts/verify-simready.mjs
+```
+
+The dedicated production verifier plays actual Viola's Journey, pauses/resumes,
+compares seven rendered playback states against direct seeks, performs 20
+replay loops and checks stable resource/body counts. It compares **361 original
+camera samples** through the same Babylon camera pipeline (including Babylon's
+existing 0.001 singularity nudge), tests swept camera/near-plane clearance
+against conservative transformed solid bounds, reads real signal pixels and
+benchmarks seven moments at **1920 × 1080**.
+
+The measured native baseline was approximately **60 FPS** for assembly,
+destruction and the previous exit. The new sequence must remain above 51 FPS
+(the project's 15% regression envelope). Raw final measurements, exact
+clearance and startup time are in [validation.json](legacy-xor/validation.json).
+The original native measurements are retained in
+[baseline-metrics.json](legacy-xor/baseline-metrics.json).
+The ordinary full production verifier also rechecks the tunnel, popcorn,
+physical rescue, manga wall, local gallery and disabled NVIDIA mode.
+
+### Final measured result
+
+| Check | Result |
+| --- | --- |
+| Unit/integration suite | **249 tests passed**, 45 files; TypeScript and production build passed |
+| Camera regression | **361 samples**, zero position, heading or FOV difference through the original Babylon pipeline |
+| Musical playback | **839 rendered frames**, pause/resume stable; seven native states exactly match direct seeks |
+| Replay resources | 20 loops / 240 seeks; stable 1,403 meshes, 1,720 transforms, 277 materials, 20 lights and 5 unrelated live bodies |
+| Wall physics | 48 real Havok tracks × 181 frames; zero live wall bodies during playback |
+| Camera safety | Conservative minimum near-plane/solid clearance **6.87 units**, including fixed frame, badge, rails and moving plates |
+| FullHD frame rate | **59.97–60.02 FPS**, median 16.7 ms, worst measured 95th percentile 17.7 ms |
+| Startup | **6.30 s** including assets, physics bakes and material prewarming |
+| Final astronaut | Actual height 16.64, fixed pose, old corner empty; visible silhouette in all 6.25 s of sampled final approach |
+| Browser/network | Zero JavaScript/console errors and zero external requests |
+
+These are measurements on this machine/browser, not a universal GPU guarantee.
+The existing non-blocking Vite large-chunk warning remains unchanged.
+
+| Beat | Before | After |
+| --- | --- | --- |
+| Assembly | [Old sudden wall](legacy-xor/before-01-assembly.png) | [Staggered tetrominoes](legacy-xor/after-01-assembly.png) |
+| Completed | [Original wall](legacy-xor/before-02-complete.png) | [BUILD FAILED](legacy-xor/after-02-complete.png) |
+| Collision | [Original collapse](legacy-xor/before-03-collision.png) | [Recorded Havok impact](legacy-xor/after-03-collision.png) |
+| Signal | [No connecting circuit](legacy-xor/before-04-signal.png) | [Traveling packet](legacy-xor/after-04-signal.png) |
+| Opening | [Curtain](legacy-xor/before-05-partial-gate.png) | [Four mechanical shutters](legacy-xor/after-05-partial-gate.png) |
+| Exit | [Previous passage](legacy-xor/before-06-exit.png) | [Actual free aperture](legacy-xor/after-06-exit.png) |
+
+Also see [XOR activation](legacy-xor/after-07-xor-activation.png).
+Before captures were taken during native playback; after captures use the
+actual production camera at documented deterministic checkpoints, not concept
+art or a free-camera showcase.
+
+## Follow-up: astronaut and chocolatine crossing
+
+The existing astronaut is moved behind Orbital Toulouse Link, using its 153-s
+anchor, depth 25 and lateral offset 11, with three extra units of setback from
+the previous placement. Its actual normalized model height is
+**16.64**, immediately and permanently; there is no growth track or duplicate
+at the old buffer corner. Its feet remain grounded and its final bounds stay
+inside the corridor. The old 122-s data-arch animation is preserved independently.
+The terminal's original 119.1-s gaze is decoupled without changing the camera.
+
+The pastry board remains preloaded and fully readable at the 29-s redirect,
+then its entire surface fades **31.85–32.55 s on camera time**, not a
+beat-shifted effect clock. It is fully transparent/disabled before crossing
+at **32.75 s**. Only visibility changes; no replacement black plane is created.
+The verifier checks the actual final astronaut silhouette and fixed bounds,
+old-location absence, half-opacity, complete pre-crossing disappearance and
+seek/replay. See [final astronaut](legacy-xor/finale-astronaut.png) and
+[clear chocolatine crossing](legacy-xor/chocolatine-crossing.png).
+
+## Files changed
+
+### New implementation and verification
+
+- [LegacyXorSequence.ts](../src/scene/LegacyXorSequence.ts): shared bounded
+  settings, canonical cue windows and deterministic state.
+- [HardSurface.ts](../src/scene/HardSurface.ts): outward-facing solid beveled
+  prism geometry reused by the wall and gate.
+- [XorCpuGate.ts](../src/scene/XorCpuGate.ts),
+  [XorCpuGate.test.ts](../src/scene/XorCpuGate.test.ts): four shutters,
+  correct XOR, pistons, rails, scoped lighting, clearance/replay tests.
+- [CircuitSignal.ts](../src/effects/CircuitSignal.ts): physical copper tubes
+  and progressive distance-based electrical shading.
+- [LegacyXorDebug.ts](../src/debug/LegacyXorDebug.ts): tuning, diagnostic
+  geometry, state readouts, safe input and replay controls.
+- [verify-legacy-xor.mjs](../scripts/verify-legacy-xor.mjs): native musical
+  playback, visual captures, camera/clearance/resource/FPS regression.
+- [dataArch.ts](../src/content/dataArch.ts): replaces the obsolete
+  astronaut-growth helper while preserving the original data-arch lift.
+
+### Existing integration surfaces
+
+- [ArcadePhysics.ts](../src/scene/ArcadePhysics.ts),
+  [ArcadePhysics.test.ts](../src/scene/ArcadePhysics.test.ts): original homes,
+  tetromino assembly and exact cached Havok replay.
+- [ArcadeT.ts](../src/scene/ArcadeT.ts),
+  [DevFestScene.ts](../src/scene/DevFestScene.ts): gate replacement, shared
+  settings, actual regular/thin-instance shader prewarming and lifecycle.
+- [PhysicsBake.ts](../src/scene/PhysicsBake.ts): optional collider rotation
+  and restitution, needed to retain the original wall boundaries.
+- [DebugPanel.ts](../src/debug/DebugPanel.ts): integrates the hidden controls.
+- [showBeats.ts](../src/content/showBeats.ts),
+  [CameraPath.ts](../src/camera/CameraPath.ts),
+  [CinemaWorld.ts](../src/scene/CinemaWorld.ts),
+  [CinemaWorld.test.ts](../src/scene/CinemaWorld.test.ts): final astronaut
+  staging and fixed size; the camera change only replaces an obsolete
+  growth-dependent constant with its identical original value.
+- [DigitalMoments.ts](../src/scene/DigitalMoments.ts),
+  [DigitalMoments.test.ts](../src/scene/DigitalMoments.test.ts): decoupled,
+  otherwise unchanged data arch.
+- [cues.ts](../src/content/cues.ts),
+  [cues.test.ts](../src/content/cues.test.ts),
+  [EasterEggs.ts](../src/scene/EasterEggs.ts),
+  [DigitalProps.test.ts](../src/scene/DigitalProps.test.ts): pre-crossing
+  pastry transparency and camera/effect-clock separation.
+- [StageReadability.test.ts](../src/scene/StageReadability.test.ts): checks
+  actual wall/gate/final astronaut placements, replacing removed rebase/boss
+  proxy assertions.
+- [verify-simready.mjs](../scripts/verify-simready.mjs): updated four-panel
+  and final-astronaut checks; other existing production probes retained.
+- [package.json](../package.json): reproducible `verify:legacy-xor` command.
+
+### Documentation and generated evidence
+
+[README.md](../README.md), [AGENT_CONTEXT.md](../AGENT_CONTEXT.md),
+[CREDITS.md](../CREDITS.md), [simready-integration.md](simready-integration.md),
+this report and the generated [simready-validation.json](simready-validation.json)
+describe the current sequence. [legacy-xor/](legacy-xor/) contains the original
+[camera baseline](legacy-xor/camera-baseline.json), native baseline metrics, final validation JSON,
+six before PNGs, seven after PNGs and the two follow-up PNGs linked above.
+
+The exclusive T-exit files `src/scene/RedVelvetCurtain.ts` and
+`src/scene/RedVelvetCurtain.test.ts` are deleted. The former
+`src/content/astronaut.ts` growth helper is replaced by the data-arch helper.

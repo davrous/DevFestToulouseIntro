@@ -22,7 +22,7 @@ describe("arcade story physics", () => {
     expect(arcadeWallVisible(44)).toBe(false);
   });
 
-  it("removes bonus tokens and breaks technical debt with Havok, then cleans up and resets on seek", async () => {
+  it("assembles the original homes and replays the real Havok collapse without live duplicate bodies", async () => {
     const wasmBinary = Uint8Array.from(readFileSync(
       new URL("../../node_modules/@babylonjs/havok/lib/esm/HavokPhysics.wasm", import.meta.url))).buffer;
     const havok = await HavokPhysics({ wasmBinary });
@@ -31,7 +31,7 @@ describe("arcade story physics", () => {
     const plugin = new HavokPlugin(true, havok);
     expect(scene.enablePhysics(new Vector3(0, -17, 0), plugin)).toBe(true);
     const arcade = new ArcadePhysics(scene);
-    expect(scene.getMaterialByName("Arcade / technical debt")?.alpha).toBeLessThan(1);
+    expect(arcade.materials.every((material) => material.alpha === 1)).toBe(true);
     arcade.initialize(plugin);
     const silence = silentFeatures();
     const voxel = scene.getMeshByName("Arcade / legacy voxel 0");
@@ -41,9 +41,13 @@ describe("arcade story physics", () => {
     expect(voxel.isEnabled()).toBe(false);
     arcade.update(35, silence);
     expect(voxel.isEnabled()).toBe(true);
-    expect(voxel.physicsBody).toBeDefined();
-    const wallStart = voxel.position.clone();
+    expect(voxel.physicsBody).toBeFalsy();
+    const wallStart = arcade.wall[0].home.clone();
+    expect(Vector3.Distance(voxel.position, wallStart)).toBeGreaterThan(1);
+    arcade.update(WALL_TIME - .001, silence);
+    expect(Vector3.Distance(voxel.position, wallStart)).toBeLessThan(.001);
     arcade.update(WALL_TIME, { ...silence, drop: 1 });
+    expect(Vector3.Distance(voxel.position, wallStart)).toBeLessThan(.001);
     for (let index = 0; index < 45; index++) {
       arcade.update(WALL_TIME + (index + 1) / 60, silence);
       scene.getPhysicsEngine()!._step(1 / 60);
@@ -51,14 +55,22 @@ describe("arcade story physics", () => {
     expect(Vector3.Distance(voxel.position, wallStart)).toBeGreaterThan(.4);
     arcade.update(44, silence);
     expect(voxel.isEnabled()).toBe(false);
-    expect(voxel.physicsBody).toBeNull();
+    expect(voxel.physicsBody).toBeFalsy();
+    const parked = voxel.position.asArray();
+    arcade.update(0, silence); arcade.update(44, silence);
+    expect(voxel.position.asArray()).toEqual(parked);
     arcade.update(40, silence);
     expect(Vector3.Distance(voxel.position, wallStart)).toBeGreaterThan(5);
-    arcade.update(35, silence);
+    const snapshot = arcade.wall.map((prop) => [...prop.mesh.position.asArray(), ...prop.mesh.rotationQuaternion!.asArray()]);
+    arcade.update(0, silence); arcade.update(180, silence); arcade.update(40, silence);
+    expect(arcade.wall.map((prop) => [...prop.mesh.position.asArray(), ...prop.mesh.rotationQuaternion!.asArray()])).toEqual(snapshot);
+    arcade.update(WALL_TIME - .01, silence);
     expect(voxel.isEnabled()).toBe(true);
     expect(Vector3.Distance(voxel.position, wallStart)).toBeLessThan(.001);
     arcade.update(37.7, { ...silence, drop: 1 });
-    expect(voxel.physicsBody!.getLinearVelocity().length()).toBeGreaterThan(5);
+    expect(Vector3.Distance(voxel.position, wallStart)).toBeLessThan(.001);
+    expect(arcade.wall.every((prop) => !prop.mesh.physicsBody)).toBe(true);
+    expect(arcade.bake?.tracks).toHaveLength(48);
     scene.dispose();
     engine.dispose();
   });

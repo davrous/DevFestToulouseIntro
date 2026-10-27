@@ -3,7 +3,7 @@ import { CELL, cellPosition } from "../content/title";
 import { clamp, smootherstep, smoothstep } from "../engine/Timeline";
 import { SPEAKERS } from "../content/speakers";
 import { CHOCOLATINE, cueEnvelope } from "../content/cues";
-import { ASTRONAUT_CORNER, CASSOULET_SIGN, CASSOULET_WALL_POSTER, CINEMA, DEPLOY_ROCKET, ORBIT_LINK, TERMINATOR, rocketLift, terminatorPosition } from "../content/showBeats";
+import { CASSOULET_SIGN, CASSOULET_WALL_POSTER, CINEMA, DEPLOY_ROCKET, ORBIT_LINK, TERMINATOR, rocketLift, terminatorPosition } from "../content/showBeats";
 
 interface Keyframe { time: number; col: number; row: number; y: number }
 
@@ -145,7 +145,7 @@ export function cameraPose(time: number, aspect = 16 / 9): CameraPose {
       focusCamera(local, localTarget, new Vector3(robot.x, 12, robot.z),
         cueEnvelope(time, TERMINATOR.lookStart, TERMINATOR.lookEnd, 1.8, 1.8) * .35);
     }
-    const terminalLookStart = Math.max(CASSOULET_SIGN.start, ASTRONAUT_CORNER.riseEnd + .7);
+    const terminalLookStart = Math.max(CASSOULET_SIGN.start, CASSOULET_SIGN.lookStart);
     if (time >= terminalLookStart && time < CASSOULET_SIGN.end) {
       const terminal = routeAnchor(CASSOULET_SIGN.time).position;
       terminal.y = CASSOULET_SIGN.height - 1;

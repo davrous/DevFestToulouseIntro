@@ -1,9 +1,18 @@
 import { describe, expect, it } from "vitest";
 import { SPEAKERS, activeSpeaker } from "./speakers";
-import { CHOCOLATINE, activeCues, chocolatineStage, cueEnvelope } from "./cues";
+import { CHOCOLATINE, activeCues, chocolatineStage, chocolatineOpacity, cueEnvelope } from "./cues";
 import { arcadeDoorOpen } from "../scene/ArcadeT";
 
 describe("show content", () => {
+  it("keeps the pastry joke readable, then fades completely before the camera crosses its black panel", () => {
+    expect(chocolatineOpacity(29)).toBe(1);
+    expect(chocolatineOpacity(CHOCOLATINE.fadeStart)).toBe(1);
+    expect(chocolatineOpacity((CHOCOLATINE.fadeStart + CHOCOLATINE.fadeEnd) / 2)).toBeCloseTo(.5);
+    expect(chocolatineOpacity(CHOCOLATINE.fadeEnd)).toBe(0);
+    expect(chocolatineOpacity(CHOCOLATINE.anchor)).toBe(0);
+    expect(CHOCOLATINE.fadeEnd).toBeLessThan(CHOCOLATINE.anchor - .15);
+    expect(() => chocolatineOpacity(NaN)).toThrow();
+  });
   it("introduces speakers in the game, cinema and two digital chapters with editable titles", () => {
     expect(SPEAKERS.map((speaker) => speaker.name)).toEqual(["Anne-Flore Bernard", "David Rousset", "Eric Mittelette", "Mitsuru Furuta"]);
     expect(SPEAKERS.map((speaker) => speaker.world)).toEqual(["game", "cinema", "digital", "digital"]);

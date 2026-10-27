@@ -1,12 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { cameraPose, routeAnchor } from "../camera/CameraPath";
-import { cellPosition } from "../content/title";
 import { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK, T_SIGN_ANCHORS } from "./EasterEggs";
 import { BUFFER_OVERFLOW, bufferAnchor } from "./DigitalOverflow";
-import { ASTRONAUT_CORNER, CASSOULET_WALL_POSTER, CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
+import { ASTRONAUT_FINALE, CASSOULET_WALL_POSTER, CINEMA, LEVEL_COMPLETE, rocketLift } from "../content/showBeats";
 import { CABINET_COUNT } from "./ArcadeCathedral";
-import { astronautRiseState } from "./CinemaWorld";
+import { xorPanelPose } from "./XorCpuGate";
+import { legacyXorSettings, legacyXorState } from "./LegacyXorSequence";
 import { RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 import { POPCORN_SOURCES } from "./CinemaPopcorn";
 import { CHOCOLATINE } from "../content/cues";
@@ -156,15 +156,13 @@ describe("readable arcade jokes at projector aspect", () => {
     expect(npm.end).toBeLessThanOrEqual(126);
   });
 
-  it("shows the relocated astronaut in the next corner after the buffer", () => {
-    const anchor = routeAnchor(ASTRONAUT_CORNER.anchor, ASTRONAUT_CORNER.lateral);
-    const world = (time: number) => {
-      const rise = astronautRiseState(time);
-      return Matrix.Scaling(rise.scale, rise.scale, rise.scale)
-        .multiply(Matrix.Translation(anchor.position.x, rise.centerY, anchor.position.z));
-    };
-    expect(longestReadableInterval(BUFFER_OVERFLOW.end, 121, world, 4, ASTRONAUT_CORNER.height))
-      .toBeGreaterThanOrEqual(1.25);
+  it("frames the full-size astronaut behind Orbital Link near the final exit", () => {
+    const anchor = routeAnchor(ASTRONAUT_FINALE.anchor, ASTRONAUT_FINALE.lateral);
+    const world = Matrix.RotationY(anchor.yaw).multiply(Matrix.Translation(
+      anchor.position.x + Math.sin(anchor.yaw) * ASTRONAUT_FINALE.depth, ASTRONAUT_FINALE.height / 2,
+      anchor.position.z + Math.cos(anchor.yaw) * ASTRONAUT_FINALE.depth));
+    expect(longestReadableInterval(147, 159, world, 8, ASTRONAUT_FINALE.height))
+      .toBeGreaterThanOrEqual(2);
   });
 
   it("frames the Toulouse orbital label after Mitsuru", () => {
@@ -177,17 +175,24 @@ describe("readable arcade jokes at projector aspect", () => {
       .toBeGreaterThanOrEqual(3);
   });
 
-  it("shows the rebase command before and while it unlocks the T door", () => {
-    const door = cellPosition(1, 9);
-    const rebase = Matrix.RotationY(Math.PI / 2)
-      .multiply(Matrix.Translation(door.x + 13, 17, door.z));
-    expect(longestReadableInterval(41.2, 45.7, rebase, 18, 6)).toBeGreaterThanOrEqual(2);
+  it("frames the actual XOR module and its granted label during activation", () => {
+    const settings = legacyXorSettings();
+    const world = (time: number) => {
+      const { open } = legacyXorState(time, settings), pose = xorPanelPose(1, open, settings);
+      return Matrix.Translation(0, -2.15, -.31)
+        .multiply(Matrix.Translation(-6.075, -7.1, -1.08 - Math.sin(Math.PI * open) * 3))
+        .multiply(Matrix.Compose(Vector3.One(), pose.rotation, pose.position))
+        .multiply(Matrix.RotationY(settings.gateYaw))
+        .multiply(Matrix.Translation(settings.gateX, settings.gateY, settings.gateZ));
+    };
+    expect(longestReadableInterval(41.9, 44.5, world, 6, 1.15)).toBeGreaterThanOrEqual(1);
   });
 
-  it("introduces the boss header before the transparent legacy wall arrives", () => {
-    const anchor = routeAnchor(39);
+  it("keeps BUILD FAILED printed on the completed opaque wall before impact", () => {
+    const anchor = routeAnchor(40);
     const world = Matrix.RotationY(anchor.yaw)
-      .multiply(Matrix.Translation(anchor.position.x, 21.5, anchor.position.z));
-    expect(longestReadableInterval(33, 36.1, world, 19, 5)).toBeGreaterThanOrEqual(1.5);
+      .multiply(Matrix.Translation(anchor.position.x - Math.sin(anchor.yaw) * 1.13, 12.15,
+        anchor.position.z - Math.cos(anchor.yaw) * 1.13));
+    expect(longestReadableInterval(36.85, 38.2, world, 17, 3.1)).toBeGreaterThanOrEqual(.75);
   });
 });

@@ -74,7 +74,7 @@ export function terminatorPosition(time: number): { x: number; y: number; z: num
 
 export const LEVEL_COMPLETE = { start: 46.3, end: CINEMA.clap, height: 26, width: 18 } as const;
 export const BRIDGE_CLOSE = { start: 168, end: 172.5 } as const;
-export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, height: 18, width: 14, lateral: 0 } as const;
+export const CASSOULET_SIGN = { time: 127, start: 117, end: 125, lookStart: 118.4 + .7, height: 18, width: 14, lateral: 0 } as const;
 export const CASSOULET_INSTALL = {
   start: CASSOULET_SIGN.start, typingEnd: CASSOULET_SIGN.start + .9,
   complete: CASSOULET_SIGN.end - .6, gigabytes: 4.8,
@@ -89,10 +89,11 @@ export const BUFFER_OVERFLOW = {
   fillInterval: .085, fallDuration: .4, extraFallDuration: .55,
   tankX: 4.5, tankFloor: 1.2, tankRim: 6,
 } as const;
-export const ASTRONAUT_CORNER = {
-  anchor: 122, lateral: -8, height: 6.5, start: CINEMA.digital, end: 124.5,
-  riseStart: 116.2, riseEnd: 118.4, finalScale: 2.56, gateTime: 122, gateLift: 3.2,
+export const ASTRONAUT_FINALE = {
+  anchor: ORBIT_LINK.time, depth: ORBIT_LINK.depth + 13, lateral: 11,
+  height: 16.64, start: ORBIT_LINK.start, end: ORBIT_LINK.end,
 } as const;
+export const DATA_ARCH_LIFT = { gateTime: 122, start: 116.2, end: 118.4, lift: 3.2 } as const;
 export const CLAP_CRT = {
   start: CINEMA.clapperClose - .2,
   collapse: CINEMA.clap,

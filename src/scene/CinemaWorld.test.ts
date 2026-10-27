@@ -6,10 +6,10 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { routeAnchor } from "../camera/CameraPath";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { silentFeatures } from "../engine/AudioAnalyzer";
-import { ASTRONAUT_CORNER, CINEMA, CLAP_CRT, REHEARSAL_STOPS } from "../content/showBeats";
+import { ASTRONAUT_FINALE, CINEMA, CLAP_CRT, ORBIT_LINK, REHEARSAL_STOPS } from "../content/showBeats";
 import { clapCrtState } from "../effects/ClapCrtTransition";
 import { SPEAKERS } from "../content/speakers";
-import { astronautRiseState, CinemaWorld } from "./CinemaWorld";
+import { CinemaWorld } from "./CinemaWorld";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { SpotLight } from "@babylonjs/core/Lights/spotLight";
 
@@ -55,22 +55,11 @@ describe("cinematic show choreography", () => {
     expect(CINEMA.digital).toBe(94.2);
   });
 
-  it("grows the astronaut uniformly from its feet while its adjacent arch rises at the same rate", () => {
-    const before = astronautRiseState(ASTRONAUT_CORNER.riseStart);
-    const middle = astronautRiseState((ASTRONAUT_CORNER.riseStart + ASTRONAUT_CORNER.riseEnd) / 2);
-    const done = astronautRiseState(ASTRONAUT_CORNER.riseEnd);
-    expect(before.progress).toBe(0);
-    expect(before.scale).toBe(1);
-    expect(middle.progress).toBeCloseTo(.5);
-    expect(middle.scale).toBeCloseTo(1.78);
-    expect(done.scale).toBe(2.56);
-    expect(ASTRONAUT_CORNER.height * done.scale).toBeCloseTo(20.8 * .8, 8);
-    expect(done.archY).toBeCloseTo(3.2);
-    expect(middle.centerY - ASTRONAUT_CORNER.height * middle.scale / 2).toBeCloseTo(0);
-    expect(middle.archY).toBeCloseTo(ASTRONAUT_CORNER.gateLift * middle.progress);
-    astronautRiseState(180); astronautRiseState(0);
-    expect(astronautRiseState((ASTRONAUT_CORNER.riseStart + ASTRONAUT_CORNER.riseEnd) / 2)).toEqual(middle);
-    expect(() => astronautRiseState(NaN)).toThrow();
+  it("keeps the astronaut at his final size in the final orbital chapter", () => {
+    expect(ASTRONAUT_FINALE.height).toBeCloseTo(20.8 * .8, 8);
+    expect(ASTRONAUT_FINALE.depth - ORBIT_LINK.depth).toBe(13);
+    expect(ASTRONAUT_FINALE.start).toBe(ORBIT_LINK.start);
+    expect(ASTRONAUT_FINALE.end).toBe(ORBIT_LINK.end);
   });
 
   it("spins both reels continuously in opposite directions despite bass changes, pauses and seeks", async () => {
@@ -193,7 +182,7 @@ describe("cinematic show choreography", () => {
     engine.dispose();
   });
 
-  it("moves the existing astronaut to the corner after the buffer without retaining a space duplicate", async () => {
+  it("moves the single astronaut behind Orbital Link at a fixed size, leaving the buffer corner empty", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
     new FreeCamera("Cinematic camera", Vector3.Zero(), scene);
@@ -209,21 +198,22 @@ describe("cinematic show choreography", () => {
     await cinema.prepare();
     expect(create.mock.calls.filter(([asset]) => asset === "astronaut")).toHaveLength(1);
     expect(scene.getTransformNodeByName("Cinema / passing astronaut")).toBeNull();
-    const anchor = routeAnchor(ASTRONAUT_CORNER.anchor, ASTRONAUT_CORNER.lateral);
-    expect(cinema.astronautRoot.position.x).toBe(anchor.position.x);
-    expect(cinema.astronautRoot.position.z).toBe(anchor.position.z);
+    const anchor = routeAnchor(ASTRONAUT_FINALE.anchor, ASTRONAUT_FINALE.lateral);
+    expect(cinema.astronautRoot.position.x).toBe(anchor.position.x + Math.sin(anchor.yaw) * ASTRONAUT_FINALE.depth);
+    expect(cinema.astronautRoot.position.z).toBe(anchor.position.z + Math.cos(anchor.yaw) * ASTRONAUT_FINALE.depth);
     cinema.update(116.8, silentFeatures());
-    expect(cinema.astronautRoot.isEnabled()).toBe(true);
-    const growing = astronautRiseState(116.8);
-    expect(cinema.astronautRoot.scaling.asArray()).toEqual([growing.scale, growing.scale, growing.scale]);
-    expect(cinema.astronautRoot.position.y).toBe(growing.centerY);
+    expect(cinema.astronautRoot.isEnabled()).toBe(false);
+    expect(scene.getTransformNodeByName("Digital / astronaut after buffer")).toBeNull();
     expect(scene.getTransformNodeByName("Digital / astronaut rising arch")).toBeNull();
-    cinema.update(ASTRONAUT_CORNER.riseEnd, silentFeatures());
-    expect(cinema.astronautRoot.scaling.asArray()).toEqual([2.56, 2.56, 2.56]);
-    expect(cinema.astronautRoot.position.y).toBe(ASTRONAUT_CORNER.height * 2.56 / 2);
-    cinema.update(98, silentFeatures());
-    expect(cinema.astronautRoot.isEnabled()).toBe(true);
-    cinema.update(125, silentFeatures());
+    const pose = cinema.astronautRoot.position.asArray();
+    for (const time of [143, 149, 153, 180, 0, 155]) {
+      cinema.update(time, silentFeatures());
+      expect(cinema.astronautRoot.scaling.asArray()).toEqual([1, 1, 1]);
+      expect(cinema.astronautRoot.position.asArray()).toEqual(pose);
+      expect(cinema.astronautRoot.position.y).toBe(ASTRONAUT_FINALE.height / 2);
+      expect(cinema.astronautRoot.isEnabled()).toBe(time >= ASTRONAUT_FINALE.start && time < ASTRONAUT_FINALE.end);
+    }
+    cinema.update(166, silentFeatures());
     expect(cinema.astronautRoot.isEnabled()).toBe(false);
     scene.dispose();
     engine.dispose();

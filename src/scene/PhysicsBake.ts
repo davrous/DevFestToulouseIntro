@@ -22,6 +22,8 @@ export interface BakedColliderRecipe {
   position: Vector3;
   extents: Vector3;
   friction: number;
+  rotation?: Quaternion;
+  restitution?: number;
 }
 
 export interface PhysicsBakeHooks {
@@ -51,9 +53,9 @@ export function bakeRigidBodies(scene: Scene, parent: TransformNode, recipes: re
     for (const [index, collider] of colliders.entries()) {
       const node = new TransformNode(`Physics bake / temporary boundary ${index}`, scene);
       node.position.copyFrom(Vector3.TransformCoordinates(collider.position, world));
-      node.rotationQuaternion = parentRotation.clone();
+      node.rotationQuaternion = collider.rotation ? parentRotation.multiply(collider.rotation) : parentRotation.clone();
       const aggregate = new PhysicsAggregate(node, PhysicsShapeType.BOX,
-        { mass: 0, friction: collider.friction, restitution: .05, extents: collider.extents }, scene);
+        { mass: 0, friction: collider.friction, restitution: collider.restitution ?? .05, extents: collider.extents }, scene);
       boundaries.push({ node, aggregate });
     }
     for (let frame = 0; frame < frames; frame++) {

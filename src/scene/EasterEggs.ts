@@ -6,7 +6,7 @@ import { Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import type { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { cellPosition } from "../content/title";
-import { CHOCOLATINE, chocolatineStage, cueEnvelope } from "../content/cues";
+import { CHOCOLATINE, chocolatineStage, chocolatineOpacity, cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { createWorldText, routeAnchor } from "./WorldText";
 import { emissive } from "./Labyrinth";
@@ -114,9 +114,13 @@ export class EasterEggs {
     this.update(0);
   }
 
-  update(time: number): void {
+  update(time: number, cameraTime = time): void {
     this.chocolatine.setEnabled(time >= 0 && time < CINEMA.start);
-    this.chocolateStages.forEach((mesh, index) => mesh.setEnabled(index === chocolatineStage(time)));
+    const pastryOpacity = chocolatineOpacity(cameraTime);
+    this.chocolateStages.forEach((mesh, index) => {
+      mesh.visibility = pastryOpacity;
+      mesh.setEnabled(index === chocolatineStage(time) && pastryOpacity > 0);
+    });
     const terminalOpacity = cueEnvelope(time, CASSOULET_SIGN.start, CASSOULET_SIGN.end, .5, .4);
     this.npm.setEnabled(terminalOpacity > 0);
     this.npmTerminal.mesh.visibility = terminalOpacity;

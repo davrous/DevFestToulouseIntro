@@ -1,6 +1,12 @@
 import { smoothstep } from "../engine/Timeline";
 
-export const CHOCOLATINE = { start: 27, redirect: 29, end: 34.5, anchor: 32.75, height: 12.5, width: 12, yaw: 0 } as const;
+export const CHOCOLATINE = { start: 27, redirect: 29, end: 34.5, anchor: 32.75,
+  fadeStart: 31.85, fadeEnd: 32.55, height: 12.5, width: 12, yaw: 0 } as const;
+
+export function chocolatineOpacity(cameraTime: number): number {
+  if (!Number.isFinite(cameraTime)) throw new RangeError("Chocolatine crossing time must be finite.");
+  return 1 - smoothstep((cameraTime - CHOCOLATINE.fadeStart) / (CHOCOLATINE.fadeEnd - CHOCOLATINE.fadeStart));
+}
 
 export const EASTER_EGGS = [
   { id: "arcade", start: 0, end: 48, label: "LEVEL T / 8-BIT BUILD" },

@@ -129,9 +129,11 @@ Only the articulation is timed to the launch preparation.
   state is derived from show time. `CASSOULET_INSTALL.complete = 124.4` is also
   the exact start of the Havok can recording. No actual command runs and no
   packages or gigabytes are downloaded.
-- The T exit is now a full-height red velvet curtain with two GPU-folded
-  wings. It uses the existing door-opening clock, 42.6–46.6 s, and clears the
-  unchanged camera path before crossing. Its brass rail remains below the roof.
+- The T exit is a four-panel mechanical XOR CPU gate, not a curtain. Its
+  activation follows a progressive physical circuit from the 38.2-s wall
+  impact. Opening starts at the retained 42.6-s cue and finishes at 45.7 s,
+  before the unchanged crossing near 46.03 s. See
+  [the dedicated integration report](legacy-xor-integration.md).
 - The opening sign and its scanline overlay are vertically centered on the
   camera's 5.925-s crossing. At exactly 59.2 s, `CrtLightningTransition` adds
   one strong decaying lightning pulse and switches all eight preloaded CRTs
@@ -167,7 +169,7 @@ Only the articulation is timed to the launch preparation.
   with its original clip preserved. Its new lane is centered at X=-448 on
   the east corridor, approaching the barrage at Z=126.
   The terminal is centered and raised enough to leave the robot visible below;
-  camera framing begins after the astronaut's growth. The suspended core/rings
+  the original 119.1-s camera framing is retained independently of the astronaut. The suspended core/rings
   contract to clear the can-drop column.
   Validation measures every sampled skeletal pose and a rendered silhouette
   mask, including actual wall/seat occlusions, rather than accepting a
@@ -190,13 +192,12 @@ Only the articulation is timed to the launch preparation.
   scoped exclusively to its geometry. Both shadowless lights follow the body
   and switch off on destruction or feature disable. Its lit material variants
   are precompiled during loading; the terminal and cans are not relit.
-- The existing cinema astronaut is instantiated once in the corner after
-  the buffer (`anchor = 121.75`, `lateral = -8`), facing the incoming viewer.
-  It is not duplicated in the old space crossing. Between 116.2 and 118.4 s
-  it grows uniformly from 6.5 to 16.64 units, 80% of the preceding 20.8-unit
-  final height, with feet fixed
-  on the floor. The adjacent **existing** progression gate at 122 s rises
-  another 3.2 units on the same envelope. No separate arch is constructed.
+- The single existing astronaut is now behind Orbital Toulouse Link, using
+  its 153-s anchor, depth 25 and lateral 11, set back another three units
+  from the satellite. It is staged from 143 to 166 s,
+  already **16.64 units high**, with no growth or extra duplicate. The old
+  buffer-corner instance is gone. The existing 122-s data arch keeps its
+  previous 3.2-unit lift, independently of the astronaut.
 - `MatrixRainWall` uses a single 512×512 glyph atlas and a GPU rain shader,
   not per-frame canvas text drawing or an external texture/video. Its 88×42
   grid has independent column speeds and fading trails. Larger, brighter
@@ -308,16 +309,15 @@ and replay did not accumulate meshes, transforms, materials or lights.
 
 | Probe | NVIDIA effects | FPS | Median frame | 95th percentile | Draw calls |
 | --- | --- | ---: | ---: | ---: | ---: |
-| Velvet curtain, 44.5 s | On | 60.01 | 16.7 ms | 17.1 ms | 67 |
+| T exit | — | See [Legacy/XOR measurements](legacy-xor/validation.json) | — | — | — |
 | CRT lightning, 59.2 s | On | 60.03 | 16.6 ms | 18.1 ms | 520 |
-| Astronaut, 118.4 s | On | 60.00 | 16.7 ms | 17.1 ms | 67 |
 | Centered terminal / lit robot, 121.5 s | On | 59.99 | 16.7 ms | 17.7 ms | 231 |
 | Measured impacts, 125.8 s | On | 60.03 | 16.7 ms | 17.9 ms | 345 |
 | Red rose petals, 127.2 s | On | 60.01 | 16.7 ms | 17.7 ms | 378 |
 | Pre-launch manga wall, 140.5 s | On | 60.01 | 16.7 ms | 17.4 ms | 176 |
 
 The full report retains both On/Off measurements. Off disables the NVIDIA
-additions, including the paired robot/can rescue. The curtain, CRT lightning,
+additions, including the paired robot/can rescue. The XOR gate, CRT lightning,
 physical tunnel, water-buffer, astronaut and terminal remain enabled.
 
 These are measurements of that browser/machine, not a guarantee for every
@@ -337,11 +337,11 @@ absence of both removed captions, and water/title activation only after the
 Browser probes additionally check matching violin/name opacity, a positive
 Pong/voxel contact impulse and identical ball/debris replay, terminal completion
 and first can at exactly 124.4 s, the initial reels/popcorn before the 80-s rush, the shared
-GPU lens preview, full mural bounds, and uniform astronaut growth with exactly
-24 existing arch instances. A pixel comparison with all scenery hidden proves
+GPU lens preview, full mural bounds, fixed-size final astronaut and exactly
+24 preserved arch instances. A pixel comparison with all scenery hidden proves
 that the tunnel interior is opaque; repeating it during the exit verifies that
 the opening reveals the real scene. This revision passes the complete
-**245-test suite**, TypeScript checks and the production build. Browser probes additionally
+test suite, TypeScript checks and the production build. Browser probes additionally
 require the tunnel pass to remain active at 94.199 s and stop at exactly
 94.2 s, and verify the T-800's actual 21.6-unit height. A temporary rendered
 silhouette mask measures **5.75 seconds of actual visibility**, including **5.5

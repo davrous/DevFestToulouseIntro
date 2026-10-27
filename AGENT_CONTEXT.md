@@ -5,6 +5,8 @@
 > Historique visuel documenté le **7 octobre 2026**, complété le **8 octobre** par le lecteur Strudel allégé et le regard caméra droit devant aux popcorns. L'horloge audio native fonctionne de nouveau ; les répétitions musicales historiques ne valident pas automatiquement les trois nouveaux scores. Voir section 11 et vérifier le worktree : les fichiers source restent la référence.
 >
 > **26 octobre 2026 :** les musiques intégrées utilisent les MP3 320 kbit/s. Viola's Journey possède désormais une carte d'attaques mesurées et un profil de recalage local des effets (< 200 ms), sans décaler l'horloge caméra ni le reveal final. Voir la section de synchronisation du [README](README.md). Le gag chocolatine remplace les pièces en fin de présentation d'Anne-Flore : requête visible à **27 s**, réponse à **29 s**, fin narrative à 34.5 s ; les carrés lumineux du T sont immobiles et plaqués aux murs latéraux.
+
+> **27 octobre 2026 — remplace les anciennes indications rideau / croissance ci-dessous :** le mur Legacy garde ses 48 positions et son effondrement Havok à 38.2 s, mais s'assemble en douze tétriminos. Son impact alimente progressivement une porte CPU XOR à quatre panneaux rigides, ouverte de 42.6 à 45.7 s pour la traversée vers 46.03 s. Plus de rideau au T. L'astronaute est désormais derrière Orbital Link, taille constante 16.64, actif de 143 à 166 s ; il n'est plus après le buffer. Le panneau chocolatine s'efface entre 31.85 et 32.55 s, avant la traversée 32.75 s. Voir [le rapport Legacy/XOR et les captures](docs/legacy-xor-integration.md). Aucun changement de musique, de durée ou de chorégraphie caméra.
 >
 > Le lobby sélectionne par défaut **MP3 soundtrack / Viola's Journey**, sans lecture automatique. Le panneau d'entrée affiche **DEVFEST AI4FUN / AGENDA** ; le shader rétro-gaming commence à **4.3 s** et disparaît à la traversée à **5.925 s** pour dégager le couloir. Le panneau HTTP est déjà présent, perpendiculaire aux murs latéraux et rapproché d'Anne-Flore (ancre 32.75 s, yaw 0) ; sa réponse est à 29 s.
 >
@@ -110,8 +112,8 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 5–14 | Bornes et pixel art ; plus de panneau chocolatine avant Anne-Flore. Les petits pixels lumineux restent fixes aux murs. Les six grandes plaques lumineuses réactives sont plaquées à 0.01 unité de la surface intérieure des murs, à y = 15 au-dessus des bornes, et non devant leurs écrans |
 | 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; échange Pong à côté d'elle, dernier tir physique vers 22, chute des voxels déclenchée par le choc Havok puis rejouée exactement, nettoyage à 38 |
 | 27–34.5 | `GET /pain-au-chocolat` déjà présent avant l'approche, face au couloir près d'Anne-Flore ; `301 / Location: /chocolatine` dès 29 s. Aucune pièce bonus |
-| 34.5–41 | Le boss LEGACY CODE est annoncé avant le mur translucide ; effondrement Havok à 38.2 (38.105 en temps musical Journey) |
-| 41–49 | `$ git rebase --continue` / EXIT UNLOCKED, puis ouverture du rideau rouge à deux pans de 42.6 à 46.6 |
+| 34.4–41.2 | Assemblage des 48 cubes Legacy en douze L/J, BUILD FAILED, puis effondrement Havok enregistré à 38.2 (recalage Journey existant conservé) |
+| 38.2–46.03 | Signal électrique progressif, XOR / ACCESS GRANTED, quatre panneaux biseautés qui glissent et pivotent ; passage réellement libre avant la caméra |
 | 46.3–51.03 | LEVEL COMPLETE au-dessus du clap à y = 26, encore visible pendant son approche |
 | Approche jusqu'à 51.03 | Clap original déjà présent dès le chargement, sans panneau DEVFEST / SCENE 02 ajouté, ancré à 59 s ; fermeture de 50.85 à 51.03, approche sans quasi-arrêt |
 | 50.65–52.18 | Shader plein écran : arcade pixellisée, fermeture CRT à 51.03, trait vert maintenu de 51.135 à 51.38 pendant le changement de décor à 51.18, puis rallumage cathodique ; aucun plan noir |
@@ -124,7 +126,7 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 99–116 | Eric, premier chapitre du D digital, avec flux de données convergents |
 | 107–116.7 | Bac transparent à droite, yaw pi, perpendiculaire au mur droit. 32 cubes remplissent les mêmes cases ; un 33e cube arrive à 110.7 et déclenche l'eau débordante en shader, puis seulement le texte BUFFER OVERFLOW, terminé à 114.3 |
 | 114–132 | Six structures de données s'élèvent progressivement, pulse mobile et transition cyan → or |
-| Après le buffer | Astronaute dans le coin suivant : taille normale puis croissance x2.56 à 116.2–118.4, pieds fixes et arceau existant 122 s |
+| Derrière Orbital Link, 143–166 | Un seul astronaute, directement haut de 16.64 unités, sans croissance ; ancien emplacement du buffer vide |
 | 117–125 | Terminal recentré : frappe de `$ npm install cassoulet`, progression jusqu'à 4.80 GB à 124.4 s, puis effacement doux ; robot visible dessous |
 | 119.5–134 | Le T-800 de 21.6 unités approche au fond du couloir ; les impacts de boîtes le dissolvent en 192 pétales rouges flottants |
 | Après le virage de Mitsuru, avant 144.6 | Affiche murale The Power Of Cassoulet!, boîte musclée, T-800 ridicule vaincu et K.O., lisible plusieurs secondes avant la fusée |
@@ -153,7 +155,7 @@ Ces décisions évitent de réintroduire des éléments retirés lors des nombre
 - Le personnage voxel a été remplacé par le **violon**, associé à Anne-Flore, centré sous sa fiche et près du sol.
 - Les anciens ballons rebondissants, y compris le ballon de rugby, et leurs plateformes ne font plus partie du show actuel. Havok sert maintenant au violon, aux pièces, au mur et au pop-corn.
 - La blague **Canal du Midi** et le texte **CONTAINER / NO CLOUD REQUIRED** ont été retirés. Les noms de certains anciens shaders/rubans peuvent encore évoquer MIDI : cela ne signifie pas qu'il faut remettre le panneau.
-- Ne pas rétablir **GAME OVER 404 / EXIT NOT FOUND / TEST PASSED** : le récit de sortie est désormais `git rebase --continue` qui déverrouille la porte.
+- Ne pas rétablir **GAME OVER 404 / EXIT NOT FOUND / TEST PASSED** ni l'ancien rideau : le récit de sortie est désormais impact Legacy → signal électrique → XOR / ACCESS GRANTED → quatre panneaux mécaniques.
 - Le cassoulet doit rester **entre Eric et Mitsuru**, et visible assez longtemps. Une ancienne demande le plaçait après David ; elle a été corrigée ensuite.
 - Le cinéma doit rester une **composition architecturale symétrique**, pas une distribution aléatoire de sièges flottants, de CRT inclinés et de pancartes.
 - Tous ses props sont visibles dès l'entrée. Ne pas confondre chargement et visibilité : précharger un GLB puis cacher sa racine jusqu'à son beat provoque quand même un pop.
@@ -178,7 +180,7 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Bornes, écran d'ouverture, LEVEL COMPLETE / NEXT LEVEL | [ArcadeCathedral.ts](src/scene/ArcadeCathedral.ts) |
 | Porte et éléments narratifs du T ; pixel art | [ArcadeT.ts](src/scene/ArcadeT.ts), [PixelWorld.ts](src/scene/PixelWorld.ts) |
 | Violon voxel, dernier échange Pong et collision Havok enregistrée | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts), [ViolinPongImpact.ts](src/scene/ViolinPongImpact.ts), [violin.ts](src/content/violin.ts) |
-| Rideau rouge plissé de la sortie du T | [RedVelvetCurtain.ts](src/scene/RedVelvetCurtain.ts), [ArcadeT.ts](src/scene/ArcadeT.ts) |
+| Porte CPU XOR à quatre panneaux et signal de l'impact | [XorCpuGate.ts](src/scene/XorCpuGate.ts), [CircuitSignal.ts](src/effects/CircuitSignal.ts), [LegacyXorSequence.ts](src/scene/LegacyXorSequence.ts) |
 | Mur de dette technique, Havok / seek / cleanup ; pièces supprimées | [ArcadePhysics.ts](src/scene/ArcadePhysics.ts) |
 | Clap, sièges, CRT, première de David, bobines, caméra, projecteur, espace | [CinemaWorld.ts](src/scene/CinemaWorld.ts) |
 | Transition plein écran arcade → ligne de phosphore → CRT, pause / rewind / pipeline | [ClapCrtTransition.ts](src/effects/ClapCrtTransition.ts), [showBeats.ts](src/content/showBeats.ts) |
@@ -188,7 +190,7 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Éclair exact 59.2 s et gag sur toutes les TV | [CrtLightningTransition.ts](src/effects/CrtLightningTransition.ts), [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Terminal npm animé et cue partagé avec la pluie de boîtes | [NpmCassouletTerminal.ts](src/scene/NpmCassouletTerminal.ts), [showBeats.ts](src/content/showBeats.ts) |
 | Mur Matrix continu et signature lisible, atlas de glyphes partagé | [MatrixRainWall.ts](src/effects/MatrixRainWall.ts), racine du distributeur dans [SimReadyGags.ts](src/simready/SimReadyGags.ts) |
-| Croissance proportionnelle de l'astronaute et montée de l'arceau existant | [astronaut.ts](src/content/astronaut.ts), [DigitalMoments.ts](src/scene/DigitalMoments.ts) |
+| Astronaute final fixe et montée indépendante de l'arceau existant | [CinemaWorld.ts](src/scene/CinemaWorld.ts), [dataArch.ts](src/content/dataArch.ts), [DigitalMoments.ts](src/scene/DigitalMoments.ts) |
 | Textures rétro et couverture exacte de la surface courbe des CRT | [CinemaCRT.ts](src/scene/CinemaCRT.ts) |
 | Chargement local, normalisation, instances, clone de caméra et animation du clap | [CinemaAssets.ts](src/scene/CinemaAssets.ts) |
 | Deux seaux / sources, 72 grains physiques, colliders et hauteur du sol | [CinemaPopcorn.ts](src/scene/CinemaPopcorn.ts) |

@@ -1,0 +1,220 @@
+{
+  "readyMs": 6296,
+  "browser": "headless Edge",
+  "resolution": [
+    1920,
+    1080
+  ],
+  "baselineCameraHash": "fad6458cdac64086e341cf049294f8bf08aa29144315cad793318ec85e75ce98",
+  "camera": {
+    "samples": 361,
+    "positionError": 0,
+    "directionError": 0,
+    "fovError": 0
+  },
+  "playbackFrames": 839,
+  "musicReached": 48.520887,
+  "nativePlaybackSeekIdentical": true,
+  "pauseStable": true,
+  "replay": {
+    "before": [
+      1403,
+      1720,
+      277,
+      20,
+      5
+    ],
+    "after": [
+      1403,
+      1720,
+      277,
+      20,
+      5
+    ],
+    "curtainMeshes": 0,
+    "liveWallBodies": 0,
+    "bake": {
+      "frames": 181,
+      "tracks": 48
+    }
+  },
+  "geometry": {
+    "conservativeClearance": 6.872310641257243,
+    "at": {
+      "time": 47.85,
+      "mesh": "XOR CPU / panel PCB 2 / copper conductors"
+    },
+    "signalSamples": [
+      {
+        "time": 38.2,
+        "cyanPixels": 362123,
+        "progress": 0.025141414141415477,
+        "power": 0
+      },
+      {
+        "time": 39.5,
+        "cyanPixels": 424105,
+        "progress": 0.3939393939393931,
+        "power": 0
+      },
+      {
+        "time": 40.5,
+        "cyanPixels": 202587,
+        "progress": 0.6969696969696961,
+        "power": 0
+      },
+      {
+        "time": 41.5,
+        "cyanPixels": 26979,
+        "progress": 1,
+        "power": 0
+      },
+      {
+        "time": 42.1,
+        "cyanPixels": 37655,
+        "progress": 1,
+        "power": 1
+      }
+    ],
+    "panelCount": 4
+  },
+  "measurements": [
+    {
+      "time": 35.7,
+      "fps": 59.99769239649787,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.5,
+      "drawCalls": 245
+    },
+    {
+      "time": 37.4,
+      "fps": 60.01154068090017,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.5,
+      "drawCalls": 271
+    },
+    {
+      "time": 38.55,
+      "fps": 60.008078010707784,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.400000005960464,
+      "drawCalls": 247
+    },
+    {
+      "time": 40.5,
+      "fps": 59.98731037680577,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.5,
+      "drawCalls": 219
+    },
+    {
+      "time": 42.1,
+      "fps": 59.9734732713861,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.5,
+      "drawCalls": 165
+    },
+    {
+      "time": 44.15,
+      "fps": 59.99077065061756,
+      "medianMs": 16.69999999552965,
+      "p95Ms": 17.700000002980232,
+      "drawCalls": 153
+    },
+    {
+      "time": 46.03,
+      "fps": 59.994231323911166,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 17.69999999552965,
+      "drawCalls": 161
+    }
+  ],
+  "captures": [
+    {
+      "name": "01-assembly",
+      "time": 35.7
+    },
+    {
+      "name": "02-complete",
+      "time": 37.4
+    },
+    {
+      "name": "03-collision",
+      "time": 38.55
+    },
+    {
+      "name": "04-signal",
+      "time": 40.5
+    },
+    {
+      "name": "05-partial-gate",
+      "time": 44.15
+    },
+    {
+      "name": "06-exit",
+      "time": 46.03
+    },
+    {
+      "name": "07-xor-activation",
+      "time": 42.1
+    }
+  ],
+  "fallback": {
+    "gateDisabled": true,
+    "originalHomes": true
+  },
+  "finale": {
+    "oldCornerEmpty": true,
+    "visibleSeconds": 6.25,
+    "fixed": true,
+    "position": [
+      -529.1473712504488,
+      8.32,
+      49.48499883708034
+    ],
+    "bounds": {
+      "min": [
+        -532.2160997044724,
+        0,
+        44.941465959882294
+      ],
+      "max": [
+        -526.0787500545662,
+        16.639999876928414,
+        54.02853168040696
+      ]
+    },
+    "height": 16.639999876928414,
+    "pastry": [
+      {
+        "time": 29,
+        "visibility": 1,
+        "enabled": true
+      },
+      {
+        "time": 31.85,
+        "visibility": 1,
+        "enabled": true
+      },
+      {
+        "time": 32.2,
+        "visibility": 0.49999999999999234,
+        "enabled": true
+      },
+      {
+        "time": 32.55,
+        "visibility": 0,
+        "enabled": false
+      },
+      {
+        "time": 32.75,
+        "visibility": 0,
+        "enabled": false
+      }
+    ],
+    "setbackAdjustment": 3,
+    "satelliteDepthSeparation": 12.99999999999997
+  },
+  "browserErrors": [],
+  "externalRequests": []
+}
