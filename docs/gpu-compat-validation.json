@@ -1,0 +1,176 @@
+{
+  "browser": "headless Edge",
+  "actualPlatform": "darwin",
+  "url": "https://stdevfest4a73iywh5gela.z6.web.core.windows.net/",
+  "note": "The Windows user-agent enables Babylon's UBO policy on the current host; this is not a physical RTX 5090 test.",
+  "results": [
+    {
+      "fullIntroReady": true,
+      "fullIntroUBO": false,
+      "webgl": 2,
+      "probeUBO": false,
+      "materialUBO": false,
+      "samples": [
+        {
+          "damage": 0,
+          "visible": 2888
+        },
+        {
+          "damage": 0.5,
+          "visible": 1424
+        },
+        {
+          "damage": 1,
+          "visible": 0
+        },
+        {
+          "damage": 0,
+          "visible": 2888
+        }
+      ],
+      "scenes": [
+        {
+          "time": 125.8,
+          "model": true,
+          "petals": false,
+          "damage": [
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072
+          ]
+        },
+        {
+          "time": 127.2,
+          "model": false,
+          "petals": true,
+          "damage": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "time": 0,
+          "model": false,
+          "petals": false,
+          "damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Max, Unspecified Version)",
+      "shaderErrors": [],
+      "readyMs": 17371
+    },
+    {
+      "fullIntroReady": true,
+      "fullIntroUBO": true,
+      "webgl": 2,
+      "probeUBO": true,
+      "materialUBO": true,
+      "samples": [
+        {
+          "damage": 0,
+          "visible": 2888
+        },
+        {
+          "damage": 0.5,
+          "visible": 1424
+        },
+        {
+          "damage": 1,
+          "visible": 0
+        },
+        {
+          "damage": 0,
+          "visible": 2888
+        }
+      ],
+      "scenes": [
+        {
+          "time": 125.8,
+          "model": true,
+          "petals": false,
+          "damage": [
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072,
+            0.7361111111111072
+          ]
+        },
+        {
+          "time": 127.2,
+          "model": false,
+          "petals": true,
+          "damage": [
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "time": 0,
+          "model": false,
+          "petals": false,
+          "damage": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Max, Unspecified Version)",
+      "shaderErrors": [],
+      "readyMs": 13460
+    }
+  ]
+}

@@ -184,7 +184,7 @@ physical rescue, manga wall, local gallery and disabled NVIDIA mode.
 
 | Check | Result |
 | --- | --- |
-| Unit/integration suite | **259 tests passed**, 47 files; TypeScript and production build passed |
+| Unit/integration suite | **261 tests passed**, 48 files; TypeScript and production build passed |
 | Camera regression | **361 samples**, zero position, heading or FOV difference through the original Babylon pipeline |
 | Musical playback | **839 rendered frames**, pause/resume stable; seven native states exactly match direct seeks |
 | Replay resources | 20 loops / 240 seeks; stable 1,403 meshes, 1,720 transforms, 277 materials, 20 lights and 5 unrelated live bodies |
@@ -242,6 +242,32 @@ Browser verification measures the actual signal after this gain on both
 tracks: normal volume is unchanged, the middle attenuates and the final samples
 reach silence. It also checks that rewinding restores full volume.
 
+### Windows/RTX loading failure: material uniform buffers
+
+The supplied Windows console repeats one underlying compilation error:
+`rescueDamage: undeclared identifier`. The shader contains a WebGL 2
+`uniform Material` block but no declaration for that parameter. On this Mac,
+Babylon disables uniform buffers through its browser exception policy; the
+standalone GLSL declaration therefore masked the problem.
+
+The error was reproduced locally **before** the fix by enabling UBOs on a
+fresh real WebGL 2 engine. The destruction plugin now declares `rescueDamage`
+in `getUniforms().ubo`, retains the plain GLSL fallback, and writes through
+`UniformBuffer.updateFloat`. It no longer relies on an external effect-only
+uniform. UBOs and the visual effect remain enabled; no global quality/performance
+workaround is applied.
+
+Run `npm run verify:gpu` to check the built intro in both modes. Actual rendered
+white-pixel counts match exactly in UBO and non-UBO modes: **2,888 intact,
+1,424 at half damage, 0 destroyed, 2,888 after rewind**. Both complete intro
+loads reach SYSTEM READY without shader errors; the real model/petal handoff
+at 125.8/127.2 s is checked too. Results are in
+[gpu-compat-validation.json](gpu-compat-validation.json).
+
+This executes both shader paths on the available **Apple M1 Max / ANGLE Metal**
+host; a Windows user-agent enables Babylon's UBO policy for the full-app check.
+It is **not** a physical RTX 5090/Direct3D driver test.
+
 | Beat | Before | After |
 | --- | --- | --- |
 | Assembly | [Old sudden wall](legacy-xor/before-01-assembly.png) | [Staggered tetrominoes](legacy-xor/after-01-assembly.png) |
@@ -289,6 +315,10 @@ seek/replay. See [final astronaut](legacy-xor/finale-astronaut.png) and
   correct XOR, pistons, rails, scoped lighting, clearance/replay tests.
 - [CircuitSignal.ts](../src/effects/CircuitSignal.ts): physical copper tubes
   and progressive distance-based electrical shading.
+- [TerminatorDestruction.ts](../src/effects/TerminatorDestruction.ts),
+  [TerminatorDestruction.test.ts](../src/effects/TerminatorDestruction.test.ts),
+  [verify-gpu-compat.mjs](../scripts/verify-gpu-compat.mjs): matching UBO/fallback
+  declarations and actual cross-path rendering regression.
 - [RenderWarmup.ts](../src/scene/RenderWarmup.ts),
   [RenderWarmup.test.ts](../src/scene/RenderWarmup.test.ts): offscreen preparation
   of actual first-speaker draw variants, including reactive scaling.

@@ -509,6 +509,16 @@ SimReady verifier measures 13–20.5 s of real soundtrack playback and rejects
 late shader compilations, frame stalls above 50 ms or a 95th percentile above
 22 ms. This fixes the cold first-speaker stall without changing its timing or effects.
 
+GPU compatibility is checked with `npm run verify:gpu`: the complete intro and
+the Terminator destruction shader are tested with uniform buffers both enabled
+and disabled. `rescueDamage` is declared in the material UBO, with a matching
+standalone GLSL fallback, and updated through Babylon's `UniformBuffer`.
+Declaring it only via `getUniforms().fragment` works on the non-UBO path but
+fails with an undeclared identifier when the PBR material uses UBOs (as on
+Windows/RTX). The check renders intact/half-dissolved/destroyed/rewound pixels,
+not just shader text. It exercises both engine paths on the host running it;
+it does not claim to emulate an actual Windows GPU driver.
+
 Current music revision: **58 targeted tests across five files** and the
 TypeScript/Vite production build pass. Tests cover all three arrangements,
 global post-clap beat alignment, speaker rests, the longer exit preparation,

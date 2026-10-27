@@ -15,6 +15,7 @@
     "simready:validate": "node scripts/validate-simready.mjs",
     "verify:simready": "npm run build && node scripts/verify-simready.mjs",
     "verify:av": "node scripts/verify-av.mjs",
+    "verify:gpu": "npm run build && node scripts/verify-gpu-compat.mjs",
     "verify:legacy-xor": "npm run build && node scripts/verify-legacy-xor.mjs",
     "bridge": "node scripts/bridge.mjs"
   },

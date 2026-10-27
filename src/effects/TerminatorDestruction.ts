@@ -1,9 +1,6 @@
 import { MaterialPluginBase } from "@babylonjs/core/Materials/materialPluginBase";
 import type { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import type { UniformBuffer } from "@babylonjs/core/Materials/uniformBuffer";
-import type { Scene } from "@babylonjs/core/scene";
-import type { AbstractEngine } from "@babylonjs/core/Engines/abstractEngine";
-import type { SubMesh } from "@babylonjs/core/Meshes/subMesh";
 
 export class TerminatorDestruction extends MaterialPluginBase {
   damage = 0;
@@ -15,11 +12,14 @@ export class TerminatorDestruction extends MaterialPluginBase {
   override getClassName(): string { return "TerminatorDestruction"; }
 
   override getUniforms() {
-    return { fragment: "uniform float rescueDamage;", externalUniforms: ["rescueDamage"] };
+    return {
+      ubo: [{ name: "rescueDamage", size: 1, type: "float" }],
+      fragment: "uniform float rescueDamage;",
+    };
   }
 
-  override bindForSubMesh(_buffer: UniformBuffer, _scene: Scene, _engine: AbstractEngine, subMesh: SubMesh): void {
-    subMesh.effect?.setFloat("rescueDamage", this.damage);
+  override bindForSubMesh(buffer: UniformBuffer): void {
+    buffer.updateFloat("rescueDamage", this.damage);
   }
 
   override getCustomCode(shaderType: string): Record<string, string> | null {
