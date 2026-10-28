@@ -5,7 +5,7 @@ import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
-import { Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import type { Scene } from "@babylonjs/core/scene";
 import { clamp } from "../engine/Timeline";
 import { routeAnchor } from "../camera/CameraPath";
@@ -15,8 +15,15 @@ import { createWorldText } from "./WorldText";
 import { beveledPrism } from "./HardSurface";
 import { LEGACY_XOR, legacyXorState, type LegacyXorSettings } from "./LegacyXorSequence";
 import { CircuitSignal } from "../effects/CircuitSignal";
+import type { BakedColliderRecipe } from "./PhysicsBake";
 
 export const XOR_PANEL_SIGNS = [[-1, 1], [1, 1], [-1, -1], [1, -1]] as const;
+export const XOR_CHASSIS_BOXES = [
+  { position: [-12.05, 16.25, -2], extents: [2.1, 32.5, .45] },
+  { position: [12.05, 16.25, -2], extents: [2.1, 32.5, .45] },
+  { position: [0, 30.95, -2], extents: [25.8, 3.5, .45] },
+  { position: [0, 1.25, -2], extents: [25.8, 2.5, .45] },
+] as const;
 
 export function xorPanelPose(index: number, opening: number, settings: LegacyXorSettings) {
   const [sx, sy] = XOR_PANEL_SIGNS[index];
@@ -27,6 +34,28 @@ export function xorPanelPose(index: number, opening: number, settings: LegacyXor
       settings.panelDepthTravel * open),
     rotation: Quaternion.RotationYawPitchRoll(sx * settings.hingeAngle * Math.PI / 180 * open, 0, 0),
   };
+}
+
+export function xorGateColliders(settings: LegacyXorSettings): BakedColliderRecipe[] {
+  if (!settings.enableXorCpuGate) return [];
+  const scale = new Vector3(settings.gateScale, settings.gateScale, settings.gateScale);
+  const rotation = Quaternion.RotationYawPitchRoll(settings.gateYaw, 0, 0);
+  const world = Matrix.Compose(scale, rotation, new Vector3(settings.gateX, settings.gateY, settings.gateZ));
+  const chassis = XOR_CHASSIS_BOXES.map((box, index): BakedColliderRecipe => ({
+    name: `XOR collision / chassis ${index}`,
+    position: Vector3.TransformCoordinates(Vector3.FromArray(box.position), world),
+    rotation, extents: Vector3.FromArray(box.extents).scale(settings.gateScale), friction: .55, restitution: .55,
+  }));
+  const panels = XOR_PANEL_SIGNS.map((_, index): BakedColliderRecipe => {
+    const pose = (elapsed: number) => {
+      const local = xorPanelPose(index, legacyXorState(LEGACY_XOR.impact + elapsed, settings).open, settings);
+      return { position: Vector3.TransformCoordinates(local.position, world), rotation: rotation.multiply(local.rotation) };
+    };
+    return { name: `XOR collision / shutter ${index}`, ...pose(0), pose,
+      extents: new Vector3(LEGACY_XOR.halfWidth, LEGACY_XOR.halfHeight, LEGACY_XOR.thickness).scale(settings.gateScale),
+      friction: .55, restitution: .55 };
+  });
+  return [...chassis, ...panels];
 }
 
 function curve(points: readonly Vector3[], steps = 30): Vector3[] {
@@ -88,14 +117,15 @@ export class XorCpuGate {
     const copper = new BoxBatch("XOR CPU / frame bus bars", this.gold);
     const vents = new BoxBatch("XOR CPU / processor heat sinks", armor);
     const rim = new BoxBatch("FX/XOR CPU / recessed aperture light", this.cyan);
+    for (const box of XOR_CHASSIS_BOXES) {
+      const [x, y, z] = box.position, [width, height, depth] = box.extents;
+      fixed.add(x, y, z, width, height, depth);
+    }
     for (const sx of [-1, 1]) {
-      fixed.add(sx * 12.05, 16.25, -2, 2.1, 32.5, .45);
       copper.add(sx * 12.19, 16.1, -2.3, .16, 29.8, .14);
       rim.add(sx * 11.9, 16.1, 1.15, .12, 29.4, .18);
       for (let row = 0; row < 24; row++) vents.add(sx * 12.75, 1.2 + row * 1.3, -2.27, .67, .22, .4);
     }
-    fixed.add(0, 30.95, -2, 25.8, 3.5, .45);
-    fixed.add(0, 1.25, -2, 25.8, 2.5, .45);
     copper.add(0, 31.38, -2.3, 24.3, .15, .14);
     rim.add(0, 31.15, 1.15, 23.8, .12, .18);
     for (const batch of [fixed, copper, vents, rim]) {

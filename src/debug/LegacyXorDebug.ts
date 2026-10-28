@@ -69,6 +69,7 @@ export class LegacyXorDebug {
   private apply(change: (settings: LegacyXorSettings) => void): void {
     try {
       const next = { ...this.app.world.legacyXor }; change(next); validateLegacyXorSettings(next);
+      this.app.world.arcadePhysics.refreshGateCollisions(next);
       Object.assign(this.app.world.legacyXor, next);
       this.app.seek(this.app.timeline.time);
     } catch (error) {
@@ -97,6 +98,7 @@ export class LegacyXorDebug {
     const gate = world.arcade.gate;
     this.diagnostics.textContent = `WALL: ${world.arcadePhysics.state}\n`
       + `HAVOK: ${world.arcadePhysics.bake?.tracks.length ?? 0} recorded tracks / ${world.arcadePhysics.bake?.frames ?? 0} fixed frames / 0 live wall bodies\n`
+      + `XOR CONTACTS: ${world.arcadePhysics.gateContacts.length} recorded impacts\n`
       + `SIGNAL: ${(gate.state.signal * 100).toFixed(0)}% → arrival ${gate.state.arrival.toFixed(2)} s\n`
       + `XOR: ${(gate.state.power * 100).toFixed(0)}% / OPEN: ${(gate.state.open * 100).toFixed(0)}%`;
     this.transforms.textContent = JSON.stringify([0, 1, 2, 3].map((index) => {

@@ -1,7 +1,7 @@
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { PhysicsAggregate, type PhysicsAggregateParameters } from "@babylonjs/core/Physics/v2/physicsAggregate";
-import { PhysicsShapeType } from "@babylonjs/core/Physics/v2/IPhysicsEnginePlugin";
+import { PhysicsMotionType, PhysicsShapeType } from "@babylonjs/core/Physics/v2/IPhysicsEnginePlugin";
 import type { Scene } from "@babylonjs/core/scene";
 
 export interface BakedBodyRecipe {
@@ -24,6 +24,8 @@ export interface BakedColliderRecipe {
   friction: number;
   rotation?: Quaternion;
   restitution?: number;
+  name?: string;
+  pose?: (time: number) => { position: Vector3; rotation: Quaternion };
 }
 
 export interface PhysicsBakeHooks {
@@ -48,19 +50,29 @@ export function bakeRigidBodies(scene: Scene, parent: TransformNode, recipes: re
   const parentRotation = Quaternion.FromRotationMatrix(world);
   const inverseRotation = parentRotation.conjugate();
   const bodies: Array<{ node?: TransformNode; aggregate?: PhysicsAggregate }> = recipes.map(() => ({}));
-  const boundaries: Array<{ node: TransformNode; aggregate: PhysicsAggregate }> = [];
+  const boundaries: Array<{ node: TransformNode; aggregate: PhysicsAggregate; pose?: BakedColliderRecipe["pose"] }> = [];
   try {
     for (const [index, collider] of colliders.entries()) {
-      const node = new TransformNode(`Physics bake / temporary boundary ${index}`, scene);
+      const node = new TransformNode(collider.name ?? `Physics bake / temporary boundary ${index}`, scene);
       node.position.copyFrom(Vector3.TransformCoordinates(collider.position, world));
       node.rotationQuaternion = collider.rotation ? parentRotation.multiply(collider.rotation) : parentRotation.clone();
       const aggregate = new PhysicsAggregate(node, PhysicsShapeType.BOX,
         { mass: 0, friction: collider.friction, restitution: collider.restitution ?? .05, extents: collider.extents }, scene);
-      boundaries.push({ node, aggregate });
+      boundaries.push({ node, aggregate, pose: collider.pose });
+      if (collider.pose) aggregate.body.setMotionType(PhysicsMotionType.ANIMATED);
     }
     for (let frame = 0; frame < frames; frame++) {
       const time = frame * step;
       hooks.beforeStep?.(time);
+      if (frame + 1 < frames) {
+        for (const boundary of boundaries) {
+          if (!boundary.pose) continue;
+          // The next integration must reach the next recorded pose, not lag one frame behind.
+          const pose = boundary.pose(time + step);
+          boundary.aggregate.body.setTargetTransform(Vector3.TransformCoordinates(pose.position, world),
+            parentRotation.multiply(pose.rotation));
+        }
+      }
       for (const [index, recipe] of recipes.entries()) {
         const body = bodies[index];
         if (time + 1e-8 < recipe.release) {

@@ -1,5 +1,5 @@
 {
-  "readyMs": 7739,
+  "readyMs": 8119,
   "browser": "headless Edge",
   "resolution": [
     1920,
@@ -13,7 +13,7 @@
     "fovError": 0
   },
   "playbackFrames": 848,
-  "musicReached": 48.5288,
+  "musicReached": 48.531132,
   "nativePlaybackSeekIdentical": true,
   "pauseStable": true,
   "replay": {
@@ -62,13 +62,13 @@
         "time": 41.21,
         "enabled": 48,
         "activeWall": 20,
-        "changedPixels": 221151
+        "changedPixels": 223514
       },
       {
         "time": 42.1,
         "enabled": 48,
         "activeWall": 8,
-        "changedPixels": 67687
+        "changedPixels": 99981
       },
       {
         "time": 43,
@@ -79,7 +79,7 @@
       {
         "time": 44.15,
         "enabled": 48,
-        "activeWall": 1,
+        "activeWall": 0,
         "changedPixels": 0
       },
       {
@@ -115,6 +115,148 @@
     ],
     "settledTravel": 0.000003814697265625
   },
+  "gateCollisions": {
+    "contacts": [
+      {
+        "time": 41.050000000000004,
+        "cube": 41,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 7.6987504959106445,
+        "incomingX": 9.015289306640625,
+        "outgoingX": 4.996452331542969
+      },
+      {
+        "time": 41.233333333333334,
+        "cube": 42,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 5.830747604370117,
+        "incomingX": 11.38050651550293,
+        "outgoingX": 10.196407318115234
+      },
+      {
+        "time": 41.31666666666667,
+        "cube": 45,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 0.8417361974716187,
+        "incomingX": 7.843247413635254,
+        "outgoingX": 7.1450042724609375
+      },
+      {
+        "time": 41.333333333333336,
+        "cube": 41,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 1.2822469472885132,
+        "incomingX": 0.574532151222229,
+        "outgoingX": -0.18958449363708496
+      },
+      {
+        "time": 41.4,
+        "cube": 43,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 1.3960816860198975,
+        "incomingX": 2.398967742919922,
+        "outgoingX": 0.464091420173645
+      },
+      {
+        "time": 41.4,
+        "cube": 43,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 1.5536954402923584,
+        "incomingX": 2.398967742919922,
+        "outgoingX": 0.464091420173645
+      },
+      {
+        "time": 41.483333333333334,
+        "cube": 45,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 0.7308036684989929,
+        "incomingX": 1.8599414825439453,
+        "outgoingX": 1.4333853721618652
+      },
+      {
+        "time": 41.5,
+        "cube": 42,
+        "collider": "XOR collision / shutter 2",
+        "impulse": 2.624264717102051,
+        "incomingX": 4.442052364349365,
+        "outgoingX": 2.801887035369873
+      },
+      {
+        "time": 41.550000000000004,
+        "cube": 47,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 5.143634796142578,
+        "incomingX": 3.1243700981140137,
+        "outgoingX": -0.09040094166994095
+      },
+      {
+        "time": 41.75,
+        "cube": 42,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 0.7896203398704529,
+        "incomingX": 0.4907618761062622,
+        "outgoingX": 0.28164923191070557
+      },
+      {
+        "time": 41.833333333333336,
+        "cube": 42,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 0.1723105013370514,
+        "incomingX": 0.3396722674369812,
+        "outgoingX": 0.49754536151885986
+      },
+      {
+        "time": 41.86666666666667,
+        "cube": 45,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 0.24594488739967346,
+        "incomingX": 0.5339282155036926,
+        "outgoingX": 0.5748353600502014
+      },
+      {
+        "time": 41.95,
+        "cube": 42,
+        "collider": "XOR collision / shutter 2",
+        "impulse": 0.2379741221666336,
+        "incomingX": 0.8277027606964111,
+        "outgoingX": 0.7589261531829834
+      },
+      {
+        "time": 41.96666666666667,
+        "cube": 45,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 0.21783332526683807,
+        "incomingX": 0.21532469987869263,
+        "outgoingX": -0.020676681771874428
+      },
+      {
+        "time": 42.016666666666666,
+        "cube": 42,
+        "collider": "XOR collision / shutter 2",
+        "impulse": 0.0627681165933609,
+        "incomingX": 0.735026478767395,
+        "outgoingX": 0.7143332958221436
+      },
+      {
+        "time": 42.06666666666667,
+        "cube": 42,
+        "collider": "XOR collision / shutter 2",
+        "impulse": 0.06147800758481026,
+        "incomingX": 0.16087126731872559,
+        "outgoingX": 0.12244749069213867
+      },
+      {
+        "time": 42.1,
+        "cube": 42,
+        "collider": "XOR collision / chassis 3",
+        "impulse": 0.21219103038311005,
+        "incomingX": 0.10638193786144257,
+        "outgoingX": 0.0818932056427002
+      }
+    ],
+    "maximumClosedPenetration": 0.008405692502947204,
+    "temporaryColliders": 0
+  },
   "geometry": {
     "conservativeClearance": 6.872310641257243,
     "at": {
@@ -142,13 +284,13 @@
       },
       {
         "time": 41.5,
-        "cyanPixels": 97618,
+        "cyanPixels": 98428,
         "progress": 1,
         "power": 0
       },
       {
         "time": 42.1,
-        "cyanPixels": 62837,
+        "cyanPixels": 85411,
         "progress": 1,
         "power": 1
       }
@@ -158,51 +300,51 @@
   "measurements": [
     {
       "time": 35.7,
-      "fps": 60.01846722027038,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.400000005960464,
+      "fps": 59.990770650359735,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.299999997019768,
       "drawCalls": 245
     },
     {
       "time": 37.4,
-      "fps": 60.028860028860024,
-      "medianMs": 16.600000008940697,
-      "p95Ms": 17.400000005960464,
+      "fps": 59.987310376547974,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.5,
       "drawCalls": 271
     },
     {
       "time": 38.55,
-      "fps": 60.01154068090017,
+      "fps": 60.008078010707784,
       "medianMs": 16.69999998807907,
-      "p95Ms": 17.400000005960464,
+      "p95Ms": 17.299999997019768,
       "drawCalls": 247
     },
     {
       "time": 40.5,
-      "fps": 60.00115386844679,
+      "fps": 60.01846722027038,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.400000005960464,
+      "p95Ms": 17,
       "drawCalls": 219
     },
     {
       "time": 42.1,
-      "fps": 60.021931090618985,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.5,
+      "fps": 59.994231323911166,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17,
       "drawCalls": 185
     },
     {
       "time": 44.15,
-      "fps": 58.85348876710474,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.900000005960464,
-      "drawCalls": 157
+      "fps": 59.994231323911166,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.200000002980232,
+      "drawCalls": 153
     },
     {
       "time": 46.03,
       "fps": 59.994231323911166,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.700000002980232,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.200000002980232,
       "drawCalls": 161
     }
   ],
@@ -242,6 +384,10 @@
     {
       "name": "09-arcade-clearance",
       "time": 9
+    },
+    {
+      "name": "10-xor-cube-impact",
+      "time": 41.5
     }
   ],
   "fallback": {

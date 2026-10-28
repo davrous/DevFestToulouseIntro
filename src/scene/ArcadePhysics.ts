@@ -3,7 +3,8 @@ import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
-import { PhysicsShapeType } from "@babylonjs/core/Physics/v2/IPhysicsEnginePlugin";
+import { PhysicsEventType, PhysicsShapeType } from "@babylonjs/core/Physics/v2/IPhysicsEnginePlugin";
+import type { PhysicsAggregate } from "@babylonjs/core/Physics/v2/physicsAggregate";
 import type { HavokPlugin } from "@babylonjs/core/Physics/v2/Plugins/havokPlugin";
 import type { Scene } from "@babylonjs/core/scene";
 import { routeAnchor } from "../camera/CameraPath";
@@ -13,6 +14,7 @@ import { createWorldText } from "./WorldText";
 import { bakeRigidBodies, samplePhysicsBake, type PhysicsBake, type BakedColliderRecipe } from "./PhysicsBake";
 import { LEGACY_XOR, legacyXorSettings, type LegacyXorSettings } from "./LegacyXorSequence";
 import { beveledPrism } from "./HardSurface";
+import { xorGateColliders } from "./XorCpuGate";
 import "@babylonjs/core/Rendering/boundingBoxRenderer";
 
 export const WALL_TIME = LEGACY_XOR.impact;
@@ -22,6 +24,12 @@ export const LEGACY_LABELS = ["TODO", "FIXME", "deprecated", "legacy.dll", "tech
 const PALETTE = ["#ff365c", "#ffba32", "#35d69c", "#3088ff", "#9d55ff", "#ff59c4"];
 
 interface Prop { mesh: Mesh; home: Vector3; homeRotation: Quaternion; group: number }
+export interface LegacyGateContact {
+  time: number; cube: number; collider: string; impulse: number; incomingX: number; outgoingX: number;
+}
+
+const GATE_COLLISION_KEYS = ["enableXorCpuGate", "gateX", "gateY", "gateZ", "gateYaw", "gateScale",
+  "panelTravel", "panelLift", "hingeAngle", "panelDepthTravel", "openingDuration"] as const;
 
 export function arcadeWallVisible(time: number): boolean { return time >= 34.4; }
 
@@ -51,7 +59,10 @@ export class ArcadePhysics {
   readonly banners: Mesh[] = [];
   readonly materials: PBRMaterial[] = [];
   readonly fallback: PBRMaterial;
+  readonly gateContacts: LegacyGateContact[] = [];
   bake?: PhysicsBake;
+  private bakedGateKey = "";
+  private physicsPlugin?: HavokPlugin;
   state: "parked" | "assembling" | "locked" | "cached Havok" = "parked";
   private readonly rotation = Quaternion.Identity();
   private readonly offset = Vector3.Zero();
@@ -99,8 +110,17 @@ export class ArcadePhysics {
     todo.rotation.y = this.anchor.yaw; todo.setEnabled(false); this.banners.push(todo);
   }
 
-  initialize(_plugin: HavokPlugin): void {
-    if (this.bake) return;
+  initialize(plugin: HavokPlugin): void {
+    this.physicsPlugin = plugin;
+    this.refreshGateCollisions();
+  }
+
+  refreshGateCollisions(settings: LegacyXorSettings = this.settings): void {
+    const key = JSON.stringify(GATE_COLLISION_KEYS.map((field) => settings[field]));
+    if (this.bake && this.bakedGateKey === key) return;
+    const physics = this.scene.getPhysicsEngine(), plugin = this.physicsPlugin;
+    if (!physics || !plugin) throw new Error("Havok must be initialized before rebuilding XOR collisions.");
+    const gravity = physics.gravity.clone(), linear = plugin.getMaxLinearVelocity(), angular = plugin.getMaxAngularVelocity();
     const parent = new TransformNode("Arcade / temporary wall bake origin", this.scene);
     const colliders: BakedColliderRecipe[] = [
       { position: new Vector3(-560, -.25, -65), extents: new Vector3(125, .5, 145), friction: .7, restitution: .35 },
@@ -111,17 +131,46 @@ export class ArcadePhysics {
       colliders.push({ position: p, extents: new Vector3(.5, 24, 25), friction: .6, restitution: .3,
         rotation: Quaternion.RotationYawPitchRoll(this.anchor.yaw, 0, 0) });
     }
+    colliders.push(...xorGateColliders({ ...settings }));
+    const contacts: LegacyGateContact[] = [];
+    const bodies: PhysicsAggregate[] = [];
+    const incoming: number[] = [];
+    let clock = WALL_TIME;
     try {
+      physics.setGravity(new Vector3(0, -17, 0));
+      plugin.setVelocityLimits(32, 12);
       const recipes = this.wall.map((prop, index) => {
         const sign = index % 2 ? 1 : -1, spread = (index % 8 - 3.5) / 3.5;
         return { release: 0, position: prop.home.clone(), rotation: prop.homeRotation.clone(),
           velocity: new Vector3(7 + index % 3, 3 + index % 5, spread * 5 + sign),
           angularVelocity: new Vector3(sign * 2, 1 + index % 3, sign * 3) };
       });
-      this.bake = bakeRigidBodies(this.scene, parent, recipes, LEGACY_XOR.wallBakeEnd - WALL_TIME, 1 / 60,
+      const bake = bakeRigidBodies(this.scene, parent, recipes, LEGACY_XOR.wallBakeEnd - WALL_TIME, 1 / 60,
         PhysicsShapeType.BOX, { mass: 1.6, friction: .55, restitution: .32,
-          extents: new Vector3(LEGACY_CUBE.width, LEGACY_CUBE.height, LEGACY_CUBE.depth) }, colliders);
-    } finally { parent.dispose(); }
+          extents: new Vector3(LEGACY_CUBE.width, LEGACY_CUBE.height, LEGACY_CUBE.depth) }, colliders, {
+          beforeStep: (time) => {
+            clock = WALL_TIME + time + 1 / 60;
+            bodies.forEach((body, index) => { incoming[index] = body.body.getLinearVelocity().x; });
+          },
+          onBodyCreated: (body, index) => {
+            bodies[index] = body; incoming[index] = recipes[index].velocity.x;
+            body.body.setCollisionCallbackEnabled(true);
+            body.body.getCollisionObservable().add((event) => {
+              const other = event.collider === body.body ? event.collidedAgainst : event.collider;
+              if (!other.transformNode.name.startsWith("XOR collision /")
+                || event.type !== PhysicsEventType.COLLISION_STARTED || event.impulse < .05) return;
+              contacts.push({ time: clock, cube: index, collider: other.transformNode.name, impulse: event.impulse,
+                incomingX: incoming[index], outgoingX: body.body.getLinearVelocity().x });
+            });
+          },
+        });
+      this.bake = bake;
+      this.bakedGateKey = key;
+      this.gateContacts.splice(0, this.gateContacts.length, ...contacts);
+    } finally {
+      physics.setGravity(gravity); plugin.setVelocityLimits(linear, angular);
+      parent.dispose();
+    }
   }
 
   update(time: number, _audio: AudioFeatures): void {

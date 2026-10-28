@@ -6,7 +6,7 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
-import { XorCpuGate, xorPanelPose, xorSymbolPaths } from "./XorCpuGate";
+import { XorCpuGate, xorGateColliders, xorPanelPose, xorSymbolPaths } from "./XorCpuGate";
 import { LEGACY_XOR, legacyXorSettings, legacyXorState, validateLegacyXorSettings } from "./LegacyXorSequence";
 import { legacyAssembly, legacyGroup } from "./ArcadePhysics";
 import { cameraPose, routeAnchor } from "../camera/CameraPath";
@@ -62,6 +62,32 @@ describe("Legacy → XOR deterministic choreography", () => {
     const data = mesh.getBoundingInfo().boundingBox;
     expect(data.minimum.asArray()).toEqual([-1, -1, -.5]);
     expect(data.maximum.asArray()).toEqual([1, 1, .5]);
+    scene.dispose(); engine.dispose();
+  });
+
+  it("keeps all four animated collision boxes aligned with the real carriages throughout opening and tuning", () => {
+    const engine = new NullEngine(), scene = new Scene(engine);
+    const settings = legacyXorSettings(), gate = new XorCpuGate(scene, new TransformNode("T root", scene), settings);
+    for (const tuning of [{ ...settings }, { ...settings, gateX: settings.gateX + .1, gateYaw: settings.gateYaw + .002,
+      gateY: .03, gateScale: .99, panelTravel: 3, hingeAngle: 80, openingDuration: 3 }]) {
+      Object.assign(settings, tuning);
+      const colliders = xorGateColliders(tuning), shutters = colliders.filter((collider) => collider.pose);
+      expect(colliders).toHaveLength(8);
+      expect(shutters).toHaveLength(4);
+      for (const time of [38.2, 42.6, 43, 44.15, 45, 45.7, 46.2]) {
+        gate.update(time);
+        for (const [index, collider] of shutters.entries()) {
+          const pose = collider.pose!(time - LEGACY_XOR.impact), panel = gate.panels[index];
+          const world = panel.computeWorldMatrix(true), scale = Vector3.Zero(), rotation = pose.rotation.clone();
+          world.decompose(scale, rotation);
+          expect(Vector3.Distance(panel.getAbsolutePosition(), pose.position)).toBeLessThan(.0001);
+          expect(Math.abs(rotation.dot(pose.rotation))).toBeCloseTo(1, 6);
+          expect(collider.extents.asArray()).toEqual(
+            [LEGACY_XOR.halfWidth, LEGACY_XOR.halfHeight, LEGACY_XOR.thickness].map((value) => value * tuning.gateScale));
+        }
+      }
+    }
+    expect(xorGateColliders({ ...settings, enableXorCpuGate: false })).toEqual([]);
     scene.dispose(); engine.dispose();
   });
 

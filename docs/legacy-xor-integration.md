@@ -67,8 +67,30 @@ assembled homes, applies the original canonical world-space velocities and
 records **481 frames at 60 Hz** over the eight-second collapse and settling. Mass 1.6,
 friction .55, restitution .32, floor restitution .35 and rail restitution .3
 are preserved. The temporary bodies and boundaries are disposed in `finally`.
-`PhysicsBake` was extended only with optional per-collider rotation and
-restitution, preserving existing consumers' defaults.
+`PhysicsBake` supports optional per-collider rotation, restitution and animated
+poses, preserving existing consumers' static-boundary defaults.
+
+The bake now includes the gate's four fixed chassis boxes, shared with the
+render geometry, and four animated shutter boxes using the same dimensions,
+root transform and `xorPanelPose` as the visible panels. Their material uses
+friction .55 and restitution .55. Havok's animated bodies target the next
+60-Hz pose before each integration, so the colliders translate and rotate
+with the opening instead of leaving an invisible wall across the exit.
+Small bevels and surface armor are not separately collision-tessellated; the
+thick main shutter solids and frame provide the collision envelope.
+
+Actual cube/frame and cube/shutter impulses are recorded in
+`ArcadePhysics.gateContacts`, including the formerly escaping cube 42.
+Closed-door tests check every cube corner through 42.6 s with a 0.1-unit
+solver tolerance. A separate real-Havok projectile test proves both a rebound
+off a closed shutter and free passage once it is fully retracted.
+
+Gate transform/mechanical changes in the debug UI rebuild this recording
+before applying the visual settings; color/label changes reuse it. Rebuilding
+uses canonical gravity and velocity limits even at a different rehearsal
+speed, then restores the previous physics configuration. Disabling the gate
+also removes its baked collisions. All temporary gate bodies and callbacks
+are disposed; normal playback, pause and seeking still create no bodies.
 
 At 38.2 s the animated poses match frame zero of that recording. Subsequent
 poses use interpolated positions and quaternion slerp from actual Havok output,
@@ -192,16 +214,17 @@ physical rescue, manga wall, local gallery and disabled NVIDIA mode.
 
 | Check | Result |
 | --- | --- |
-| Latest targeted arcade regression | **33 tests passed**, 5 files; TypeScript and production build passed |
+| Unit/integration suite | **266 tests passed**, 48 files; TypeScript and production build passed |
 | Camera regression | **361 samples**, zero position, heading or FOV difference through the original Babylon pipeline |
 | Musical playback | **848 rendered frames**, pause/resume stable; seven native states exactly match direct seeks |
 | Replay resources | 20 loops / 240 seeks; stable 1,404 meshes, 1,720 transforms, 278 materials, 20 lights and 5 unrelated live bodies |
 | Wall physics | 48 real Havok tracks × 481 frames, ending at rest; zero live wall bodies during playback; debris has no timed disappearance |
 | Cabinet placement | Six real model bounds each leave **0.800 units** to the inner wall; minimum camera-to-model-bounds clearance **2.90 units** |
-| Persistent debris | **221,151 changed GPU pixels** at 41.21 s and **67,687** at 42.1 s versus hiding the cubes; last-second maximum settled travel **0.0000039 units** |
+| Persistent debris | **223,514 changed GPU pixels** at 41.21 s and **99,981** at 42.1 s versus hiding the cubes; last-second maximum settled travel **0.0000039 units** |
+| XOR collisions | **17 recorded Havok impacts**, including cube 42 against a shutter; maximum closed-door corner penetration **0.00841 units**; no temporary gate bodies left after preparation |
 | Camera safety | Conservative minimum near-plane/solid clearance **6.87 units**, including fixed frame, badge, rails and moving plates |
-| FullHD frame rate | **58.85–60.03 FPS**, median 16.6–16.7 ms, worst measured 95th percentile 17.9 ms |
-| Startup | **7.74 s**, including speaker/Terminator warmup and the extended wall bake |
+| FullHD frame rate | **59.99–60.02 FPS**, median 16.6–16.7 ms, worst measured 95th percentile 17.5 ms |
+| Startup | **8.12 s**, including speaker/Terminator warmup and the wall/gate collision bake |
 | Final astronaut | Actual height 16.64, fixed pose, old corner empty; visible silhouette in all 6.25 s of sampled final approach |
 | Browser/network | Zero JavaScript/console errors and zero external requests |
 
@@ -290,6 +313,8 @@ It is **not** a physical RTX 5090/Direct3D driver test.
 Also see [XOR activation](legacy-xor/after-07-xor-activation.png),
 [persistent debris after the old cutoff](legacy-xor/after-08-persistent-debris.png)
 and [cabinet wall clearance](legacy-xor/after-09-arcade-clearance.png).
+The [cube/shutter impact](legacy-xor/after-10-xor-cube-impact.png) shows the
+new physical gate response.
 Before captures were taken during native playback; after captures use the
 actual production camera at documented deterministic checkpoints, not concept
 art or a free-camera showcase.

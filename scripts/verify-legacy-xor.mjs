@@ -143,6 +143,26 @@ try {
     .every((sample) => sample.activeWall > 0 && sample.changedPixels > 500),
   "Debris must remain visible in actual GPU pixels after the former 41.2-s cutoff.");
   assert.ok(debrisPersistence.settledTravel < .03, "The extended recording must reach rest before holding its last pose.");
+  const gateCollisions = await page.evaluate(() => {
+    const wall = window.devfest.world.arcadePhysics;
+    let maximumClosedPenetration = 0;
+    for (let frame = 0; frame <= 264; frame++) {
+      wall.update(38.2 + frame / 60, window.devfest.showController.features);
+      for (const prop of wall.wall) {
+        prop.mesh.computeWorldMatrix(true);
+        maximumClosedPenetration = Math.max(maximumClosedPenetration,
+          prop.mesh.getBoundingInfo().boundingBox.maximumWorld.x - (-518 - 1.15 / 2));
+      }
+    }
+    return { contacts: wall.gateContacts, maximumClosedPenetration,
+      temporaryColliders: window.devfest.world.scene.transformNodes.filter((node) => node.name.startsWith("XOR collision /")).length };
+  });
+  assert.ok(gateCollisions.contacts.length > 0);
+  assert.ok(gateCollisions.contacts.some((contact) => contact.cube === 42
+    && contact.collider.startsWith("XOR collision / shutter") && contact.impulse > 1),
+  "The formerly escaping end cube must hit an actual Havok shutter.");
+  assert.ok(gateCollisions.maximumClosedPenetration < .1, "No cube corner may cross the closed gate beyond contact tolerance.");
+  assert.equal(gateCollisions.temporaryColliders, 0, "Gate collider bodies must be removed after baking, not duplicated during replay.");
   const cameraBaseline = JSON.parse(await readFile(new URL("../docs/legacy-xor/camera-baseline.json", import.meta.url), "utf8"));
   const camera = await page.evaluate((samples) => {
     const app = window.devfest, V = app.world.camera.position.constructor;
@@ -167,7 +187,7 @@ try {
   const captures = [];
   for (const [name, time] of [["01-assembly", 35.7], ["02-complete", 37.4], ["03-collision", 38.55],
     ["04-signal", 40.5], ["05-partial-gate", 44.15], ["06-exit", 46.03], ["07-xor-activation", 42.1],
-    ["08-persistent-debris", 41.21], ["09-arcade-clearance", 9]]) {
+    ["08-persistent-debris", 41.21], ["09-arcade-clearance", 9], ["10-xor-cube-impact", 41.5]]) {
     await page.evaluate((time) => { window.devfest.seek(time); window.devfest.world.scene.render(); }, time);
     await page.screenshot({ path: new URL(`../docs/legacy-xor/after-${name}.png`, import.meta.url).pathname });
     captures.push({ name, time });
@@ -311,7 +331,7 @@ try {
   const report = { readyMs, browser: "headless Edge", resolution: [1920, 1080],
     baselineCameraHash: cameraBaseline.hash, camera, playbackFrames: playback.frames,
     musicReached: playback.music, nativePlaybackSeekIdentical: true, pauseStable: true,
-    replay: counts, cabinetClearance, debrisPersistence, geometry, measurements, captures, fallback, finale,
+    replay: counts, cabinetClearance, debrisPersistence, gateCollisions, geometry, measurements, captures, fallback, finale,
     browserErrors: errors, externalRequests: external };
   await writeFile(new URL("../docs/legacy-xor/validation.json", import.meta.url), JSON.stringify(report, null, 2) + "\n");
   console.log(JSON.stringify(report, null, 2));
