@@ -13,6 +13,7 @@ vi.mock("@babylonjs/core/Engines/engine", () => ({
 vi.mock("../scene/DevFestScene", () => ({
   DevFestScene: class {
     scene = { render() {}, whenReadyAsync: async () => {}, getPhysicsEngine: () => undefined, physicsEnabled: false };
+    arcadeEnhancements = { media: { pause: vi.fn(), errors: [] } };
     async prepare() {}
     update() {}
   },
@@ -86,6 +87,21 @@ async function setup() {
 }
 
 describe("synchronized launch from the other tab", () => {
+  it("immediately pauses cabinet decoders even when a hidden tab cannot render another frame", async () => {
+    const { app } = await setup();
+    app.start();
+    doc.hidden = true; doc.dispatchEvent(new Event("visibilitychange"));
+    expect(app.timeline.playing).toBe(false);
+    expect(app.world.arcadeEnhancements.media.pause).toHaveBeenCalledOnce();
+    doc.hidden = false;
+    app.togglePlayback(); app.togglePlayback();
+    expect(app.world.arcadeEnhancements.media.pause).toHaveBeenCalledTimes(2);
+    app.returnToLobby();
+    expect(app.world.arcadeEnhancements.media.pause).toHaveBeenCalledTimes(3);
+    window.dispatchEvent(new Event("pagehide"));
+    expect(app.world.arcadeEnhancements.media.pause).toHaveBeenCalledTimes(4);
+  });
+
   it("selects Viola's Journey by default without starting audio before a gesture", async () => {
     const { app } = await setup();
     expect(doc.getElementById("soundtrack")!.value).toBe("violas-journey");
@@ -116,7 +132,7 @@ describe("synchronized launch from the other tab", () => {
     expect(player.currentTime).toBe(42);
     const update = vi.spyOn(app.world, "update");
     app.seek(50.876);
-    expect(update).toHaveBeenLastCalledWith(50.876, expect.anything(), null, 1, 0, 51.03);
+    expect(update).toHaveBeenLastCalledWith(50.876, expect.anything(), null, 1, 0, 51.03, true, true);
     app.returnToLobby();
     expect(player.paused).toBe(true);
     expect(player.currentTime).toBe(0);

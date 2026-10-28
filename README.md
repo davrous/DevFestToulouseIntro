@@ -4,6 +4,22 @@ A three-minute real-time opening for the DevFest Toulouse 2026 closing keynote. 
 
 For future agents and cross-machine handoff, start with [AGENT_CONTEXT.md](AGENT_CONTEXT.md): show intent, preserved decisions, timing, focused code map, known pitfalls and validation history.
 
+### Animated retro arcade
+
+The six existing Kenney machines now include local Pong, original Donkey Kong
+arcade and Super Mario Bros. video monitors, plus two deterministic pinball
+attract sequences. The middle-left pinball celebrates multiball / AI4FUN around
+10–14 s. Camera, music, cabinet placement and show duration are unchanged.
+Press **D → ARCADE / GAMES + PINBALL** for independent feature flags, previews,
+timeline/decoder diagnostics and tuning.
+
+See the [integration and rehearsal guide](docs/arcade-integration.md) for
+geometry, media preparation (`npm run arcade:prepare`), rights limitations,
+transport behavior, screenshots and `npm run verify:arcade`.
+Videos/posters are included locally; FFmpeg is only needed to regenerate them.
+**The supplied Nintendo/Tenor footage has no identified redistribution grant;
+clear its rights before public distribution.**
+
 ## Run locally
 
 Requires Node.js 22.12+.
@@ -34,6 +50,7 @@ The supplied intro and four bundled Strudel scores use **only their own origin**
 | Havok **1.3.14** | Local JavaScript plus the imported, hashed local `.wasm` asset |
 | Strudel and audio worklets | Bundled npm modules; worklet code is generated as local `data:`/`blob:` modules |
 | Soundtrack MP3/WAV, drums, orchestra | Local `assets/music/` and `assets/strudel/`; 3 drum + 18 orchestra WAV samples |
+| Arcade gameplay and posters | Local `assets/arcade/`; three silent MP4s, PNG fallbacks, four phase-offset video decoders |
 | 3D models and textures | Local assets; all 25 GLBs audited, with embedded or existing local resources |
 | Fonts and artwork | System fonts, local PNGs and generated Canvas textures; no Google Fonts/CDN |
 

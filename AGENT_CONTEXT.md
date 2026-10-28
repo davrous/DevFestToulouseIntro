@@ -1,5 +1,7 @@
 # Contexte de reprise — Intro DevFest Toulouse
 
+> **28 octobre 2026 — arcade animée :** les six machines Kenney gardent leurs positions et GLB. Pong est sur la borne 0, Donkey Kong arcade sur la 3 (pillarbox, aucune borne verticale), Mario sur les dance machines 1 et 4 avec des offsets distincts. Le flipper 2 joue le multiball vers 10–14 s et HIGH SCORE / AI4FUN ; le 5 garde une animation déphasée. Surfaces ajustées, billes, bumpers et flippers sont des overlays non destructifs. Les vidéos locales et le pinball suivent l'horloge caméra, pas le recalage local des effets Journey. Quatre drapeaux et les contrôles sont dans **D → ARCADE / GAMES + PINBALL**. Voir [le guide et les captures](docs/arcade-integration.md), `npm run arcade:prepare` et `npm run verify:arcade`. Les liens Tenor fournis ne constituent pas une autorisation de redistribution Nintendo ; clarifier ces droits avant publication.
+
 > Lire ce document avant d'explorer le code. Il décrit le spectacle existant et les décisions déjà validées, pas un nouveau backlog à implémenter.
 >
 > Historique visuel documenté le **7 octobre 2026**, complété le **8 octobre** par le lecteur Strudel allégé et le regard caméra droit devant aux popcorns. L'horloge audio native fonctionne de nouveau ; les répétitions musicales historiques ne valident pas automatiquement les trois nouveaux scores. Voir section 11 et vérifier le worktree : les fichiers source restent la référence.

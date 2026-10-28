@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-10-28T13:47:15.364Z",
+  "testedAt": "2026-10-28T16:01:57.788Z",
   "browser": "headless Edge",
   "versions": {
     "@babylonjs/core": "9.28.0",
@@ -31,15 +31,15 @@
     "relativeResources": 3
   },
   "mode": "Fresh production browser context, service workers blocked, all third-party HTTP(S) denied",
-  "readyMs": 7193,
+  "readyMs": 7286,
   "mp3": {
-    "currentTime": 0.501333,
+    "currentTime": 0.506667,
     "duration": 177.6,
     "source": "/assets/music/violas-journey.mp3",
     "audioContext": "running"
   },
   "wav": {
-    "currentTime": 0.512,
+    "currentTime": 0.515528,
     "duration": 177.6,
     "source": "/assets/music/violas-journey.wav",
     "audioContext": "running",
@@ -164,7 +164,7 @@
       "path": "(generated local code)"
     }
   ],
-  "sameOriginResources": 78,
+  "sameOriginResources": 84,
   "externalRequests": [],
   "websocketRequests": [],
   "expectedCancelledMediaRanges": 3,

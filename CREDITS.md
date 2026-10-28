@@ -1,5 +1,23 @@
 # 3D artwork credits
 
+## Arcade gameplay media
+
+The three exact user-supplied GIF sources are converted into local silent
+MP4s and posters. [Per-file sources, hashes and transformations](public/assets/arcade/manifest.json)
+and the [rights record](public/licenses/arcade-media.txt) accompany them.
+Pong's filmed GIF is by **pong74ls**, cropped by **WikiJunkie**, via
+[Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Pong_Game_Test2.gif),
+under [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/); conversion and
+monochrome display preparation are changes, not endorsement.
+The exact original Donkey Kong arcade and Super Mario Bros. NES footage is
+from the supplied Tenor links. **Nintendo retains the underlying game and
+character rights. No explicit redistribution grant was identified for those
+GIFs; the supplied URLs are not a license. Obtain clearance before distributing
+the show publicly.** No unrelated replacement footage was used.
+
+The pinball overlay artwork, playfield, choreography and AI4FUN score display
+are original procedural additions over the unchanged CC0 Kenney machines.
+
 ## Skynet warning logo
 
 The unmodified [local Skynet logo](src/assets/skynet/skynet-logo.png) comes from

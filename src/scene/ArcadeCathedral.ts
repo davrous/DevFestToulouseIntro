@@ -17,6 +17,7 @@ import { createWorldText } from "./WorldText";
 import { ARCADE_ENTRY, CINEMA, LEVEL_COMPLETE } from "../content/showBeats";
 import { createEventDecal, loadEventArtwork } from "./EventBranding";
 import flagUrl from "../assets/event/mascot-flag-green.png";
+import type { ArcadeMachine } from "./arcade/ArcadeSceneEnhancements";
 
 const ROOT = "/assets/kenney/arcade/";
 export const CABINET_COUNT = 6;
@@ -24,6 +25,7 @@ export const CABINET_WALL_CLEARANCE = .8;
 export const ARCADE_WALL_PANELS = { offset: CELL / 2 - .76, height: 15 } as const;
 
 export class ArcadeCathedral {
+  readonly machines: ArcadeMachine[] = [];
   private readonly cabinets: TransformNode[] = [];
   private readonly heroScreen;
   private logo?: ReturnType<typeof MeshBuilder.CreatePlane>;
@@ -146,6 +148,7 @@ export class ArcadeCathedral {
       const outerX = side < 0 ? bounds.min.x : bounds.max.x;
       cabinet.position.x += wallX - side * CABINET_WALL_CLEARANCE - outerX;
       this.cabinets.push(cabinet);
+      this.machines.push({ cabinet: index, kind: (["arcade", "dance", "pinball"] as const)[index % 3], root: cabinet });
       const screen = MeshBuilder.CreatePlane(`FX/Arcade wall panel / ${index}`,
         { width: 2.5, height: 2.8 }, this.scene);
       screen.position.set(cell.x + side * ARCADE_WALL_PANELS.offset,

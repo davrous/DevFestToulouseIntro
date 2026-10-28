@@ -26,6 +26,7 @@ export class App {
   private idleTimer = 0;
   private lastDiagnostics = 0;
   private noticeTimer = 0;
+  private arcadeErrorCount = 0;
   private synchronizedStart?: { at: number; senderId: string };
   private synchronizedStartTimer = 0;
   private synchronizedPlayback = false;
@@ -64,6 +65,7 @@ export class App {
       this.cancelSynchronizedStart();
       this.timeline.pause();
       this.soundtrackPlayer.pause();
+      this.world.arcadeEnhancements?.media.pause();
       this.showController.strudelEvents.disconnect();
     });
     canvas.addEventListener("webglcontextlost", (event) => {
@@ -89,6 +91,7 @@ export class App {
       if (document.hidden && this.timeline.playing && !this.synchronizedPlayback) {
         this.timeline.pause();
         this.soundtrackPlayer.pause();
+        this.world.arcadeEnhancements?.media.pause();
         this.showNotice("Show paused because this tab is hidden. Press SPACE when ready.");
       }
     });
@@ -117,7 +120,8 @@ export class App {
         this.visualRevealAccent = this.showController.revealAccent;
       }
       const effectTime = this.showController.effectTime(time);
-      this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent, effectTime);
+      this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent,
+        effectTime, !this.inLobby && this.timeline.playing);
       this.world.scene.physicsEnabled = !!this.world.scene.getPhysicsEngine()
         && !this.inLobby && this.timeline.playing
         && (effectTime < 44 || (effectTime >= POPCORN_START && effectTime < POPCORN_END));
@@ -125,6 +129,11 @@ export class App {
       this.pauseOverlay.hidden = this.inLobby || this.timeline.playing || time >= 180;
       if (now - this.lastDiagnostics > 100) {
         this.debug.update();
+        const errors = this.world.arcadeEnhancements?.media.errors;
+        if (errors && errors.length > this.arcadeErrorCount) {
+          this.showNotice(`Arcade video unavailable / game poster retained: ${errors.slice(this.arcadeErrorCount).join(" ")}`, true);
+          this.arcadeErrorCount = errors.length;
+        }
         this.lastDiagnostics = now;
       }
     });
@@ -225,6 +234,7 @@ export class App {
     } else if (this.timeline.playing) {
       this.timeline.pause();
       this.soundtrackPlayer.pause();
+      this.world.arcadeEnhancements?.media.pause();
       document.body.classList.remove("idle");
     } else {
       this.notice.hidden = true;
@@ -250,13 +260,14 @@ export class App {
     Object.assign(this.visualAudio, silentFeatures());
     this.visualRevealAccent = 0;
     this.world.update(this.timeline.time, this.visualAudio, this.showController.section, this.timeline.speed, 0,
-      this.showController.effectTime(this.timeline.time));
+      this.showController.effectTime(this.timeline.time), this.timeline.playing, true);
   }
 
   returnToLobby(): void {
     this.cancelSynchronizedStart();
     this.timeline.pause();
     this.soundtrackPlayer.pause();
+    this.world.arcadeEnhancements?.media.pause();
     this.soundtrackPlayer.currentTime = 0;
     this.showController.soundtrack.setOutputVolume(1, true);
     this.soundtrackActive = false;
@@ -297,6 +308,7 @@ export class App {
       this.engine = this.createEngine();
       this.setResolution(element<HTMLSelectElement>("resolution").value === "native");
       this.world = new DevFestScene(this.engine);
+      this.arcadeErrorCount = 0;
       const bloom = element<HTMLInputElement>("bloom").checked;
       this.world.setPostProcessing(bloom);
       await this.initialize();

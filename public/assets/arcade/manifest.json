@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "preparation": {
+    "version": 1,
+    "codec": "libx264",
+    "profile": "baseline",
+    "level": "3.0",
+    "pixelFormat": "yuv420p",
+    "fps": 20,
+    "maxDimension": 512,
+    "upscale": false,
+    "scaleFilter": "neighbor",
+    "crf": 20,
+    "preset": "medium",
+    "threads": 1,
+    "audio": false,
+    "poster": "middle decoded video frame",
+    "ffmpegVersion": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
+    "ffprobeVersion": "ffprobe version 7.1.1 Copyright (c) 2007-2025 the FFmpeg developers"
+  },
+  "media": [
+    {
+      "id": "pong",
+      "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/6/62/Pong_Game_Test2.gif",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Pong_Game_Test2.gif",
+      "conversion": {
+        "version": 2,
+        "monochrome": true,
+        "lumaThreshold": 140,
+        "filters": [
+          "format=gray",
+          "lut=y='if(gte(val,140),255,0)'"
+        ],
+        "fingerprint": "221943d0533beb5106634bd64592469fc263ab2532bf595ab67987936ad58857"
+      },
+      "license": {
+        "id": "CC-BY-3.0",
+        "url": "https://creativecommons.org/licenses/by/3.0/",
+        "attribution": "pong74ls; cropped by WikiJunkie; via Wikimedia Commons",
+        "rightsHolder": "pong74ls / WikiJunkie (GIF); Atari (underlying Pong game)",
+        "reuseStatus": "CC BY 3.0 for the supplied GIF; underlying game rights are separate",
+        "modifications": "Grayscale with full-range luma threshold 140/255 to isolate white gameplay on black and suppress colored CRT reflections; original filmed perspective retained; nearest-neighbor fit within 512 px, 20 fps H.264 conversion, PNG poster extraction"
+      },
+      "source": {
+        "file": "assets/arcade/source/pong.gif",
+        "sha256": "74378817bcc53f24dc408f5f845f641748c033271cecf56f65624c11c5215ab7",
+        "bytes": 1628820,
+        "width": 260,
+        "height": 212,
+        "frames": 717,
+        "durationSeconds": 29.97
+      },
+      "video": {
+        "url": "/assets/arcade/pong.mp4",
+        "sha256": "775eaa8e16a5a50283786923c11741461347cc4a7683bf944aecaf730cae810d",
+        "bytes": 106535,
+        "width": 260,
+        "height": 212,
+        "frames": 599,
+        "durationSeconds": 29.95,
+        "codec": "h264",
+        "pixelFormat": "yuv420p",
+        "fps": 20,
+        "profile": "Constrained Baseline",
+        "audioStreams": 0
+      },
+      "poster": {
+        "url": "/assets/arcade/pong-poster.png",
+        "sha256": "def1ed8383c87aa92fa6d75e69ea3e97140ec8f71d10429050b6da6f19b04325",
+        "bytes": 1487,
+        "width": 260,
+        "height": 212,
+        "timestampSeconds": 14.95
+      }
+    },
+    {
+      "id": "donkey-kong",
+      "originalUrl": "https://media1.tenor.com/m/pJL8t9ToDywAAAAd/donkey-kong-arcade.gif",
+      "sourcePage": "https://tenor.com/view/donkey-kong-arcade-game-shigeru-miyamoto-king-kong-gif-11858818635301130028",
+      "license": {
+        "id": null,
+        "url": null,
+        "attribution": "Donkey Kong arcade gameplay; user-supplied Tenor link",
+        "rightsHolder": "Nintendo (game and characters)",
+        "reuseStatus": "No explicit reuse grant identified. Supplied links are not a license; rights clearance is required before public redistribution.",
+        "modifications": "Nearest-neighbor fit within 512 px, 20 fps H.264 conversion, PNG poster extraction"
+      },
+      "source": {
+        "file": "assets/arcade/source/donkey-kong.gif",
+        "sha256": "9548d0c3a38537094e20a66d48c08654302303cea574cae8156d4f9ebcb84de2",
+        "bytes": 919534,
+        "width": 441,
+        "height": 498,
+        "frames": 156,
+        "durationSeconds": 9.66
+      },
+      "video": {
+        "url": "/assets/arcade/donkey-kong.mp4",
+        "sha256": "29c5b9764649c326dc06209ea5b793d35c304330fa5bf8f0109d9cfc10cb499a",
+        "bytes": 508491,
+        "width": 440,
+        "height": 498,
+        "frames": 193,
+        "durationSeconds": 9.65,
+        "codec": "h264",
+        "pixelFormat": "yuv420p",
+        "fps": 20,
+        "profile": "Constrained Baseline",
+        "audioStreams": 0
+      },
+      "poster": {
+        "url": "/assets/arcade/donkey-kong-poster.png",
+        "sha256": "307939f43ab9836bc92bf2c14a1a38ac3e7f3f3176f4bdd6bfc1158e7e0b54df",
+        "bytes": 156348,
+        "width": 440,
+        "height": 498,
+        "timestampSeconds": 4.8
+      }
+    },
+    {
+      "id": "super-mario",
+      "originalUrl": "https://media1.tenor.com/m/q96J5OBXy0AAAAAd/super-mario-bros-nes.gif",
+      "sourcePage": "https://tenor.com/view/super-mario-bros-nes-nintendo-game-platformer-2d-platformer-gif-12384487641424841536",
+      "license": {
+        "id": null,
+        "url": null,
+        "attribution": "Super Mario Bros. NES gameplay; user-supplied Tenor link",
+        "rightsHolder": "Nintendo (game and characters)",
+        "reuseStatus": "No explicit reuse grant identified. Supplied links are not a license; rights clearance is required before public redistribution.",
+        "modifications": "Nearest-neighbor fit within 512 px, 20 fps H.264 conversion, PNG poster extraction"
+      },
+      "source": {
+        "file": "assets/arcade/source/super-mario.gif",
+        "sha256": "47b1045ba2fe0d533b03f6b1d7d77b5ebb20b6108a8dd09bbd25cc5572c39758",
+        "bytes": 2642738,
+        "width": 498,
+        "height": 372,
+        "frames": 224,
+        "durationSeconds": 8.13
+      },
+      "video": {
+        "url": "/assets/arcade/super-mario.mp4",
+        "sha256": "770496b1355c1b90aa505cff7399c9a503926bc6c8b34807a84ea5ab14393af5",
+        "bytes": 1288568,
+        "width": 498,
+        "height": 372,
+        "frames": 163,
+        "durationSeconds": 8.15,
+        "codec": "h264",
+        "pixelFormat": "yuv420p",
+        "fps": 20,
+        "profile": "Constrained Baseline",
+        "audioStreams": 0
+      },
+      "poster": {
+        "url": "/assets/arcade/super-mario-poster.png",
+        "sha256": "93204ad23e844a561cea3ea36546ede0ac76b9bfa8abeb0b9d70368ac15eb11a",
+        "bytes": 164203,
+        "width": 498,
+        "height": 372,
+        "timestampSeconds": 4.05
+      }
+    }
+  ]
+}

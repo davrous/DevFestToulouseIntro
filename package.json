@@ -18,6 +18,8 @@
     "verify:gpu": "npm run build && node scripts/verify-gpu-compat.mjs",
     "verify:offline": "npm run build && node scripts/verify-offline.mjs",
     "verify:legacy-xor": "npm run build && node scripts/verify-legacy-xor.mjs",
+    "arcade:prepare": "node scripts/prepare-arcade-media.mjs",
+    "verify:arcade": "npm run build && node scripts/verify-arcade.mjs",
     "bridge": "node scripts/bridge.mjs"
   },
   "dependencies": {

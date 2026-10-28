@@ -30,6 +30,7 @@ import { ArcadeT } from "./ArcadeT";
 import { ArcadePhysics } from "./ArcadePhysics";
 import { PixelWorld } from "./PixelWorld";
 import { ArcadeCathedral } from "./ArcadeCathedral";
+import { ArcadeSceneEnhancements } from "./arcade/ArcadeSceneEnhancements";
 import { DemosceneTransition } from "./DemosceneTransition";
 import { MusicReactive } from "../effects/MusicReactive";
 import { ASTRONAUT_FINALE, CINEMA, SKYNET_WARNING, TERMINATOR } from "../content/showBeats";
@@ -68,6 +69,7 @@ export class DevFestScene {
   readonly arcade: ArcadeT;
   readonly arcadePhysics: ArcadePhysics;
   readonly legacyXor = legacyXorSettings();
+  readonly arcadeEnhancements: ArcadeSceneEnhancements;
   private readonly pixelWorld: PixelWorld;
   private readonly cathedral: ArcadeCathedral;
   private readonly demoscene: DemosceneTransition;
@@ -148,6 +150,7 @@ export class DevFestScene {
     this.arcadePhysics = new ArcadePhysics(scene, this.legacyXor);
     this.pixelWorld = new PixelWorld(scene);
     this.cathedral = new ArcadeCathedral(scene);
+    this.arcadeEnhancements = new ArcadeSceneEnhancements(scene);
     this.demoscene = new DemosceneTransition(scene);
     this.cinema = new CinemaWorld(scene);
     this.popcorn = new CinemaPopcorn(scene);
@@ -203,7 +206,8 @@ export class DevFestScene {
   }
 
   async prepare(progress: (message: string) => void = () => {}): Promise<void> {
-    await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare(),
+    await Promise.all([this.pixelWorld.prepare(),
+      this.cathedral.prepare().then(() => this.arcadeEnhancements.prepare(this.cathedral.machines)), this.cinema.prepare(),
       this.easterEggs.skynetWarning.ready,
       this.entryTransition.prepare(), this.clapTransition.prepare(), this.lensVortex.prepare(),
       this.crtLightning.prepare(), this.simready.prepare(progress)]);
@@ -241,6 +245,7 @@ export class DevFestScene {
     this.update(0, SILENCE);
     const speaker = SPEAKERS[0];
     const entranceStates = [
+      0, 8, 10.5, 12.5, 18,
       speaker.startTime - laserLead(speaker) + .01,
       speaker.startTime + .6, speaker.startTime + 1.2, speaker.startTime + 3,
     ].map((time) => () => this.update(time, SILENCE));
@@ -255,6 +260,7 @@ export class DevFestScene {
       }
     }
     await prewarmRenderStates(this.scene, this.camera, entranceStates, () => this.update(0, SILENCE));
+    await this.arcadeEnhancements.whenSettled();
   }
 
   setPostProcessing(enabled: boolean): void {
@@ -265,7 +271,7 @@ export class DevFestScene {
   }
 
   update(cameraTime: number, audio: AudioFeatures = SILENCE, section: Section | null = null, speed = 1,
-    revealAccent = 0, effectTime = cameraTime): void {
+    revealAccent = 0, effectTime = cameraTime, playing = false, seek = false): void {
     const time = effectTime;
     if (this.physicsSpeed !== speed) {
       this.scene.getPhysicsEngine()?.setGravity(new Vector3(0, -17 * speed * speed, 0));
@@ -331,6 +337,7 @@ export class DevFestScene {
     this.arcade.update(time, audio);
     this.pixelWorld.update(time, audio);
     this.cathedral.update(time, audio);
+    this.arcadeEnhancements.update(cameraTime, playing, speed, seek);
     this.demoscene.update(time, audio, speed);
     this.cinema.update(time, audio, cameraTime);
     this.simready.update(time, audio);

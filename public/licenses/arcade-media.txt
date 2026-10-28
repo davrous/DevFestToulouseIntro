@@ -1,0 +1,108 @@
+ARCADE MEDIA — LOCAL PREPARATION / RIGHTS RECORD
+
+These are only the three user-supplied clips, downloaded from the exact URLs
+below. Attribution and a downloadable URL are not substitutes for permission.
+This record grants no additional rights. In particular, do not treat Tenor
+content as open-licensed or cleared for public redistribution.
+
+PONG
+Source GIF: https://upload.wikimedia.org/wikipedia/commons/6/62/Pong_Game_Test2.gif
+Source page: https://commons.wikimedia.org/wiki/File:Pong_Game_Test2.gif
+Attribution: pong74ls; cropped by WikiJunkie; via Wikimedia Commons.
+GIF license: Creative Commons Attribution 3.0 Unported (CC BY 3.0).
+License: https://creativecommons.org/licenses/by/3.0/
+Underlying Pong game: Atari; game rights are separate from the GIF license.
+Derived files: /assets/arcade/pong.mp4 and /assets/arcade/pong-poster.png.
+Pong-only transformation: grayscale followed by a full-range luma threshold
+of 140/255 (at or above 140 becomes white, below becomes black). This
+suppresses the supplied filmed CRT's green/brown reflections while retaining
+the bright score, paddles, net and moving ball. Dim CRT details can remain
+speckled or intermittent. Original filmed perspective, flicker and camera
+geometry remain; this is not replacement footage or a clean game capture.
+
+DONKEY KONG
+Source GIF: https://media1.tenor.com/m/pJL8t9ToDywAAAAd/donkey-kong-arcade.gif
+Source page: https://tenor.com/view/donkey-kong-arcade-game-shigeru-miyamoto-king-kong-gif-11858818635301130028
+Attribution: Donkey Kong arcade gameplay; user-supplied Tenor link.
+Game and character rights: Nintendo.
+No explicit reuse grant identified. The supplied link is not a license.
+Rights clearance is required before public redistribution.
+Derived files: /assets/arcade/donkey-kong.mp4 and /assets/arcade/donkey-kong-poster.png.
+
+SUPER MARIO BROS.
+Source GIF: https://media1.tenor.com/m/q96J5OBXy0AAAAAd/super-mario-bros-nes.gif
+Source page: https://tenor.com/view/super-mario-bros-nes-nintendo-game-platformer-2d-platformer-gif-12384487641424841536
+Attribution: Super Mario Bros. NES gameplay; user-supplied Tenor link.
+Game and character rights: Nintendo.
+No explicit reuse grant identified. The supplied link is not a license.
+Rights clearance is required before public redistribution.
+Derived files: /assets/arcade/super-mario.mp4 and /assets/arcade/super-mario-poster.png.
+
+MODIFICATIONS / REPRODUCIBILITY
+GIFs are fitted within 512 pixels without upscaling, preserving aspect ratio
+to the nearest even pixel, with nearest-neighbor filtering. Outputs are
+20 fps H.264 Baseline / yuv420p MP4, silent, with fast-start metadata.
+Posters are PNGs extracted from each video's middle decoded frame.
+No unrelated footage is downloaded.
+Pong alone receives the monochrome threshold treatment described above.
+Its conversion version, exact filter chain, threshold and SHA-256 conversion
+fingerprint are recorded separately in the manifest, so changing this treatment
+invalidates Pong's cached conversion without changing the other two clips.
+
+Prepare: node scripts/prepare-arcade-media.mjs
+Rebuild without network: node scripts/prepare-arcade-media.mjs --offline --force
+Validate/reuse cache without network: node scripts/prepare-arcade-media.mjs --offline
+FFMPEG_PATH and FFPROBE_PATH override /opt/homebrew/bin/ffmpeg and ffprobe.
+Requires Node.js 22+ and FFmpeg with libx264; no npm dependencies are added.
+Online reruns use conditional HTTP validators when available and SHA-256
+comparison otherwise. Offline runs verify cached source hashes. Encoding
+settings and tool versions are recorded; byte-identical regeneration requires
+the same FFmpeg/libx264 build and platform.
+
+Every source must have a GIF signature, multiple frames, positive duration
+and a successful full FFmpeg decode. Both staged outputs must fully decode
+before publication. Fully black decoded video frames are rejected. The
+manifest is published only after all three media entries succeed.
+For Pong, every decoded frame must also have neutral U/V chroma (128).
+
+public/assets/arcade/manifest.json records source URLs, license/rights,
+SHA-256 hashes, bytes, source dimensions/frame count/duration, video stream
+metadata, poster dimensions/frame timestamp, and preparation settings.
+assets/arcade/source/*.source.json records source cache hashes/metadata and
+HTTP ETag/Last-Modified validators. Source GIFs remain outside public/.
+No browser-decoding or Babylon runtime verification is claimed by this record.
+
+MANIFEST SCHEMA (version 1; exact property names)
+{
+  schemaVersion: 1,
+  preparation: {
+    version: number, codec: string, profile: string, level: string,
+    pixelFormat: string, fps: number, maxDimension: number, upscale: boolean,
+    scaleFilter: string, crf: number, preset: string, threads: number,
+    audio: boolean, poster: string, ffmpegVersion: string, ffprobeVersion: string
+  },
+  media: [{
+    id: string, originalUrl: string, sourcePage: string,
+    conversion?: {
+      version: number, monochrome: boolean, lumaThreshold: number,
+      filters: string[], fingerprint: string
+    },
+    license: {
+      id: string|null, url: string|null, attribution: string,
+      rightsHolder: string, reuseStatus: string, modifications: string
+    },
+    source: {
+      file: string, sha256: string, bytes: number, width: number, height: number,
+      frames: number, durationSeconds: number
+    },
+    video: {
+      url: string, sha256: string, bytes: number, width: number, height: number,
+      frames: number, durationSeconds: number, codec: string, pixelFormat: string,
+      fps: number, profile: string|null, audioStreams: number
+    },
+    poster: {
+      url: string, sha256: string, bytes: number, width: number, height: number,
+      timestampSeconds: number
+    }
+  }]
+}

@@ -8,6 +8,7 @@ import { SceneInstrumentation } from "@babylonjs/core/Instrumentation/sceneInstr
 import type { Scene } from "@babylonjs/core/scene";
 import { SimReadyDebug } from "../simready/SimReadyDebug";
 import { LegacyXorDebug } from "./LegacyXorDebug";
+import { ArcadeDebug } from "./ArcadeDebug";
 
 function get<T extends HTMLElement>(id: string): T {
   const element = document.getElementById(id);
@@ -30,6 +31,7 @@ export class DebugPanel {
   private measuredScene: Scene;
   private instrumentation: SceneInstrumentation;
   private readonly legacyXor: LegacyXorDebug;
+  private readonly arcade: ArcadeDebug;
 
   constructor(private readonly app: App) {
     this.measuredScene = app.world.scene;
@@ -49,6 +51,7 @@ export class DebugPanel {
     });
     new SimReadyDebug(app, this.root);
     this.legacyXor = new LegacyXorDebug(app, this.root);
+    this.arcade = new ArcadeDebug(app, this.root);
     get<HTMLSelectElement>("speed").addEventListener("change", (event) => {
       app.timeline.speed = Number((event.target as HTMLSelectElement).value);
     });
@@ -103,7 +106,7 @@ export class DebugPanel {
     this.visible = visible;
     this.root.hidden = !visible;
     document.body.classList.toggle("debug-visible", visible);
-    if (!visible) this.legacyXor.stopLoop();
+    if (!visible) { this.legacyXor.stopLoop(); this.arcade.hide(); }
   }
 
   update(): void {
@@ -133,6 +136,7 @@ export class DebugPanel {
       this.instrumentation = new SceneInstrumentation(this.measuredScene);
     }
     if (!this.visible) return;
+    this.arcade.update();
     const minutes = Math.floor(timeline.time / 60).toString().padStart(2, "0");
     const seconds = (timeline.time % 60).toFixed(1).padStart(4, "0");
     this.time.textContent = `${minutes}:${seconds}`;
