@@ -4,7 +4,7 @@
     1920,
     1080
   ],
-  "readyMs": 7286,
+  "readyMs": 7437,
   "groups": [
     "pong",
     "pastry",
@@ -14,15 +14,15 @@
   ],
   "replay": {
     "before": [
-      1404,
-      1720,
-      278,
+      1408,
+      1721,
+      282,
       20
     ],
     "after": [
-      1404,
-      1720,
-      278,
+      1408,
+      1721,
+      282,
       20
     ],
     "cameras": [
@@ -335,10 +335,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -348,7 +348,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -422,10 +422,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -435,7 +435,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -509,10 +509,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -522,7 +522,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -596,10 +596,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -609,7 +609,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -683,10 +683,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -696,7 +696,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -770,10 +770,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -783,7 +783,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -857,10 +857,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -870,7 +870,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -944,10 +944,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -957,7 +957,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1031,10 +1031,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1044,7 +1044,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1118,10 +1118,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1131,7 +1131,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1205,10 +1205,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1218,7 +1218,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1292,10 +1292,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1305,7 +1305,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1379,10 +1379,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1392,7 +1392,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1466,10 +1466,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1479,7 +1479,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1553,10 +1553,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1566,7 +1566,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1640,10 +1640,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1653,7 +1653,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1727,10 +1727,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1740,7 +1740,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1814,10 +1814,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1827,7 +1827,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1901,10 +1901,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1914,7 +1914,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -1988,10 +1988,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2001,7 +2001,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2075,10 +2075,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2088,7 +2088,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2162,10 +2162,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2175,7 +2175,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2249,10 +2249,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2262,7 +2262,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2336,10 +2336,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2349,7 +2349,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2423,10 +2423,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2436,7 +2436,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2510,10 +2510,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2523,7 +2523,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2597,10 +2597,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2610,7 +2610,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2684,10 +2684,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2697,7 +2697,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2771,10 +2771,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2784,7 +2784,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2858,10 +2858,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2871,7 +2871,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -2945,10 +2945,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2958,7 +2958,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3032,10 +3032,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3045,7 +3045,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3119,10 +3119,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3132,7 +3132,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3206,10 +3206,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3219,7 +3219,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3293,10 +3293,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3306,7 +3306,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3380,10 +3380,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3393,7 +3393,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3467,10 +3467,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3480,7 +3480,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3554,10 +3554,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3567,7 +3567,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3641,10 +3641,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3654,7 +3654,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3728,10 +3728,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3741,7 +3741,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -3815,10 +3815,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 1,
-          "complete": true,
-          "cursor": false,
-          "downloadedGB": 4.8
+          "progress": 0.16923076923076835,
+          "complete": false,
+          "cursor": true,
+          "downloadedGB": 0.81
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3828,7 +3828,7 @@
         ],
         "astronautFeet": 0,
         "astronautHeight": 16.639999876928414,
-        "archBottom": 3.5,
+        "archBottom": 0.30000001192092896,
         "archCount": 24,
         "addedArchAbsent": true,
         "oldAstronautAbsent": true
@@ -6033,8 +6033,8 @@
   },
   "posterPlayback": {
     "frames": 243,
-    "first": 138.23279999999704,
-    "last": 142.26559999999412,
+    "first": 138.23320000000285,
+    "last": 142.26640000000606,
     "robotVisibleDuringPoster": false
   },
   "wallPoster": {
@@ -6086,34 +6086,34 @@
   "musicBands": {
     "samples": 825,
     "peaks": [
-      0.8890756302521009,
-      0.7176470588235294,
-      0.6161330354926782,
-      0.44512755639890417
+      0.8834733893557424,
+      0.7145424836601307,
+      0.6161330354926783,
+      0.44038794012228566
     ],
     "lows": [
-      0.7327731092436974,
-      0.5187908496732027,
-      0.462645817820799,
-      0.25835125448028773
+      0.730532212885154,
+      0.4944444444444445,
+      0.4646314221891287,
+      0.26355471220746435
     ],
     "maxRoutingError": 0
   },
   "speakerEntrance": {
-    "frames": 450,
+    "frames": 451,
     "shaderCompilations": [],
-    "maxFrameMs": 22.299999997019768,
-    "p95FrameMs": 18.099999994039536,
+    "maxFrameMs": 22.700000002980232,
+    "p95FrameMs": 17.599999994039536,
     "resolution": [
       1920,
       1080
     ]
   },
   "terminatorEntrance": {
-    "frames": 690,
+    "frames": 871,
     "shaderCompilations": [],
-    "maxFrameMs": 28.599999994039536,
-    "p95FrameMs": 17.799999997019768,
+    "maxFrameMs": 27.400000005960464,
+    "p95FrameMs": 17.599999994039536,
     "resolution": [
       1920,
       1080
@@ -6181,6 +6181,28 @@
       "textureReady": true
     }
   ],
+  "skynetWarning": {
+    "position": [
+      -436,
+      14.3,
+      185
+    ],
+    "yaw": 1.5707963267948966,
+    "logoReady": true,
+    "logoSource": "http://127.0.0.1:59058/assets/skynet-logo-CKznufnA.png",
+    "longestReadableSeconds": 3.75,
+    "minimumCaptionVisibility": 0.95,
+    "whiteLetterSamples": 133,
+    "fixed": true,
+    "gating": true,
+    "blink": {
+      "triangleOn": 16.733913148033107,
+      "triangleOff": 0.865774232981303,
+      "wordmarkDelta": 0.10350139090052186,
+      "captionDelta": 0,
+      "rewindDelta": 0
+    }
+  },
   "soundtrackEndings": [
     {
       "id": "violas-journey",
@@ -6188,23 +6210,23 @@
       "before": {
         "remaining": 1.5973339999999894,
         "gain": 1,
-        "input": 0.05621820333417795,
-        "output": 0.05621820333417795,
+        "input": 0.05605728072615221,
+        "output": 0.05605728072615221,
         "ratio": 1
       },
       "middle": {
         "remaining": 0.6613339999999823,
         "gain": 0.5435516821224157,
-        "input": 0.016632894034365155,
-        "output": 0.009764714467772806,
-        "ratio": 0.5870724870607585
+        "input": 0.016658593526732223,
+        "output": 0.009800901045797844,
+        "ratio": 0.5883390473553625
       },
       "late": {
         "remaining": 0.10933399999998983,
         "gain": 0.021613195662770677,
-        "input": 0.009082080251367313,
-        "output": 0.0003434703983445467,
-        "ratio": 0.03781847207228069
+        "input": 0.009092876430263451,
+        "output": 0.00034512244493352834,
+        "ratio": 0.03795525514730095
       },
       "final": {
         "remaining": 0,
@@ -6224,23 +6246,23 @@
       "before": {
         "remaining": 1.5946679999999844,
         "gain": 1,
-        "input": 0.05512769724082075,
-        "output": 0.05512769724082075,
+        "input": 0.05523463550880013,
+        "output": 0.05523463550880013,
         "ratio": 1
       },
       "middle": {
-        "remaining": 0.6618090000000052,
-        "gain": 0.5441197304520529,
+        "remaining": 0.6619509999999877,
+        "gain": 0.5442895371280305,
         "input": 0.016466938746535455,
-        "output": 0.00973933094391169,
-        "ratio": 0.5914475722429456
+        "output": 0.009741492620885736,
+        "ratio": 0.5915788460034982
       },
       "late": {
-        "remaining": 0.1118370000000084,
-        "gain": 0.022582053795865555,
+        "remaining": 0.11140000000000327,
+        "gain": 0.02241147438694527,
         "input": 0.009215050651381736,
-        "output": 0.00037396110261173337,
-        "ratio": 0.04058155692889875
+        "output": 0.00037442159467748916,
+        "ratio": 0.040631528663529065
       },
       "final": {
         "remaining": 0,
@@ -6261,29 +6283,29 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.98286203923709,
-      "medianMs": 16.600000008940697,
-      "p95Ms": 17.799999997019768,
-      "drawCalls": 151
+      "fps": 60.010085728693895,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.400000005960464,
+      "drawCalls": 147
     },
     {
       "time": 44.5,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.96170512967721,
+      "fps": 59.99193385781286,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.799999997019768,
-      "drawCalls": 151
+      "p95Ms": 17.299999997019768,
+      "drawCalls": 147
     },
     {
       "time": 59.2,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00403388499158,
-      "medianMs": 16.799999997019768,
-      "p95Ms": 18.19999998807907,
+      "fps": 60.013112108347514,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.5,
       "drawCalls": 330
     },
     {
@@ -6291,9 +6313,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.004033884540725,
-      "medianMs": 16.799999997019768,
-      "p95Ms": 18.299999997019768,
+      "fps": 59.98890961325867,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.299999997019768,
       "drawCalls": 522
     },
     {
@@ -6301,9 +6323,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.007059654257304,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.5,
+      "fps": 60.00100842039974,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.399999991059303,
       "drawCalls": 301
     },
     {
@@ -6311,9 +6333,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99495840685657,
-      "medianMs": 16.799999997019768,
-      "p95Ms": 18,
+      "fps": 60.010085728693895,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.299999997019768,
       "drawCalls": 493
     },
     {
@@ -6321,9 +6343,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99193385781286,
-      "medianMs": 16.600000008940697,
-      "p95Ms": 17.299999997019768,
+      "fps": 60.00705965380641,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.30000001192093,
       "drawCalls": 118
     },
     {
@@ -6331,9 +6353,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.01311210879851,
+      "fps": 59.99193385736219,
       "medianMs": 16.69999998807907,
-      "p95Ms": 17.399999991059303,
+      "p95Ms": 17.5,
       "drawCalls": 118
     },
     {
@@ -6341,9 +6363,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.90737011706384,
+      "fps": 60.004033884540725,
       "medianMs": 16.700000002980232,
-      "p95Ms": 19.599999994039536,
+      "p95Ms": 17.599999994039536,
       "drawCalls": 28
     },
     {
@@ -6351,9 +6373,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00403388499158,
+      "fps": 59.92848869452305,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.400000005960464,
+      "p95Ms": 17.5,
       "drawCalls": 28
     },
     {
@@ -6361,9 +6383,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99193385781286,
-      "medianMs": 16.600000008940697,
-      "p95Ms": 17.399999991059303,
+      "fps": 60.01613879371539,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.600000008940697,
       "drawCalls": 75
     },
     {
@@ -6371,9 +6393,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99798326088655,
+      "fps": 59.99495840685657,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.30000001192093,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 75
     },
     {
@@ -6381,9 +6403,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.02219307997466,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.400000005960464,
+      "fps": 60.00100842039974,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.69999998807907,
       "drawCalls": 71
     },
     {
@@ -6391,9 +6413,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99495840685657,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.100000008940697,
+      "fps": 60.03733414073853,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.700000002980232,
       "drawCalls": 71
     },
     {
@@ -6401,9 +6423,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00100842039974,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.099999994039536,
+      "fps": 59.99495840685657,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 319
     },
     {
@@ -6411,9 +6433,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00403388499158,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.200000002980232,
+      "fps": 60.01916578439274,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.399999991059303,
       "drawCalls": 409
     },
     {
@@ -6421,9 +6443,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.013112108347514,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 20.299999997019768,
+      "fps": 59.96170512967721,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.5,
       "drawCalls": 65
     },
     {
@@ -6431,19 +6453,19 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99798326088655,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 19.5,
-      "drawCalls": 65
+      "fps": 60.010085728693895,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.5,
+      "drawCalls": 73
     },
     {
       "time": 121.5,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00100842039974,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17,
+      "fps": 59.979838709677416,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.5,
       "drawCalls": 217
     },
     {
@@ -6451,9 +6473,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99798326133731,
+      "fps": 60.019165783941666,
       "medianMs": 16.69999998807907,
-      "p95Ms": 17.099999994039536,
+      "p95Ms": 17.5,
       "drawCalls": 337
     },
     {
@@ -6461,9 +6483,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99495840685657,
-      "medianMs": 16.600000008940697,
-      "p95Ms": 17,
+      "fps": 60.00100841994894,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 245
     },
     {
@@ -6471,8 +6493,8 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.98286203923709,
-      "medianMs": 16.69999998807907,
+      "fps": 60.00100842039974,
+      "medianMs": 16.700000002980232,
       "p95Ms": 17.299999997019768,
       "drawCalls": 453
     },
@@ -6481,9 +6503,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00100842039974,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17,
+      "fps": 60.00100841994894,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.5,
       "drawCalls": 247
     },
     {
@@ -6491,8 +6513,8 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00100842039974,
-      "medianMs": 16.600000008940697,
+      "fps": 59.970770548898216,
+      "medianMs": 16.700000002980232,
       "p95Ms": 17.399999991059303,
       "drawCalls": 486
     },
@@ -6501,9 +6523,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00100842039974,
-      "medianMs": 16.600000008940697,
-      "p95Ms": 17.400000005960464,
+      "fps": 59.979838709677416,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.69999998807907,
       "drawCalls": 247
     },
     {
@@ -6511,9 +6533,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.02219307997466,
+      "fps": 60.040363269424816,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.5,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 486
     },
     {
@@ -6521,9 +6543,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99193385736219,
+      "fps": 60.02522068095839,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.5,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 247
     },
     {
@@ -6531,8 +6553,8 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.97379296432883,
-      "medianMs": 16.700000002980232,
+      "fps": 60.007059654257304,
+      "medianMs": 16.600000008940697,
       "p95Ms": 17.400000005960464,
       "drawCalls": 458
     },
@@ -6541,9 +6563,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99798326088655,
+      "fps": 60.007059654257304,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.400000005960464,
+      "p95Ms": 17.599999994039536,
       "drawCalls": 121
     },
     {
@@ -6551,9 +6573,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.00705965380641,
+      "fps": 60.010085728693895,
       "medianMs": 16.69999998807907,
-      "p95Ms": 17.299999997019768,
+      "p95Ms": 17.599999994039536,
       "drawCalls": 206
     },
     {
@@ -6561,9 +6583,9 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99798326088655,
+      "fps": 59.98286203968763,
       "medianMs": 16.700000002980232,
-      "p95Ms": 17.299999997019768,
+      "p95Ms": 17.5,
       "drawCalls": 209
     },
     {
@@ -6571,9 +6593,9 @@
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.01613879371539,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.200000002980232,
+      "fps": 59.988909613709296,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.599999994039536,
       "drawCalls": 302
     }
   ],

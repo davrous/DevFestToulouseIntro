@@ -57,6 +57,14 @@ export const TERMINATOR = {
   hitsToDestroy: 12, fragments: 192,
 } as const;
 
+const skynetWall = cellPosition(4, 1);
+export const SKYNET_WARNING = {
+  x: skynetWall.x + CELL / 2 - 2, y: 14.3, z: skynetWall.z + 3,
+  wallX: skynetWall.x + CELL / 2 - .75, yaw: Math.PI / 2,
+  width: 17.5, height: 12, logoWidth: 12.5, logoY: 2.1, blinkPeriod: 1.2,
+  start: CINEMA.digital, end: TERMINATOR.end, readStart: 114.8, readEnd: 118.7,
+} as const;
+
 const cassouletPosterWall = cellPosition(3, 5);
 export const CASSOULET_WALL_POSTER = {
   x: cassouletPosterWall.x - CELL / 2 + 2, y: 17, z: cassouletPosterWall.z,

@@ -1,7 +1,7 @@
 {
   "browser": "headless Edge",
   "actualPlatform": "darwin",
-  "url": "local production preview",
+  "url": "https://stdevfest4a73iywh5gela.z6.web.core.windows.net/",
   "note": "The Windows user-agent enables Babylon's UBO policy on the current host; this is not a physical RTX 5090 test.",
   "results": [
     {
@@ -86,7 +86,7 @@
       ],
       "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Max, Unspecified Version)",
       "shaderErrors": [],
-      "readyMs": 6937
+      "readyMs": 15626
     },
     {
       "fullIntroReady": true,
@@ -170,7 +170,7 @@
       ],
       "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Max, Unspecified Version)",
       "shaderErrors": [],
-      "readyMs": 7866
+      "readyMs": 10800
     }
   ]
 }

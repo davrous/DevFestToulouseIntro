@@ -203,6 +203,7 @@ instruments, licensing and rehearsal diagnostics.
 | 1:17–1:20 | Giant front-facing reels and rotating sprockets transport a black-and-white film ribbon; two raised buckets tip inward at 1:17.55 and spill 72 Havok kernels from 1:18.1. The initial cascade remains visible before the rush; its physics continues behind the transition |
 | 1:20–1:34.2 | At **80.000 s** the camera accelerates into the already-previewed lens at 80.45 s. The enclosed 3D tunnel keeps its cyan/violet design, calmer beat-driven flight and physical final 90-degree right turn. The actual opening at its end reveals the D while the tube walls remain around it; the camera passes through this mouth at **94.200 s exactly**, without an intervening iris or full-screen cut |
 | 1:34.2–1:56 | Return to the D, then Eric Mittelette's gateway and converging data streams, without the obsolete `agent.observe()` / `agent.plan()` panels |
+| Approximately 1:54–1:58 | A fixed red-bordered **Skynet** warning on the east wall faces the unchanged camera before its right turn toward the npm terminal and T-800. The locally bundled logo sits above `Warning, it's operational!`, with clear separation and room around the wall edge. Only the red triangle pulses gently every 1.2 seconds; the Skynet wordmark and caption stay steady. Everything is preloaded, with no timed pop. [Rendered view](docs/skynet-warning.png) |
 | 1:47–1:56.7 | A transparent buffer tank faces the incoming camera, perpendicular to the right wall. 32 cubes progressively fill the same volume; a 33rd cube arrives at 1:50.7, making shader water ripple and spill over the lip. Only then does `BUFFER OVERFLOW / console.log('just one more...')` appear |
 | 1:57–2:05 | The centered terminal types `$ npm install cassoulet` and progresses to 4.80 GB. It sits slightly higher to keep the approaching T-800 visible beneath it, then softly clears after completion at 2:04.4 |
 | 1:59.5–2:14 | The T-800 advances beyond the terminal. At 2:04.4 the install releases 64 real cans. Genuine impacts stagger and dissolve the robot; after twelve contacts it becomes **192 curved red rose petals**, tumbling and floating through the corridor. The cassoulet saves the audience, then leaves a colliding heap |
@@ -562,9 +563,20 @@ and a measured 98.2-ms frame: real rendering builds the light defines in a
 different order than `forceCompilationAsync`, producing different effect keys
 even with the same shader features. Drawing the actual camera views during
 loading warms those variants plus the skin/glow bindings, without reducing
-model quality or changing timing. The SimReady verifier measures 116.5–128 s
+model quality or changing timing. The SimReady verifier measures 113.5–128 s
 on the first real-music pass and requires zero late compilations, max <50 ms
 and p95 <22 ms, including the destruction and petals.
+
+The Skynet warning is also drawn during offscreen preparation before SYSTEM
+READY. The verifier checks several seconds of fully framed warning text before
+the right turn, actual GPU lettering, at least 95% visibility of the caption
+strip despite foreground arches, fixed wall placement on seek and the shared
+Terminator/cassoulet enable switch. Its original local logo source and public-domain
+classification are recorded in [CREDITS.md](CREDITS.md).
+The logo uses contiguous UV slices of that same image: the triangle has its own
+emissive color/texture level, while the wordmark stays constant. Its slow 1.2-s
+timeline pulse uses no timer or per-frame texture upload. GPU pixel checks compare
+the bright/dark phases, steady wordmark/caption and identical appearance after rewind.
 
 GPU compatibility is checked with `npm run verify:gpu`: the complete intro and
 the Terminator destruction shader are tested with uniform buffers both enabled

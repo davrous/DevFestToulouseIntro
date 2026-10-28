@@ -1,5 +1,19 @@
 # 3D artwork credits
 
+## Skynet warning logo
+
+The unmodified [local Skynet logo](src/assets/skynet/skynet-logo.png) comes from
+[Wikimedia Commons: Skynet Terminator logo.png](https://commons.wikimedia.org/wiki/File:Skynet_Terminator_logo.png),
+file revision 18 May 2020. Commons classifies it as **public domain / PD-textlogo**
+(simple geometric shapes and text), crediting TriStar Pictures, Paramount Pictures,
+and/or the graphic artists. Trademark rights may still apply; its use here is a
+fictional Terminator reference, not an affiliation or endorsement.
+[Local source/license record](public/licenses/Skynet-logo-PD-textlogo.txt).
+The image is bundled locally; playback never requests Wikimedia.
+The image file is unchanged. At runtime, contiguous UV bands separate the upper
+triangle from the wordmark so only the triangle pulses; the message and wordmark
+retain constant brightness.
+
 ## NVIDIA SimReady
 
 The nine locally converted NVIDIA SimReady models are published under the

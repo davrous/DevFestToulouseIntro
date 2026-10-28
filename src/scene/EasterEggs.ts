@@ -13,6 +13,7 @@ import { emissive } from "./Labyrinth";
 import { BoxBatch } from "./Instances";
 import { DeployRocket } from "./DeployRocket";
 import { NpmCassouletTerminal } from "./NpmCassouletTerminal";
+import { SkynetWarning } from "./SkynetWarning";
 import { CASSOULET_SIGN, CINEMA, ORBIT_LINK } from "../content/showBeats";
 export { CASSOULET_SIGN, DEPLOY_ROCKET, ORBIT_LINK } from "../content/showBeats";
 
@@ -38,6 +39,7 @@ function cueRoot(scene: Scene, name: string, time: number): TransformNode {
 }
 
 export class EasterEggs {
+  readonly skynetWarning: SkynetWarning;
   private readonly chocolatine: TransformNode;
   private readonly chocolateStages: Mesh[];
   private readonly npm: TransformNode;
@@ -51,6 +53,7 @@ export class EasterEggs {
   get rocketParticles(): Mesh { return this.rocket.particles; }
 
   constructor(scene: Scene) {
+    this.skynetWarning = new SkynetWarning(scene);
     const metal = new PBRMaterial("Easter eggs / titanium", scene);
     metal.albedoColor = Color3.FromHexString("#37535e");
     metal.metallic = .55;
@@ -114,7 +117,8 @@ export class EasterEggs {
     this.update(0);
   }
 
-  update(time: number, cameraTime = time): void {
+  update(time: number, cameraTime = time, rescueEnabled = true): void {
+    this.skynetWarning.update(time, rescueEnabled);
     this.chocolatine.setEnabled(time >= 0 && time < CINEMA.start);
     const pastryOpacity = chocolatineOpacity(cameraTime);
     this.chocolateStages.forEach((mesh, index) => {

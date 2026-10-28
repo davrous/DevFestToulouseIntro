@@ -66,7 +66,7 @@ try {
     const app = window.devfest, scene = app.world.scene, engine = app.engine;
     const probe = window.terminatorEntranceProbe = { frames: [], shaderCompilations: [] };
     const shaderObserver = engine.onBeforeShaderCompilationObservable.add(() => {
-      if (app.timeline.time >= 116.5 && app.timeline.time < 128) probe.shaderCompilations.push(app.timeline.time);
+      if (app.timeline.time >= 113.5 && app.timeline.time < 128) probe.shaderCompilations.push(app.timeline.time);
     });
     const observer = scene.onAfterRenderObservable.add(() => {
       if (app.timeline.time >= 128) {
@@ -74,7 +74,7 @@ try {
         engine.onBeforeShaderCompilationObservable.remove(shaderObserver);
         return;
       }
-      if (app.timeline.playing && app.timeline.time >= 116.5) probe.frames.push([app.timeline.time, performance.now()]);
+      if (app.timeline.playing && app.timeline.time >= 113.5) probe.frames.push([app.timeline.time, performance.now()]);
     });
   });
   await page.evaluate(() => {
@@ -138,7 +138,7 @@ try {
     await page.waitForFunction(() => window.devfest.timeline.time >= 20.6, null, { timeout: 15000 });
     await page.evaluate(() => window.devfest.seek(78.5));
     await page.waitForFunction(() => window.devfest.timeline.time >= 94.2, null, { timeout: 25000 });
-    await page.evaluate(() => window.devfest.seek(116.5));
+    await page.evaluate(() => window.devfest.seek(113.5));
     await page.waitForFunction(() => window.devfest.timeline.time >= 128, null, { timeout: 18000 });
     await page.evaluate(() => window.devfest.togglePlayback());
     await page.evaluate(() => { window.devfest.seek(136); window.devfest.togglePlayback(); });
@@ -164,7 +164,7 @@ try {
       maxFrameMs: Math.max(...intervals), p95FrameMs: intervals[Math.floor(intervals.length * .95)],
       resolution: [window.devfest.engine.getRenderWidth(), window.devfest.engine.getRenderHeight()] };
   });
-  assert.ok(terminatorEntrance.frames > 500, "Measure the cold entrance, can impacts and model-to-petals handoff during real music playback.");
+  assert.ok(terminatorEntrance.frames > 750, "Measure the cold Skynet warning, Terminator entrance, can impacts and petals during real music playback.");
   assert.deepEqual(terminatorEntrance.shaderCompilations, [], "The Terminator's actual PBR, skin and glow draw variants must be ready before playback.");
   assert.ok(terminatorEntrance.maxFrameMs < 50, "The Terminator's first appearance must not stall the render loop.");
   assert.ok(terminatorEntrance.p95FrameMs < 22, "The rescue must retain the normal 60 FPS frame budget.");
@@ -190,6 +190,127 @@ try {
   });
   assert.ok(davidScreen.every((state) => state.enabled && state.visibility === 1 && state.textureReady),
     "David's opaque, preloaded card must already exist before the camera rounds the corner, including on rewind.");
+
+  const skynetWarning = await page.evaluate(async () => {
+    const app = window.devfest, scene = app.world.scene, warning = app.world.easterEggs.skynetWarning;
+    const logo = scene.getMeshByName("Digital / Skynet logo"), original = warning.mesh.material;
+    const triangle = scene.getMeshByName("Digital / Skynet warning triangle");
+    const Standard = original.constructor, Vector = app.world.camera.position.constructor;
+    const mask = new Standard("Validation / Skynet warning occlusion", scene);
+    mask.disableLighting = true; mask.diffuseColor.set(0, 0, 0);
+    mask.specularColor.set(0, 0, 0); mask.emissiveColor.set(1, 0, 1);
+    const width = app.engine.getRenderWidth(), height = app.engine.getRenderHeight();
+    const fixedMatrix = Array.from(warning.root.computeWorldMatrix(true).asArray());
+    const result = { position: warning.root.position.asArray(), yaw: warning.root.rotation.y,
+      logoReady: logo.material.emissiveTexture.isReady(), logoSource: logo.material.emissiveTexture.url,
+      longestReadableSeconds: 0, minimumCaptionVisibility: 1, whiteLetterSamples: 0, fixed: true, gating: false };
+    try {
+      warning.mesh.material = mask; logo.setEnabled(false); triangle.setEnabled(false);
+      await mask.forceCompilationAsync(warning.mesh);
+      await scene.whenReadyAsync(true);
+      let consecutive = 0;
+      for (let time = 113.5; time <= 119; time += .25) {
+        app.seek(time); scene.render();
+        const viewport = app.world.camera.viewport.toGlobal(width, height), world = warning.mesh.computeWorldMatrix(true);
+        const project = (point) => Vector.Project(point, world, scene.getTransformMatrix(), viewport);
+        const corners = warning.mesh.getBoundingInfo().boundingBox.vectors.map(project);
+        const framed = corners.every((point) => point.z > 0 && point.z < 1
+          && point.x > width * .025 && point.x < width * .975
+          && point.y > height * .035 && point.y < height * .965);
+        const marked = await app.engine.readPixels(0, 0, width, height);
+        let visible = 0, total = 0;
+        const points = [];
+        for (let row = 0; row < 10; row++) for (let col = 0; col < 80; col++) {
+          const point = project(new Vector(-8.2 + col / 79 * 16.4, -3.9 + row / 9 * 1.5, 0));
+          const x = Math.floor(point.x), y = height - 1 - Math.floor(point.y);
+          const at = (y * width + x) * 4;
+          const clear = x >= 0 && x < width && y >= 0 && y < height
+            && marked[at] > 110 && marked[at + 1] < marked[at] * .15 && marked[at + 2] > 110;
+          if (clear) visible++;
+          total++; points.push({ at, clear });
+        }
+        const visibility = visible / total;
+        consecutive = framed && visibility >= .95 ? consecutive + .25 : 0;
+        result.longestReadableSeconds = Math.max(result.longestReadableSeconds, consecutive);
+        if (framed) result.minimumCaptionVisibility = Math.min(result.minimumCaptionVisibility, visibility);
+        result.fixed &&= Array.from(warning.root.computeWorldMatrix(true).asArray()).every((value, index) => value === fixedMatrix[index]);
+        if (time === 116) {
+          warning.mesh.material = original; logo.setEnabled(true); triangle.setEnabled(true); scene.render();
+          const normal = await app.engine.readPixels(0, 0, width, height);
+          result.whiteLetterSamples = points.filter(({ at, clear }) => clear
+            && normal[at] > 80 && normal[at + 1] > 70 && normal[at + 2] > 70).length;
+          warning.mesh.material = mask; logo.setEnabled(false); triangle.setEnabled(false);
+        }
+      }
+      app.world.simready.config.enableToulouseEasterEggs = false; app.seek(116);
+      result.gating = !warning.root.isEnabled();
+      app.world.simready.config.enableToulouseEasterEggs = true; app.seek(116);
+      result.gating &&= warning.root.isEnabled();
+      return result;
+    } finally { warning.mesh.material = original; logo.setEnabled(true); triangle.setEnabled(true); mask.dispose(); }
+  });
+  console.log("Pre-turn Skynet warning:", skynetWarning);
+  assert.deepEqual(skynetWarning.position, [-436, 14.3, 185]);
+  assert.equal(skynetWarning.yaw, Math.PI / 2);
+  assert.ok(skynetWarning.logoReady && skynetWarning.fixed && skynetWarning.gating);
+  assert.ok(skynetWarning.longestReadableSeconds >= 3.5, "Skynet must be readable for several seconds before the original right turn.");
+  assert.ok(skynetWarning.minimumCaptionVisibility >= .95, "Foreground arches must not hide the warning sentence.");
+  assert.ok(skynetWarning.whiteLetterSamples > 25, "Verify actual lettering in GPU pixels, not just a ready plane.");
+  skynetWarning.blink = await page.evaluate(async () => {
+    const app = window.devfest, scene = app.world.scene, engine = app.engine, warning = app.world.easterEggs.skynetWarning;
+    const triangle = scene.getMeshByName("Digital / Skynet warning triangle");
+    const wordmark = scene.getMeshByName("Digital / Skynet logo"), Vector = app.world.camera.position.constructor;
+    const loops = [...engine.activeRenderLoops], physics = scene.physicsEnabled;
+    engine.stopRenderLoop(); scene.physicsEnabled = false;
+    try {
+      app.seek(116); scene.render();
+      const width = engine.getRenderWidth(), height = engine.getRenderHeight();
+      const project = (mesh, point) => Vector.Project(point, mesh.computeWorldMatrix(true),
+        scene.getTransformMatrix(), app.world.camera.viewport.toGlobal(width, height));
+      const rectangle = (points) => ({
+        x0: Math.max(0, Math.ceil(Math.min(...points.map((point) => point.x)))),
+        x1: Math.min(width - 1, Math.floor(Math.max(...points.map((point) => point.x)))),
+        y0: Math.max(0, Math.ceil(Math.min(...points.map((point) => point.y)))),
+        y1: Math.min(height - 1, Math.floor(Math.max(...points.map((point) => point.y)))),
+      });
+      const bounds = (mesh) => rectangle(mesh.getBoundingInfo().boundingBox.vectors.map((point) => project(mesh, point)));
+      const triangleRect = bounds(triangle), wordmarkRect = bounds(wordmark);
+      const captionRect = rectangle([-8.2, 8.2].flatMap((x) => [-3.9, -2.4].map((y) =>
+        project(warning.mesh, new Vector(x, y, 0)))));
+      const values = (pixels, rect, compare) => {
+        let value = 0, count = 0;
+        for (let y = rect.y0; y <= rect.y1; y++) for (let x = rect.x0; x <= rect.x1; x++) {
+          const at = ((height - 1 - y) * width + x) * 4;
+          value += compare ? Math.abs(pixels[at] - compare[at]) + Math.abs(pixels[at + 1] - compare[at + 1])
+            + Math.abs(pixels[at + 2] - compare[at + 2])
+            : Math.max(0, pixels[at] - Math.max(pixels[at + 1], pixels[at + 2]));
+          count++;
+        }
+        return value / count / (compare ? 3 : 1);
+      };
+      const frames = [];
+      for (const time of [116, 116.6, 116]) {
+        warning.update(time); scene.render(); frames.push(await engine.readPixels(0, 0, width, height));
+      }
+      return { triangleOn: values(frames[0], triangleRect), triangleOff: values(frames[1], triangleRect),
+        wordmarkDelta: values(frames[1], wordmarkRect, frames[0]),
+        captionDelta: values(frames[1], captionRect, frames[0]),
+        rewindDelta: values(frames[2], triangleRect, frames[0]) };
+    } finally {
+      warning.update(app.showController.effectTime(app.timeline.time));
+      scene.physicsEnabled = physics; loops.forEach((loop) => engine.runRenderLoop(loop));
+    }
+  });
+  assert.ok(skynetWarning.blink.triangleOn > 10, "The upper emblem must be visibly red.");
+  assert.ok(skynetWarning.blink.triangleOff < skynetWarning.blink.triangleOn * .1, "The red triangle must really blink in GPU pixels.");
+  assert.ok(skynetWarning.blink.wordmarkDelta < 3 && skynetWarning.blink.captionDelta < 3,
+    "The Skynet wordmark and warning text must not blink with the triangle.");
+  assert.ok(skynetWarning.blink.rewindDelta < .1, "Rewinding must restore the identical triangle appearance.");
+  console.log("Skynet triangle on/off pixels:", skynetWarning.blink);
+  const hidePause = await page.addStyleTag({ content: "#pause-overlay{display:none!important}" });
+  await page.evaluate(() => { window.devfest.seek(116); window.devfest.world.scene.render(); });
+  await page.screenshot({ path: new URL("../docs/skynet-warning.png", import.meta.url).pathname });
+  await hidePause.evaluate((element) => element.remove());
 
   const replay = await page.evaluate(async () => {
     const app = window.devfest;
@@ -759,12 +880,17 @@ try {
   await page.goto(`${origin}/?simready=0`);
   await page.waitForFunction(() => window.devfest?.ready, null, { timeout: 90000 });
   assert.equal(await page.evaluate(() => window.devfest.world.simready.groups.size), 0);
+  assert.equal(await page.evaluate(() => {
+    window.devfest.seek(116);
+    window.devfest.world.scene.render();
+    return window.devfest.world.easterEggs.skynetWarning.root.isEnabled();
+  }), false, "No Skynet warning when the Terminator/cassoulet story is disabled.");
   assert.deepEqual(assetRequests, [], "Disabled mode must not download NVIDIA models.");
   assert.deepEqual(external, [], "The performance and viewer must use only local resources.");
   assert.deepEqual(errors, []);
   const report = { browser: process.env.SIMREADY_BROWSER ?? "msedge", viewport: [1920, 1080], readyMs, fullShow,
     groups: loaded.groups, replay, tunnelIsolation, robotPresentation, cassouletRescue, posterPlayback, wallPoster,
-    exitContinuity, musicBands, speakerEntrance, terminatorEntrance, davidScreen, soundtrackEndings, measurements, viewer,
+    exitContinuity, musicBands, speakerEntrance, terminatorEntrance, davidScreen, skynetWarning, soundtrackEndings, measurements, viewer,
     browserErrors: errors, externalRequests: external };
   await writeFile(new URL("../docs/simready-validation.json", import.meta.url), `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Verified nine models, five presentation moments, unchanged camera, deterministic replay and zero browser errors. Startup ${readyMs} ms.`);

@@ -32,7 +32,7 @@ import { PixelWorld } from "./PixelWorld";
 import { ArcadeCathedral } from "./ArcadeCathedral";
 import { DemosceneTransition } from "./DemosceneTransition";
 import { MusicReactive } from "../effects/MusicReactive";
-import { ASTRONAUT_FINALE, CINEMA, TERMINATOR } from "../content/showBeats";
+import { ASTRONAUT_FINALE, CINEMA, SKYNET_WARNING, TERMINATOR } from "../content/showBeats";
 import { FloorEqualizer } from "../effects/ShowLighting";
 import { WallMeters } from "../effects/WallMeters";
 import { ClapCrtTransition } from "../effects/ClapCrtTransition";
@@ -204,6 +204,7 @@ export class DevFestScene {
 
   async prepare(progress: (message: string) => void = () => {}): Promise<void> {
     await Promise.all([this.pixelWorld.prepare(), this.cathedral.prepare(), this.cinema.prepare(),
+      this.easterEggs.skynetWarning.ready,
       this.entryTransition.prepare(), this.clapTransition.prepare(), this.lensVortex.prepare(),
       this.crtLightning.prepare(), this.simready.prepare(progress)]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
@@ -247,6 +248,7 @@ export class DevFestScene {
     entranceStates.push(() => this.update(speaker.startTime + .6, { ...SILENCE, bass: 1 }));
     const rescue = this.simready.cassouletRescue?.rescue;
     if (rescue) {
+      entranceStates.push(() => this.update(SKYNET_WARNING.readStart + 1, SILENCE));
       // Real draws also warm the PBR light defines, glow and skinned model bindings.
       for (const time of [TERMINATOR.walkStart + .1, rescue.impactTime + .1, rescue.destroyTime + .1]) {
         entranceStates.push(() => this.update(time, SILENCE));
@@ -318,23 +320,23 @@ export class DevFestScene {
     this.branding.update(time);
     updateInterior(this.interior, time);
     this.interior.root.setEnabled(!cinema);
-    const rescueSpace = this.simready.config.enabled && this.simready.config.enableToulouseEasterEggs
+    const rescueEnabled = this.simready.config.enabled && this.simready.config.enableToulouseEasterEggs;
+    const rescueSpace = rescueEnabled
       ? 1 - cueEnvelope(time, TERMINATOR.start - .7, TERMINATOR.end, .7, 1) : 1;
     this.interior.core.scaling.setAll((1 + audio.bass * calm * .025
       + audio.drop * cueEnvelope(time, 120, 155, 2) * .18) * Math.max(.001, rescueSpace));
     this.interior.rings.forEach((ring) => ring.scaling.setAll(Math.max(.001, rescueSpace)));
     this.portals.forEach((portal) => portal.update(time, audio));
-    this.easterEggs.update(time, cameraTime);
+    this.easterEggs.update(time, cameraTime, rescueEnabled);
     this.arcade.update(time, audio);
     this.pixelWorld.update(time, audio);
     this.cathedral.update(time, audio);
     this.demoscene.update(time, audio, speed);
     this.cinema.update(time, audio, cameraTime);
     this.simready.update(time, audio);
-    this.cinema.terminator.update(time, this.simready.cassouletRescue,
-      this.simready.config.enabled && this.simready.config.enableToulouseEasterEggs);
+    this.cinema.terminator.update(time, this.simready.cassouletRescue, rescueEnabled);
     this.cassouletPoster.update(time, this.simready.cassouletRescue?.rescue?.destroyTime,
-      this.simready.config.enabled && this.simready.config.enableToulouseEasterEggs);
+      rescueEnabled);
     this.popcorn.update(time, audio, speed);
     this.digitalMoments.update(time, audio);
     this.overflow.update(time);

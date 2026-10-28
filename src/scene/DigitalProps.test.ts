@@ -25,12 +25,21 @@ vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
     update() {}
   },
 }));
+vi.mock("./EventBranding", () => ({
+  loadEventArtwork: async () => ({ getSize: () => ({ width: 1920, height: 1080 }), clone: () => ({ level: 1 }) }),
+  createEventDecal: (scene: Scene, name: string, _texture: unknown, size: number) => {
+    const mesh = MeshBuilder.CreatePlane(name, { size }, scene);
+    mesh.material = new StandardMaterial(`${name} test material`, scene);
+    return mesh;
+  },
+}));
 
 describe("digital speaker props", () => {
-  it("pre-stages the HTTP panel closer to Anne-Flore, square across the corridor, without a timed pop", () => {
+  it("pre-stages the HTTP panel closer to Anne-Flore, square across the corridor, without a timed pop", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
     const props = new EasterEggs(scene);
+    await props.skynetWarning.ready;
     const root = scene.getTransformNodeByName("Toulouse HTTP redirect")!;
     const request = scene.getMeshByName("Chocolatine compiler stage 0")!;
     const redirect = scene.getMeshByName("Chocolatine compiler stage 1")!;
@@ -73,10 +82,11 @@ describe("digital speaker props", () => {
     engine.dispose();
   });
 
-  it("grounds the procedural rocket, preserves orbital link into pullback and clears the rocket before reveal", () => {
+  it("grounds the procedural rocket, preserves orbital link into pullback and clears the rocket before reveal", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
     const props = new EasterEggs(scene);
+    await props.skynetWarning.ready;
     const rocket = scene.getTransformNodeByName("Toulouse / npm run launch");
     const satellite = scene.getTransformNodeByName("Toulouse orbital hardware");
     if (!rocket || !satellite) throw new Error("Launch pad and orbital hardware must exist.");
