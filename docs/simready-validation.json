@@ -4,7 +4,7 @@
     1920,
     1080
   ],
-  "readyMs": 8941,
+  "readyMs": 7286,
   "groups": [
     "pong",
     "pastry",
@@ -317,9 +317,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -335,10 +335,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -404,9 +404,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -422,10 +422,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -491,9 +491,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -509,10 +509,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -578,9 +578,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -596,10 +596,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -665,9 +665,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -683,10 +683,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -752,9 +752,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -770,10 +770,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -839,9 +839,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -857,10 +857,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -926,9 +926,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -944,10 +944,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1013,9 +1013,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1031,10 +1031,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1100,9 +1100,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1118,10 +1118,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1187,9 +1187,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1205,10 +1205,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1274,9 +1274,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1292,10 +1292,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1361,9 +1361,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1379,10 +1379,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1448,9 +1448,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1466,10 +1466,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1535,9 +1535,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1553,10 +1553,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1622,9 +1622,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1640,10 +1640,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1709,9 +1709,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1727,10 +1727,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1796,9 +1796,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -1814,10 +1814,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1883,9 +1883,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -1901,10 +1901,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -1970,9 +1970,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -1988,10 +1988,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2057,9 +2057,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2075,10 +2075,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2144,9 +2144,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2162,10 +2162,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2231,9 +2231,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2249,10 +2249,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2318,9 +2318,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2336,10 +2336,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2405,9 +2405,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2423,10 +2423,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2492,9 +2492,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2510,10 +2510,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2579,9 +2579,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2597,10 +2597,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2666,9 +2666,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2684,10 +2684,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2753,9 +2753,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2771,10 +2771,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2840,9 +2840,9 @@
           0
         ],
         "physicalFlightHeading": [
-          0.3033300148597794,
           0,
-          0.9528855661018096
+          0,
+          1
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2858,10 +2858,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -2927,9 +2927,9 @@
           265.3497340420426
         ],
         "physicalFlightHeading": [
-          0.46800946517134523,
-          0.0065223317081651525,
-          0.8836993831044131
+          0.06923873107263202,
+          0.09376774904038668,
+          0.9931835718331989
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -2945,10 +2945,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3014,9 +3014,9 @@
           635.6771895305718
         ],
         "physicalFlightHeading": [
-          0.9207826262419077,
-          -0.001552904492167799,
-          0.39007299791025474
+          0.020188873607218435,
+          -0.01647881043772434,
+          0.9996603714207288
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -3032,10 +3032,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3101,9 +3101,9 @@
           724.012981035941
         ],
         "physicalFlightHeading": [
-          0.9984646356405323,
+          0.9256602160263145,
           0,
-          0.055392881990549946
+          0.3783558701356655
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -3119,10 +3119,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3188,9 +3188,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999999630161,
+          0.9999999991319082,
           0,
-          -0.000008600450665296475
+          -0.00004166753566117158
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -3206,10 +3206,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3275,9 +3275,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999998930102,
+          0.9999999991319082,
           0,
-          -0.000014628042202059824
+          -0.00004166753566117158
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -3293,10 +3293,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3362,9 +3362,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999996075228,
+          0.9999999991319082,
           0,
-          -0.000028017035709246273
+          -0.00004166753566117158
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -3380,10 +3380,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3449,9 +3449,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991340044,
+          0.9999999991319082,
           0,
-          -0.00004161719572768061
+          -0.00004166753566117158
         ],
         "tunnelPassActive": true,
         "terminator": false,
@@ -3467,10 +3467,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3536,9 +3536,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -3554,10 +3554,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3623,9 +3623,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -3641,10 +3641,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3710,9 +3710,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -3728,10 +3728,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3797,9 +3797,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -3815,10 +3815,10 @@
         "terminatorDebris": false,
         "terminal": {
           "command": "$ npm install cassoulet",
-          "progress": 0.39999999999999913,
-          "complete": false,
+          "progress": 1,
+          "complete": true,
           "cursor": false,
-          "downloadedGB": 1.91
+          "downloadedGB": 4.8
         },
         "astronautPresent": false,
         "astronautScale": [
@@ -3884,9 +3884,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -3971,9 +3971,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -4058,9 +4058,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -4145,9 +4145,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4232,9 +4232,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4319,9 +4319,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4406,9 +4406,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4493,9 +4493,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4580,9 +4580,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4667,9 +4667,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4754,9 +4754,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": true,
@@ -4841,9 +4841,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -4928,9 +4928,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5015,9 +5015,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5102,9 +5102,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5189,9 +5189,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5276,9 +5276,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5363,9 +5363,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5450,9 +5450,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5537,9 +5537,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5624,9 +5624,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5711,9 +5711,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5798,9 +5798,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -5885,9 +5885,9 @@
           735.001
         ],
         "physicalFlightHeading": [
-          0.9999999991298045,
+          0.9999999991319082,
           0,
-          -0.00004171799574773248
+          -0.00004166753566117158
         ],
         "tunnelPassActive": false,
         "terminator": false,
@@ -6033,8 +6033,8 @@
   },
   "posterPlayback": {
     "frames": 243,
-    "first": 138.23299999999966,
-    "last": 142.26620000000253,
+    "first": 138.23279999999704,
+    "last": 142.26559999999412,
     "robotVisibleDuringPoster": false
   },
   "wallPoster": {
@@ -6086,53 +6086,125 @@
   "musicBands": {
     "samples": 825,
     "peaks": [
-      0.881232492997199,
-      0.7150326797385621,
-      0.6145941921072229,
-      0.4446890153911028
+      0.8890756302521009,
+      0.7176470588235294,
+      0.6161330354926782,
+      0.44512755639890417
     ],
     "lows": [
-      0.7271708683473389,
-      0.5119281045751635,
-      0.4683544303797467,
-      0.26812565886569745
+      0.7327731092436974,
+      0.5187908496732027,
+      0.462645817820799,
+      0.25835125448028773
     ],
     "maxRoutingError": 0
   },
   "speakerEntrance": {
     "frames": 450,
     "shaderCompilations": [],
-    "maxFrameMs": 24.899999998509884,
-    "p95FrameMs": 17.399999998509884,
+    "maxFrameMs": 22.299999997019768,
+    "p95FrameMs": 18.099999994039536,
     "resolution": [
       1920,
       1080
     ]
   },
+  "terminatorEntrance": {
+    "frames": 690,
+    "shaderCompilations": [],
+    "maxFrameMs": 28.599999994039536,
+    "p95FrameMs": 17.799999997019768,
+    "resolution": [
+      1920,
+      1080
+    ]
+  },
+  "davidScreen": [
+    {
+      "time": 51.18,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 60,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 65.9,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 66,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 66.99,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 67,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 68.8,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 75,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 87.5,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    },
+    {
+      "time": 60,
+      "enabled": true,
+      "visibility": 1,
+      "textureReady": true
+    }
+  ],
   "soundtrackEndings": [
     {
       "id": "violas-journey",
       "duration": 177.6,
       "before": {
-        "remaining": 1.5981529999999964,
+        "remaining": 1.5973339999999894,
         "gain": 1,
-        "input": 0.0550327471827556,
-        "output": 0.0550327471827556,
+        "input": 0.05621820333417795,
+        "output": 0.05621820333417795,
         "ratio": 1
       },
       "middle": {
-        "remaining": 0.6633889999999951,
-        "gain": 0.5460088677555572,
-        "input": 0.016493738719029483,
-        "output": 0.00980775379387921,
-        "ratio": 0.5946349679083744
+        "remaining": 0.6613339999999823,
+        "gain": 0.5435516821224157,
+        "input": 0.016632894034365155,
+        "output": 0.009764714467772806,
+        "ratio": 0.5870724870607585
       },
       "late": {
-        "remaining": 0.1173339999999996,
-        "gain": 0.024779016290390157,
-        "input": 0.00919294673785433,
-        "output": 0.00038397550923134334,
-        "ratio": 0.04176849058096085
+        "remaining": 0.10933399999998983,
+        "gain": 0.021613195662770677,
+        "input": 0.009082080251367313,
+        "output": 0.0003434703983445467,
+        "ratio": 0.03781847207228069
       },
       "final": {
         "remaining": 0,
@@ -6141,32 +6213,34 @@
         "output": 0,
         "ratio": null
       },
-      "samples": 116,
-      "rewindVolume": 1
+      "samples": 115,
+      "rewindVolume": 1,
+      "source": "/assets/music/violas-journey.mp3",
+      "mappedEffectTime": 51.03
     },
     {
-      "id": "viola-trance",
-      "duration": 178,
+      "id": "violas-journey-wav",
+      "duration": 177.6,
       "before": {
-        "remaining": 1.597332999999992,
+        "remaining": 1.5946679999999844,
         "gain": 1,
-        "input": 0.07091256547932716,
-        "output": 0.07091256547932716,
+        "input": 0.05512769724082075,
+        "output": 0.05512769724082075,
         "ratio": 1
       },
       "middle": {
-        "remaining": 0.6613330000000133,
-        "gain": 0.5435504861778714,
-        "input": 0.0182001467920998,
-        "output": 0.010640213904064135,
-        "ratio": 0.5846224223138008
+        "remaining": 0.6618090000000052,
+        "gain": 0.5441197304520529,
+        "input": 0.016466938746535455,
+        "output": 0.00973933094391169,
+        "ratio": 0.5914475722429456
       },
       "late": {
-        "remaining": 0.109800000000007,
-        "gain": 0.021792073531394694,
-        "input": 0.017369251940744772,
-        "output": 0.0007228734908623633,
-        "ratio": 0.04161799790390785
+        "remaining": 0.1118370000000084,
+        "gain": 0.022582053795865555,
+        "input": 0.009215050651381736,
+        "output": 0.00037396110261173337,
+        "ratio": 0.04058155692889875
       },
       "final": {
         "remaining": 0,
@@ -6175,8 +6249,10 @@
         "output": 0,
         "ratio": null
       },
-      "samples": 116,
-      "rewindVolume": 1
+      "samples": 115,
+      "rewindVolume": 1,
+      "source": "/assets/music/violas-journey.wav",
+      "mappedEffectTime": 51.03
     }
   ],
   "measurements": [
@@ -6185,320 +6261,320 @@
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.99798326088655,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.899999998509884,
-      "drawCalls": 147
+      "fps": 59.98286203923709,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.799999997019768,
+      "drawCalls": 151
     },
     {
       "time": 44.5,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.013112108573004,
-      "medianMs": 16.69999999552965,
+      "fps": 59.96170512967721,
+      "medianMs": 16.700000002980232,
       "p95Ms": 17.799999997019768,
-      "drawCalls": 147
+      "drawCalls": 151
     },
     {
       "time": 59.2,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.93754407176857,
+      "fps": 60.00403388499158,
       "medianMs": 16.799999997019768,
-      "p95Ms": 18,
-      "drawCalls": 328
+      "p95Ms": 18.19999998807907,
+      "drawCalls": 330
     },
     {
       "time": 59.2,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.98890961325867,
-      "medianMs": 16.69999999552965,
+      "fps": 60.004033884540725,
+      "medianMs": 16.799999997019768,
       "p95Ms": 18.299999997019768,
-      "drawCalls": 520
+      "drawCalls": 522
     },
     {
       "time": 61.8,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.982862039462354,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 18.100000001490116,
-      "drawCalls": 299
-    },
-    {
-      "time": 61.8,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.02522068095839,
-      "medianMs": 16.600000001490116,
-      "p95Ms": 18,
-      "drawCalls": 491
-    },
-    {
-      "time": 80.35,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.010085728693895,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.69999999552965,
-      "drawCalls": 118
-    },
-    {
-      "time": 80.35,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.010085728693895,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.899999998509884,
-      "drawCalls": 118
-    },
-    {
-      "time": 84,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.001008420174344,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.799999997019768,
-      "drawCalls": 28
-    },
-    {
-      "time": 84,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.982862039462354,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.799999997019768,
-      "drawCalls": 28
-    },
-    {
-      "time": 91.5,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.982862039462354,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.400000005960464,
-      "drawCalls": 75
-    },
-    {
-      "time": 91.5,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.02824858739014,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.700000002980232,
-      "drawCalls": 75
-    },
-    {
-      "time": 93.5,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.0221930797491,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.5,
-      "drawCalls": 71
-    },
-    {
-      "time": 93.5,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.013112108573004,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.399999998509884,
-      "drawCalls": 71
-    },
-    {
-      "time": 111,
       "enabled": false,
       "width": 1920,
       "height": 1080,
       "fps": 60.007059654257304,
-      "medianMs": 16.600000001490116,
+      "medianMs": 16.700000002980232,
       "p95Ms": 17.5,
-      "drawCalls": 211
-    },
-    {
-      "time": 111,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.001008420174344,
-      "medianMs": 16.600000001490116,
-      "p95Ms": 17.799999997019768,
       "drawCalls": 301
     },
     {
-      "time": 118.4,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.982862039462354,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.600000001490116,
-      "drawCalls": 65
-    },
-    {
-      "time": 118.4,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.982862039462354,
-      "medianMs": 16.600000001490116,
-      "p95Ms": 17.400000005960464,
-      "drawCalls": 65
-    },
-    {
-      "time": 121.5,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.010085728693895,
-      "medianMs": 16.600000001490116,
-      "p95Ms": 17.5,
-      "drawCalls": 109
-    },
-    {
-      "time": 121.5,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.013112108573004,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.600000001490116,
-      "drawCalls": 229
-    },
-    {
-      "time": 125.8,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.98890961325867,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.200000002980232,
-      "drawCalls": 137
-    },
-    {
-      "time": 125.8,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.007059654257304,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.400000005960464,
-      "drawCalls": 345
-    },
-    {
-      "time": 126.85,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.99193385781286,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.299999997019768,
-      "drawCalls": 139
-    },
-    {
-      "time": 126.85,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.99798326111193,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.600000001490116,
-      "drawCalls": 378
-    },
-    {
-      "time": 127.2,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 59.982862039462354,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.30000000447035,
-      "drawCalls": 139
-    },
-    {
-      "time": 127.2,
-      "enabled": true,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.037334140512854,
-      "medianMs": 16.600000001490116,
-      "p95Ms": 17.599999994039536,
-      "drawCalls": 378
-    },
-    {
-      "time": 128,
-      "enabled": false,
-      "width": 1920,
-      "height": 1080,
-      "fps": 60.02522068095839,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.099999994039536,
-      "drawCalls": 139
-    },
-    {
-      "time": 128,
+      "time": 61.8,
       "enabled": true,
       "width": 1920,
       "height": 1080,
       "fps": 59.99495840685657,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.30000000447035,
-      "drawCalls": 350
+      "medianMs": 16.799999997019768,
+      "p95Ms": 18,
+      "drawCalls": 493
+    },
+    {
+      "time": 80.35,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99193385781286,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.299999997019768,
+      "drawCalls": 118
+    },
+    {
+      "time": 80.35,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.01311210879851,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.399999991059303,
+      "drawCalls": 118
+    },
+    {
+      "time": 84,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.90737011706384,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 19.599999994039536,
+      "drawCalls": 28
+    },
+    {
+      "time": 84,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00403388499158,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.400000005960464,
+      "drawCalls": 28
+    },
+    {
+      "time": 91.5,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99193385781286,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.399999991059303,
+      "drawCalls": 75
+    },
+    {
+      "time": 91.5,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99798326088655,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.30000001192093,
+      "drawCalls": 75
+    },
+    {
+      "time": 93.5,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.02219307997466,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.400000005960464,
+      "drawCalls": 71
+    },
+    {
+      "time": 93.5,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99495840685657,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.100000008940697,
+      "drawCalls": 71
+    },
+    {
+      "time": 111,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00100842039974,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.099999994039536,
+      "drawCalls": 319
+    },
+    {
+      "time": 111,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00403388499158,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.200000002980232,
+      "drawCalls": 409
+    },
+    {
+      "time": 118.4,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.013112108347514,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 20.299999997019768,
+      "drawCalls": 65
+    },
+    {
+      "time": 118.4,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99798326088655,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 19.5,
+      "drawCalls": 65
+    },
+    {
+      "time": 121.5,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00100842039974,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17,
+      "drawCalls": 217
+    },
+    {
+      "time": 121.5,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99798326133731,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.099999994039536,
+      "drawCalls": 337
+    },
+    {
+      "time": 125.8,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99495840685657,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17,
+      "drawCalls": 245
+    },
+    {
+      "time": 125.8,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.98286203923709,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.299999997019768,
+      "drawCalls": 453
+    },
+    {
+      "time": 126.85,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00100842039974,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17,
+      "drawCalls": 247
+    },
+    {
+      "time": 126.85,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00100842039974,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.399999991059303,
+      "drawCalls": 486
+    },
+    {
+      "time": 127.2,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.00100842039974,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.400000005960464,
+      "drawCalls": 247
+    },
+    {
+      "time": 127.2,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 60.02219307997466,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.5,
+      "drawCalls": 486
+    },
+    {
+      "time": 128,
+      "enabled": false,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.99193385736219,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.5,
+      "drawCalls": 247
+    },
+    {
+      "time": 128,
+      "enabled": true,
+      "width": 1920,
+      "height": 1080,
+      "fps": 59.97379296432883,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.400000005960464,
+      "drawCalls": 458
     },
     {
       "time": 140.5,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 59.991933857587526,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17,
-      "drawCalls": 91
+      "fps": 59.99798326088655,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.400000005960464,
+      "drawCalls": 121
     },
     {
       "time": 140.5,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 60.013112108573004,
-      "medianMs": 16.600000001490116,
-      "p95Ms": 17.100000001490116,
-      "drawCalls": 176
+      "fps": 60.00705965380641,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.299999997019768,
+      "drawCalls": 206
     },
     {
       "time": 143.5,
       "enabled": false,
       "width": 1920,
       "height": 1080,
-      "fps": 60.001008420174344,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17,
-      "drawCalls": 101
+      "fps": 59.99798326088655,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.299999997019768,
+      "drawCalls": 209
     },
     {
       "time": 143.5,
       "enabled": true,
       "width": 1920,
       "height": 1080,
-      "fps": 59.98588567404919,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.100000001490116,
-      "drawCalls": 194
+      "fps": 60.01613879371539,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.200000002980232,
+      "drawCalls": 302
     }
   ],
   "viewer": {

@@ -23,7 +23,7 @@ const PALETTE = ["#ff365c", "#ffba32", "#35d69c", "#3088ff", "#9d55ff", "#ff59c4
 
 interface Prop { mesh: Mesh; home: Vector3; homeRotation: Quaternion; group: number }
 
-export function arcadeWallVisible(time: number): boolean { return time >= 34.4 && time < LEGACY_XOR.wallEnd; }
+export function arcadeWallVisible(time: number): boolean { return time >= 34.4; }
 
 export function legacyGroup(index: number): number {
   const col = index % 8, row = Math.floor(index / 8), x = col % 4;
@@ -118,7 +118,7 @@ export class ArcadePhysics {
           velocity: new Vector3(7 + index % 3, 3 + index % 5, spread * 5 + sign),
           angularVelocity: new Vector3(sign * 2, 1 + index % 3, sign * 3) };
       });
-      this.bake = bakeRigidBodies(this.scene, parent, recipes, LEGACY_XOR.wallEnd - WALL_TIME, 1 / 60,
+      this.bake = bakeRigidBodies(this.scene, parent, recipes, LEGACY_XOR.wallBakeEnd - WALL_TIME, 1 / 60,
         PhysicsShapeType.BOX, { mass: 1.6, friction: .55, restitution: .32,
           extents: new Vector3(LEGACY_CUBE.width, LEGACY_CUBE.height, LEGACY_CUBE.depth) }, colliders);
     } finally { parent.dispose(); }

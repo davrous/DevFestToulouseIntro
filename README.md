@@ -24,15 +24,57 @@ npm run preview
 
 Open http://127.0.0.1:4173 and keep the local server running. After installation/build, no Internet is needed. Do not open the HTML using `file://`.
 
-**Music is optional.** The home page defaults to **MP3 soundtrack** and
-**Viola's Journey**. Music starts only after **PLAY SEQUENCE** or **Space**, never
+## No runtime CDN / day-of-demo reproducibility
+
+The supplied intro and four bundled Strudel scores use **only their own origin**:
+
+| Component | Runtime source |
+| --- | --- |
+| Babylon.js / glTF loaders **9.28.0** | Installed npm modules compiled into the local Vite JavaScript chunks |
+| Havok **1.3.14** | Local JavaScript plus the imported, hashed local `.wasm` asset |
+| Strudel and audio worklets | Bundled npm modules; worklet code is generated as local `data:`/`blob:` modules |
+| Soundtrack MP3/WAV, drums, orchestra | Local `assets/music/` and `assets/strudel/`; 3 drum + 18 orchestra WAV samples |
+| 3D models and textures | Local assets; all 25 GLBs audited, with embedded or existing local resources |
+| Fonts and artwork | System fonts, local PNGs and generated Canvas textures; no Google Fonts/CDN |
+
+Babylon includes default CDN URLs for **optional** Draco/meshopt/KTX2 decoders
+and other tools. This version does not use those compressed formats or request
+those defaults. Documentation/credit URLs and the SVG `xmlns` identifier are
+not runtime downloads. The offline check rejects introducing an unverified
+network decoder or an external model resource.
+
+All direct dependency versions are exact, and the committed
+[`package-lock.json`](package-lock.json) locks the transitive tree and integrity
+hashes. The freeze retained all **198 existing package entries without a
+version upgrade**. npm registry URLs in that lockfile are for installation,
+not playback. Use `npm ci` during preparation; do not run `npm update`, delete
+the lockfile or rebuild against new dependencies immediately before the show.
+
+Run `npm run verify:offline` after changes. It creates a fresh production browser
+context, blocks every third-party HTTP(S) origin, disables service workers,
+checks the show at 16 timeline moments, plays both Journey formats, opens all nine viewer
+assets and starts all four scores including their audio worklets and all 21
+local WAV samples. [Latest evidence](docs/offline-validation.json) records zero
+external requests and zero browser errors. This covers the supplied scores,
+not arbitrary new URLs added later in the live editor.
+
+For the event, retain the **complete tested `dist/` folder** and an already
+prepared local HTTP server (`npm run preview` on the prepared project). Serving
+that build does not reinstall packages or contact npm/CDNs. Azure's URL serves
+these same local-to-the-site assets, but still requires connectivity to Azure;
+a local HTTP copy avoids that remaining network dependency. Do not open the
+build with `file://`. Keep the rehearsed browser/GPU driver configuration too:
+local libraries do not freeze browser or driver updates.
+
+**Music is optional.** The home page defaults to **Viola's Journey soundtrack**
+in **MP3 320 kbit/s**. Music starts only after **PLAY SEQUENCE** or **Space**, never
 on page load. Choose **No bundled music** for silent playback or **Strudel keynote**
-for the live score instead. The bundled `Viola's Journey` MP3 is played
+for the live score instead. The selected `Viola's Journey` file is played
 locally and analyzed in real time to drive the same bass, mid, treble, transient,
 and energy reactions as the other music inputs. Visuals also work without music,
 audio input, or the optional event bridge.
 
-Both bundled MP3s fade smoothly over their last **1.25 seconds**, using the
+Both Journey formats fade smoothly over their last **1.25 seconds**, using the
 earlier of the actual file ending or the 180-s show limit. The envelope is
 applied through a dedicated Web Audio output gain after analysis, so live input
 and visual frequency data are unchanged. Pause, seek, restart and lobby return
@@ -44,18 +86,22 @@ For one-click Strudel playback, choose **Strudel keynote** and a
 frame preloads local audio and starts both clocks through the confirmed
 synchronized onset, without switching tabs or replacing the saved Strudel draft.
 
-For MP3 playback, choose **MP3 soundtrack**, then select `Viola's Journey` or
-`Viola & Trance`. Playback, pause, resume, and rehearsal seeks follow the visual timeline. The live input can
-remain connected at the same time: the MP3 drives the complete scene while
+For soundtrack playback, choose **Viola's Journey soundtrack**, then select
+**MP3 320 kbit/s** or **WAV original (lossless)** under **Audio format**.
+Playback, pause, resume, and rehearsal seeks follow the visual timeline. The live input can
+remain connected at the same time: the soundtrack drives the complete scene while
 Anne-Flore's viola microphone adds its detected energy over the soundtrack. The
 microphone is analyzed locally and is never monitored through the speakers; no
 permission is requested automatically.
 
-Both bundled soundtracks use 320 kbit/s CBR MP3, preserving the original 48 kHz
-stereo format. The original WAV files are retained alongside them for re-encoding;
-the demo plays only the MP3 versions.
+Only Viola's Journey is offered in the soundtrack selector. The default MP3 uses
+320 kbit/s CBR (about 7.1 MB); the original lossless WAV uses 16-bit PCM
+(about 34.1 MB). Both are 48 kHz stereo, last 177.6 s, and use the exact same
+measured accent map, effect timing, FFT analysis and final fade. Choosing WAV
+does not convert the MP3: it plays the original local file. The older Trance
+files remain in the asset archive but are no longer offered.
 
-Additional MP3 files can be added under `public/assets/music/` and registered in
+Additional audio files can be added under `public/assets/music/` and registered in
 the `SOUNDTRACKS` list in `src/audio/soundtracks.ts`; the home-page selector is
 populated from that catalog.
 
@@ -145,10 +191,10 @@ instruments, licensing and rehearsal diagnostics.
 | Time | Scene |
 | --- | --- |
 | 0:00–0:05.925 | DEVFEST AI4FUN / CLOSING KEYNOTE and the green DevFest mascot open the show; the logo shares the panel's fade. Its height still matches the camera at 5.925 s, and the retro shader runs from 4.3 s to the crossing |
-| 0:05–0:31 | Fixed pixel-art decals, scenery and small luminous pixels stay flat against the T's side walls. The six larger reactive light panels are mounted just in front of the wall surface at height 15, above the grounded Kenney cabinets, not floating in front of their screens |
+| 0:05–0:31 | Fixed pixel-art decals, scenery and small luminous pixels stay flat against the T's side walls. The six larger reactive light panels are mounted just in front of the wall surface at height 15, above the grounded Kenney cabinets, not floating in front of their screens. Each cabinet is placed using its actual scaled/rotated bounds, with a 0.8-unit gap to the inner wall; model sizes and the camera lane stay unchanged |
 | 0:17–0:31 | Anne-Flore's cyan gateway; the violin and bow are 25% larger and fade in with exactly the same 17.25–19.05-s envelope as her name, including bloom. Nearby Pong paddles rally from 17.4 s; the final shot physically hits the violin near 22 s, releasing its voxel cubes into a Havok fall |
 | 0:27–0:34.5 | The preloaded `GET /pain-au-chocolat` panel switches to `301 / Location: /chocolatine` at exactly **0:28.5 on camera time**, without musical cue shifting. The whole printed panel fades from 31.85 to 32.55 s, before the 32.75-s camera crossing, avoiding a black screen |
-| 0:34.4–0:41.2 | The original 48 legacy-code cubes assemble in twelve colorful L/J tetrominoes, lock into their unchanged homes and show `BUILD FAILED`. The 38.2-s impact cue releases a genuine recorded Havok collapse |
+| From 0:34.4 | The original 48 legacy-code cubes assemble in twelve colorful L/J tetrominoes, lock into their unchanged homes and show `BUILD FAILED`. The 38.2-s impact cue releases a genuine recorded Havok collapse, continued to rest at 46.2 s. The debris remains in place for the rest of the show, naturally leaving the camera frustum rather than disappearing on a timer |
 | 0:38.2–0:46.03 | The impact sends a progressive cyan packet through physical copper traces to a four-panel XOR CPU gate. The correct XOR symbol powers up, pins unlock and beveled shutters slide diagonally and fold into side rails. Fully open at 45.7 s, they physically clear the unchanged exit camera |
 | 0:46–0:52 | The original giant clapperboard is already present during the approach, below LEVEL COMPLETE, and snaps shut in 0.18 seconds from 0:50.85. The fullscreen CRT transition holds a green phosphor line from 0:51.135 to 0:51.38, then reopens on CINEMA and clears by 0:52.18; no black plane |
 | 0:51–1:06 | Eight curved CRTs initially show their retro programs. At **59.200 s exactly**, one strong branching lightning strike links them and all screens switch to `AI UPDATE / 99%`, `Time remaining: 42 years` and `Fallback: more cassoulet`. The joke remains after the single decaying flash |
@@ -175,7 +221,7 @@ See [Legacy → XOR integration](docs/legacy-xor-integration.md) for the archite
 safe debug controls, physical handoff, exact camera regression and rendered
 before/after captures. Run `npm run verify:legacy-xor` to reproduce them.
 
-The cinema's seats, CRTs, screen support, both popcorn buckets, film/reels and giant camera are preloaded and visible from entry at 51.18 seconds, not enabled one prop at a time. Their narrative actions still occur later: David's name fades in, the buckets tip and spill, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows. The drawbridges stay closed throughout the final hold and reset when seeking backward.
+The cinema's seats, CRTs, David's complete opaque card and screen support, both popcorn buckets, film/reels and giant camera are preloaded and visible from entry at 51.18 seconds, not enabled one prop at a time. David's card has no delayed visibility switch or fade that could pop into view as the camera approaches. Narrative actions still occur later: his premiere spotlights come up at 66 s, the buckets tip and spill, and the camera iris is crossed. Only optical/projector/space effects keep their later reveal windows. The drawbridges stay closed throughout the final hold and reset when seeking backward.
 
 The tunnel's four speaker trails are driven by the existing Web Audio FFT:
 cyan **40–180 Hz** (bass/kick), coral **180–700 Hz** (viola fundamentals),
@@ -298,7 +344,7 @@ For the local keynote score, **Start show + music** on `/strudel/` launches both
 
 Research references: [GM Shaders Mini: CRT](https://mini.gmshaders.com/p/gm-shaders-mini-crt) for CRT/phosphor techniques and [The Book of Shaders: Noise](https://thebookofshaders.com/11/) for procedural interference. The in-project GLSL implementation is original, not copied from these tutorials, and uses no extra assets or runtime network requests.
 
-For Anne-Flore and Eric, beams rise from floor projectors and **dynamic spotlights** illuminate the physical cards. David's light-reactive screen receives two moving aisle spotlights that sweep from its center across the name and back, using physical falloff and targeting the screen rather than its side posts. Light precedes the name fade; opaque typography preserves readability and the hardware avoids blown-out halos. Mitsuru's name floats inside two animated overclock orbits rather than repeating Eric's card. Cinema haze bloom respects beam opacity. Music never alters the deterministic camera route. OVERCLOCK intensifies the final digital section; these effects fade before the title reveal.
+For Anne-Flore and Eric, beams rise from floor projectors and **dynamic spotlights** illuminate the physical cards before their name fade. David's already-present, light-reactive screen receives two moving aisle spotlights that sweep from its center across the name and back, using physical falloff and targeting the screen rather than its side posts. Opaque typography preserves readability and the hardware avoids blown-out halos. Mitsuru's name floats inside two animated overclock orbits rather than repeating Eric's card. Cinema haze bloom respects beam opacity. Music never alters the deterministic camera route. OVERCLOCK intensifies the final digital section; these effects fade before the title reveal.
 
 ### Configure speakers
 
@@ -508,6 +554,17 @@ SYSTEM READY, without flashing future shots in the lobby. The production
 SimReady verifier measures 13–20.5 s of real soundtrack playback and rejects
 late shader compilations, frame stalls above 50 ms or a 95th percentile above
 22 ms. This fixes the cold first-speaker stall without changing its timing or effects.
+
+The same offscreen preparation now draws the Terminator's intact entrance,
+first can impact and model-to-petals handoff, using the recorded Havok contact
+times. The cold entrance previously caused six PBR cache misses at 119.5 s
+and a measured 98.2-ms frame: real rendering builds the light defines in a
+different order than `forceCompilationAsync`, producing different effect keys
+even with the same shader features. Drawing the actual camera views during
+loading warms those variants plus the skin/glow bindings, without reducing
+model quality or changing timing. The SimReady verifier measures 116.5–128 s
+on the first real-music pass and requires zero late compilations, max <50 ms
+and p95 <22 ms, including the destruction and petals.
 
 GPU compatibility is checked with `npm run verify:gpu`: the complete intro and
 the Terminator destruction shader are tested with uniform buffers both enabled

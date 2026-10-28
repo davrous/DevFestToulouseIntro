@@ -33,6 +33,8 @@ try {
   const readyMs = Date.now() - began;
   assert.equal(await page.locator("#music-source").inputValue(), "mp3");
   assert.equal(await page.locator("#soundtrack").inputValue(), "violas-journey");
+  assert.deepEqual(await page.locator("#soundtrack option").evaluateAll((options) => options.map((option) => option.value)),
+    ["violas-journey", "violas-journey-wav"]);
   const loaded = await page.evaluate(() => ({
     groups: [...window.devfest.world.simready.groups.keys()],
     errors: window.devfest.world.simready.errors,
@@ -58,6 +60,21 @@ try {
         return;
       }
       if (app.timeline.playing && app.timeline.time >= 13) probe.frames.push([app.timeline.time, performance.now()]);
+    });
+  });
+  await page.evaluate(() => {
+    const app = window.devfest, scene = app.world.scene, engine = app.engine;
+    const probe = window.terminatorEntranceProbe = { frames: [], shaderCompilations: [] };
+    const shaderObserver = engine.onBeforeShaderCompilationObservable.add(() => {
+      if (app.timeline.time >= 116.5 && app.timeline.time < 128) probe.shaderCompilations.push(app.timeline.time);
+    });
+    const observer = scene.onAfterRenderObservable.add(() => {
+      if (app.timeline.time >= 128) {
+        scene.onAfterRenderObservable.remove(observer);
+        engine.onBeforeShaderCompilationObservable.remove(shaderObserver);
+        return;
+      }
+      if (app.timeline.playing && app.timeline.time >= 116.5) probe.frames.push([app.timeline.time, performance.now()]);
     });
   });
   await page.evaluate(() => {
@@ -121,6 +138,8 @@ try {
     await page.waitForFunction(() => window.devfest.timeline.time >= 20.6, null, { timeout: 15000 });
     await page.evaluate(() => window.devfest.seek(78.5));
     await page.waitForFunction(() => window.devfest.timeline.time >= 94.2, null, { timeout: 25000 });
+    await page.evaluate(() => window.devfest.seek(116.5));
+    await page.waitForFunction(() => window.devfest.timeline.time >= 128, null, { timeout: 18000 });
     await page.evaluate(() => window.devfest.togglePlayback());
     await page.evaluate(() => { window.devfest.seek(136); window.devfest.togglePlayback(); });
     await page.waitForFunction(() => window.devfest.timeline.time >= 145, null, { timeout: 15000 });
@@ -138,6 +157,18 @@ try {
   assert.ok(speakerEntrance.maxFrameMs < 50, "Anne-Flore's first appearance must not stall the render loop.");
   assert.ok(speakerEntrance.p95FrameMs < 22, "The first speaker must retain the normal 60 FPS frame budget.");
   console.log("Cold first-speaker frame budget:", speakerEntrance);
+  const terminatorEntrance = await page.evaluate(() => {
+    const probe = window.terminatorEntranceProbe;
+    const intervals = probe.frames.slice(1).map((frame, index) => frame[1] - probe.frames[index][1]).sort((a, b) => a - b);
+    return { frames: probe.frames.length, shaderCompilations: probe.shaderCompilations,
+      maxFrameMs: Math.max(...intervals), p95FrameMs: intervals[Math.floor(intervals.length * .95)],
+      resolution: [window.devfest.engine.getRenderWidth(), window.devfest.engine.getRenderHeight()] };
+  });
+  assert.ok(terminatorEntrance.frames > 500, "Measure the cold entrance, can impacts and model-to-petals handoff during real music playback.");
+  assert.deepEqual(terminatorEntrance.shaderCompilations, [], "The Terminator's actual PBR, skin and glow draw variants must be ready before playback.");
+  assert.ok(terminatorEntrance.maxFrameMs < 50, "The Terminator's first appearance must not stall the render loop.");
+  assert.ok(terminatorEntrance.p95FrameMs < 22, "The rescue must retain the normal 60 FPS frame budget.");
+  console.log("Cold Terminator frame budget:", terminatorEntrance);
   const musicBands = await page.evaluate(() => window.tunnelMusicProbe);
   assert.ok(musicBands.samples > 100, "The four trails must be checked during real MP3 playback.");
   assert.ok(musicBands.peaks.every((value, index) => value > .005 && value - musicBands.lows[index] > .005),
@@ -149,6 +180,17 @@ try {
   assert.ok(posterPlayback.first > 136 && posterPlayback.last < 144.6 && posterPlayback.last - posterPlayback.first >= 4);
   assert.equal(posterPlayback.robotVisibleDuringPoster, false, "The punchline must follow, not conceal, the robot's destruction.");
 
+  const davidScreen = await page.evaluate(() => {
+    const app = window.devfest, screen = app.world.scene.getMeshByName("Cinema premiere / David Rousset");
+    return [51.18, 60, 65.9, 66, 66.99, 67, 68.8, 75, 87.5, 60].map((time) => {
+      app.seek(time); app.world.scene.render();
+      return { time, enabled: screen.isEnabled(), visibility: screen.visibility,
+        textureReady: screen.material.diffuseTexture.isReady() };
+    });
+  });
+  assert.ok(davidScreen.every((state) => state.enabled && state.visibility === 1 && state.textureReady),
+    "David's opaque, preloaded card must already exist before the camera rounds the corner, including on rewind.");
+
   const replay = await page.evaluate(async () => {
     const app = window.devfest;
     const counts = () => [app.world.scene.meshes.length, app.world.scene.transformNodes.length,
@@ -159,6 +201,7 @@ try {
       41.8, 44.5, 46.5, 59.199, 59.2, 59.35, 59.9, 61.8, 63.25, 76.8, 78.5, 79.999, 80, 80.35, 80.45, 84.5, 90, 91.5, 92.8, 93.5, 94, 94.199, 94.2, 108, 110.699, 111,
       117.2, 118, 118.4, 119.5, 120, 121.25, 124.399, 124.4, 125.19, 125.3, 125.8, 126.5, 126.65, 126.85, 127.2, 127.7, 128, 130, 137, 139.499, 149, 153, 155, 166]) {
       app.seek(time);
+      app.world.lensVortex.tunnel.camera.getViewMatrix(true);
       const http = app.world.scene.getTransformNodeByName("Toulouse HTTP redirect");
       const arm = app.world.simready.groups.get("launchArm");
       const cassoulet = app.world.simready.groups.get("cassoulet");
@@ -645,7 +688,7 @@ try {
   }
 
   const soundtrackEndings = [];
-  for (const id of ["violas-journey", "viola-trance"]) {
+  for (const id of ["violas-journey", "violas-journey-wav"]) {
     await page.evaluate(() => window.devfest.returnToLobby());
     await page.locator("#soundtrack").selectOption(id);
     await page.locator("#play").click();
@@ -682,13 +725,17 @@ try {
         late: samples.find((sample) => sample.remaining < .12 && sample.remaining > .04),
         final: samples.at(-1), samples: samples.length };
       app.seek(0);
-      return { ...result, rewindVolume: app.showController.soundtrack.outputVolume };
+      return { ...result, rewindVolume: app.showController.soundtrack.outputVolume,
+        source: new URL(media.currentSrc).pathname, mappedEffectTime: app.showController.effectTime(50.876) };
     });
     assert.ok(ending.before.ratio > .9 && ending.before.ratio < 1.1, "The fade must not lower normal soundtrack volume.");
     assert.ok(ending.middle.ratio > .3 && ending.middle.ratio < .75, "Measure the real post-gain audio signal, not only a volume property.");
     assert.ok(ending.late.ratio < .12, "Sound must approach silence before the actual media ending.");
     assert.equal(ending.final.gain, 0); assert.ok(ending.final.output < .0001);
     assert.equal(ending.rewindVolume, 1, "Restart must restore full soundtrack volume.");
+    assert.ok(Math.abs(ending.duration - 177.6) < .02);
+    assert.equal(ending.source, `/assets/music/violas-journey.${id.endsWith("-wav") ? "wav" : "mp3"}`);
+    assert.equal(ending.mappedEffectTime, 51.03, "Both formats must use the same measured Journey transitions.");
     soundtrackEndings.push({ id, ...ending });
   }
   console.log("Measured Web Audio soundtrack endings:", soundtrackEndings);
@@ -717,7 +764,7 @@ try {
   assert.deepEqual(errors, []);
   const report = { browser: process.env.SIMREADY_BROWSER ?? "msedge", viewport: [1920, 1080], readyMs, fullShow,
     groups: loaded.groups, replay, tunnelIsolation, robotPresentation, cassouletRescue, posterPlayback, wallPoster,
-    exitContinuity, musicBands, speakerEntrance, soundtrackEndings, measurements, viewer,
+    exitContinuity, musicBands, speakerEntrance, terminatorEntrance, davidScreen, soundtrackEndings, measurements, viewer,
     browserErrors: errors, externalRequests: external };
   await writeFile(new URL("../docs/simready-validation.json", import.meta.url), `${JSON.stringify(report, null, 2)}\n`);
   console.log(`Verified nine models, five presentation moments, unchanged camera, deterministic replay and zero browser errors. Startup ${readyMs} ms.`);

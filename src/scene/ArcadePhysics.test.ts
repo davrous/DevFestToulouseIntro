@@ -8,6 +8,7 @@ import "@babylonjs/core/Physics/joinedPhysicsEngineComponent";
 import HavokPhysics from "@babylonjs/havok";
 import { silentFeatures } from "../engine/AudioAnalyzer";
 import { ArcadePhysics, WALL_TIME, arcadeWallVisible } from "./ArcadePhysics";
+import { LEGACY_XOR } from "./LegacyXorSequence";
 
 vi.mock("./WorldText", async () => {
   const { Mesh } = await import("@babylonjs/core/Meshes/mesh");
@@ -19,7 +20,9 @@ describe("arcade story physics", () => {
     expect(arcadeWallVisible(0)).toBe(false);
     expect(arcadeWallVisible(34)).toBe(false);
     expect(arcadeWallVisible(35)).toBe(true);
-    expect(arcadeWallVisible(44)).toBe(false);
+    expect(arcadeWallVisible(41.2)).toBe(true);
+    expect(arcadeWallVisible(44)).toBe(true);
+    expect(arcadeWallVisible(180)).toBe(true);
   });
 
   it("assembles the original homes and replays the real Havok collapse without live duplicate bodies", async () => {
@@ -54,7 +57,7 @@ describe("arcade story physics", () => {
     }
     expect(Vector3.Distance(voxel.position, wallStart)).toBeGreaterThan(.4);
     arcade.update(44, silence);
-    expect(voxel.isEnabled()).toBe(false);
+    expect(voxel.isEnabled()).toBe(true);
     expect(voxel.physicsBody).toBeFalsy();
     const parked = voxel.position.asArray();
     arcade.update(0, silence); arcade.update(44, silence);
@@ -71,6 +74,24 @@ describe("arcade story physics", () => {
     expect(Vector3.Distance(voxel.position, wallStart)).toBeLessThan(.001);
     expect(arcade.wall.every((prop) => !prop.mesh.physicsBody)).toBe(true);
     expect(arcade.bake?.tracks).toHaveLength(48);
+    expect(arcade.bake?.frames).toBe(481);
+    arcade.update(41.2, silence);
+    const falling = arcade.wall.map((prop) => prop.mesh.position.clone());
+    arcade.update(42.2, silence);
+    expect(arcade.wall.some((prop, index) => Vector3.Distance(prop.mesh.position, falling[index]) > .1)).toBe(true);
+    arcade.update(LEGACY_XOR.wallBakeEnd - 1, silence);
+    const settling = arcade.wall.map((prop) => prop.mesh.position.clone());
+    arcade.update(LEGACY_XOR.wallBakeEnd, silence);
+    expect(Math.max(...arcade.wall.map((prop, index) =>
+      Vector3.Distance(prop.mesh.position, settling[index])))).toBeLessThan(.03);
+    const settled = arcade.wall.map((prop) => [...prop.mesh.position.asArray(), ...prop.mesh.rotationQuaternion!.asArray()]);
+    for (const time of [49, 80, 180, 0, 180]) {
+      arcade.update(time, silence);
+      expect(arcade.wall.every((prop) => prop.mesh.isEnabled())).toBe(time >= 34.4);
+      if (time >= LEGACY_XOR.wallBakeEnd) {
+        expect(arcade.wall.map((prop) => [...prop.mesh.position.asArray(), ...prop.mesh.rotationQuaternion!.asArray()])).toEqual(settled);
+      }
+    }
     scene.dispose();
     engine.dispose();
   });

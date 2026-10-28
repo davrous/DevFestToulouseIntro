@@ -9,7 +9,7 @@ import { silentFeatures } from "../engine/AudioAnalyzer";
 import { PixelWorld, RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 import { ARCADE_WALL_PIXELS, ArcadeT } from "./ArcadeT";
 import { CELL, cellPosition } from "../content/title";
-import { ARCADE_WALL_PANELS, ArcadeCathedral, CABINET_COUNT } from "./ArcadeCathedral";
+import { ARCADE_WALL_PANELS, ArcadeCathedral, CABINET_COUNT, CABINET_WALL_CLEARANCE } from "./ArcadeCathedral";
 import { ARCADE_ENTRY } from "../content/showBeats";
 import { cameraPose } from "../camera/CameraPath";
 import { createWorldText } from "./WorldText";
@@ -30,8 +30,15 @@ vi.mock("./EventBranding", () => ({
 }));
 vi.mock("@babylonjs/core/Loading/sceneLoader", () => ({
   SceneLoader: {
-    ImportMeshAsync: async (_meshes: string, _root: string, _file: string, scene: Scene) =>
-      ({ meshes: [new Mesh("Arcade cabinet template", scene)] }),
+    ImportMeshAsync: async (_meshes: string, _root: string, file: string, scene: Scene) => {
+      const root = new Mesh("Arcade cabinet template", scene);
+      const body = MeshBuilder.CreateBox(`Cabinet body / ${file}`, {
+        width: .55, height: .9, depth: file === "dance-machine.glb" ? .75 : file === "pinball.glb" ? .6 : .4,
+      }, scene);
+      body.parent = root;
+      body.position.set(0, .45, .1);
+      return { meshes: [root] };
+    },
   },
 }));
 
@@ -95,6 +102,30 @@ describe("wall-mounted pixel art", () => {
     expect(panels.every((panel) => !panel.isEnabled())).toBe(true);
     scene.dispose();
     engine.dispose();
+  });
+
+  it("leaves a consistent wall gap for every rotated cabinet, including deeper asymmetric models", async () => {
+    const engine = new NullEngine(), scene = new Scene(engine);
+    const arcade = new ArcadeCathedral(scene);
+    await arcade.prepare();
+    const cabinets = scene.meshes.filter((mesh) => /^Arcade cathedral \/ cabinet \d$/.test(mesh.name));
+    expect(cabinets).toHaveLength(CABINET_COUNT);
+    const center = cellPosition(-1, 12).x, innerHalfWidth = CELL / 2 - .75;
+    const positions = cabinets.map((cabinet) => cabinet.position.asArray());
+    for (const time of [0, 7, 30, 48, 0]) {
+      arcade.update(time, { ...silentFeatures(), bass: 1 });
+      expect(cabinets.map((cabinet) => cabinet.position.asArray())).toEqual(positions);
+      for (const [index, cabinet] of cabinets.entries()) {
+        const bounds = cabinet.getHierarchyBoundingVectors(true);
+        const gap = index % 2 ? center + innerHalfWidth - bounds.max.x : bounds.min.x - (center - innerHalfWidth);
+        expect(gap).toBeCloseTo(CABINET_WALL_CLEARANCE, 3);
+        expect(bounds.min.y).toBeCloseTo(0, 6);
+        expect(cabinet.scaling.asArray()).toEqual([12 + index % 3 * 1.2, 12 + index % 3 * 1.2, 12 + index % 3 * 1.2]);
+        expect(bounds.min.x).toBeGreaterThan(center - innerHalfWidth);
+        expect(bounds.max.x).toBeLessThan(center + innerHalfWidth);
+      }
+    }
+    scene.dispose(); engine.dispose();
   });
 
   it("mounts luminous squares flat against both side walls without floating or resizing on beats", () => {

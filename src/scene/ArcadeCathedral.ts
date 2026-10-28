@@ -20,6 +20,7 @@ import flagUrl from "../assets/event/mascot-flag-green.png";
 
 const ROOT = "/assets/kenney/arcade/";
 export const CABINET_COUNT = 6;
+export const CABINET_WALL_CLEARANCE = .8;
 export const ARCADE_WALL_PANELS = { offset: CELL / 2 - .76, height: 15 } as const;
 
 export class ArcadeCathedral {
@@ -128,6 +129,7 @@ export class ArcadeCathedral {
     for (let index = 0; index < CABINET_COUNT; index++) {
       const side = index % 2 ? 1 : -1;
       const row = index >= 4 ? 11.35 : 14.3 - Math.floor(index / 2) * 1.8;
+      const cell = cellPosition(-1, row);
       const template = templates[index % templates.length] ?? available[0];
       const cabinet = template.clone(`Arcade cathedral / cabinet ${index}`, null);
       if (!cabinet) {
@@ -137,13 +139,16 @@ export class ArcadeCathedral {
       cabinet.setEnabled(true);
       const size = 12 + index % 3 * 1.2;
       cabinet.scaling.setAll(size);
-      cabinet.position.set(cellPosition(-1, row).x + side * 10.8,
-        0, cellPosition(-1, row).z);
+      cabinet.position.set(cell.x, 0, cell.z);
       cabinet.rotation.y = side * Math.PI / 2;
+      const bounds = cabinet.getHierarchyBoundingVectors(true);
+      const wallX = cell.x + side * (CELL / 2 - .75);
+      const outerX = side < 0 ? bounds.min.x : bounds.max.x;
+      cabinet.position.x += wallX - side * CABINET_WALL_CLEARANCE - outerX;
       this.cabinets.push(cabinet);
       const screen = MeshBuilder.CreatePlane(`FX/Arcade wall panel / ${index}`,
         { width: 2.5, height: 2.8 }, this.scene);
-      screen.position.set(cellPosition(-1, row).x + side * ARCADE_WALL_PANELS.offset,
+      screen.position.set(cell.x + side * ARCADE_WALL_PANELS.offset,
         ARCADE_WALL_PANELS.height, cabinet.position.z);
       screen.rotation.y = side * Math.PI / 2;
       screen.material = this.screenMaterial;

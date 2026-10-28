@@ -5,6 +5,7 @@ import { CUE_WINDOWS, isShowCue, type AVEvent, type AVEventName, type ShowCue } 
 import { MusicEventBus, type EventOutcome } from "./MusicEventBus";
 import { StrudelEventTransport } from "./StrudelEventTransport";
 import { journeyAccents, journeyEffectTime, journeyRevealAccent } from "../audio/violasJourney";
+import { isJourneySoundtrack } from "../audio/soundtracks";
 
 export class ShowController {
   readonly audio: AudioAnalyzer;
@@ -48,7 +49,7 @@ export class ShowController {
   set intensity(value: number) { this.reactiveIntensity = unitValue(value / 2, "half intensity") * 2; }
 
   effectTime(time: number): number {
-    return this.soundtrackId === "violas-journey" ? journeyEffectTime(time) : time;
+    return isJourneySoundtrack(this.soundtrackId) ? journeyEffectTime(time) : time;
   }
 
   trigger(event: Trigger, velocity = 1): void { this.dispatch({ type: "trigger", event, velocity }); }
@@ -89,7 +90,7 @@ export class ShowController {
       ? this.revealPulse.value * Math.exp(-Math.max(0, now - this.revealPulse.time) / 300) : 0;
     if (!this.enabled) return this.features;
     const playbackTime = this.soundtrack.playbackTime;
-    const guided = this.soundtrackId === "violas-journey" && this.timeline.playing
+    const guided = isJourneySoundtrack(this.soundtrackId) && this.timeline.playing
       && this.soundtrack.connected && playbackTime !== undefined;
     if (guided) {
       journeyAccents(playbackTime, this.journey);

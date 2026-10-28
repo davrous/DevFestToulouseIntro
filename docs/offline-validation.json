@@ -1,0 +1,173 @@
+{
+  "testedAt": "2026-10-28T11:32:12.836Z",
+  "browser": "headless Edge",
+  "versions": {
+    "@babylonjs/core": "9.28.0",
+    "@babylonjs/havok": "1.3.14",
+    "@babylonjs/loaders": "9.28.0",
+    "@strudel/codemirror": "1.3.0",
+    "@strudel/core": "1.2.6",
+    "@strudel/mini": "1.2.6",
+    "@strudel/tonal": "1.2.6",
+    "@strudel/transpiler": "1.2.6",
+    "@strudel/webaudio": "1.3.0",
+    "ws": "8.21.3",
+    "@types/node": "26.6.3",
+    "gltf-validator": "2.0.0-dev.3.10",
+    "playwright": "1.63.0",
+    "typescript": "5.9.3",
+    "vite": "7.3.6",
+    "vitest": "4.1.11"
+  },
+  "models": {
+    "count": 25,
+    "extensions": {
+      "KHR_materials_clearcoat": 2,
+      "KHR_materials_specular": 4,
+      "KHR_materials_emissive_strength": 3,
+      "KHR_texture_transform": 5
+    },
+    "externalResources": [],
+    "relativeResources": 3
+  },
+  "mode": "Fresh production browser context, service workers blocked, all third-party HTTP(S) denied",
+  "readyMs": 7020,
+  "mp3": {
+    "currentTime": 0.501333,
+    "duration": 177.6,
+    "source": "/assets/music/violas-journey.mp3",
+    "audioContext": "running"
+  },
+  "wav": {
+    "currentTime": 0.504136,
+    "duration": 177.6,
+    "source": "/assets/music/violas-journey.wav",
+    "audioContext": "running",
+    "effectTime": 51.03
+  },
+  "sceneChecks": [
+    {
+      "time": 0,
+      "ready": true
+    },
+    {
+      "time": 5.925,
+      "ready": true
+    },
+    {
+      "time": 18.2,
+      "ready": true
+    },
+    {
+      "time": 28.5,
+      "ready": true
+    },
+    {
+      "time": 38.6,
+      "ready": true
+    },
+    {
+      "time": 44.5,
+      "ready": true
+    },
+    {
+      "time": 59.2,
+      "ready": true
+    },
+    {
+      "time": 80.45,
+      "ready": true
+    },
+    {
+      "time": 93.5,
+      "ready": true
+    },
+    {
+      "time": 94.2,
+      "ready": true
+    },
+    {
+      "time": 111,
+      "ready": true
+    },
+    {
+      "time": 125.8,
+      "ready": true
+    },
+    {
+      "time": 142,
+      "ready": true
+    },
+    {
+      "time": 151,
+      "ready": true
+    },
+    {
+      "time": 173,
+      "ready": true
+    },
+    {
+      "time": 180,
+      "ready": true
+    }
+  ],
+  "viewer": {
+    "reports": 9,
+    "errors": []
+  },
+  "strudel": [
+    {
+      "score": "arcade",
+      "started": true,
+      "events": 1,
+      "error": "false"
+    },
+    {
+      "score": "cinema",
+      "started": true,
+      "events": 2,
+      "error": "false"
+    },
+    {
+      "score": "trance",
+      "started": true,
+      "events": 3,
+      "error": "false"
+    },
+    {
+      "score": "legacy",
+      "started": true,
+      "events": 5,
+      "error": "false"
+    }
+  ],
+  "localSampleCount": 21,
+  "worklets": [
+    {
+      "protocol": "data:",
+      "origin": "null",
+      "path": "(generated local code)"
+    },
+    {
+      "protocol": "data:",
+      "origin": "null",
+      "path": "(generated local code)"
+    },
+    {
+      "protocol": "data:",
+      "origin": "null",
+      "path": "(generated local code)"
+    },
+    {
+      "protocol": "data:",
+      "origin": "null",
+      "path": "(generated local code)"
+    }
+  ],
+  "sameOriginResources": 77,
+  "externalRequests": [],
+  "websocketRequests": [],
+  "expectedCancelledMediaRanges": 2,
+  "failedRequests": [],
+  "browserErrors": []
+}

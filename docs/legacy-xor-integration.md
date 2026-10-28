@@ -14,8 +14,10 @@ implementation. Their art is not used as a runtime texture.
   spacing **2.75 × 3.45**. Its original `routeAnchor(40)` is approximately
   **(-554.4, 11.848, -41.4624)**, yaw **1.5190026901**. The box centers retain
   their original authored heights, starting at 1.75.
-- Existing destruction cue: **38.2 s** on the existing effect clock;
-  disappearance **41.2 s**. The camera has no Havok body: the previous
+- Existing destruction cue: **38.2 s** on the existing effect clock.
+  The former **41.2-s** disappearance is removed: fragments remain present
+  for the rest of the show and leave view only through normal framing/occlusion.
+  The camera has no Havok body: the previous
   implementation released the wall with authored impulses at that cue, before
   the camera crossed the wall plane around 40 s. This choreography is retained,
   not misrepresented as a newly measured camera/body contact.
@@ -42,7 +44,7 @@ implementation. Their art is not used as a runtime texture.
 | --- | --- | --- |
 | Assemble | 34.7–36.81 s | Twelve fixed L/J groups, four original cubes each; 110-ms stagger, 900-ms eased arrival from left, right, above and depth |
 | Lock / fail | 36.81–38.2 s | Crisp final snap, brief emissive lock pulse, exact original box homes; `BUILD FAILED` and `// TODO: remove this wall` are printed on the wall |
-| Break | 38.2–41.2 s | Original canonical impulses, gravity and Havok collisions; small deterministic electrical discharge at the impact |
+| Break / settle | 38.2–46.2 s, then static debris | Original canonical impulses, gravity and Havok collisions; small deterministic electrical discharge at the impact. No visibility cutoff while the camera passes the fallen cubes |
 | Propagate | 38.2–41.5 s | Copper tubes run from the wall to the nearby side surface, up a relay bend and into the CPU chip; a distance-UV shader moves a cyan head and short trail progressively |
 | Activate | 41.5–42.6 s | Correct OR-like XOR outline plus a separate input arc energizes; `ACCESS GRANTED` appears only after arrival; pins withdraw |
 | Open | 42.6–45.7 s | Four distinct thick carriages translate diagonally, fold into the side rail envelope and expose the existing world beyond |
@@ -62,7 +64,7 @@ centers, quaternions, collider sizes and spacing are not altered.
 During assembly the visible meshes have **no live dynamic body**. At loading,
 the existing Havok engine creates the original 48 box bodies at their fully
 assembled homes, applies the original canonical world-space velocities and
-records **181 frames at 60 Hz** over the three-second destruction. Mass 1.6,
+records **481 frames at 60 Hz** over the eight-second collapse and settling. Mass 1.6,
 friction .55, restitution .32, floor restitution .35 and rail restitution .3
 are preserved. The temporary bodies and boundaries are disposed in `finally`.
 `PhysicsBake` was extended only with optional per-collider rotation and
@@ -75,6 +77,12 @@ scrubbing and restart sample the same tracks without reconstructing bodies.
 Even hidden boxes evaluate to a fixed home or the final recorded pose, avoiding
 history-dependent parked transforms. No meshes, materials, bodies or listeners
 are created during replay.
+
+The final poses are held after 46.2 s, without hiding the 48 cubes. The last
+second of the recording is checked for less than 0.03 units of travel per cube,
+so holding it does not freeze an unfinished fall. The production verifier checks
+visible GPU-pixel contribution at 41.21 and 42.1 s, not just enabled flags, as
+well as visibility and deterministic seeking through the end of the show.
 
 The old optional raw-audio early release is intentionally removed: the existing
 authored 38.2-s impact is the deterministic narrative authority. Live audio does
@@ -184,14 +192,16 @@ physical rescue, manga wall, local gallery and disabled NVIDIA mode.
 
 | Check | Result |
 | --- | --- |
-| Unit/integration suite | **261 tests passed**, 48 files; TypeScript and production build passed |
+| Latest targeted arcade regression | **33 tests passed**, 5 files; TypeScript and production build passed |
 | Camera regression | **361 samples**, zero position, heading or FOV difference through the original Babylon pipeline |
-| Musical playback | **839 rendered frames**, pause/resume stable; seven native states exactly match direct seeks |
-| Replay resources | 20 loops / 240 seeks; stable 1,403 meshes, 1,720 transforms, 277 materials, 20 lights and 5 unrelated live bodies |
-| Wall physics | 48 real Havok tracks × 181 frames; zero live wall bodies during playback |
+| Musical playback | **848 rendered frames**, pause/resume stable; seven native states exactly match direct seeks |
+| Replay resources | 20 loops / 240 seeks; stable 1,404 meshes, 1,720 transforms, 278 materials, 20 lights and 5 unrelated live bodies |
+| Wall physics | 48 real Havok tracks × 481 frames, ending at rest; zero live wall bodies during playback; debris has no timed disappearance |
+| Cabinet placement | Six real model bounds each leave **0.800 units** to the inner wall; minimum camera-to-model-bounds clearance **2.90 units** |
+| Persistent debris | **221,151 changed GPU pixels** at 41.21 s and **67,687** at 42.1 s versus hiding the cubes; last-second maximum settled travel **0.0000039 units** |
 | Camera safety | Conservative minimum near-plane/solid clearance **6.87 units**, including fixed frame, badge, rails and moving plates |
-| FullHD frame rate | **59.97–60.02 FPS**, median 16.7 ms, worst measured 95th percentile 17.7 ms |
-| Startup | Original Legacy run: **6.30 s**; with the first-speaker warmup follow-up: **6.94 s** |
+| FullHD frame rate | **58.85–60.03 FPS**, median 16.6–16.7 ms, worst measured 95th percentile 17.9 ms |
+| Startup | **7.74 s**, including speaker/Terminator warmup and the extended wall bake |
 | Final astronaut | Actual height 16.64, fixed pose, old corner empty; visible silhouette in all 6.25 s of sampled final approach |
 | Browser/network | Zero JavaScript/console errors and zero external requests |
 
@@ -277,7 +287,9 @@ It is **not** a physical RTX 5090/Direct3D driver test.
 | Opening | [Curtain](legacy-xor/before-05-partial-gate.png) | [Four mechanical shutters](legacy-xor/after-05-partial-gate.png) |
 | Exit | [Previous passage](legacy-xor/before-06-exit.png) | [Actual free aperture](legacy-xor/after-06-exit.png) |
 
-Also see [XOR activation](legacy-xor/after-07-xor-activation.png).
+Also see [XOR activation](legacy-xor/after-07-xor-activation.png),
+[persistent debris after the old cutoff](legacy-xor/after-08-persistent-debris.png)
+and [cabinet wall clearance](legacy-xor/after-09-arcade-clearance.png).
 Before captures were taken during native playback; after captures use the
 actual production camera at documented deterministic checkpoints, not concept
 art or a free-camera showcase.

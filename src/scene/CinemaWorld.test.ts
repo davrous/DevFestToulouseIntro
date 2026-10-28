@@ -290,13 +290,20 @@ describe("cinematic show choreography", () => {
     const screen = scene.getMeshByName("Cinema premiere / David Rousset");
     if (!(screen?.material instanceof StandardMaterial)) throw new Error("David requires a lit screen.");
     expect(screen.material.disableLighting).toBe(false);
+    expect(screen.material.transparencyMode).toBe(StandardMaterial.MATERIAL_OPAQUE);
     expect(screen.material.maxSimultaneousLights).toBeGreaterThanOrEqual(6);
-    for (const time of [CINEMA.start + .1, 60, 68, 78, 87]) {
+    for (const time of [CINEMA.start, 60, 65.9, 66, 66.99, 67, 68, 78, 87, 60]) {
       cinema.update(time, silentFeatures());
+      expect(screen.isEnabled(), `David's card at ${time}s`).toBe(true);
+      expect(screen.visibility, `David's card at ${time}s`).toBe(1);
       for (const name of ["Cinema / impossible auditorium", "Cinema / reels and moving film architecture",
         "Cinema / camera iris to projector", "Cinema / aligned CRT installation", "Cinema / David premiere screen"]) {
         expect(scene.getTransformNodeByName(name)?.isEnabled(), `${name} at ${time}s`).toBe(true);
       }
+      cinema.update(CINEMA.start - .001, silentFeatures());
+      expect(screen.isEnabled()).toBe(false);
+      cinema.update(CINEMA.auditoriumEnd, silentFeatures());
+      expect(screen.isEnabled()).toBe(false);
     }
     const hits: number[] = [];
     for (let time = 67; time < 75; time += .25) {

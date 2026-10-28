@@ -132,11 +132,12 @@ describe("independent music-reactive layer", () => {
     controller.enabled = false;
     expect(controller.sample()).toEqual(silentFeatures());
   });
-  it("uses measured attacks from the media clock only for Journey and preserves live viola", () => {
+  it.each(["violas-journey", "violas-journey-wav"])(
+    "uses measured attacks from the media clock for %s and preserves live viola", (soundtrack) => {
     const timeline = new Timeline();
     timeline.play();
     const controller = new ShowController(timeline, vi.fn(), () => 100);
-    controller.soundtrackId = "violas-journey";
+    controller.soundtrackId = soundtrack;
     const [onset, velocity] = map.kicks[0];
     vi.spyOn(controller.soundtrack, "connected", "get").mockReturnValue(true);
     const time = vi.spyOn(controller.soundtrack, "playbackTime", "get").mockReturnValue(onset);
@@ -146,6 +147,7 @@ describe("independent music-reactive layer", () => {
     time.mockReturnValue(JOURNEY_REVEAL);
     controller.sample();
     expect(controller.revealAccent).toBe(.65);
+    expect(controller.effectTime(50.876)).toBe(51.03);
     controller.enabled = false;
     expect(controller.sample()).toEqual(silentFeatures());
     expect(controller.revealAccent).toBe(0);

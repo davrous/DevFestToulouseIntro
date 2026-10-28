@@ -511,7 +511,7 @@ export class CinemaWorld {
     this.architecture.setEnabled(time >= CINEMA.start && time < CINEMA.auditoriumEnd);
     this.davidRoot.setEnabled(time >= CINEMA.start && time < CINEMA.auditoriumEnd);
     const reveal = cueEnvelope(time, this.davidConfig.startTime, this.davidConfig.endTime, 1.2);
-    this.screenText.visibility = smoothstep((time - this.davidConfig.startTime - 1) / 1.8) * reveal;
+    this.screenText.visibility = 1;
     this.screenLight.intensity = 180 * reveal * (1 + audio.kick * .12);
     this.premiereBeam.setEnabled(reveal > 0 && this.davidRoot.isEnabled());
     if (!this.davidRoot.isEnabled()) this.screenLight.intensity = 0;

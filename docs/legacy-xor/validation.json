@@ -1,5 +1,5 @@
 {
-  "readyMs": 6296,
+  "readyMs": 7739,
   "browser": "headless Edge",
   "resolution": [
     1920,
@@ -12,31 +12,108 @@
     "directionError": 0,
     "fovError": 0
   },
-  "playbackFrames": 839,
-  "musicReached": 48.520887,
+  "playbackFrames": 848,
+  "musicReached": 48.5288,
   "nativePlaybackSeekIdentical": true,
   "pauseStable": true,
   "replay": {
     "before": [
-      1403,
+      1404,
       1720,
-      277,
+      278,
       20,
       5
     ],
     "after": [
-      1403,
+      1404,
       1720,
-      277,
+      278,
       20,
       5
     ],
     "curtainMeshes": 0,
     "liveWallBodies": 0,
     "bake": {
-      "frames": 181,
+      "frames": 481,
       "tracks": 48
     }
+  },
+  "cabinetClearance": {
+    "count": 6,
+    "gaps": [
+      0.8000121712684631,
+      0.8000276301579561,
+      0.8000245094299316,
+      0.8000121712684631,
+      0.8000276301579561,
+      0.8000245094299316
+    ],
+    "cameraClearance": 2.903665325470456
+  },
+  "debrisPersistence": {
+    "samples": [
+      {
+        "time": 41.19,
+        "enabled": 48,
+        "activeWall": 20,
+        "changedPixels": 0
+      },
+      {
+        "time": 41.21,
+        "enabled": 48,
+        "activeWall": 20,
+        "changedPixels": 221151
+      },
+      {
+        "time": 42.1,
+        "enabled": 48,
+        "activeWall": 8,
+        "changedPixels": 67687
+      },
+      {
+        "time": 43,
+        "enabled": 48,
+        "activeWall": 1,
+        "changedPixels": 0
+      },
+      {
+        "time": 44.15,
+        "enabled": 48,
+        "activeWall": 1,
+        "changedPixels": 0
+      },
+      {
+        "time": 46.03,
+        "enabled": 48,
+        "activeWall": 0,
+        "changedPixels": 0
+      },
+      {
+        "time": 49,
+        "enabled": 48,
+        "activeWall": 0,
+        "changedPixels": 0
+      },
+      {
+        "time": 180,
+        "enabled": 48,
+        "activeWall": 48,
+        "changedPixels": 0
+      },
+      {
+        "time": 0,
+        "enabled": 0,
+        "activeWall": 0,
+        "changedPixels": 0
+      },
+      {
+        "time": 43,
+        "enabled": 48,
+        "activeWall": 1,
+        "changedPixels": 0
+      }
+    ],
+    "settledTravel": 0.000003814697265625
   },
   "geometry": {
     "conservativeClearance": 6.872310641257243,
@@ -65,13 +142,13 @@
       },
       {
         "time": 41.5,
-        "cyanPixels": 26979,
+        "cyanPixels": 97618,
         "progress": 1,
         "power": 0
       },
       {
         "time": 42.1,
-        "cyanPixels": 37655,
+        "cyanPixels": 62837,
         "progress": 1,
         "power": 1
       }
@@ -81,51 +158,51 @@
   "measurements": [
     {
       "time": 35.7,
-      "fps": 59.99769239649787,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.5,
+      "fps": 60.01846722027038,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 245
     },
     {
       "time": 37.4,
-      "fps": 60.01154068090017,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.5,
+      "fps": 60.028860028860024,
+      "medianMs": 16.600000008940697,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 271
     },
     {
       "time": 38.55,
-      "fps": 60.008078010707784,
-      "medianMs": 16.69999999552965,
+      "fps": 60.01154068090017,
+      "medianMs": 16.69999998807907,
       "p95Ms": 17.400000005960464,
       "drawCalls": 247
     },
     {
       "time": 40.5,
-      "fps": 59.98731037680577,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.5,
+      "fps": 60.00115386844679,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.400000005960464,
       "drawCalls": 219
     },
     {
       "time": 42.1,
-      "fps": 59.9734732713861,
-      "medianMs": 16.69999999552965,
+      "fps": 60.021931090618985,
+      "medianMs": 16.69999998807907,
       "p95Ms": 17.5,
-      "drawCalls": 165
+      "drawCalls": 185
     },
     {
       "time": 44.15,
-      "fps": 59.99077065061756,
-      "medianMs": 16.69999999552965,
-      "p95Ms": 17.700000002980232,
-      "drawCalls": 153
+      "fps": 58.85348876710474,
+      "medianMs": 16.69999998807907,
+      "p95Ms": 17.900000005960464,
+      "drawCalls": 157
     },
     {
       "time": 46.03,
       "fps": 59.994231323911166,
-      "medianMs": 16.600000001490116,
-      "p95Ms": 17.69999999552965,
+      "medianMs": 16.700000002980232,
+      "p95Ms": 17.700000002980232,
       "drawCalls": 161
     }
   ],
@@ -157,6 +234,14 @@
     {
       "name": "07-xor-activation",
       "time": 42.1
+    },
+    {
+      "name": "08-persistent-debris",
+      "time": 41.21
+    },
+    {
+      "name": "09-arcade-clearance",
+      "time": 9
     }
   ],
   "fallback": {
@@ -211,9 +296,7 @@
         "visibility": 0,
         "enabled": false
       }
-    ],
-    "setbackAdjustment": 3,
-    "satelliteDepthSeparation": 12.99999999999997
+    ]
   },
   "browserErrors": [],
   "externalRequests": []

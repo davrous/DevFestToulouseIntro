@@ -3,7 +3,7 @@ import { clamp, smoothstep } from "../engine/Timeline";
 
 const exit = cellPosition(1, 9);
 export const LEGACY_XOR = {
-  impact: 38.2, wallEnd: 41.2, openStart: 42.6, end: 51.18,
+  impact: 38.2, wallBakeEnd: 46.2, openStart: 42.6, end: 51.18,
   exitX: exit.x + 14, exitZ: exit.z, centerY: 16.1,
   halfWidth: 12.15, halfHeight: 15.1, thickness: 1.15,
 } as const;

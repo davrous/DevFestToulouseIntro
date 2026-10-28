@@ -94,7 +94,8 @@ describe("synchronized launch from the other tab", () => {
     expect(app.timeline.playing).toBe(false);
   });
 
-  it.each(["violas-journey", "viola-trance"])("plays the selected %s MP3 and keeps it aligned across transport controls", async (soundtrack) => {
+  it.each([["violas-journey", "mp3"], ["violas-journey-wav", "wav"]])(
+    "plays the selected %s and keeps it aligned across transport controls", async (soundtrack, format) => {
     const { app } = await setup();
     doc.getElementById("music-source")!.value = "mp3";
     doc.getElementById("music-source")!.dispatchEvent(new Event("change"));
@@ -104,7 +105,7 @@ describe("synchronized launch from the other tab", () => {
     vi.spyOn(app.showController.soundtrack, "connectMediaElement").mockResolvedValue();
     await app.startFromGesture();
     const player = doc.getElementById("soundtrack-player")!;
-    expect(player.src).toBe(`./assets/music/${soundtrack}.mp3`);
+    expect(player.src).toBe(`./assets/music/violas-journey.${format}`);
     expect(player.paused).toBe(false);
     expect(app.showController.soundtrackId).toBe(soundtrack);
     app.togglePlayback();
@@ -115,15 +116,14 @@ describe("synchronized launch from the other tab", () => {
     expect(player.currentTime).toBe(42);
     const update = vi.spyOn(app.world, "update");
     app.seek(50.876);
-    expect(update).toHaveBeenLastCalledWith(50.876, expect.anything(), null, 1, 0,
-      soundtrack === "violas-journey" ? 51.03 : 50.876);
+    expect(update).toHaveBeenLastCalledWith(50.876, expect.anything(), null, 1, 0, 51.03);
     app.returnToLobby();
     expect(player.paused).toBe(true);
     expect(player.currentTime).toBe(0);
     expect(app.showController.soundtrackId).toBeNull();
   });
 
-  it.each([["violas-journey", 177.6], ["viola-trance", 178]] as const)(
+  it.each([["violas-journey", 177.6], ["violas-journey-wav", 177.6]] as const)(
     "fades %s at the actual file ending, holds on pause and restores sound on rewind",
     async (soundtrack, duration) => {
       const { app } = await setup();

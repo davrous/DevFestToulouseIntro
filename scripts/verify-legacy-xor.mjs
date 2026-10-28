@@ -86,7 +86,63 @@ try {
   });
   assert.deepEqual(counts.before, counts.after);
   assert.equal(counts.curtainMeshes, 0); assert.equal(counts.liveWallBodies, 0);
-  assert.equal(counts.bake.tracks, 48); assert.equal(counts.bake.frames, 181);
+  assert.equal(counts.bake.tracks, 48); assert.equal(counts.bake.frames, 481);
+  const cabinetClearance = await page.evaluate(() => {
+    const app = window.devfest;
+    const cabinets = app.world.scene.meshes.filter((mesh) => /^Arcade cathedral \/ cabinet \d$/.test(mesh.name));
+    const bounds = cabinets.map((mesh) => mesh.getHierarchyBoundingVectors(true));
+    const gaps = bounds.map((box, index) => index % 2 ? -574.75 - box.max.x : box.min.x + 601.25);
+    let cameraClearance = Infinity;
+    for (let time = 0; time <= 31; time += .1) {
+      app.seek(time);
+      const position = app.world.camera.position;
+      for (const box of bounds) {
+        cameraClearance = Math.min(cameraClearance, Math.hypot(
+          Math.max(box.min.x - position.x, 0, position.x - box.max.x),
+          Math.max(box.min.y - position.y, 0, position.y - box.max.y),
+          Math.max(box.min.z - position.z, 0, position.z - box.max.z)));
+      }
+    }
+    return { count: cabinets.length, gaps, cameraClearance };
+  });
+  assert.equal(cabinetClearance.count, 6);
+  assert.ok(cabinetClearance.gaps.every((gap) => Math.abs(gap - .8) < .0001),
+    "Every real rotated model must clear its inner wall by 0.8 units.");
+  assert.ok(cabinetClearance.cameraClearance > 1, "The inward placement must keep the original camera lane clear.");
+  const debrisPersistence = await page.evaluate(async () => {
+    const app = window.devfest, scene = app.world.scene, wall = app.world.arcadePhysics.wall;
+    const samples = [];
+    for (const time of [41.19, 41.21, 42.1, 43, 44.15, 46.03, 49, 180, 0, 43]) {
+      app.seek(time); scene.render();
+      const activeMeshes = scene.getActiveMeshes();
+      const activeWall = wall.filter((prop) => activeMeshes.data.slice(0, activeMeshes.length).includes(prop.mesh)).length;
+      let changedPixels = 0;
+      if (time === 41.21 || time === 42.1) {
+        const present = await app.engine.readPixels(0, 0, 1920, 1080);
+        try {
+          wall.forEach((prop) => prop.mesh.setEnabled(false));
+          scene.render();
+          const absent = await app.engine.readPixels(0, 0, 1920, 1080);
+          for (let at = 0; at < present.length; at += 4) {
+            if (Math.max(...[0, 1, 2].map((channel) => Math.abs(present[at + channel] - absent[at + channel]))) > 8) changedPixels++;
+          }
+        } finally {
+          app.world.arcadePhysics.update(app.showController.effectTime(time), app.showController.features);
+          scene.render();
+        }
+      }
+      samples.push({ time, enabled: wall.filter((prop) => prop.mesh.isEnabled()).length, activeWall, changedPixels });
+    }
+    const bake = app.world.arcadePhysics.bake, end = (bake.frames - 1) * 7;
+    const settledTravel = Math.max(...bake.tracks.map((track) =>
+      Math.hypot(...[0, 1, 2].map((axis) => track[end + axis] - track[end - 60 * 7 + axis]))));
+    return { samples, settledTravel };
+  });
+  assert.ok(debrisPersistence.samples.every((sample) => sample.enabled === (sample.time >= 34.4 ? 48 : 0)));
+  assert.ok(debrisPersistence.samples.filter((sample) => [41.21, 42.1].includes(sample.time))
+    .every((sample) => sample.activeWall > 0 && sample.changedPixels > 500),
+  "Debris must remain visible in actual GPU pixels after the former 41.2-s cutoff.");
+  assert.ok(debrisPersistence.settledTravel < .03, "The extended recording must reach rest before holding its last pose.");
   const cameraBaseline = JSON.parse(await readFile(new URL("../docs/legacy-xor/camera-baseline.json", import.meta.url), "utf8"));
   const camera = await page.evaluate((samples) => {
     const app = window.devfest, V = app.world.camera.position.constructor;
@@ -110,7 +166,8 @@ try {
   assert.equal(camera.positionError, 0); assert.equal(camera.fovError, 0); assert.ok(camera.directionError < 1e-5);
   const captures = [];
   for (const [name, time] of [["01-assembly", 35.7], ["02-complete", 37.4], ["03-collision", 38.55],
-    ["04-signal", 40.5], ["05-partial-gate", 44.15], ["06-exit", 46.03], ["07-xor-activation", 42.1]]) {
+    ["04-signal", 40.5], ["05-partial-gate", 44.15], ["06-exit", 46.03], ["07-xor-activation", 42.1],
+    ["08-persistent-debris", 41.21], ["09-arcade-clearance", 9]]) {
     await page.evaluate((time) => { window.devfest.seek(time); window.devfest.world.scene.render(); }, time);
     await page.screenshot({ path: new URL(`../docs/legacy-xor/after-${name}.png`, import.meta.url).pathname });
     captures.push({ name, time });
@@ -254,7 +311,8 @@ try {
   const report = { readyMs, browser: "headless Edge", resolution: [1920, 1080],
     baselineCameraHash: cameraBaseline.hash, camera, playbackFrames: playback.frames,
     musicReached: playback.music, nativePlaybackSeekIdentical: true, pauseStable: true,
-    replay: counts, geometry, measurements, captures, fallback, finale, browserErrors: errors, externalRequests: external };
+    replay: counts, cabinetClearance, debrisPersistence, geometry, measurements, captures, fallback, finale,
+    browserErrors: errors, externalRequests: external };
   await writeFile(new URL("../docs/legacy-xor/validation.json", import.meta.url), JSON.stringify(report, null, 2) + "\n");
   console.log(JSON.stringify(report, null, 2));
 } finally {

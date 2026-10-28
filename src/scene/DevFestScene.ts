@@ -245,6 +245,13 @@ export class DevFestScene {
     ].map((time) => () => this.update(time, SILENCE));
     // Bass introduces a separate NONUNIFORMSCALING shader for the thin-instanced frame.
     entranceStates.push(() => this.update(speaker.startTime + .6, { ...SILENCE, bass: 1 }));
+    const rescue = this.simready.cassouletRescue?.rescue;
+    if (rescue) {
+      // Real draws also warm the PBR light defines, glow and skinned model bindings.
+      for (const time of [TERMINATOR.walkStart + .1, rescue.impactTime + .1, rescue.destroyTime + .1]) {
+        entranceStates.push(() => this.update(time, SILENCE));
+      }
+    }
     await prewarmRenderStates(this.scene, this.camera, entranceStates, () => this.update(0, SILENCE));
   }
 

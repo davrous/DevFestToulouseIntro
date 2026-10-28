@@ -20,15 +20,19 @@ export const DEFAULT_SOUNDTRACK_ID = "violas-journey";
 export const SOUNDTRACKS: readonly Soundtrack[] = [
   {
     id: "violas-journey",
-    label: "Viola's Journey",
+    label: "Viola's Journey - MP3 320 kbit/s",
     url: "./assets/music/violas-journey.mp3",
   },
   {
-    id: "viola-trance",
-    label: "Viola & Trance",
-    url: "./assets/music/viola-trance.mp3",
+    id: "violas-journey-wav",
+    label: "Viola's Journey - WAV original (lossless)",
+    url: "./assets/music/violas-journey.wav",
   },
 ];
+
+export function isJourneySoundtrack(id: string | null): boolean {
+  return id === "violas-journey" || id === "violas-journey-wav";
+}
 
 export function fillSoundtrackSelector(select: HTMLSelectElement): void {
   select.replaceChildren(...SOUNDTRACKS.map((soundtrack) => {

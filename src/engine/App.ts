@@ -183,9 +183,9 @@ export class App {
       try {
         await this.playSoundtrack(time);
       } catch (error) {
-        console.error("MP3 soundtrack playback failed", error);
+        console.error("Soundtrack playback failed", error);
         this.soundtrackActive = false;
-        this.showNotice(`MP3 soundtrack unavailable: ${error instanceof Error ? error.message : String(error)}. The visual show will continue.`, true);
+        this.showNotice(`Soundtrack unavailable: ${error instanceof Error ? error.message : String(error)}. The visual show will continue.`, true);
       }
     }
     this.start(time);
@@ -446,10 +446,10 @@ export class App {
       this.updateSoundtrackVolume(this.timeline.time, true);
       await this.soundtrackPlayer.play();
     } catch (error) {
-      console.error("MP3 soundtrack resume failed", error);
+      console.error("Soundtrack resume failed", error);
       this.soundtrackActive = false;
       this.showController.soundtrackId = null;
-      this.showNotice(`MP3 soundtrack could not resume: ${error instanceof Error ? error.message : String(error)}.`, true);
+      this.showNotice(`Soundtrack could not resume: ${error instanceof Error ? error.message : String(error)}.`, true);
     }
   }
 }

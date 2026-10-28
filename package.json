@@ -16,27 +16,28 @@
     "verify:simready": "npm run build && node scripts/verify-simready.mjs",
     "verify:av": "node scripts/verify-av.mjs",
     "verify:gpu": "npm run build && node scripts/verify-gpu-compat.mjs",
+    "verify:offline": "npm run build && node scripts/verify-offline.mjs",
     "verify:legacy-xor": "npm run build && node scripts/verify-legacy-xor.mjs",
     "bridge": "node scripts/bridge.mjs"
   },
   "dependencies": {
-    "@babylonjs/core": "^9.28.0",
-    "@babylonjs/havok": "^1.3.14",
-    "@babylonjs/loaders": "^9.28.0",
+    "@babylonjs/core": "9.28.0",
+    "@babylonjs/havok": "1.3.14",
+    "@babylonjs/loaders": "9.28.0",
     "@strudel/codemirror": "1.3.0",
     "@strudel/core": "1.2.6",
     "@strudel/mini": "1.2.6",
     "@strudel/tonal": "1.2.6",
     "@strudel/transpiler": "1.2.6",
     "@strudel/webaudio": "1.3.0",
-    "ws": "^8.18.3"
+    "ws": "8.21.3"
   },
   "devDependencies": {
-    "@types/node": "^26.6.3",
+    "@types/node": "26.6.3",
     "gltf-validator": "2.0.0-dev.3.10",
     "playwright": "1.63.0",
-    "typescript": "~5.9.3",
-    "vite": "^7.1.7",
-    "vitest": "^4.1.11"
+    "typescript": "5.9.3",
+    "vite": "7.3.6",
+    "vitest": "4.1.11"
   }
 }
