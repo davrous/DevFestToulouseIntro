@@ -130,17 +130,17 @@ describe("readable arcade jokes at projector aspect", () => {
     expect(SCENERY_COUNT).toBeLessThanOrEqual(6);
   });
 
-  it("frames the HTTP request from 27 seconds and the redirect from 28.5 seconds before the legacy boss", () => {
+  it("frames the HTTP request from 27 seconds and the redirect from 28 seconds before the legacy boss", () => {
     const http = T_SIGN_ANCHORS.chocolatine;
     const httpAnchor = routeAnchor(http.time);
     const httpWorld = Matrix.RotationY(CHOCOLATINE.yaw)
       .multiply(Matrix.Translation(httpAnchor.position.x, http.height, httpAnchor.position.z));
     expect(CHOCOLATINE.start).toBe(27);
-    expect(CHOCOLATINE.redirect).toBe(28.5);
+    expect(CHOCOLATINE.redirect).toBe(28);
     expect(longestReadableInterval(27, 27.25, httpWorld, http.width, 4.5)).toBe(.25);
-    expect(longestReadableInterval(28.5, 28.75, httpWorld, http.width, 4.5)).toBe(.25);
+    expect(longestReadableInterval(28, 28.25, httpWorld, http.width, 4.5)).toBe(.25);
     expect(longestReadableInterval(CHOCOLATINE.start, CHOCOLATINE.redirect, httpWorld, http.width, 4.5))
-      .toBeGreaterThanOrEqual(1.5);
+      .toBeGreaterThanOrEqual(1);
     expect(longestReadableInterval(CHOCOLATINE.redirect, CHOCOLATINE.end, httpWorld, http.width, 4.5))
       .toBeGreaterThanOrEqual(1.5);
   });

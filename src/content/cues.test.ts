@@ -35,9 +35,9 @@ describe("show content", () => {
   });
 
   it("replays joke states exactly when seeking backward", () => {
-    expect(chocolatineStage(28)).toBe(0);
+    expect(chocolatineStage(27.999)).toBe(0);
     expect(chocolatineStage(31)).toBe(1);
-    expect(chocolatineStage(28)).toBe(0);
+    expect(chocolatineStage(27.999)).toBe(0);
     expect(activeCues(11)).not.toContain("HTTP 301 / CHOCOLATINE");
     expect(activeCues(16)).not.toContain("HTTP 301 / CHOCOLATINE");
     expect(activeCues(31)).toContain("HTTP 301 / CHOCOLATINE");
@@ -58,15 +58,16 @@ describe("show content", () => {
     expect(arcadeDoorOpen(47)).toBe(1);
   });
 
-  it("starts the HTTP request at 27 seconds and switches to chocolatine exactly at 28.5 seconds", () => {
+  it("starts the HTTP request at 27 seconds and advances chocolatine by exactly half a second", () => {
     expect(CHOCOLATINE.start).toBe(27);
-    expect(CHOCOLATINE.redirect).toBe(28.5);
-    expect(CHOCOLATINE.redirect - CHOCOLATINE.start).toBe(1.5);
+    expect(CHOCOLATINE.redirect).toBe(28);
+    expect(28.5 - CHOCOLATINE.redirect).toBe(.5);
+    expect(CHOCOLATINE.redirect - CHOCOLATINE.start).toBe(1);
     expect(activeCues(26.999)).not.toContain("HTTP 301 / CHOCOLATINE");
     expect(activeCues(27)).toContain("HTTP 301 / CHOCOLATINE");
     expect(chocolatineStage(27)).toBe(0);
-    expect(chocolatineStage(28.499)).toBe(0);
-    expect(chocolatineStage(28.5)).toBe(1);
+    expect(chocolatineStage(27.999)).toBe(0);
+    expect(chocolatineStage(28)).toBe(1);
     expect(CHOCOLATINE.end - CHOCOLATINE.redirect).toBeGreaterThanOrEqual(1.5);
   });
 

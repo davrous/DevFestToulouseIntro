@@ -4,16 +4,21 @@
 
 Babylon.js **9.28.0**, the existing local Kenney GLBs, scene preparation,
 shader warmup, audio transport, camera and 180-second duration are retained.
-No cabinet is moved. GLBs and their palette materials are unchanged.
+GLBs and their palette materials are unchanged. The six cabinets are spread
+through one sequence from just after the four opening icons to Anne-Flore's
+speaker portal. The final right pinball cabinet is moved farther toward the
+entrance to clear the speaker lasers; the two left-side cabinets ahead of it
+are also nudged toward the entrance to open the speaker approach. The four
+input icons remain grouped after the opening panel. NEXT LEVEL is removed.
 
 | Cabinet | Existing model | New activity | Approximate camera window |
 | --- | --- | --- | --- |
-| 0, first left | `arcade-machine.glb` | Pong, initial offset 4.2 s | 0–2.5 s |
-| 1, first right | `dance-machine.glb` | Super Mario Bros., offset 1.3 s | 0–3.5 s |
+| 0, first left | `arcade-machine.glb` | Super Mario Bros., offset 1.3 s | 0–3.5 s |
+| 1, second right | `dance-machine.glb` | Original DevFest Toulouse 10-year pixel quest | 7–11 s |
 | 2, middle left | `pinball.glb` | Featured pinball, three-ball multiball, AI4FUN high score | Best around 7–14 s |
-| 3, middle right | `arcade-machine.glb` | Original Donkey Kong arcade footage, offset 2.7 s | Best around 7–14 s |
-| 4, rear left | `dance-machine.glb` | Super Mario Bros., offset 5.1 s | Best around 15–21 s |
-| 5, rear right | `pinball.glb` | Single-ball attract sequence, independent phase offset 5.6 s | Best around 15–21 s |
+| 3, middle right | `arcade-machine.glb` | Super Mario Bros., offset 5.1 s | Best around 14–16 s |
+| 4, second-last left | `dance-machine.glb` | Original Toulouse retro-FPS bug hunt | Best around 14–16 s |
+| 5, last right | `pinball.glb` | Single-ball attract sequence, independent phase offset 5.6 s | Best around 7–14 s |
 
 Windows were measured with the existing camera, not invented from musical
 timestamps. Distant machines are in the frustum from the beginning, but the
@@ -32,6 +37,9 @@ is a child mesh; it is not a monitor. Pinball has a separate inclined glass
 mesh named `(%ignore)`, but its bumpers, static flippers, floor and score slot
 are baked into the body.
 
+The printed pinball board alone is rotated 180 degrees to read from the
+player's end. The glass slope, ball paths, bumpers and flipper pivots are unchanged.
+
 Measured model-local screen boundaries:
 
 | Model | Width | Bottom/top Y | Bottom/top Z | Physical aspect |
@@ -47,9 +55,12 @@ model's +Z-facing side. Babylon's video upload has the opposite Y-inversion
 convention to image upload: the video uses `invertY=false`, PNG fallback uses
 `invertY=true`. Both have been checked from the cinematic camera.
 
-**There are no portrait cabinets.** Donkey Kong is pillarboxed inside the
-middle arcade monitor instead of stretching it or altering the cabinet.
-Pong and Mario also retain their source aspect ratios. The light local CRT
+**There are no portrait cabinets.** The two original games are rendered
+locally into canvas textures at the cabinet's aspect ratio: a DevFest Toulouse
+10-year side-scrolling pixel quest and an original Toulouse-themed pseudo-3D
+bug-hunt FPS. Neither uses external media or copies game artwork. Mario keeps
+its source aspect ratio; Donkey Kong and Pong remain available in the
+rehearsal selector. The light local CRT
 shader adds 0.8% curvature, 7% scanline modulation, very small flicker and
 edge shading. It never postprocesses the rest of the scene.
 
@@ -96,11 +107,12 @@ appropriately licensed footage before public distribution. See the
 
 ## Loading and transport
 
-`DevFestScene.prepare()` loads all media and posters, seeks to independent
-initial offsets and uploads decoded frames before SYSTEM READY. Four small
-decoders cover four monitors; the two Mario monitors deliberately use
-different phases. Matching game/offset resources can be shared. No new
-decoder, mesh, light or material is created during ordinary playback.
+`DevFestScene.prepare()` loads video media and posters, seeks to independent
+initial offsets and uploads decoded frames before SYSTEM READY. Two small
+decoders cover the remaining video monitors; the procedural games use two
+fixed-size canvases updated deterministically at 12 fps from master time.
+Matching game/offset resources can be shared. No new decoder, mesh, light or
+material is created during ordinary playback.
 Shader compilation and real render warmup include the arcade and multiball.
 The final loading barrier also waits for warmup's asynchronous seeks.
 

@@ -1,5 +1,5 @@
 {
-  "readyMs": 8119,
+  "readyMs": 8010,
   "browser": "headless Edge",
   "resolution": [
     1920,
@@ -12,22 +12,22 @@
     "directionError": 0,
     "fovError": 0
   },
-  "playbackFrames": 848,
-  "musicReached": 48.531132,
+  "playbackFrames": 3386,
+  "musicReached": 48.511058,
   "nativePlaybackSeekIdentical": true,
   "pauseStable": true,
   "replay": {
     "before": [
-      1404,
-      1720,
-      278,
+      1466,
+      1729,
+      320,
       20,
       5
     ],
     "after": [
-      1404,
-      1720,
-      278,
+      1466,
+      1729,
+      320,
       20,
       5
     ],
@@ -62,13 +62,13 @@
         "time": 41.21,
         "enabled": 48,
         "activeWall": 20,
-        "changedPixels": 223514
+        "changedPixels": 223526
       },
       {
         "time": 42.1,
         "enabled": 48,
         "activeWall": 8,
-        "changedPixels": 99981
+        "changedPixels": 100002
       },
       {
         "time": 43,
@@ -258,6 +258,7 @@
     "temporaryColliders": 0
   },
   "geometry": {
+    "copperClearance": 0.7441294638554155,
     "conservativeClearance": 6.872310641257243,
     "at": {
       "time": 47.85,
@@ -266,31 +267,31 @@
     "signalSamples": [
       {
         "time": 38.2,
-        "cyanPixels": 362123,
+        "cyanPixels": 360724,
         "progress": 0.025141414141415477,
         "power": 0
       },
       {
         "time": 39.5,
-        "cyanPixels": 424105,
+        "cyanPixels": 423762,
         "progress": 0.3939393939393931,
         "power": 0
       },
       {
         "time": 40.5,
-        "cyanPixels": 202587,
+        "cyanPixels": 207016,
         "progress": 0.6969696969696961,
         "power": 0
       },
       {
         "time": 41.5,
-        "cyanPixels": 98428,
+        "cyanPixels": 100139,
         "progress": 1,
         "power": 0
       },
       {
         "time": 42.1,
-        "cyanPixels": 85411,
+        "cyanPixels": 88208,
         "progress": 1,
         "power": 1
       }
@@ -300,52 +301,52 @@
   "measurements": [
     {
       "time": 35.7,
-      "fps": 59.990770650359735,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.299999997019768,
-      "drawCalls": 245
+      "fps": 239.96308260350156,
+      "medianMs": 4.100000001490116,
+      "p95Ms": 5.300000000745058,
+      "drawCalls": 240
     },
     {
       "time": 37.4,
-      "fps": 59.987310376547974,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.5,
-      "drawCalls": 271
+      "fps": 239.96308260350156,
+      "medianMs": 4.099999997764826,
+      "p95Ms": 5.199999999254942,
+      "drawCalls": 266
     },
     {
       "time": 38.55,
-      "fps": 60.008078010707784,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.299999997019768,
-      "drawCalls": 247
+      "fps": 239.96308260350156,
+      "medianMs": 4.100000001490116,
+      "p95Ms": 5.300000000745058,
+      "drawCalls": 242
     },
     {
       "time": 40.5,
-      "fps": 60.01846722027038,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17,
-      "drawCalls": 219
+      "fps": 240.12930039169285,
+      "medianMs": 4.100000001490116,
+      "p95Ms": 5.599999997764826,
+      "drawCalls": 216
     },
     {
       "time": 42.1,
-      "fps": 59.994231323911166,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17,
-      "drawCalls": 185
+      "fps": 239.85239852522164,
+      "medianMs": 4,
+      "p95Ms": 5.5,
+      "drawCalls": 180
     },
     {
       "time": 44.15,
-      "fps": 59.994231323911166,
-      "medianMs": 16.700000002980232,
-      "p95Ms": 17.200000002980232,
-      "drawCalls": 153
+      "fps": 239.74181650489024,
+      "medianMs": 4.099999997764826,
+      "p95Ms": 5.199999999254942,
+      "drawCalls": 152
     },
     {
       "time": 46.03,
-      "fps": 59.994231323911166,
-      "medianMs": 16.69999998807907,
-      "p95Ms": 17.200000002980232,
-      "drawCalls": 161
+      "fps": 240.29574861533303,
+      "medianMs": 4,
+      "p95Ms": 5.400000002235174,
+      "drawCalls": 156
     }
   ],
   "captures": [
@@ -396,6 +397,7 @@
   },
   "finale": {
     "oldCornerEmpty": true,
+    "obsoleteBoardRemoved": true,
     "visibleSeconds": 6.25,
     "fixed": true,
     "position": [

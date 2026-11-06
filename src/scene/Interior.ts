@@ -63,8 +63,6 @@ export function createInterior(scene: Scene): Interior {
     ring.material = i === 1 ? warm : light;
     rings.push(ring);
   }
-  const corner = cellPosition(3, 6);
-  signage(scene, "THE OTHER SIDE", "PERSPECTIVE SHIFT  //  STAND BY", corner.x + 12.9, 18, corner.z, -Math.PI / 2);
   const gateway = new BoxBatch("Depth gates", warm);
   for (const row of [1.8, 3.2, 4.6]) {
     const p = cellPosition(4, row);

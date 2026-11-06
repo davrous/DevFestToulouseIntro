@@ -1,6 +1,6 @@
 import { smoothstep } from "../engine/Timeline";
 
-export const CHOCOLATINE = { start: 27, redirect: 28.5, end: 34.5, anchor: 32.75,
+export const CHOCOLATINE = { start: 27, redirect: 28, end: 34.5, anchor: 32.75,
   fadeStart: 31.85, fadeEnd: 32.55, height: 12.5, width: 12, yaw: 0 } as const;
 
 export function chocolatineOpacity(cameraTime: number): number {

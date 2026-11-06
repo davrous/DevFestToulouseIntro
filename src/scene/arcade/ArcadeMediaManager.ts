@@ -2,7 +2,8 @@ import "@babylonjs/core/Engines/Extensions/engine.videoTexture";
 import { Texture } from "@babylonjs/core/Materials/Textures/texture";
 import { VideoTexture } from "@babylonjs/core/Materials/Textures/videoTexture";
 import type { Scene } from "@babylonjs/core/scene";
-import type { ArcadeGame } from "./config";
+import type { ArcadeVideoGame } from "./config";
+import type { ArcadeScreenMedia } from "./ArcadeScreenMedia";
 
 export const mediaPosition = (time: number, offset: number, duration: number): number =>
   ((time + offset) % duration + duration) % duration;
@@ -60,7 +61,7 @@ class ClockedVideoTexture extends VideoTexture {
   uploadFrame(): void { this._updateInternalTexture(); }
 }
 
-function loadPoster(scene: Scene, game: ArcadeGame): { texture: Texture; ready: Promise<void> } {
+function loadPoster(scene: Scene, game: ArcadeVideoGame): { texture: Texture; ready: Promise<void> } {
   let loaded!: () => void;
   let failed!: (error: Error) => void;
   const ready = new Promise<void>((resolve, reject) => { loaded = resolve; failed = reject; });
@@ -87,7 +88,7 @@ function mediaEvent(video: HTMLVideoElement, event: string, action: () => void):
   });
 }
 
-export class ArcadeMedia {
+export class ArcadeMedia implements ArcadeScreenMedia {
   readonly video = document.createElement("video");
   readonly poster: Texture;
   readonly clock: ArcadeVideoClock;
@@ -110,7 +111,7 @@ export class ArcadeMedia {
   };
   private readonly onError = () => this.fail(this.video.error?.message ?? "Video decoding failed.");
 
-  constructor(private readonly scene: Scene, readonly game: ArcadeGame, readonly offset: number,
+  constructor(private readonly scene: Scene, readonly game: ArcadeVideoGame, readonly offset: number,
     private readonly report: (message: string) => void) {
     this.video.muted = this.video.defaultMuted = true;
     this.video.loop = true;
@@ -122,6 +123,9 @@ export class ArcadeMedia {
     this.poster.wrapU = this.poster.wrapV = Texture.CLAMP_ADDRESSMODE;
     this.clock = new ArcadeVideoClock(this.video, (error) => this.fail(String(error)));
   }
+
+  get aspectRatio(): number { return (this.video.videoWidth || 4) / (this.video.videoHeight || 3); }
+  get videoHeight(): number { return this.video.videoHeight || 240; }
 
   private fail(reason: string): void {
     if (this.disposed || this.error) return;
@@ -200,7 +204,7 @@ export class ArcadeMediaManager {
     });
   }
 
-  get(game: ArcadeGame, offset: number): ArcadeMedia {
+  get(game: ArcadeVideoGame, offset: number): ArcadeMedia {
     const existing = this.resources.find((media) => media.game === game && media.offset === offset);
     if (existing) return existing;
     const media = new ArcadeMedia(this.scene, game, offset, (message) => this.errors.push(message));

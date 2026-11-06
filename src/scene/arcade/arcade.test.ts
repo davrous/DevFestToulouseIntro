@@ -5,8 +5,20 @@ import { Scene } from "@babylonjs/core/scene";
 import { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import { arcadeSettings, validateArcadeSettings } from "./config";
 import { ArcadeVideoClock, mediaDrift, mediaPosition } from "./ArcadeMediaManager";
+import { proceduralFrame } from "./ArcadeProceduralMedia";
 import { CABINET_SCREENS, createDisplayQuad, screenAspect } from "./ArcadeScreenController";
 import { BALL_RADIUS, BUMPER_RADIUS, BUMPERS, PINBALL_ROUTE, PINBALL_SLOPE, PLAYFIELD_HEIGHT, pinballState, samplePinball } from "./pinballState";
+import { PinballAttractController } from "./PinballAttractController";
+
+vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
+  DynamicTexture: class {
+    getContext() {
+      return { fillRect() {}, strokeRect() {}, beginPath() {}, moveTo() {}, lineTo() {}, stroke() {},
+        fillText() {}, measureText: (text: string) => ({ width: text.length * 20 }) };
+    }
+    update() {}
+  },
+}));
 
 class FakeVideo {
   private position = 0;
@@ -23,6 +35,22 @@ class FakeVideo {
 }
 
 describe("arcade master-clock video transport", () => {
+  it("places the original games on the visible arcade and wide monitors", () => {
+    expect(arcadeSettings().assignments).toEqual([
+      { cabinet: 0, game: "super-mario", offset: 1.3 },
+      { cabinet: 1, game: "devfest-10", offset: 0 },
+      { cabinet: 3, game: "super-mario", offset: 5.1 },
+      { cabinet: 4, game: "toulouse-fps", offset: 0 },
+    ]);
+  });
+
+  it("uses a deterministic 12 fps animation clock for procedural arcade games", () => {
+    expect(proceduralFrame(0)).toBe(0);
+    expect(proceduralFrame(1 / 12)).toBe(1);
+    expect(proceduralFrame(2)).toBe(24);
+    expect(proceduralFrame(12)).toBe(144);
+  });
+
   it("wraps negative offsets and measures drift across a loop seam", () => {
     expect(mediaPosition(0, -2, 10)).toBe(8);
     expect(mediaDrift(9.98, .02, 10)).toBeCloseTo(.04);
@@ -78,6 +106,20 @@ describe("arcade master-clock video transport", () => {
 });
 
 describe("fitted cabinet surfaces", () => {
+  it("rotates only the printed pinball boards by 180 degrees, preserving the inclined ball mechanics", () => {
+    const engine = new NullEngine(), scene = new Scene(engine), parent = new TransformNode("Original cabinet", scene);
+    for (const [index, cabinet] of [2, 5].entries()) {
+      const pinball = new PinballAttractController(scene, cabinet, parent, index, cabinet === 2);
+      const board = scene.getMeshByName(`Pinball fitted board / ${cabinet}`)!;
+      expect(board.rotation.y).toBe(Math.PI);
+      expect(board.parent).toBe(pinball.playfield);
+      expect(pinball.playfield.rotation.x).toBe(PINBALL_SLOPE);
+      expect(pinball.playfield.rotation.y).toBe(0);
+      expect(pinball.balls.every((ball) => ball.parent === pinball.playfield)).toBe(true);
+    }
+    scene.dispose(); engine.dispose();
+  });
+
   it("uses the distinct measured landscape screens without stretching the portrait game", () => {
     expect(screenAspect("arcade")).toBeCloseTo(1.603, 2);
     expect(screenAspect("dance")).toBeCloseTo(2.393, 2);

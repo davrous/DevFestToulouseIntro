@@ -16,7 +16,7 @@ export interface SpeakerConfig {
 export const SPEAKERS: readonly SpeakerConfig[] = [
   { name: "Anne-Flore Bernard", demoTitle: "Slop City", startTime: 17, endTime: 39, gateTime: 29, visualTheme: "signal", world: "game" },
   { name: "David Rousset", demoTitle: "Musical Agentic Blender", startTime: 66, endTime: 83, gateTime: 76, visualTheme: "neural", world: "cinema" },
-  { name: "Eric Mittelette", demoTitle: "IA Barrée", startTime: 99, endTime: 116, gateTime: 107, visualTheme: "neural", world: "digital" },
+  { name: "Eric Mittelette", demoTitle: "AI AntiPattern, tu perds ton sang froid", startTime: 99, endTime: 116, gateTime: 107, visualTheme: "neural", world: "digital" },
   { name: "Mitsuru Furuta", demoTitle: "Qui veut gagner des tokens", startTime: 128, endTime: 146, gateTime: 136, visualTheme: "overclock", world: "digital", lateralOffset: 1.1, gateWidth: 22 },
 ];
 

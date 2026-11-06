@@ -9,9 +9,9 @@ import { silentFeatures } from "../engine/AudioAnalyzer";
 import { PixelWorld, RUNNER_COUNT, SCENERY_COUNT } from "./PixelWorld";
 import { ARCADE_WALL_PIXELS, ArcadeT } from "./ArcadeT";
 import { CELL, cellPosition } from "../content/title";
-import { ARCADE_WALL_PANELS, ArcadeCathedral, CABINET_COUNT, CABINET_WALL_CLEARANCE } from "./ArcadeCathedral";
+import { ARCADE_WALL_PANELS, ArcadeCathedral, CABINET_COUNT, CABINET_Z, CABINET_WALL_CLEARANCE } from "./ArcadeCathedral";
 import { ARCADE_ENTRY } from "../content/showBeats";
-import { cameraPose } from "../camera/CameraPath";
+import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { createWorldText } from "./WorldText";
 
 vi.mock("@babylonjs/core/Materials/Textures/texture", () => ({
@@ -43,6 +43,68 @@ vi.mock("@babylonjs/core/Loading/sceneLoader", () => ({
 }));
 
 describe("wall-mounted pixel art", () => {
+  it("keeps all four input icons near the entrance and behind the speaker approach", () => {
+    const engine = new NullEngine(), scene = new Scene(engine), pixels = new PixelWorld(scene);
+    pixels.update(12, silentFeatures());
+    const prompts = scene.meshes.filter((mesh) => mesh.name.startsWith("Arcade / floating input"));
+    expect(prompts).toHaveLength(4);
+    for (const mesh of prompts) {
+      expect(mesh.position.z - 1.55).toBeGreaterThan(cameraPose(ARCADE_ENTRY.cross).position.z);
+      expect(mesh.position.z + 1.55).toBeLessThan(cameraPose(12).position.z);
+    }
+    scene.dispose(); engine.dispose();
+  });
+
+  it("keeps all six machines balanced while clearing the speaker lasers and Anne-Flore", async () => {
+    const engine = new NullEngine(), scene = new Scene(engine), arcade = new ArcadeCathedral(scene);
+    await arcade.prepare();
+    expect(CABINET_Z).toHaveLength(CABINET_COUNT);
+    const speakerZ = routeAnchor(29).position.z;
+    const nominalSpacing = (speakerZ - 15.3 - (scene.getMeshByName("Arcade / hero portal screen")!.position.z + 18))
+      / (CABINET_COUNT - 1);
+    const expectedAdjustments = [0, 0, -3, 0, -3, -7];
+    const gaps: number[] = [];
+    expect(CABINET_Z[0]).toBeCloseTo(scene.getMeshByName("Arcade / hero portal screen")!.position.z + 18);
+    for (let index = 0; index < CABINET_Z.length; index++) {
+      const nominalZ = scene.getMeshByName("Arcade / hero portal screen")!.position.z + 18 + nominalSpacing * index;
+      expect(CABINET_Z[index]).toBeCloseTo(nominalZ + expectedAdjustments[index], 8);
+      expect(arcade.machines[index].root.position.z).toBeCloseTo(CABINET_Z[index], 8);
+      if (index > 0) gaps.push(CABINET_Z[index] - CABINET_Z[index - 1]);
+    }
+    expect(Math.max(...gaps) - Math.min(...gaps)).toBeLessThan(7.1);
+    for (const machine of arcade.machines) {
+      expect(machine.root.getHierarchyBoundingVectors(true).max.z).toBeLessThan(speakerZ - 8);
+    }
+    expect(speakerZ - arcade.machines[5].root.getHierarchyBoundingVectors(true).max.z).toBeGreaterThan(17.5);
+    expect(scene.getMeshByName("Arcade / NEXT LEVEL")).toBeNull();
+    scene.dispose(); engine.dispose();
+  });
+
+  it("keeps the first four floating panels out of every machine and raises wall panels above cabinets", async () => {
+    const engine = new NullEngine(), scene = new Scene(engine);
+    const arcade = new ArcadeCathedral(scene), pixels = new PixelWorld(scene);
+    await arcade.prepare();
+    pixels.update(12, silentFeatures());
+    const prompts = scene.meshes.filter(mesh => mesh.name.startsWith("Arcade / floating input"));
+    const intersects = (a: ReturnType<Mesh["getHierarchyBoundingVectors"]>,
+      b: ReturnType<Mesh["getHierarchyBoundingVectors"]>) =>
+      a.min.x < b.max.x && a.max.x > b.min.x && a.min.y < b.max.y && a.max.y > b.min.y
+      && a.min.z < b.max.z && a.max.z > b.min.z;
+    for (const prompt of prompts) {
+      const bounds = prompt.getHierarchyBoundingVectors(true);
+      expect(arcade.machines.every(machine => !intersects(bounds, machine.root.getHierarchyBoundingVectors(true))))
+        .toBe(true);
+    }
+    const panels = scene.meshes.filter(mesh => mesh.name.startsWith("FX/Arcade wall panel /"));
+    for (const [index, panel] of panels.entries()) {
+      const panelBounds = panel.getHierarchyBoundingVectors(true);
+      const cabinetBounds = arcade.machines[index].root.getHierarchyBoundingVectors(true);
+      expect(panel.position.y).toBe(ARCADE_WALL_PANELS.height);
+      expect(panelBounds.min.y).toBeGreaterThan(cabinetBounds.max.y + 2.5);
+    }
+    scene.dispose(); engine.dispose();
+  });
+
   it("labels the opening CLOSING KEYNOTE and fades its DevFest logo with the panel", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);

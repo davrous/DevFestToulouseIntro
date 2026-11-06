@@ -6,6 +6,7 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import { PointLight } from "@babylonjs/core/Lights/pointLight";
 import { Color3 } from "@babylonjs/core/Maths/math.color";
 import { Matrix, Quaternion, Vector3 } from "@babylonjs/core/Maths/math.vector";
+import { Path3D } from "@babylonjs/core/Maths/math.path";
 import type { Scene } from "@babylonjs/core/scene";
 import { clamp } from "../engine/Timeline";
 import { routeAnchor } from "../camera/CameraPath";
@@ -66,6 +67,41 @@ function curve(points: readonly Vector3[], steps = 30): Vector3[] {
   });
 }
 
+export function xorSignalPath(): Vector3[] {
+  const wall = routeAnchor(40).position;
+  const frontX = wall.x - 5;
+  const z = LEGACY_XOR.exitZ - 12.1;
+  const edgeZ = z;
+  const rightX = wall.x + 5;
+  const start = new Vector3(frontX, 7.2, wall.z);
+  const frontEdge = new Vector3(frontX, 7.2, edgeZ);
+  const rightEdge = new Vector3(rightX, 7.2, edgeZ);
+  const wallClear = new Vector3(wall.x + 9.5, 7.5, z);
+  const approach = new Vector3(wall.x + 11.5, 9.5, z);
+  const gateRun = new Vector3(LEGACY_XOR.exitX - 2, 9.5, z);
+  const gateRise = new Vector3(LEGACY_XOR.exitX - 1.3, 11.5, z);
+  const gateTop = new Vector3(LEGACY_XOR.exitX - .85, 16.4, z + 1);
+  const gateEnd = new Vector3(LEGACY_XOR.exitX - .85, 16.4, LEGACY_XOR.exitZ - 3.4);
+  const segments = [
+    curve([start, new Vector3(frontX, 7.2, wall.z - 5), new Vector3(frontX, 7.2, edgeZ + 5), frontEdge], 24),
+    curve([frontEdge, new Vector3(frontX, 7.2, edgeZ - .6),
+      new Vector3(rightX - 1.5, 7.2, edgeZ), rightEdge], 16),
+    curve([rightEdge, new Vector3(rightX + 1.5, 7.2, edgeZ),
+      new Vector3(wall.x + 6.5, 7.5, z - .4), wallClear], 16),
+    curve([wallClear, new Vector3(wall.x + 9, 7.5, z),
+      new Vector3(wall.x + 9, 9.5, z), approach], 12),
+    curve([approach, approach.add(new Vector3(5, 0, 0)),
+      gateRun.subtract(new Vector3(5, 0, 0)), gateRun], 24),
+    curve([gateRun, gateRun.add(new Vector3(.35, 0, 0)),
+      gateRise.subtract(new Vector3(.2, 1.5, 0)), gateRise], 12),
+    curve([gateRise, gateRise.add(new Vector3(.15, 1.5, 0)),
+      gateTop.subtract(new Vector3(0, 0, 1)), gateTop], 12),
+    curve([gateTop, gateTop.add(new Vector3(0, 0, 2)),
+      gateEnd.subtract(new Vector3(0, 0, 2)), gateEnd], 16),
+  ];
+  return segments.flatMap((segment, index) => index === 0 ? segment : segment.slice(1));
+}
+
 export function xorSymbolPaths(): Vector3[][] {
   const v = (x: number, y: number) => new Vector3(x, y, 0);
   return [
@@ -90,6 +126,8 @@ export class XorCpuGate {
   readonly light: PointLight;
   readonly keyLight: PointLight;
   readonly spark;
+  readonly chargeSpark;
+  private readonly signalPath: Path3D;
   state;
   private readonly symbolMaterial: StandardMaterial;
   private readonly status: Mesh;
@@ -199,16 +237,9 @@ export class XorCpuGate {
     this.status = createWorldText(scene, { name: "XOR CPU / access granted", width: 6, height: 1.15,
       background: "#09241f", border: "#61ffa2", lines: [{ text: "ACCESS GRANTED", color: "#82ffb1" }] });
     this.status.parent = module; this.status.position.set(0, -2.15, -.31);
-    const wall = routeAnchor(40).position;
-    const z = LEGACY_XOR.exitZ - 12.1;
-    this.signal = new CircuitSignal(scene, "XOR CPU / wall-impact circuit", [[
-      new Vector3(wall.x, 10.1, wall.z), new Vector3(wall.x + 1.2, 8.5, wall.z - 5),
-      new Vector3(wall.x + 3.5, 7.5, z), new Vector3(wall.x + 8, 7.5, z),
-      new Vector3(wall.x + 10, 9.5, z), new Vector3(LEGACY_XOR.exitX - 2, 9.5, z),
-      new Vector3(LEGACY_XOR.exitX - 1.3, 11.5, z),
-      new Vector3(LEGACY_XOR.exitX - .85, 16.4, z + 1),
-      new Vector3(LEGACY_XOR.exitX - .85, 16.4, LEGACY_XOR.exitZ - 3.4),
-    ]], .11, parent);
+    const signalPoints = xorSignalPath();
+    this.signalPath = new Path3D(signalPoints);
+    this.signal = new CircuitSignal(scene, "XOR CPU / wall-impact circuit", [signalPoints], .14, parent);
     this.spark = MeshBuilder.CreateLineSystem("FX/XOR CPU / wall-impact discharge", {
       lines: Array.from({ length: 8 }, (_, index) => {
         const angle = index * Math.PI / 4;
@@ -217,8 +248,10 @@ export class XorCpuGate {
           new Vector3(Math.cos(angle) * 1.9, Math.sin(angle) * 1.9, 0)];
       }),
     }, scene);
-    this.spark.parent = parent; this.spark.position.set(wall.x - 1.2, 10.1, wall.z);
+    this.spark.parent = parent; this.spark.position.copyFrom(signalPoints[0]);
     this.spark.rotation.y = Math.PI / 2; this.spark.color.set(.1, 1.5, 2); this.spark.isPickable = false;
+    this.chargeSpark = this.spark.clone("FX/XOR CPU / travelling electrical sparks", parent);
+    this.chargeSpark.color.set(.5, 1.8, 2.5);
     this.aperture = MeshBuilder.CreateBox("Debug / XOR free aperture", { width: 10, height: 18, depth: 1.5 }, scene);
     this.aperture.parent = this.root; this.aperture.position.y = 12;
     const debug = emissive(scene, "Debug / XOR free aperture green", "#5aff8c", .45);
@@ -259,11 +292,18 @@ export class XorCpuGate {
     this.cyan.emissiveColor.copyFrom(Color3.FromHexString(this.settings.signalColor))
       .scaleInPlace(.025 + this.state.power * this.settings.emission * .8);
     this.status.setEnabled(this.state.power > .9);
-    this.signal.copper.setEnabled(this.root.isEnabled() && time >= 34.4);
+    this.signal.copper.setEnabled(this.root.isEnabled());
     this.signal.update(this.state.signal, this.root.isEnabled() && this.state.signalActive, this.settings);
     const discharge = clamp((time - LEGACY_XOR.impact) / .32);
     this.spark.setEnabled(this.root.isEnabled() && time >= LEGACY_XOR.impact && time < LEGACY_XOR.impact + .32);
     this.spark.scaling.setAll(.3 + discharge * 1.3); this.spark.alpha = (1 - discharge) ** 2;
+    const arrivalBurst = clamp((time - this.state.arrival) / .35);
+    this.chargeSpark.setEnabled(this.root.isEnabled() && this.state.signalActive && time < this.state.arrival + .35);
+    this.chargeSpark.position.copyFrom(this.signalPath.getPointAt(this.state.signal));
+    this.chargeSpark.rotation.x = time * 18;
+    this.chargeSpark.scaling.setAll(time < this.state.arrival
+      ? .22 + .12 * Math.sin(time * 43) ** 2 : .4 + arrivalBurst * 1.4);
+    this.chargeSpark.alpha = (1 - arrivalBurst) ** 2;
     this.aperture.setEnabled(this.settings.freeAperture);
     this.light.intensity = this.root.isEnabled() ? this.state.power * 350 : 0;
     this.keyLight.intensity = this.root.isEnabled() ? 45 + this.state.power * 400 : 0;

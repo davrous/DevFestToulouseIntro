@@ -321,6 +321,18 @@ art or a free-camera showcase.
 
 ## Follow-up: astronaut and chocolatine crossing
 
+The 6 November pass pre-stages the copper impact tube from time zero, with
+its source five units in front of the wall anchor. The return bend stays
+inside the corridor, between the Tetris wall edge and the architectural wall,
+then follows the inner wall toward the door. Regression tests check the
+complete copper surface against the actual instanced architectural solids,
+not only its centerline against the Tetris blocks. A deterministic
+spark follows the electrical packet and expands into a 0.35-s arrival burst
+at the door. The original impact flash and gate opening timings are preserved.
+
+The obscured `THE OTHER SIDE` board beside the final rocket is removed from
+the architectural interior. The rocket, satellite and orbital label remain.
+
 The existing astronaut is moved behind Orbital Toulouse Link, using its 153-s
 anchor, depth 25 and lateral offset 11, with three extra units of setback from
 the previous placement. Its actual normalized model height is
@@ -330,7 +342,7 @@ inside the corridor. The old 122-s data-arch animation is preserved independentl
 The terminal's original 119.1-s gaze is decoupled without changing the camera.
 
 The pastry board remains preloaded and switches to chocolatine at exactly
-28.5 s on camera time, independently of musical effect-time nudging,
+28 s on camera time (advanced by 0.5 s), independently of musical effect-time nudging,
 then its entire surface fades **31.85–32.55 s on camera time**, not a
 beat-shifted effect clock. It is fully transparent/disabled before crossing
 at **32.75 s**. Only visibility changes; no replacement black plane is created.

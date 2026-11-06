@@ -10,6 +10,7 @@ import { SpeakerPortal } from "./SpeakerPortal";
 import { DEPLOY_ROCKET, EasterEggs } from "./EasterEggs";
 import { CHOCOLATINE, chocolatineOpacity } from "../content/cues";
 import { CINEMA } from "../content/showBeats";
+import { createInterior } from "./Interior";
 
 vi.mock("./WorldText", () => ({
   routeAnchor,
@@ -35,6 +36,15 @@ vi.mock("./EventBranding", () => ({
 }));
 
 describe("digital speaker props", () => {
+  it("removes the obscured OTHER SIDE board beside the final rocket without removing the interior", () => {
+    const engine = new NullEngine(), scene = new Scene(engine);
+    const interior = createInterior(scene);
+    expect(scene.getMeshByName("THE OTHER SIDE")).toBeNull();
+    expect(scene.getMeshByName("NODE / 01")?.parent).toBe(interior.root);
+    expect(scene.getMeshByName("Depth gates")?.parent).toBe(interior.root);
+    scene.dispose(); engine.dispose();
+  });
+
   it("pre-stages the HTTP panel closer to Anne-Flore, square across the corridor, without a timed pop", async () => {
     const engine = new NullEngine();
     const scene = new Scene(engine);
@@ -49,18 +59,18 @@ describe("digital speaker props", () => {
     const horizontalDistance = (point: typeof anneFlore) => Math.hypot(point.x - anneFlore.x, point.z - anneFlore.z);
     expect(horizontalDistance(root.position)).toBeLessThan(horizontalDistance(routeAnchor(33.5).position));
     const meshes = scene.meshes.length;
-    for (const time of [0, 15, 24, 26.999, 27, 28.499, 28.5, 31.85, 32.2, 32.55, 32.75, 36, 27]) {
+    for (const time of [0, 15, 24, 26.999, 27, 27.999, 28, 31.85, 32.2, 32.55, 32.75, 36, 27]) {
       props.update(time);
       expect(root.isEnabled()).toBe(true);
-      expect(request.isEnabled()).toBe(time < 28.5 && chocolatineOpacity(time) > 0);
-      expect(redirect.isEnabled()).toBe(time >= 28.5 && chocolatineOpacity(time) > 0);
+      expect(request.isEnabled()).toBe(time < 28 && chocolatineOpacity(time) > 0);
+      expect(redirect.isEnabled()).toBe(time >= 28 && chocolatineOpacity(time) > 0);
       expect(redirect.visibility).toBe(chocolatineOpacity(time));
     }
     props.update(32.75, 31.85);
     expect(redirect.visibility).toBe(1);
-    props.update(29.2, 28.499);
+    props.update(29.2, 27.999);
     expect(request.isEnabled()).toBe(true);
-    props.update(27.9, 28.5);
+    props.update(27.9, 28);
     expect(redirect.isEnabled()).toBe(true);
     expect(scene.meshes).toHaveLength(meshes);
     props.update(CINEMA.start);
@@ -76,7 +86,7 @@ describe("digital speaker props", () => {
     portal.update(103, silentFeatures());
     expect(portal.root.isEnabled()).toBe(true);
     expect(portal.nameMesh.name).toBe("Speaker / Eric Mittelette");
-    expect(portal.titleMesh.name).toBe("Demo / IA Barrée");
+    expect(portal.titleMesh.name).toBe("Demo / AI AntiPattern, tu perds ton sang froid");
     expect(scene.meshes.some((mesh) => mesh.name.startsWith("Neural code /"))).toBe(false);
     scene.dispose();
     engine.dispose();
@@ -96,7 +106,8 @@ describe("digital speaker props", () => {
     props.update(138);
     expect(rocket.isEnabled()).toBe(true);
     expect(scene.getMeshByName("Rocket / deployment stage")).not.toBeNull();
-    expect(scene.getMeshByName("Rocket / DEPLOY TO ORBIT")).not.toBeNull();
+    expect(scene.getMeshByName("Rocket / DEPLOY TO ORBIT")).toBeNull();
+    expect(scene.meshes.some((mesh) => mesh.name.startsWith("Rocket / launch console support"))).toBe(false);
     props.update(160);
     expect(rocket.isEnabled()).toBe(false);
     expect(satellite.isEnabled()).toBe(true);

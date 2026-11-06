@@ -22,7 +22,9 @@ export class CircuitSignal {
         { path, radius, tessellation: 6, cap: Mesh.CAP_ALL }, scene);
       const uvs = mesh.getVerticesData(VertexBuffer.UVKind);
       if (!uvs) throw new Error("Circuit tubes require distance UVs.");
-      for (let at = 1; at < uvs.length; at += 2) uvs[at] = uvs[at] * .92 + index / paths.length * .08;
+      if (paths.length > 1) {
+        for (let at = 1; at < uvs.length; at += 2) uvs[at] = uvs[at] * .92 + index / paths.length * .08;
+      }
       mesh.setVerticesData(VertexBuffer.UVKind, uvs);
       return mesh;
     });

@@ -120,7 +120,7 @@ export class MusicReactive {
   }
 
   update(time: number, audio: AudioFeatures, cinema = false): void {
-    this.particles.setEnabled(!cinema);
+    this.particles.setEnabled(!cinema && time >= 159);
     this.canal.setEnabled(!cinema);
     const calm = 1 - smoothstep((time - 153) / 18);
     const reveal = smoothstep((time - 159) / 9);

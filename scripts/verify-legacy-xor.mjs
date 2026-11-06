@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { readFile, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
 import { preview } from "vite";
 import { chromium } from "playwright";
 
@@ -38,7 +39,8 @@ try {
       };
     };
   });
-  await page.locator("#fullscreen").uncheck(); await page.locator("#play").click();
+  await page.evaluate(() => { document.querySelector("#fullscreen").checked = false; });
+  await page.evaluate(() => { document.querySelector("#play").click(); });
   await page.waitForFunction(() => window.devfest.timeline.playing);
   await page.evaluate(() => {
     const app = window.devfest;
@@ -189,11 +191,12 @@ try {
     ["04-signal", 40.5], ["05-partial-gate", 44.15], ["06-exit", 46.03], ["07-xor-activation", 42.1],
     ["08-persistent-debris", 41.21], ["09-arcade-clearance", 9], ["10-xor-cube-impact", 41.5]]) {
     await page.evaluate((time) => { window.devfest.seek(time); window.devfest.world.scene.render(); }, time);
-    await page.screenshot({ path: new URL(`../docs/legacy-xor/after-${name}.png`, import.meta.url).pathname });
+    await page.screenshot({ path: fileURLToPath(new URL(`../docs/legacy-xor/after-${name}.png`, import.meta.url)) });
     captures.push({ name, time });
   }
   const finale = await page.evaluate(async () => {
     const app = window.devfest, scene = app.world.scene, actor = app.world.cinema.astronautRoot;
+    const obsoleteBoardRemoved = scene.getMeshByName("THE OTHER SIDE") === null;
     app.seek(118.4);
     const oldCornerEmpty = !actor.isEnabled() && !scene.getTransformNodeByName("Digital / astronaut after buffer");
     const originalPose = [...actor.position.asArray(), ...actor.scaling.asArray()];
@@ -225,10 +228,11 @@ try {
       const mesh = scene.getMeshByName("Chocolatine compiler stage 1");
       return { time, visibility: mesh.visibility, enabled: mesh.isEnabled() };
     });
-    return { oldCornerEmpty, visibleSeconds, fixed, position: actor.position.asArray(),
+    return { oldCornerEmpty, obsoleteBoardRemoved, visibleSeconds, fixed, position: actor.position.asArray(),
       bounds: { min: bounds.min.asArray(), max: bounds.max.asArray() }, height: bounds.max.y - bounds.min.y, pastry };
   });
   assert.equal(finale.oldCornerEmpty, true); assert.equal(finale.fixed, true);
+  assert.equal(finale.obsoleteBoardRemoved, true);
   assert.ok(finale.visibleSeconds >= 3, "The relocated astronaut must really be visible behind the orbital hardware.");
   assert.ok(Math.abs(finale.height - 16.64) < .001);
   assert.ok(finale.bounds.min[2] > 28.75 && finale.bounds.max[2] < 55.25, "The astronaut must not enter the final corridor walls.");
@@ -237,11 +241,34 @@ try {
   assert.ok(finale.pastry.slice(3).every((sample) => !sample.enabled && sample.visibility === 0));
   for (const [name, time] of [["finale-astronaut", 151], ["chocolatine-crossing", 32.75]]) {
     await page.evaluate((time) => { window.devfest.seek(time); window.devfest.world.scene.render(); }, time);
-    await page.screenshot({ path: new URL(`../docs/legacy-xor/${name}.png`, import.meta.url).pathname });
+    await page.screenshot({ path: fileURLToPath(new URL(`../docs/legacy-xor/${name}.png`, import.meta.url)) });
   }
   const geometry = await page.evaluate(async () => {
     const app = window.devfest, scene = app.world.scene, gate = app.world.arcade.gate;
     const V = gate.root.position.constructor, M = gate.root.computeWorldMatrix(true).constructor;
+    const copper = gate.signal.copper, copperVertices = copper.getVerticesData("position");
+    const copperPoints = Array.from({ length: copperVertices.length / 3 }, (_, index) =>
+      V.TransformCoordinates(V.FromArray(copperVertices, index * 3), copper.computeWorldMatrix(true)));
+    const tube = copper.getBoundingInfo().boundingBox;
+    let copperClearance = Infinity;
+    for (const mesh of app.world.labyrinth.meshes.slice(0, 5)) {
+      for (const instance of mesh.thinInstanceGetWorldMatrices()) {
+        const world = instance.multiply(mesh.computeWorldMatrix(true)), center = world.getTranslation();
+        const scale = new V(); world.decompose(scale);
+        const half = scale.scale(.5);
+        if (center.x + half.x < tube.minimumWorld.x - 1 || center.x - half.x > tube.maximumWorld.x + 1
+          || center.y + half.y < tube.minimumWorld.y - 1 || center.y - half.y > tube.maximumWorld.y + 1
+          || center.z + half.z < tube.minimumWorld.z - 1 || center.z - half.z > tube.maximumWorld.z + 1) continue;
+        const inverse = M.Invert(world);
+        for (const point of copperPoints) {
+          const local = V.TransformCoordinates(point, inverse);
+          copperClearance = Math.min(copperClearance, Math.hypot(
+            Math.max(Math.abs(local.x) - .5, 0) * scale.x,
+            Math.max(Math.abs(local.y) - .5, 0) * scale.y,
+            Math.max(Math.abs(local.z) - .5, 0) * scale.z));
+        }
+      }
+    }
     const solids = gate.root.getChildMeshes().filter((mesh) => mesh.material?.getClassName() === "PBRMaterial")
       .map((mesh) => {
         const vertices = mesh.getVerticesData("position");
@@ -284,8 +311,10 @@ try {
       for (let at = 0; at < image.length; at += 4) if (image[at + 1] > image[at] + 35 && image[at + 2] > image[at] + 45) cyan++;
       widths.push({ time, cyanPixels: cyan, progress: gate.state.signal, power: gate.state.power });
     }
-    return { conservativeClearance, at, signalSamples: widths, panelCount: gate.panels.length };
+    return { copperClearance, conservativeClearance, at, signalSamples: widths, panelCount: gate.panels.length };
   });
+  assert.ok(Number.isFinite(geometry.copperClearance) && geometry.copperClearance > .25,
+    "The complete copper tube surface must remain clear of the actual architectural solids.");
   assert.ok(geometry.conservativeClearance > .6, "The camera center and near-plane corners require real metal clearance.");
   assert.equal(geometry.panelCount, 4);
   assert.ok(geometry.signalSamples.at(-1).cyanPixels > 200, "The activated CPU must be visible in actual GPU pixels.");

@@ -15,14 +15,22 @@ import { cueEnvelope } from "../content/cues";
 import { smoothstep } from "../engine/Timeline";
 import { createWorldText } from "./WorldText";
 import { ARCADE_ENTRY, CINEMA, LEVEL_COMPLETE } from "../content/showBeats";
+import { SPEAKERS } from "../content/speakers";
 import { createEventDecal, loadEventArtwork } from "./EventBranding";
 import flagUrl from "../assets/event/mascot-flag-green.png";
 import type { ArcadeMachine } from "./arcade/ArcadeSceneEnhancements";
 
 const ROOT = "/assets/kenney/arcade/";
 export const CABINET_COUNT = 6;
+const openingPanelZ = cellPosition(-1, 13.95).z - 8.3;
+const anneFlorePanelZ = routeAnchor(SPEAKERS[0].gateTime).position.z;
+const cabinetStartZ = openingPanelZ + 18;
+const cabinetEndZ = anneFlorePanelZ - 15.3;
+const cabinetZAdjustments = [0, 0, -3, 0, -3, -7] as const;
+export const CABINET_Z = Object.freeze(Array.from({ length: CABINET_COUNT }, (_, index) =>
+  cabinetStartZ + (cabinetEndZ - cabinetStartZ) * index / (CABINET_COUNT - 1) + cabinetZAdjustments[index]));
 export const CABINET_WALL_CLEARANCE = .8;
-export const ARCADE_WALL_PANELS = { offset: CELL / 2 - .76, height: 15 } as const;
+export const ARCADE_WALL_PANELS = { offset: CELL / 2 - .76, height: 17.5 } as const;
 
 export class ArcadeCathedral {
   readonly machines: ArcadeMachine[] = [];
@@ -35,7 +43,6 @@ export class ArcadeCathedral {
   private readonly screens: ReturnType<typeof MeshBuilder.CreatePlane>[] = [];
   private readonly light: PointLight;
   private readonly complete;
-  private readonly next;
 
   constructor(private readonly scene: Scene) {
     this.screenMaterial = new StandardMaterial("Arcade / reactive wall panels", scene);
@@ -88,14 +95,6 @@ export class ArcadeCathedral {
     this.light.diffuse = Color3.FromHexString("#7dffe3");
     this.light.range = 30;
     this.light.intensity = 0;
-    const bridge = routeAnchor(61);
-    this.next = createWorldText(scene, {
-      name: "Arcade / NEXT LEVEL", width: 16, height: 3.5,
-      background: "#0b1d28", border: "#7de6ff",
-      lines: [{ text: "NEXT LEVEL", color: "#bbf8ff" }],
-    });
-    this.next.position.set(bridge.position.x, 21, bridge.position.z + 9);
-    this.next.rotation.y = bridge.yaw;
     const exit = routeAnchor(CINEMA.clapperAnchor);
     this.complete = createWorldText(scene, {
       name: "Arcade / level complete", width: LEVEL_COMPLETE.width, height: 4,
@@ -130,8 +129,7 @@ export class ArcadeCathedral {
     if (!available.length) return;
     for (let index = 0; index < CABINET_COUNT; index++) {
       const side = index % 2 ? 1 : -1;
-      const row = index >= 4 ? 11.35 : 14.3 - Math.floor(index / 2) * 1.8;
-      const cell = cellPosition(-1, row);
+      const cell = cellPosition(-1, 12);
       const template = templates[index % templates.length] ?? available[0];
       const cabinet = template.clone(`Arcade cathedral / cabinet ${index}`, null);
       if (!cabinet) {
@@ -141,7 +139,7 @@ export class ArcadeCathedral {
       cabinet.setEnabled(true);
       const size = 12 + index % 3 * 1.2;
       cabinet.scaling.setAll(size);
-      cabinet.position.set(cell.x, 0, cell.z);
+      cabinet.position.set(cell.x, 0, CABINET_Z[index]);
       cabinet.rotation.y = side * Math.PI / 2;
       const bounds = cabinet.getHierarchyBoundingVectors(true);
       const wallX = cell.x + side * (CELL / 2 - .75);
@@ -180,6 +178,5 @@ export class ArcadeCathedral {
     this.scanlineMaterial.setFloat("interference", 1 - portal + audio.treble * .5);
     this.light.intensity = (350 + audio.kick * 500 + audio.snare * 360) * portal;
     this.complete.visibility = cueEnvelope(time, LEVEL_COMPLETE.start, LEVEL_COMPLETE.end, .25);
-    this.next.visibility = cueEnvelope(time, 55.1, 59.5, .45);
   }
 }

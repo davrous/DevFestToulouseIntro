@@ -209,6 +209,7 @@ export class DevFestScene {
     await Promise.all([this.pixelWorld.prepare(),
       this.cathedral.prepare().then(() => this.arcadeEnhancements.prepare(this.cathedral.machines)), this.cinema.prepare(),
       this.easterEggs.skynetWarning.ready,
+      this.cassouletPoster.prepare(),
       this.entryTransition.prepare(), this.clapTransition.prepare(), this.lensVortex.prepare(),
       this.crtLightning.prepare(), this.simready.prepare(progress)]);
     const havok = await HavokPhysics({ locateFile: () => havokWasm });
@@ -322,6 +323,7 @@ export class DevFestScene {
       mesh.setEnabled(cameraTime < CINEMA.lens - .15 || cameraTime >= CINEMA.tunnelRoomReady);
     });
     this.atmosphere.dust.position.y = Math.sin(time * .13) * DUST.drift;
+    this.atmosphere.dust.setEnabled(false);
     this.caption.visibility = smoothstep((time - 170) / 3);
     this.branding.update(time);
     updateInterior(this.interior, time);

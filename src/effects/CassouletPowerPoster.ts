@@ -6,9 +6,11 @@ import { StandardMaterial } from "@babylonjs/core/Materials/standardMaterial";
 import type { Scene } from "@babylonjs/core/scene";
 import { DURATION } from "../engine/Timeline";
 import { CASSOULET_WALL_POSTER } from "../content/showBeats";
+import posterFontUrl from "../assets/event/Anton-Regular.ttf?url";
 
 export const CASSOULET_POWER_TITLE = "The Power Of Cassoulet!";
 export const CASSOULET_POWER_POSTER = { delay: .35, width: 1536, height: 864 } as const;
+const POSTER_FONT = '"Cassoulet Anton"';
 
 export function cassouletPowerState(time: number, destroyedAt: number | undefined, enabled = true):
   { active: boolean; opacity: number } {
@@ -42,13 +44,12 @@ function drawPoster(texture: DynamicTexture): void {
     ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.strokeStyle = stroke; ctx.lineWidth = lineWidth; ctx.stroke();
   };
   const headline = (text: string, x: number, y: number, size: number, color: string, maxWidth: number) => {
-    ctx.font = `900 italic ${size}px Impact, "Arial Black", sans-serif`;
+    ctx.font = `${size}px ${POSTER_FONT}`;
     const fitted = Math.min(size, size * maxWidth / Math.max(1, ctx.measureText(text).width));
-    ctx.font = `900 italic ${fitted}px Impact, "Arial Black", sans-serif`;
+    ctx.font = `${fitted}px ${POSTER_FONT}`;
     ctx.lineJoin = "round";
-    ctx.strokeStyle = "#bd2435"; ctx.lineWidth = 22; ctx.strokeText(text, x + 8, y + 9);
-    ctx.strokeStyle = ink; ctx.lineWidth = 19; ctx.strokeText(text, x, y);
-    ctx.strokeStyle = "#fff8dc"; ctx.lineWidth = 5; ctx.strokeText(text, x, y);
+    ctx.strokeStyle = "#bd2435"; ctx.lineWidth = fitted * .06; ctx.strokeText(text, x + 6, y + 7);
+    ctx.strokeStyle = ink; ctx.lineWidth = fitted * .035; ctx.strokeText(text, x, y);
     ctx.fillStyle = color; ctx.fillText(text, x, y);
   };
 
@@ -115,7 +116,7 @@ function drawPoster(texture: DynamicTexture): void {
   ctx.fillStyle = "#54727a"; ctx.fill(); ctx.lineWidth = 6; ctx.stroke();
   ctx.fillStyle = "#f5cd62"; ctx.fillRect(-118, -101, 236, 218);
   ctx.strokeStyle = "#b62635"; ctx.lineWidth = 9; ctx.strokeRect(-117, -100, 234, 218);
-  ctx.font = '900 35px Impact, "Arial Black", sans-serif'; ctx.fillStyle = ink;
+  ctx.font = `35px ${POSTER_FONT}`; ctx.fillStyle = ink;
   centeredText("CASSOULET", 0, -56);
   ctx.lineWidth = 10;
   for (const side of [-1, 1]) {
@@ -124,7 +125,7 @@ function drawPoster(texture: DynamicTexture): void {
   }
   ctx.beginPath(); ctx.moveTo(-35, 62); ctx.quadraticCurveTo(0, 90, 35, 57);
   ctx.strokeStyle = ink; ctx.lineWidth = 9; ctx.stroke();
-  ctx.font = '900 23px "Arial Black", sans-serif'; centeredText("TOULOUSE EDITION", 0, 145);
+  ctx.font = `23px ${POSTER_FONT}`; centeredText("TOULOUSE EDITION", 0, 145);
   ctx.restore();
 
   ctx.save(); ctx.translate(545, 665);
@@ -153,7 +154,7 @@ function drawPoster(texture: DynamicTexture): void {
     ctx.beginPath(); ctx.moveTo(-35, -80 + rib * 13); ctx.lineTo(36, -80 + rib * 13); ctx.stroke();
   }
   ctx.fillStyle = ink; ctx.fillRect(-20, -94, 39, 82);
-  ctx.font = '900 21px "Arial Black", sans-serif'; ctx.fillStyle = "#f4e8d1";
+  ctx.font = `21px ${POSTER_FONT}`; ctx.fillStyle = "#f4e8d1";
   centeredText("T-800", 0, -31);
   limb([0, -94, 0, -121]);
   ctx.save(); ctx.rotate(.14);
@@ -176,7 +177,7 @@ function drawPoster(texture: DynamicTexture): void {
   ctx.fillStyle = "#f2cd63"; ctx.strokeStyle = ink; ctx.lineWidth = 7;
   ctx.fillRect(-58, -28, 116, 61); ctx.strokeRect(-58, -28, 116, 61);
   ctx.beginPath(); ellipse(0, -28, 58, 13); ctx.fillStyle = "#99aeb4"; ctx.fill(); ctx.stroke();
-  ctx.font = '900 16px "Arial Black", sans-serif'; ctx.fillStyle = ink; centeredText("CASSOULET", 0, 14);
+  ctx.font = `16px ${POSTER_FONT}`; ctx.fillStyle = ink; centeredText("CASSOULET", 0, 14);
   ctx.restore();
   for (let bean = 0; bean < 4; bean++) {
     ctx.beginPath(); ellipse(-37 + bean * 23, -213 + bean % 2 * 10, 8, 13, .4);
@@ -185,7 +186,7 @@ function drawPoster(texture: DynamicTexture): void {
   ctx.restore(); ctx.restore();
   ctx.save(); ctx.translate(115, 680); ctx.rotate(-.07);
   ctx.fillStyle = ink; ctx.fillRect(-10, -32, 303, 52);
-  ctx.fillStyle = "#fff4d7"; ctx.font = '900 25px "Arial Black", sans-serif';
+  ctx.fillStyle = "#fff4d7"; ctx.font = `25px ${POSTER_FONT}`;
   ctx.fillText("T-800: 0 / TERROIR: 1", 0, 3); ctx.restore();
 
   polygon([728, 204, 1482, 194, 1461, 607, 827, 611, 705, 687, 746, 535], "#fff9df", ink, 14);
@@ -194,14 +195,14 @@ function drawPoster(texture: DynamicTexture): void {
   headline(words.slice(3).join(" "), 759, 520, 142, "#ffcf3d", 690);
   ctx.save(); ctx.translate(883, 666); ctx.rotate(-.045);
   ctx.fillStyle = ink; ctx.fillRect(-20, -46, 578, 66);
-  ctx.font = '900 34px "Arial Black", sans-serif'; ctx.fillStyle = "#fff4cb";
+  ctx.font = `34px ${POSTER_FONT}`; ctx.fillStyle = "#fff4cb";
   ctx.fillText("4.80 GB OF PURE POWER", 0, 0); ctx.restore();
   ctx.save(); ctx.translate(1110, 116); ctx.rotate(.08);
   headline("K.O.!", 0, 0, 90, "#f73649", 300); ctx.restore();
   ctx.fillStyle = ink; ctx.fillRect(32, 756, width - 64, 72);
-  ctx.font = '900 italic 34px "Arial Black", sans-serif'; ctx.fillStyle = "#fff6d8";
+  ctx.font = `34px ${POSTER_FONT}`; ctx.fillStyle = "#fff6d8";
   ctx.fillText("LE TERROIR CONTRE-ATTAQUE.", 65, 804);
-  ctx.font = "bold 30px Consolas, monospace"; ctx.fillText("$ npm install victoire", 1010, 803);
+  ctx.font = `30px ${POSTER_FONT}`; ctx.fillText("$ npm install victoire", 1010, 803);
   ctx.strokeStyle = ink; ctx.lineWidth = 22; ctx.strokeRect(20, 20, width - 40, height - 40);
   texture.update();
 }
@@ -216,10 +217,10 @@ export class CassouletPowerPoster {
   constructor(scene: Scene) {
     this.artwork = new DynamicTexture("Cassoulet / original manga victory artwork",
       { width: CASSOULET_POWER_POSTER.width, height: CASSOULET_POWER_POSTER.height },
-      scene, false, Texture.BILINEAR_SAMPLINGMODE);
+      scene, true, Texture.TRILINEAR_SAMPLINGMODE);
+    this.artwork.anisotropicFilteringLevel = 8;
     this.artwork.hasAlpha = true;
     this.artwork.wrapU = this.artwork.wrapV = Texture.CLAMP_ADDRESSMODE;
-    drawPoster(this.artwork);
     this.root = new TransformNode("Cassoulet / wall-mounted manga victory", scene);
     this.root.position.set(CASSOULET_WALL_POSTER.x, CASSOULET_WALL_POSTER.y, CASSOULET_WALL_POSTER.z);
     this.root.rotation.y = CASSOULET_WALL_POSTER.yaw;
@@ -246,6 +247,12 @@ export class CassouletPowerPoster {
     this.frame.material = frameMaterial;
     scene.onDisposeObservable.addOnce(() => this.artwork.dispose());
     this.update(0, undefined);
+  }
+
+  async prepare(): Promise<void> {
+    const font = await new FontFace("Cassoulet Anton", `url("${posterFontUrl}")`).load();
+    document.fonts.add(font);
+    drawPoster(this.artwork);
   }
 
   update(time: number, destroyedAt: number | undefined, enabled = true): void {

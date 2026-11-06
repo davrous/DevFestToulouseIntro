@@ -1,5 +1,14 @@
 # 3D artwork credits
 
+## Cassoulet poster typography
+
+The bundled, unmodified [Anton font](src/assets/event/Anton-Regular.ttf) by
+The Anton Project Authors is
+from [Google Fonts](https://github.com/google/fonts/tree/main/ofl/anton),
+licensed under the [SIL Open Font License 1.1](public/licenses/Anton-OFL.txt).
+It is loaded locally before the procedural poster is drawn; no runtime font
+service is contacted.
+
 ## Arcade gameplay media
 
 The three exact user-supplied GIF sources are converted into local silent

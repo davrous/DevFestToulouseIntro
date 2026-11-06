@@ -4,8 +4,8 @@ import { ShaderMaterial } from "@babylonjs/core/Materials/shaderMaterial";
 import { Vector2 } from "@babylonjs/core/Maths/math.vector";
 import type { TransformNode } from "@babylonjs/core/Meshes/transformNode";
 import type { Scene } from "@babylonjs/core/scene";
-import type { ArcadeMedia } from "./ArcadeMediaManager";
 import type { ArcadeSettings, CabinetKind } from "./config";
+import type { ArcadeScreenMedia } from "./ArcadeScreenMedia";
 
 export const CABINET_SCREENS = {
   arcade: { width: .3, bottom: .3316, top: .5092, bottomZ: .118, topZ: .0588 },
@@ -39,7 +39,7 @@ export class ArcadeScreenController {
   private readonly fit = new Vector2(1, 1);
 
   constructor(scene: Scene, readonly cabinet: number, parent: TransformNode,
-    readonly kind: Exclude<CabinetKind, "pinball">, public media: ArcadeMedia) {
+    readonly kind: Exclude<CabinetKind, "pinball">, public media: ArcadeScreenMedia) {
     const surface = CABINET_SCREENS[kind];
     this.mesh = createDisplayQuad(scene, `Arcade gameplay / cabinet ${cabinet}`, parent,
       surface.width - .002, surface.bottom + .001, surface.top - .001, surface.bottomZ + .0008, surface.topZ + .0008);
@@ -79,7 +79,7 @@ export class ArcadeScreenController {
   update(time: number, settings: ArcadeSettings): void {
     this.mesh.setEnabled(settings.enableArcadeVideoScreens);
     this.mesh.showBoundingBox = settings.screenBounds;
-    const aspect = (this.media.video.videoWidth || 4) / (this.media.video.videoHeight || 3);
+    const aspect = this.media.aspectRatio;
     const displayAspect = screenAspect(this.kind);
     this.fit.set(Math.min(1, aspect / displayAspect), Math.min(1, displayAspect / aspect));
     this.material.setTexture("gameplay", !this.media.error && this.media.texture?.isReady() ? this.media.texture : this.media.poster);
@@ -88,6 +88,6 @@ export class ArcadeScreenController {
     this.material.setFloat("brightness", settings.videoBrightness);
     this.material.setFloat("scanlines", settings.scanlineStrength);
     this.material.setFloat("crt", settings.enableArcadeCrtEffect ? 1 : 0);
-    this.material.setFloat("rows", this.media.video.videoHeight || 240);
+    this.material.setFloat("rows", this.media.videoHeight);
   }
 }

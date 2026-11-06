@@ -50,6 +50,7 @@ export class PinballAttractController {
     this.balls = [ball, ...[1, 2].map((at) => ball.clone(`Pinball steel ball / ${cabinet} / ${at}`, this.playfield))];
     const board = MeshBuilder.CreateGround(`Pinball fitted board / ${cabinet}`, { width: .342, height: .49 }, scene);
     board.parent = this.playfield;
+    board.rotation.y = Math.PI;
     const artwork = new DynamicTexture(`Pinball printed playfield / ${cabinet}`, { width: 384, height: 640 }, scene, false);
     const ctx = artwork.getContext();
     ctx.fillStyle = "#132b37"; ctx.fillRect(0, 0, 384, 640);

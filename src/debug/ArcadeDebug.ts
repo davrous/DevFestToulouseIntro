@@ -1,5 +1,6 @@
 import type { App } from "../engine/App";
-import { ARCADE_GAMES, ARCADE_RANGES, validateArcadeSettings, type ArcadeSettings } from "../scene/arcade/config";
+import { ARCADE_GAMES, ARCADE_RANGES, isProceduralArcadeGame, validateArcadeSettings,
+  type ArcadeSettings } from "../scene/arcade/config";
 
 export class ArcadeDebug {
   private readonly diagnostics = document.createElement("pre");
@@ -75,9 +76,14 @@ export class ArcadeDebug {
           game.value = current.game; offset.value = String(current.offset);
         }
       };
-      game.addEventListener("change", () => { void assign(); });
+      const updateOffsetAvailability = () => {
+        const selected = ARCADE_GAMES.find((value) => value === game.value);
+        offset.disabled = selected !== undefined && isProceduralArcadeGame(selected);
+      };
+      game.addEventListener("change", () => { updateOffsetAvailability(); void assign(); });
       offset.addEventListener("change", () => { void assign(); });
       label.append(game, offset); root.append(label);
+      updateOffsetAvailability();
       this.bindings.push({ game, offset, cabinet: assignment.cabinet });
     }
     this.button(root, "JUMP TO ARCADE", () => app.seek(0));
@@ -132,6 +138,7 @@ export class ArcadeDebug {
     this.diagnostics.textContent = `MASTER ${this.app.timeline.time.toFixed(3)} s / ${this.app.timeline.playing ? "PLAY" : "PAUSE"}\n`
       + enhancements.screens.map((screen) => {
         const media = screen.media, video = media.video;
+        if (!video || !media.clock) return `CAB ${screen.cabinet}: ${media.game} / procedural frame ${media.frame ?? 0}`;
         return `CAB ${screen.cabinet}: ${media.game} ${video.currentTime.toFixed(2)}/${video.duration.toFixed(2)} s`
           + ` / ready ${video.readyState} / ${video.paused ? "held" : "playing"} / seeks ${media.clock.seeks}${media.error ? ` / ERROR ${media.error}` : ""}`;
       }).join("\n")

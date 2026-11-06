@@ -6,18 +6,123 @@ import { Mesh } from "@babylonjs/core/Meshes/mesh";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
 import { Matrix, Vector3 } from "@babylonjs/core/Maths/math.vector";
 import { PBRMaterial } from "@babylonjs/core/Materials/PBR/pbrMaterial";
-import { XorCpuGate, xorGateColliders, xorPanelPose, xorSymbolPaths } from "./XorCpuGate";
+import { XorCpuGate, xorGateColliders, xorPanelPose, xorSignalPath, xorSymbolPaths } from "./XorCpuGate";
 import { LEGACY_XOR, legacyXorSettings, legacyXorState, validateLegacyXorSettings } from "./LegacyXorSequence";
 import { legacyAssembly, legacyGroup } from "./ArcadePhysics";
 import { cameraPose, routeAnchor } from "../camera/CameraPath";
 import { beveledPrism } from "./HardSurface";
+import { createLabyrinth } from "./Labyrinth";
 
 vi.mock("./WorldText", async () => {
   const { Mesh } = await import("@babylonjs/core/Meshes/mesh");
   return { createWorldText: (scene: Scene, options: { name: string }) => new Mesh(options.name, scene) };
 });
 
+vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
+  DynamicTexture: class {
+    getContext() {
+      return { fillRect() {}, strokeRect() {}, beginPath() {}, moveTo() {}, lineTo() {}, stroke() {} };
+    }
+    update() {}
+  },
+}));
+
 describe("Legacy → XOR deterministic choreography", () => {
+  it("keeps the complete copper surface inside the corridor, clear of the actual architectural solids", () => {
+    const engine = new NullEngine(), scene = new Scene(engine);
+    const labyrinth = createLabyrinth(scene);
+    const gate = new XorCpuGate(scene, new TransformNode("T root", scene), legacyXorSettings());
+    const copper = gate.signal.copper, vertices = copper.getVerticesData("position")!;
+    const points = Array.from({ length: vertices.length / 3 }, (_, index) =>
+      Vector3.TransformCoordinates(Vector3.FromArray(vertices, index * 3), copper.computeWorldMatrix(true)));
+    const tube = copper.getBoundingInfo().boundingBox;
+    let minimum = Infinity;
+    for (const mesh of labyrinth.meshes.slice(0, 5)) {
+      for (const instance of mesh.thinInstanceGetWorldMatrices()) {
+        const world = instance.multiply(mesh.computeWorldMatrix(true)), center = world.getTranslation();
+        const scale = new Vector3(); world.decompose(scale);
+        const half = scale.scale(.5);
+        if (center.x + half.x < tube.minimumWorld.x - 1 || center.x - half.x > tube.maximumWorld.x + 1
+          || center.y + half.y < tube.minimumWorld.y - 1 || center.y - half.y > tube.maximumWorld.y + 1
+          || center.z + half.z < tube.minimumWorld.z - 1 || center.z - half.z > tube.maximumWorld.z + 1) continue;
+        const inverse = Matrix.Invert(world);
+        for (const point of points) {
+          const local = Vector3.TransformCoordinates(point, inverse);
+          minimum = Math.min(minimum, Math.hypot(
+            Math.max(Math.abs(local.x) - .5, 0) * scale.x,
+            Math.max(Math.abs(local.y) - .5, 0) * scale.y,
+            Math.max(Math.abs(local.z) - .5, 0) * scale.z));
+        }
+      }
+    }
+    expect(minimum).toBeGreaterThan(.25);
+    scene.dispose(); engine.dispose();
+  });
+
+  it("routes the visible lead around the Tetris wall edge without covering its TODO plaque", () => {
+    const anchor = routeAnchor(40), yaw = anchor.yaw;
+    const halfX = 3.5 * 2.75 + 1.325, halfZ = 2.15 / 2;
+    const extentX = Math.abs(Math.cos(yaw)) * halfX + Math.abs(Math.sin(yaw)) * halfZ;
+    const extentZ = Math.abs(Math.sin(yaw)) * halfX + Math.abs(Math.cos(yaw)) * halfZ;
+    const wall = { minX: anchor.position.x - extentX, maxX: anchor.position.x + extentX,
+      minZ: anchor.position.z - extentZ, maxZ: anchor.position.z + extentZ };
+    const transform = Matrix.RotationY(yaw).multiply(Matrix.Translation(anchor.position.x, 0, anchor.position.z));
+    const todoCenter = Vector3.TransformCoordinates(new Vector3(5.5, 8.5, -1.15), transform);
+    const todoHalfX = Math.abs(Math.cos(yaw)) * 7.7 / 2 + Math.abs(Math.sin(yaw)) * .01;
+    const todoHalfZ = Math.abs(Math.sin(yaw)) * 7.7 / 2 + Math.abs(Math.cos(yaw)) * .01;
+    const wallLocal = Matrix.RotationY(-yaw);
+    const radius = .14;
+    const path = xorSignalPath();
+    expect(path.length).toBeGreaterThan(100);
+    for (const point of path) {
+      const local = Vector3.TransformCoordinates(point.subtract(anchor.position), wallLocal);
+      const clearance = Math.hypot(Math.max(Math.abs(local.x) - halfX, 0),
+        Math.max(Math.abs(local.z) - halfZ, 0));
+      expect(clearance).toBeGreaterThan(radius + .6);
+      if (point.x + radius >= todoCenter.x - todoHalfX && point.x - radius <= todoCenter.x + todoHalfX
+        && point.z + radius >= todoCenter.z - todoHalfZ && point.z - radius <= todoCenter.z + todoHalfZ) {
+        expect(point.y + radius).toBeLessThan(7.925);
+      }
+    }
+    expect(path[0].x).toBeLessThan(wall.minX - 2.5);
+    expect(path.at(-1)!.x).toBeCloseTo(LEGACY_XOR.exitX - .85);
+    expect(path.at(-1)!.y).toBeCloseTo(16.4);
+  });
+
+  it("pre-stages protruding copper and follows the packet with sparks through its arrival at the door", () => {
+    const engine = new NullEngine(), scene = new Scene(engine), settings = legacyXorSettings();
+    const gate = new XorCpuGate(scene, new TransformNode("T root", scene), settings);
+    const meshes = scene.meshes.length, arrival = LEGACY_XOR.impact + settings.signalDuration;
+    gate.update(0);
+    expect(gate.signal.copper.isEnabled()).toBe(true);
+    expect(gate.signal.glow.isEnabled()).toBe(false);
+    expect(gate.chargeSpark.isEnabled()).toBe(false);
+    gate.update(LEGACY_XOR.impact);
+    expect(gate.spark.position.x).toBeLessThan(routeAnchor(40).position.x - 1.5);
+    expect(gate.spark.isEnabled()).toBe(true);
+    expect(gate.chargeSpark.position).toEqual(gate.spark.position);
+    gate.update(arrival - .2);
+    expect(gate.chargeSpark.isEnabled()).toBe(true);
+    const nearDoor = gate.chargeSpark.position.clone();
+    gate.update(arrival + .1);
+    expect(gate.chargeSpark.isEnabled()).toBe(true);
+    expect(gate.chargeSpark.position.y).toBeCloseTo(16.4);
+    expect(gate.chargeSpark.position.x).toBeCloseTo(LEGACY_XOR.exitX - .85);
+    expect(Vector3.Distance(nearDoor, gate.chargeSpark.position)).toBeGreaterThan(0);
+    const pose = gate.chargeSpark.position.clone(), scale = gate.chargeSpark.scaling.clone(), alpha = gate.chargeSpark.alpha;
+    gate.update(arrival + .35);
+    expect(gate.chargeSpark.isEnabled()).toBe(false);
+    gate.update(0); gate.update(arrival + .1);
+    expect(gate.chargeSpark.position).toEqual(pose);
+    expect(gate.chargeSpark.scaling).toEqual(scale);
+    expect(gate.chargeSpark.alpha).toBe(alpha);
+    expect(scene.meshes).toHaveLength(meshes);
+    settings.enableXorCpuGate = false; gate.update(40);
+    expect(gate.signal.copper.isEnabled()).toBe(false);
+    expect(gate.chargeSpark.isEnabled()).toBe(false);
+    scene.dispose(); engine.dispose();
+  });
+
   it("partitions the original 48 homes into 12 staggered L/J tetrominoes", () => {
     const groups = Array.from({ length: 12 }, () => 0), settings = legacyXorSettings();
     for (let index = 0; index < 48; index++) {

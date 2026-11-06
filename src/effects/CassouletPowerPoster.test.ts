@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
 import { Scene } from "@babylonjs/core/scene";
 import { FreeCamera } from "@babylonjs/core/Cameras/freeCamera";
@@ -27,6 +27,7 @@ vi.mock("@babylonjs/core/Materials/Textures/dynamicTexture", () => ({
 }));
 
 describe("The Power Of Cassoulet wall manga", () => {
+  afterEach(() => vi.unstubAllGlobals());
   it("waits for victory, then stays on the wall instead of disappearing after one second", () => {
     const destruction = 126.25, start = destruction + CASSOULET_POWER_POSTER.delay;
     expect(cassouletPowerState(126, undefined).active).toBe(false);
@@ -48,11 +49,19 @@ describe("The Power Of Cassoulet wall manga", () => {
     expect(cassouletPowerState(154, 126.25)).toEqual(state);
   });
 
-  it("mounts the original comic on a real wall, with a defeated T-800, without any fullscreen postprocess", () => {
+  it("preloads a local font before drawing the wall comic, without any fullscreen postprocess", async () => {
     canvas.text.mockClear(); canvas.update.mockClear(); canvas.dispose.mockClear();
+    const load = vi.fn(async () => ({})), add = vi.fn();
+    vi.stubGlobal("FontFace", class { load = load; });
+    vi.stubGlobal("document", { fonts: { add }, removeEventListener() {} });
     const engine = new NullEngine(), scene = new Scene(engine);
     const camera = new FreeCamera("Comic camera", Vector3.Zero(), scene);
     const poster = new CassouletPowerPoster(scene);
+    expect(canvas.update).not.toHaveBeenCalled();
+    await poster.prepare();
+    expect(load).toHaveBeenCalledOnce();
+    expect(add).toHaveBeenCalledOnce();
+    expect(poster.artwork.anisotropicFilteringLevel).toBe(8);
     expect(CASSOULET_POWER_TITLE).toBe("The Power Of Cassoulet!");
     expect(canvas.text.mock.calls.map(([text]) => text)).toEqual(expect.arrayContaining([
       "The Power Of", "Cassoulet!", "CASSOULET", "K.O.!", "T-800", "T-800: 0 / TERROIR: 1",

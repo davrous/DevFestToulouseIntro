@@ -166,9 +166,9 @@ export class PixelWorld {
     this.prompts.forEach((mesh, index) => {
       if (mesh.isDisposed()) return;
       mesh.setEnabled(time < 17);
-      const p = routeAnchor(7 + index * 1.8).position;
+      const p = routeAnchor(6.3 + index * .8).position;
       mesh.position.set(p.x + (index % 2 ? 8 : -8),
-        17 + Math.sin(time * 2 + index) * 1.2, p.z + 5);
+        17 + Math.sin(time * 2 + index) * 1.2, p.z + 2);
     });
     this.platforms.forEach((mesh, index) => {
       mesh.setEnabled(time >= 32 && time < 43.5);

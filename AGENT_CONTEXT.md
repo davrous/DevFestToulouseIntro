@@ -1,5 +1,19 @@
 # Contexte de reprise — Intro DevFest Toulouse
 
+> **6 novembre 2026 — retouches :** les six machines alternent gauche/droite et
+> sont réparties à intervalles égaux du panneau d'entrée à Anne-Flore, avec un
+> dégagement aux deux extrémités. Les panneaux muraux réactifs restent au-dessus
+> des machines, sans chevauchement.
+> Leurs planches imprimées seules tournent de 180 degrés. Les quatre touches
+> flottantes sont regroupées près de l'entrée. NEXT LEVEL et le panneau
+> npm run launch / DEPLOY TO ORBIT sont retirés (pas Orbital Link).
+> Le tube cuivre est présent dès le début, dépasse le mur Legacy et porte
+> des étincelles mobiles avec une décharge à l'arrivée. Chocolatine passe
+> à **28 s sur l'horloge caméra**. Eric : **AI AntiPattern, tu perds ton sang froid**.
+> L'affiche Cassoulet précharge Anton locale (OFL), utilise des contours plus
+> fins et un filtrage mipmap/anisotrope. Les poussières et petits points
+> d'ambiance sont coupés dans les couloirs ; les particules du reveal restent.
+
 > **28 octobre 2026 — arcade animée :** les six machines Kenney gardent leurs positions et GLB. Pong est sur la borne 0, Donkey Kong arcade sur la 3 (pillarbox, aucune borne verticale), Mario sur les dance machines 1 et 4 avec des offsets distincts. Le flipper 2 joue le multiball vers 10–14 s et HIGH SCORE / AI4FUN ; le 5 garde une animation déphasée. Surfaces ajustées, billes, bumpers et flippers sont des overlays non destructifs. Les vidéos locales et le pinball suivent l'horloge caméra, pas le recalage local des effets Journey. Quatre drapeaux et les contrôles sont dans **D → ARCADE / GAMES + PINBALL**. Voir [le guide et les captures](docs/arcade-integration.md), `npm run arcade:prepare` et `npm run verify:arcade`. Les liens Tenor fournis ne constituent pas une autorisation de redistribution Nintendo ; clarifier ces droits avant publication.
 
 > Lire ce document avant d'explorer le code. Il décrit le spectacle existant et les décisions déjà validées, pas un nouveau backlog à implémenter.
@@ -93,7 +107,7 @@ Configuration : [src/content/speakers.ts](src/content/speakers.ts).
 | --- | --- | --- | ---: | ---: | ---: |
 | Anne-Flore Bernard | Musical Agentic Blender | game / signal | 17 | 29 | 39 |
 | David Rousset | Musical Agentic Blender | cinema / neural | 66 | 76 | 83 |
-| Eric Mittelette | IA Barrée | digital / neural | 99 | 107 | 116 |
+| Eric Mittelette | AI AntiPattern, tu perds ton sang froid | digital / neural | 99 | 107 | 116 |
 | Mitsuru Furuta | Blague Japonaise | digital / overclock | 128 | 136 | 146 |
 
 **Le doublon de titre entre Anne-Flore et David est conservé intentionnellement : ne pas le « corriger » en inventant un nouveau titre.**
@@ -113,7 +127,7 @@ Les intervalles se recouvrent volontairement pour assurer les transitions. Pour 
 | 0–5.925 | DEVFEST AI4FUN / CLOSING KEYNOTE et mascotte verte DevFest, avec les bornes latérales ; shader rétro-gaming plein écran de 4.3 à 5.925 s, terminé au passage du panneau |
 | 5–14 | Bornes et pixel art ; plus de panneau chocolatine avant Anne-Flore. Les petits pixels lumineux restent fixes aux murs. Les six grandes plaques lumineuses réactives sont plaquées à 0.01 unité de la surface intérieure des murs, à y = 15 au-dessus des bornes, et non devant leurs écrans |
 | 17–39 | Anne-Flore, son portail cyan et un violon voxel avec archet centré juste sous sa fiche ; échange Pong à côté d'elle, dernier tir physique vers 22, chute des voxels déclenchée par le choc Havok puis rejouée exactement, nettoyage à 38 |
-| 27–34.5 | `GET /pain-au-chocolat` déjà présent avant l'approche, face au couloir près d'Anne-Flore ; `301 / Location: /chocolatine` dès 28.5 s exactement. Aucune pièce bonus |
+| 27–34.5 | `GET /pain-au-chocolat` déjà présent avant l'approche, face au couloir près d'Anne-Flore ; `301 / Location: /chocolatine` dès 28 s exactement. Aucune pièce bonus |
 | 34.4–41.2 | Assemblage des 48 cubes Legacy en douze L/J, BUILD FAILED, puis effondrement Havok enregistré à 38.2 (recalage Journey existant conservé) |
 | 38.2–46.03 | Signal électrique progressif, XOR / ACCESS GRANTED, quatre panneaux biseautés qui glissent et pivotent ; passage réellement libre avant la caméra |
 | 46.3–51.03 | LEVEL COMPLETE au-dessus du clap à y = 26, encore visible pendant son approche |
@@ -179,7 +193,7 @@ Il n'est pas nécessaire de lire tout le dépôt. Commencer par les trois fichie
 | Position caméra, regard, FOV, ancrage des props, sortie et framing final | [CameraPath.ts](src/camera/CameraPath.ts) |
 | Glyphes du titre, grille, murs / sols / toits et vraie passerelle T–D | [title.ts](src/content/title.ts), [Labyrinth.ts](src/scene/Labyrinth.ts) |
 | Speakers, fenêtres d'effets, transitions et boutons de répétition | [speakers.ts](src/content/speakers.ts), [cues.ts](src/content/cues.ts), [showBeats.ts](src/content/showBeats.ts) |
-| Bornes, écran d'ouverture, LEVEL COMPLETE / NEXT LEVEL | [ArcadeCathedral.ts](src/scene/ArcadeCathedral.ts) |
+| Bornes, écran d'ouverture, LEVEL COMPLETE | [ArcadeCathedral.ts](src/scene/ArcadeCathedral.ts) |
 | Porte et éléments narratifs du T ; pixel art | [ArcadeT.ts](src/scene/ArcadeT.ts), [PixelWorld.ts](src/scene/PixelWorld.ts) |
 | Violon voxel, dernier échange Pong et collision Havok enregistrée | [DemosceneTransition.ts](src/scene/DemosceneTransition.ts), [ViolinPongImpact.ts](src/scene/ViolinPongImpact.ts), [violin.ts](src/content/violin.ts) |
 | Porte CPU XOR à quatre panneaux et signal de l'impact | [XorCpuGate.ts](src/scene/XorCpuGate.ts), [CircuitSignal.ts](src/effects/CircuitSignal.ts), [LegacyXorSequence.ts](src/scene/LegacyXorSequence.ts) |

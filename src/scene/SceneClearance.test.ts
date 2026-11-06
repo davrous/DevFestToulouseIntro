@@ -5,8 +5,21 @@ import { CELL, HEIGHT, TITLE_WIDTH, TITLE_DEPTH, cellPosition } from "../content
 import { SPEAKERS } from "../content/speakers";
 import { DUST, showFogDensity } from "./Atmosphere";
 import { CORE_LAYOUT } from "./Interior";
+import { NullEngine } from "@babylonjs/core/Engines/nullEngine";
+import { Scene } from "@babylonjs/core/scene";
+import { MusicReactive } from "../effects/MusicReactive";
+import { silentFeatures } from "../engine/AudioAnalyzer";
 
 describe("shot clearance and reveal clarity", () => {
+  it("removes tiny ambient data dots from the corridors while retaining the reveal particles", () => {
+    const engine = new NullEngine(), scene = new Scene(engine), music = new MusicReactive(scene);
+    for (const time of [0, 18, 99, 139, 158.999, 159, 170, 180, 0]) {
+      music.update(time, silentFeatures());
+      expect(music.particles.isEnabled()).toBe(time >= 159);
+    }
+    scene.dispose(); engine.dispose();
+  });
+
   it("keeps drifting dust more than two units below every interior camera pose", () => {
     const highestDust = DUST.maxY + DUST.drift + DUST.thickness / 2;
     for (let time = 0; time <= 163; time += .1) {

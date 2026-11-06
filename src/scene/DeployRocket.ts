@@ -10,7 +10,6 @@ import { routeAnchor } from "../camera/CameraPath";
 import { DEPLOY_ROCKET, rocketLift } from "../content/showBeats";
 import { SEED, seededRandom } from "../content/title";
 import { smoothstep } from "../engine/Timeline";
-import { createWorldText } from "./WorldText";
 import { emissive } from "./Labyrinth";
 
 export class DeployRocket {
@@ -66,10 +65,6 @@ export class DeployRocket {
       fin.position.set(side * 2.3, 3, 0);
       fin.rotation.z = side * -.18;
       fin.material = accent;
-      const post = MeshBuilder.CreateBox(`Rocket / launch console support ${side}`, { width: .14, height: 12.5, depth: .14 }, scene);
-      post.parent = this.root;
-      post.position.set(side * 3.4, 6.25, -2.4);
-      post.material = metal;
     }
     for (const y of [3, 10, 13.5]) {
       const ring = MeshBuilder.CreateTorus("FX/Rocket / telemetry band", { diameter: 3.06, thickness: .1, tessellation: 32 }, scene);
@@ -83,14 +78,6 @@ export class DeployRocket {
     this.exhaust.parent = this.airframe;
     this.exhaust.position.y = 1.2;
     this.exhaust.material = emissive(scene, "Rocket / deployment flame", "#91eadd", 1.5);
-    const deploy = createWorldText(scene, {
-      name: "Rocket / DEPLOY TO ORBIT", width: 7, height: 2.6,
-      background: "#10202a", border: "#91eadd",
-      lines: [{ text: "npm run launch", color: "#baf5e6" }, { text: "DEPLOY TO ORBIT", color: "#ffcfad" }],
-    });
-    deploy.parent = this.root;
-    deploy.position.set(0, 12.5, -2.4);
-
     this.burst = new TransformNode("Rocket / ceiling impact", scene);
     this.burst.position.set(anchor.position.x, DEPLOY_ROCKET.ceiling - .05, anchor.position.z);
     this.particles = new Mesh("FX/Rocket / explosion particles", scene);

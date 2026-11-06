@@ -47,20 +47,35 @@ try {
       renderer: app.engine.getGlInfo().renderer, webgl: app.engine.webGLVersion,
       resources: e.media.resources.length,
       screens: e.screens.map((screen) => ({ cabinet: screen.cabinet, game: screen.media.game,
-        offset: screen.media.offset, width: screen.media.video.videoWidth, height: screen.media.video.videoHeight,
-        ready: screen.media.video.readyState, paused: screen.media.video.paused, textureReady: screen.media.texture.isReady() })),
+        offset: screen.media.offset, width: screen.media.video?.videoWidth ?? 320, height: screen.media.videoHeight,
+        ready: screen.media.video?.readyState ?? (screen.media.texture?.isReady() ? 2 : 0),
+        paused: screen.media.video?.paused ?? true, procedural: !screen.media.video,
+        frame: screen.media.frame ?? null, textureReady: screen.media.texture?.isReady() ?? false })),
       pinballs: e.pinballs.map((machine) => ({ cabinet: machine.cabinet, featured: machine.featured })),
       initialRequestsDecoded: e.media.resources.every((media) => !media.video.seeking && media.video.readyState >= 2),
     };
   });
   assert.equal(initial.screens.length, 4);
   assert.equal(initial.pinballs.length, 2);
-  assert.equal(initial.resources, 4);
+  assert.equal(initial.resources, 2);
   assert.ok(initial.initialRequestsDecoded);
   assert.ok(initial.screens.every((screen) => screen.paused && screen.textureReady));
-  assert.ok(mediaRequests.size >= 6, "All three videos and posters must load before SYSTEM READY.");
+  assert.deepEqual(initial.screens.filter((screen) => screen.procedural).map((screen) => [screen.cabinet, screen.game]),
+    [[1, "devfest-10"], [4, "toulouse-fps"]]);
+  assert.ok(mediaRequests.size >= 2, "The remaining assigned video and poster must load before SYSTEM READY.");
+  const miniGameFrames = await page.evaluate(() => {
+    const app = window.devfest, e = app.world.arcadeEnhancements;
+    const frame = (cabinet) => e.screens.find((screen) => screen.cabinet === cabinet).media.frame;
+    const before = [frame(1), frame(4)];
+    app.seek(.6); app.world.scene.render();
+    return { before, after: [frame(1), frame(4)],
+      ready: [1, 4].every((cabinet) => e.screens.find((screen) => screen.cabinet === cabinet).media.texture.isReady()) };
+  });
+  assert.ok(miniGameFrames.after.every((frame, index) => frame > miniGameFrames.before[index]));
+  assert.ok(miniGameFrames.ready);
   await page.addStyleTag({ content: "#pause-overlay{display:none!important}" });
-  await page.locator("#fullscreen").uncheck(); await page.locator("#play").click();
+  await page.evaluate(() => { document.querySelector("#fullscreen").checked = false; });
+  await page.evaluate(() => { document.querySelector("#play").click(); });
   await page.waitForFunction(() => window.devfest.timeline.playing);
   await page.evaluate(() => {
     const app = window.devfest;
@@ -110,8 +125,8 @@ try {
     await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
   };
   const captures = [];
-  for (const [label, time] of [["01-pong-mario", 1], ["02-launch", 4.3], ["03-flipper", 7.15],
-    ["04-multiball", 11.3], ["05-ai4fun", 12.3], ["06-background", 18.3]]) {
+  for (const [label, time] of [["01-devfest-10", 9.5], ["02-launch", 4.3], ["03-flipper", 7.15],
+    ["04-multiball", 11.3], ["05-ai4fun", 12.3], ["06-background", 18.3], ["07-toulouse-fps", 15.5]]) {
     await page.evaluate((time) => window.devfest.seek(time), time); await settle();
     const path = `docs/arcade/${label}.png`;
     await page.screenshot({ path }); captures.push({ time, path });
@@ -212,9 +227,9 @@ try {
     const app = window.devfest, e = app.world.arcadeEnhancements;
     const counts = () => [e.media.resources.length, app.world.scene.textures.length];
     const before = counts();
-    await e.assign(0, "donkey-kong", 2.7); app.seek(11.3);
+    await e.assign(0, "super-mario", 5.1); app.seek(11.3);
     const shared = e.screens.find((screen) => screen.cabinet === 0).media === e.screens.find((screen) => screen.cabinet === 3).media;
-    await e.assign(0, "pong", 4.2); app.seek(1); await e.whenSettled();
+    await e.assign(0, "super-mario", 1.3); app.seek(1); await e.whenSettled();
     return { before, after: counts(), shared };
   });
   assert.deepEqual(reassignment.before, reassignment.after);

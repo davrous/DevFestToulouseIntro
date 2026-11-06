@@ -1,11 +1,28 @@
-export const ARCADE_GAMES = ["pong", "donkey-kong", "super-mario"] as const;
+export const ARCADE_VIDEO_GAMES = ["pong", "donkey-kong", "super-mario"] as const;
+export type ArcadeVideoGame = typeof ARCADE_VIDEO_GAMES[number];
+export const PROCEDURAL_ARCADE_GAMES = ["devfest-10", "toulouse-fps"] as const;
+export type ProceduralArcadeGame = typeof PROCEDURAL_ARCADE_GAMES[number];
+export const ARCADE_GAMES = [...ARCADE_VIDEO_GAMES, ...PROCEDURAL_ARCADE_GAMES] as const;
 export type ArcadeGame = typeof ARCADE_GAMES[number];
 export type CabinetKind = "arcade" | "dance" | "pinball";
+
+export function isProceduralArcadeGame(game: ArcadeGame): game is ProceduralArcadeGame {
+  return game === "devfest-10" || game === "toulouse-fps";
+}
 
 export interface ScreenAssignment {
   cabinet: number;
   game: ArcadeGame;
   offset: number;
+}
+
+function defaultScreenAssignments(): ScreenAssignment[] {
+  return [
+    { cabinet: 0, game: "super-mario", offset: 1.3 },
+    { cabinet: 1, game: "devfest-10", offset: 0 },
+    { cabinet: 3, game: "super-mario", offset: 5.1 },
+    { cabinet: 4, game: "toulouse-fps", offset: 0 },
+  ];
 }
 
 export function arcadeSettings() {
@@ -18,12 +35,7 @@ export function arcadeSettings() {
     scanlineStrength: .07,
     videoPolicy: "arcade-section" as "arcade-section" | "always",
     videoEnd: 49,
-    assignments: [
-      { cabinet: 0, game: "pong", offset: 4.2 },
-      { cabinet: 1, game: "super-mario", offset: 1.3 },
-      { cabinet: 3, game: "donkey-kong", offset: 2.7 },
-      { cabinet: 4, game: "super-mario", offset: 5.1 },
-    ] satisfies ScreenAssignment[],
+    assignments: defaultScreenAssignments(),
     pinballSpeed: 1,
     pinballStart: 3,
     pinballCycle: 14,
