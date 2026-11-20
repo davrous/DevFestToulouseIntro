@@ -86,7 +86,7 @@
       ],
       "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Max, Unspecified Version)",
       "shaderErrors": [],
-      "readyMs": 15626
+      "readyMs": 15823
     },
     {
       "fullIntroReady": true,
@@ -170,7 +170,7 @@
       ],
       "renderer": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1 Max, Unspecified Version)",
       "shaderErrors": [],
-      "readyMs": 10800
+      "readyMs": 17509
     }
   ]
 }

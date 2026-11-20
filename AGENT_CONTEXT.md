@@ -393,7 +393,7 @@ npm ci
 npm run dev
 ```
 
-Le dev server annonce normalement http://127.0.0.1:5173. Pour la version de scène :
+Le dev server annonce normalement http://127.0.0.1:31000. Pour la version de scène :
 
 ```text
 npm test

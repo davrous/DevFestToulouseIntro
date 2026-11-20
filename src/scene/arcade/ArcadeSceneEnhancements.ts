@@ -22,14 +22,15 @@ export class ArcadeSceneEnhancements {
     scene.onDisposeObservable.addOnce(() => this.proceduralMedia.forEach((media) => media.dispose()));
   }
 
-  async prepare(machines: readonly ArcadeMachine[]): Promise<void> {
+  async prepare(machines: readonly ArcadeMachine[], videos = true): Promise<void> {
+    this.settings.enableArcadeVideoScreens = videos;
     for (const machine of machines) {
       const body = machine.root.getChildMeshes().find((mesh) =>
         mesh.name.endsWith(machine.kind === "arcade" ? ".arcade-machine" : machine.kind === "dance" ? ".dance-machine" : ".pinball"));
       if (!body) throw new Error(`Missing ${machine.kind} geometry in cabinet ${machine.cabinet}.`);
       if (machine.kind === "pinball") {
         this.pinballs.push(new PinballAttractController(this.scene, machine.cabinet, body, this.pinballs.length, machine.cabinet === 2));
-      } else {
+      } else if (videos) {
         const assignment = this.settings.assignments.find((entry) => entry.cabinet === machine.cabinet);
         if (assignment) this.screens.push(new ArcadeScreenController(this.scene, machine.cabinet, body,
           machine.kind, this.getScreenMedia(assignment.game, assignment.offset)));

@@ -43,6 +43,7 @@ import { CrtLightningTransition } from "../effects/CrtLightningTransition";
 import { CassouletPowerPoster } from "../effects/CassouletPowerPoster";
 import { legacyXorSettings } from "./LegacyXorSequence";
 import { prewarmRenderStates } from "./RenderWarmup";
+import type { LoadingDiagnostics } from "../debug/LoadingDiagnostics";
 import { laserLead } from "../effects/ShowLighting";
 import { EventBranding } from "./EventBranding";
 import { CinemaWorld } from "./CinemaWorld";
@@ -97,7 +98,8 @@ export class DevFestScene {
   private physicsPlugin?: HavokPlugin;
   private physicsSpeed = 1;
 
-  constructor(private readonly engine: Engine) {
+  constructor(private readonly engine: Engine, private readonly diagnostics?: LoadingDiagnostics) {
+    const renderLite = !!diagnostics?.profile.renderLite;
     const scene = this.scene = new Scene(engine);
     scene.clearColor = new Color4(.018, .035, .048, 1);
     scene.fogMode = Scene.FOGMODE_EXP2;
@@ -156,12 +158,15 @@ export class DevFestScene {
     this.popcorn = new CinemaPopcorn(scene);
     this.digitalMoments = new DigitalMoments(scene);
     this.overflow = new DigitalOverflow(scene);
-    this.simready = new SimReadyGags(scene, new URLSearchParams(location.search).get("simready") !== "0");
+    this.simready = new SimReadyGags(scene, !diagnostics?.profile.skipSimReady
+      && new URLSearchParams(location.search).get("simready") !== "0");
     this.branding = new EventBranding(scene);
     this.music = new MusicReactive(scene);
     this.floorEqualizer = new FloorEqualizer(scene);
     this.wallMeters = new WallMeters(scene);
-    this.glow = new GlowLayer("Architectural light bloom", scene, { mainTextureRatio: .5, blurKernelSize: 32 });
+    this.glow = new GlowLayer("Architectural light bloom", scene, renderLite
+      ? { mainTextureFixedSize: 128, blurKernelSize: 8 } : { mainTextureRatio: .5, blurKernelSize: 32 });
+    this.glow.isEnabled = !renderLite;
     this.glow.addExcludedMesh(this.music.particles);
     this.glow.addExcludedMesh(this.easterEggs.rocketParticles);
     // Keep non-emissive geometry in the glow depth pass: hidden lights must not bleed through walls.
@@ -177,16 +182,17 @@ export class DevFestScene {
         result.set(0, 0, 0, 1);
       }
     };
-    this.pipeline = new DefaultRenderingPipeline("Cinema", true, scene, [this.camera]);
-    this.pipeline.samples = Math.max(1, Math.min(4, engine.getCaps().maxMSAASamples));
-    this.pipeline.fxaaEnabled = this.pipeline.samples === 1;
-    this.pipeline.bloomEnabled = true;
+    this.pipeline = new DefaultRenderingPipeline("Cinema", !renderLite, scene, [this.camera]);
+    this.pipeline.samples = renderLite ? 1 : Math.max(1, Math.min(4, engine.getCaps().maxMSAASamples));
+    this.pipeline.fxaaEnabled = !renderLite && this.pipeline.samples === 1;
+    this.pipeline.bloomEnabled = !renderLite;
     this.pipeline.bloomThreshold = .8;
     this.pipeline.bloomWeight = .2;
     this.pipeline.bloomKernel = 48;
     this.pipeline.bloomScale = .5;
-    this.pipeline.imageProcessingEnabled = true;
+    this.pipeline.imageProcessingEnabled = !renderLite;
     const image = scene.imageProcessingConfiguration;
+    image.isEnabled = !renderLite;
     image.toneMappingEnabled = true;
     image.toneMappingType = ImageProcessingConfiguration.TONEMAPPING_ACES;
     image.exposure = 1.15;
@@ -206,13 +212,26 @@ export class DevFestScene {
   }
 
   async prepare(progress: (message: string) => void = () => {}): Promise<void> {
-    await Promise.all([this.pixelWorld.prepare(),
-      this.cathedral.prepare().then(() => this.arcadeEnhancements.prepare(this.cathedral.machines)), this.cinema.prepare(),
-      this.easterEggs.skynetWarning.ready,
-      this.cassouletPoster.prepare(),
-      this.entryTransition.prepare(), this.clapTransition.prepare(), this.lensVortex.prepare(),
-      this.crtLightning.prepare(), this.simready.prepare(progress)]);
-    const havok = await HavokPhysics({ locateFile: () => havokWasm });
+    const run = <T>(name: string, work: () => Promise<T>): Promise<T> =>
+      this.diagnostics ? this.diagnostics.step(name, work) : work();
+    const bake = (name: string, work: () => void) => {
+      this.diagnostics?.mark(`${name}:start`); work(); this.diagnostics?.mark(`${name}:done`);
+    };
+    if (this.diagnostics?.profile.skipCinema) this.diagnostics.mark("assets:cinema:skipped");
+    if (this.diagnostics?.profile.skipVideo) this.diagnostics.mark("assets:arcade-videos:skipped");
+    if (this.diagnostics?.profile.skipSimReady) this.diagnostics.mark("assets:nvidia:skipped");
+    await Promise.all([run("assets:pixel", () => this.pixelWorld.prepare()),
+      run("assets:arcade", () => this.cathedral.prepare().then(() =>
+        this.arcadeEnhancements.prepare(this.cathedral.machines, !this.diagnostics?.profile.skipVideo))),
+      this.diagnostics?.profile.skipCinema ? Promise.resolve() : run("assets:cinema", () => this.cinema.prepare()),
+      run("assets:skynet", () => this.easterEggs.skynetWarning.ready),
+      run("assets:cassoulet-poster", () => this.cassouletPoster.prepare()),
+      run("shaders:entry", () => this.entryTransition.prepare()),
+      run("shaders:clap", () => this.clapTransition.prepare()),
+      run("shaders:tunnel", () => this.lensVortex.prepare()),
+      run("shaders:lightning", () => this.crtLightning.prepare()),
+      run("assets:nvidia", () => this.simready.prepare(progress))]);
+    const havok = await run("physics:wasm", () => HavokPhysics({ locateFile: () => havokWasm }));
     const plugin = new HavokPlugin(true, havok);
     if (!this.scene.enablePhysics(new Vector3(0, -17, 0), plugin)) {
       throw new Error("Havok physics could not be initialized.");
@@ -220,13 +239,15 @@ export class DevFestScene {
     this.physicsPlugin = plugin;
     plugin.setVelocityLimits(32, 12);
     this.scene.physicsEnabled = false;
-    this.simready.initializePhysics();
-    this.demoscene.initialize(plugin);
+    this.diagnostics?.mark("physics:enabled");
+    bake("physics:cassoulet", () => this.simready.initializePhysics());
+    bake("physics:violin", () => this.demoscene.initialize(plugin));
     if (this.demoscene.impact) this.simready.setPongImpact(this.demoscene.impact);
-    this.arcadePhysics.initialize(plugin);
-    this.popcorn.initialize(plugin);
-    await this.branding.ready;
+    bake("physics:legacy", () => this.arcadePhysics.initialize(plugin));
+    bake("physics:popcorn", () => this.popcorn.initialize(plugin));
+    await run("assets:branding", () => this.branding.ready);
     await this.scene.whenReadyAsync();
+    this.diagnostics?.mark("materials:precompile:start");
     const compile = (meshes = this.scene.meshes) => Promise.all(meshes.map((mesh) => mesh.material?.forceCompilationAsync(mesh, {
       useInstances: mesh instanceof InstancedMesh || (mesh instanceof Mesh && mesh.hasThinInstances),
     })));
@@ -244,6 +265,7 @@ export class DevFestScene {
     this.update(ASTRONAUT_FINALE.start + 1, SILENCE);
     await compile(this.cinema.astronautRoot.getChildMeshes());
     this.update(0, SILENCE);
+    this.diagnostics?.mark("materials:precompile:done");
     const speaker = SPEAKERS[0];
     const entranceStates = [
       0, 8, 10.5, 12.5, 18,
@@ -260,11 +282,14 @@ export class DevFestScene {
         entranceStates.push(() => this.update(time, SILENCE));
       }
     }
-    await prewarmRenderStates(this.scene, this.camera, entranceStates, () => this.update(0, SILENCE));
-    await this.arcadeEnhancements.whenSettled();
+    if (this.diagnostics?.profile.skipWarmup) this.diagnostics.mark("render:warmup:skipped");
+    else await run("render:warmup", () =>
+      prewarmRenderStates(this.scene, this.camera, entranceStates, () => this.update(0, SILENCE)));
+    await run("media:settled", () => this.arcadeEnhancements.whenSettled());
   }
 
   setPostProcessing(enabled: boolean): void {
+    enabled &&= !this.diagnostics?.profile.renderLite;
     this.pipeline.bloomEnabled = enabled;
     this.pipeline.fxaaEnabled = enabled && this.pipeline.samples === 1;
     this.pipeline.imageProcessingEnabled = enabled;

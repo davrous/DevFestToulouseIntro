@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   base: "./",
-  server: { strictPort: true, port: 5173 },
+  server: { strictPort: true, port: 31000 },
   preview: { strictPort: true, port: 4173 },
   test: {
     // Use the browser's ESM paths: Kabelsalat's main is an IIFE; some Tonal CJS paths are absent.

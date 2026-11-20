@@ -29,7 +29,7 @@ npm ci
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. Wait for **SYSTEM READY**, then **PLAY SEQUENCE**. **Preview the reveal** starts at 2:35. Fullscreen is optional and requested only from a user gesture.
+Open http://127.0.0.1:31000. Wait for **SYSTEM READY**, then **PLAY SEQUENCE**. **Preview the reveal** starts at 2:35. Fullscreen is optional and requested only from a user gesture.
 
 For the optimized stage build:
 
@@ -39,6 +39,36 @@ npm run preview
 ```
 
 Open http://127.0.0.1:4173 and keep the local server running. After installation/build, no Internet is needed. Do not open the HTML using `file://`.
+
+### iPhone / Safari loading diagnostics
+
+Open `/?diagnostic=report` on the same origin as the show. This lightweight page
+does not import the 3D application or initialize WebGL, videos or Havok. It links
+to these explicit startup tests; the ordinary URL retains its normal quality:
+
+| Query | Difference from the normal show |
+| --- | --- |
+| `?diagnostic=baseline` | Full show, with local startup journal |
+| `?diagnostic=no-video` | No arcade video decoders/textures/posters; pinball animation stays enabled |
+| `?diagnostic=render-lite` | At most 1280 × 720, no canvas antialiasing/HDR/MSAA/bloom/glow/image-processing pass |
+| `?diagnostic=no-cinema` | Do not load any cinema GLBs, including the T-800 and astronaut; procedural scenery remains |
+| `?diagnostic=no-simready` | Do not load the NVIDIA models |
+| `?diagnostic=no-warmup` | Skip actual offscreen preparation draws; material precompilation stays enabled |
+| `?diagnostic=minimal` | Combine all five exclusions |
+
+After an attempt or browser reload, return to `?diagnostic=report` and export
+`devfest-iphone-diagnostic.json`. Keep the same Safari mode/origin: localStorage
+does not transfer between browsers or private sessions. The journal stores up
+to eight runs and 100 stages per run, including asset groups, Havok initialization,
+physics bakes, shader preparation, first render, JavaScript errors and context loss.
+Times are ISO/UTC. Nothing is sent to a diagnostics server automatically.
+Storage errors are shown explicitly. A killed process may lose its most recent
+write, and an in-flight parallel stage alone is not proof of the crash cause.
+
+The normal boot never creates or writes this journal. The 3D app is dynamically
+imported after diagnostic routing so the report remains accessible without 3D.
+Verify the controls with `npm run build && node scripts/verify-loading-diagnostics.mjs`.
+Desktop/emulated checks validate the switches, not a physical iPhone fix.
 
 ## No runtime CDN / day-of-demo reproducibility
 

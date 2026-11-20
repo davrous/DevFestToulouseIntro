@@ -9,8 +9,8 @@ npm run dev
 
 Use **one origin**, including the same hostname and port:
 
-- Show: `http://127.0.0.1:5173/`
-- Performance: `http://127.0.0.1:5173/strudel/`
+- Show: `http://127.0.0.1:31000/`
+- Performance: `http://127.0.0.1:31000/strudel/`
 
 The debug panel (`D`) links to the matching performance page. For the stage build,
 run `npm run build` then `npm run preview`; both pages use port 4173 by default.

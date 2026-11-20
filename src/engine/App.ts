@@ -8,6 +8,7 @@ import { POPCORN_END, POPCORN_START } from "../scene/CinemaPopcorn";
 import { KEYNOTE_PERFORMANCE_URL, PERFORMANCE_ERROR } from "../strudel/performanceMode";
 import { fillScoreSelector, getScore } from "../strudel/scores";
 import { fillSoundtrackSelector, getSoundtrack, soundtrackEndGain } from "../audio/soundtracks";
+import type { LoadingDiagnostics } from "../debug/LoadingDiagnostics";
 
 function element<T extends HTMLElement>(id: string): T {
   const found = document.getElementById(id);
@@ -42,9 +43,12 @@ export class App {
   private readonly previewButton = element<HTMLButtonElement>("preview");
   private readonly soundtrackPlayer = element<HTMLAudioElement>("soundtrack-player");
 
-  constructor(private readonly canvas: HTMLCanvasElement) {
+  constructor(private readonly canvas: HTMLCanvasElement, private readonly diagnostics?: LoadingDiagnostics) {
+    this.diagnostics?.mark("renderer:create");
     this.engine = this.createEngine();
+    this.diagnostics?.mark("renderer:created", `WebGL ${this.engine.webGLVersion}`);
     this.setResolution(false);
+    this.diagnostics?.mark("renderer:resolution", `${this.engine.getRenderWidth()}x${this.engine.getRenderHeight()}`);
     this.showController = new ShowController(this.timeline, (message) => this.showNotice(message));
     this.showController.strudelEvents.onShowStart = (at, senderId) => {
       if (!this.ready) throw new Error("Wait for SYSTEM READY before launching the show.");
@@ -57,7 +61,9 @@ export class App {
     this.showController.strudelEvents.onShowStartCancelled = (senderId) => {
       if (this.synchronizedStart?.senderId === senderId) this.cancelSynchronizedStart();
     };
-    this.world = new DevFestScene(this.engine);
+    this.diagnostics?.mark("scene:construct:start");
+    this.world = new DevFestScene(this.engine, this.diagnostics);
+    this.diagnostics?.mark("scene:construct:done");
     this.debug = new DebugPanel(this);
     document.body.classList.add("lobby-visible");
     this.bindControls();
@@ -69,6 +75,7 @@ export class App {
       this.showController.strudelEvents.disconnect();
     });
     canvas.addEventListener("webglcontextlost", (event) => {
+      this.diagnostics?.mark("renderer:context-lost");
       event.preventDefault();
       this.timeline.pause();
       this.cancelSynchronizedStart();
@@ -80,6 +87,7 @@ export class App {
       this.showNotice("Graphics context lost. The show is paused while the renderer recovers.", true);
     });
     canvas.addEventListener("webglcontextrestored", () => {
+      this.diagnostics?.mark("renderer:context-restored");
       void this.restoreRenderer();
     });
     window.addEventListener("resize", () => {
@@ -98,15 +106,18 @@ export class App {
   }
 
   async initialize(): Promise<void> {
+    this.diagnostics?.mark("prepare:start");
     element("loading-fill").style.width = "45%";
     element("load-status").textContent = "Loading local event artwork and compiling the cinematic pipeline...";
     await this.world.prepare((message) => { element("load-status").textContent = message; });
     const time = this.inLobby ? 0 : this.timeline.time;
+    this.diagnostics?.mark("render:first:start");
     this.world.update(time, this.visualAudio, this.showController.section, this.timeline.speed, this.visualRevealAccent,
       this.showController.effectTime(time));
     this.world.scene.render();
     element("loading-fill").style.width = "85%";
     await this.world.scene.whenReadyAsync();
+    this.diagnostics?.mark("render:first:done");
     this.engine.runRenderLoop(() => {
       if (!this.ready) return;
       const now = performance.now();
@@ -145,6 +156,7 @@ export class App {
     element("loading-fill").style.width = "100%";
     element("loading-track").hidden = true;
     element("load-status").textContent = "SYSTEM READY / All assets local / Live audio optional";
+    this.diagnostics?.mark("ready", `${this.engine.getRenderWidth()}x${this.engine.getRenderHeight()}`);
     if (this.world.simready?.errors.length) {
       this.showNotice(`Optional NVIDIA effects unavailable: ${this.world.simready.errors.join(" ")}`, true);
     }
@@ -283,7 +295,9 @@ export class App {
   setResolution(native: boolean): void {
     const pixelRatio = window.devicePixelRatio || 1;
     const cap = Math.max(window.innerWidth / 2560, window.innerHeight / 1440, 1 / pixelRatio);
-    this.engine.setHardwareScalingLevel(native ? 1 / pixelRatio : cap);
+    this.engine.setHardwareScalingLevel(this.diagnostics?.profile.renderLite
+      ? Math.max(window.innerWidth / 1280, window.innerHeight / 720, 1)
+      : native ? 1 / pixelRatio : cap);
   }
 
   async toggleFullscreen(): Promise<void> {
@@ -307,7 +321,7 @@ export class App {
     try {
       this.engine = this.createEngine();
       this.setResolution(element<HTMLSelectElement>("resolution").value === "native");
-      this.world = new DevFestScene(this.engine);
+      this.world = new DevFestScene(this.engine, this.diagnostics);
       this.arcadeErrorCount = 0;
       const bloom = element<HTMLInputElement>("bloom").checked;
       this.world.setPostProcessing(bloom);
@@ -320,7 +334,7 @@ export class App {
   }
 
   private createEngine(): Engine {
-    return new Engine(this.canvas, true, {
+    return new Engine(this.canvas, !this.diagnostics?.profile.renderLite, {
       preserveDrawingBuffer: false,
       stencil: false,
       powerPreference: "high-performance",

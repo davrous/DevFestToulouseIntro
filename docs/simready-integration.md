@@ -264,9 +264,9 @@ npm run verify:simready
 # Include a real three-minute playback with the MP3:
 SIMREADY_FULL_SHOW=1 npm run verify:simready
 npm run dev
-# http://127.0.0.1:5173/
-# http://127.0.0.1:5173/?asset-viewer=simready
-# http://127.0.0.1:5173/?simready=0
+# http://127.0.0.1:31000/
+# http://127.0.0.1:31000/?asset-viewer=simready
+# http://127.0.0.1:31000/?simready=0
 ```
 
 Downloads and conversions are cached. `--asset snackVendingMachine` restricts
